@@ -1,3 +1,10 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+.cursorrules
+extra.txta
 # Logs
 logs
 *.log
@@ -128,3 +135,7 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Storybook static files
+storybook-static
+.storybook/cache

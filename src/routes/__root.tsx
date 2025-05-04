@@ -1,0 +1,31 @@
+import { createRootRoute, Outlet, useMatches } from '@tanstack/react-router'
+import { ThemeProvider } from '@/components/theme-provider'
+import Navbar from '../components/dock'
+import { NavBar } from '../components/Navbar'
+import Footer from '../components/Footer'
+
+export const Route = createRootRoute({
+  component: () => {
+    const matches = useMatches()
+    // Check if any of the matched routes starts with '/dashboard'
+    const isDashboardRoute = matches.some(match => 
+      match.routeId.startsWith('/dashboard')
+    )
+
+    return (
+      <ThemeProvider defaultTheme="system">
+       {/* <TanstackQueryProvider> */}
+          <div className="relative min-h-screen flex flex-col bg-background">
+            {!isDashboardRoute && <NavBar />}
+            <main className="flex-1 pb-24 pt-5">
+              <Outlet />
+            </main>
+            {!isDashboardRoute && <Navbar />}
+            {!isDashboardRoute && <Footer/>}
+            {/* <TanstackQueryLayout /> */}
+          </div>
+        {/* </TanstackQueryProvider> */}
+      </ThemeProvider>
+    );
+  },
+});
