@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as EventsImport } from './routes/events'
 import { Route as DashboardRouteImport } from './routes/dashboard/route'
 import { Route as IndexImport } from './routes/index'
 import { Route as DonateIndexImport } from './routes/donate/index'
@@ -19,6 +20,12 @@ import { Route as AboutIndexImport } from './routes/about/index'
 import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
 
 // Create/Update Routes
+
+const EventsRoute = EventsImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const DashboardRouteRoute = DashboardRouteImport.update({
   id: '/dashboard',
@@ -74,6 +81,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRoute
     }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsImport
+      parentRoute: typeof rootRoute
+    }
     '/demo/tanstack-query': {
       id: '/demo/tanstack-query'
       path: '/demo/tanstack-query'
@@ -122,6 +136,7 @@ const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/events': typeof EventsRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/about': typeof AboutIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -130,6 +145,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/events': typeof EventsRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/about': typeof AboutIndexRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -140,6 +156,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/events': typeof EventsRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/about/': typeof AboutIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -151,16 +168,24 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/events'
     | '/demo/tanstack-query'
     | '/about'
     | '/dashboard/'
     | '/donate'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo/tanstack-query' | '/about' | '/dashboard' | '/donate'
+  to:
+    | '/'
+    | '/events'
+    | '/demo/tanstack-query'
+    | '/about'
+    | '/dashboard'
+    | '/donate'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
+    | '/events'
     | '/demo/tanstack-query'
     | '/about/'
     | '/dashboard/'
@@ -171,6 +196,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
+  EventsRoute: typeof EventsRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   AboutIndexRoute: typeof AboutIndexRoute
   DonateIndexRoute: typeof DonateIndexRoute
@@ -179,6 +205,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
+  EventsRoute: EventsRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   AboutIndexRoute: AboutIndexRoute,
   DonateIndexRoute: DonateIndexRoute,
@@ -196,6 +223,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/dashboard",
+        "/events",
         "/demo/tanstack-query",
         "/about/",
         "/donate/"
@@ -209,6 +237,9 @@ export const routeTree = rootRoute
       "children": [
         "/dashboard/"
       ]
+    },
+    "/events": {
+      "filePath": "events.tsx"
     },
     "/demo/tanstack-query": {
       "filePath": "demo.tanstack-query.tsx"

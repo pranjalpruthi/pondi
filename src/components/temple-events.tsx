@@ -17,15 +17,13 @@ type DailySchedule = {
 }
 
 const dailySchedule: DailySchedule[] = [
-  { time: '4:30 AM', activity: 'Mangala Arati', description: 'Early morning worship' },
-  { time: '7:15 AM', activity: 'Guru Puja', description: 'Worship of Srila Prabhupada' },
-  { time: '7:30 AM', activity: 'Srimad Bhagavatam Class', description: 'Morning scripture class' },
-  { time: '8:30 AM', activity: 'Morning Darshan', description: 'Temple opens for visitors' },
-  { time: '12:30 PM', activity: 'Raj Bhog Arati', description: 'Midday offering' },
-  { time: '4:30 PM', activity: 'Evening Darshan', description: 'Temple opens for evening visitors' },
-  { time: '6:30 PM', activity: 'Gaura Arati', description: 'Evening worship ceremony' },
-  { time: '7:00 PM', activity: 'Bhagavad Gita Class', description: 'Evening scripture class' },
-  { time: '8:30 PM', activity: 'Sayana Arati', description: 'Final evening worship' }
+  { time: '4:30 AM', activity: 'Mangal Aarati', description: 'Early morning worship' },
+  { time: '7:15 AM', activity: 'Darshan Aarati', description: 'Morning darshan ceremony' },
+  { time: '7:20 AM', activity: 'Guru Puja', description: 'Worship of Srila Prabhupada' },
+  { time: '8:00 AM', activity: 'Bhagvatam Discourse', description: 'Morning scripture class' },
+  { time: '12:00 PM', activity: 'Temple Closes', description: 'Afternoon closing' },
+  { time: '5:30 PM', activity: 'Gaura Arati', description: 'Evening worship ceremony' },
+  { time: '6:30 PM', activity: 'Temple Closes', description: 'Final closing (may vary based on circumstances)' }
 ]
 
 export function TempleEvents({ open, onOpenChange }: TempleEventsProps) {
@@ -55,15 +53,15 @@ export function TempleEvents({ open, onOpenChange }: TempleEventsProps) {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-8 lg:p-10 overflow-y-auto"
+          className="fixed inset-0 flex items-center justify-center p-2 sm:p-4 md:p-8 lg:p-10 overflow-y-auto z-[100] pointer-events-auto" // Added pointer-events-auto
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
           {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-background/80 backdrop-blur-sm"
-            onClick={() => onOpenChange(false)}
+            className="absolute inset-0 bg-background/80 backdrop-blur-sm" // Backdrop is part of this z-indexed container
+            onClick={() => onOpenChange(false)} // Removed log
           />
 
           {/* Content */}
@@ -80,8 +78,9 @@ export function TempleEvents({ open, onOpenChange }: TempleEventsProps) {
                 <h2 className="text-lg sm:text-xl md:text-2xl font-semibold">Temple Schedule</h2>
               </div>
               <button
-                onClick={() => onOpenChange(false)}
+                onClick={() => onOpenChange(false)} // Removed log
                 className="rounded-full p-1 sm:p-1.5 md:p-2 hover:bg-accent"
+                aria-label="Close"
               >
                 <X className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
               </button>
@@ -146,8 +145,8 @@ export function TempleEvents({ open, onOpenChange }: TempleEventsProps) {
                     <motion.div
                       key={item.time}
                       initial={{ opacity: 0, y: 20 }}
-                      animate={{ 
-                        opacity: 1, 
+                      animate={{
+                        opacity: 1,
                         y: 0,
                         transition: { delay: index * 0.05 }
                       }}
@@ -173,4 +172,4 @@ export function TempleEvents({ open, onOpenChange }: TempleEventsProps) {
       )}
     </AnimatePresence>
   )
-} 
+}

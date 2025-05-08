@@ -1,8 +1,9 @@
 import { createRootRoute, Outlet, useMatches } from '@tanstack/react-router'
 import { ThemeProvider } from '@/components/theme-provider'
 import Navbar from '../components/dock'
-import { NavBar } from '../components/Navbar'
-import Footer from '../components/Footer'
+import { NavBar } from '../components/Navbar';
+import Footer from '../components/Footer';
+import { Toaster } from 'sonner'; // Import Toaster from sonner
 
 export const Route = createRootRoute({
   component: () => {
@@ -23,6 +24,7 @@ export const Route = createRootRoute({
             {!isDashboardRoute && <Navbar />}
             {!isDashboardRoute && <Footer/>}
             {/* <TanstackQueryLayout /> */}
+            <Toaster richColors position="top-right" /> {/* Add Toaster component */}
           </div>
         {/* </TanstackQueryProvider> */}
       </ThemeProvider>

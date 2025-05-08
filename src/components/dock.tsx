@@ -1,15 +1,16 @@
-import { Link } from '@tanstack/react-router'
-import { motion, MotionConfig } from 'framer-motion'
-import * as React from 'react'
-import { cn } from '@/lib/utils'
+import { Link } from '@tanstack/react-router';
+import { motion, MotionConfig } from 'framer-motion';
+import * as React from 'react';
+import { cn } from '@/lib/utils'; // Assuming path is correct
 import IconHome from 'virtual:icons/line-md/home-md-alt-twotone'
 import IconTemple from 'virtual:icons/fluent-emoji-flat/hindu-temple'
 import IconCalendar from 'virtual:icons/uim/calender'
-import IconInfo from 'virtual:icons/line-md/alert-circle-twotone-loop'
-import IconDonate from 'virtual:icons/fluent-emoji/love-letter'
-import { BottomBlurOut } from '@/components/cuicui/bottom-blur-out'
-import { ModeToggle } from '@/components/mode-toggle'
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"
+import IconInfo from 'virtual:icons/line-md/alert-circle-twotone-loop';
+import IconDonate from 'virtual:icons/fluent-emoji/love-letter';
+import { ModeToggle } from '@/components/mode-toggle'; // Assuming path
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"; // Assuming path
+import { Button } from "@/components/ui/button"; // Assuming path
+import { Separator } from "@/components/ui/separator"; // Assuming path
 import {
   CommandDialog,
   CommandEmpty,
@@ -17,13 +18,14 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
-import { Menu, Search, Volume2, VolumeX } from "lucide-react"
-import { useSound } from 'use-sound'
-import { useSoundSettings } from '@/components/context/sound-context'
-import { SoundProvider } from '@/components/context/sound-context'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { TempleEvents } from '@/components/temple-events'
+} from "@/components/ui/command"; // Assuming path
+import { Menu, Search, Volume2, VolumeX, Gift } from "lucide-react"; // Added Newspaper, Gift
+import { useSound } from 'use-sound';
+import { useSoundSettings } from '@/components/context/sound-context'; // Assuming path
+import { SoundProvider } from '@/components/context/sound-context'; // Assuming path
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { TempleEvents } from '@/components/temple-events'; // Assuming path
+import { useIsMobile } from "@/hooks/use-mobile"; // Import useIsMobile
 
 const navItems = [
   { 
@@ -39,11 +41,17 @@ const navItems = [
 ]
 
 function NavbarContent() {
-  const [open, setOpen] = React.useState(false)
-  const [drawerOpen, setDrawerOpen] = React.useState(false)
-  const { isSoundEnabled, toggleSound } = useSoundSettings()
-  const queryClient = useQueryClient()
-  const [eventsOpen, setEventsOpen] = React.useState(false)
+  // --- State ---
+  const [open, setOpen] = React.useState(false); // Command Dialog state
+  const [mainMenuOpen, setMainMenuOpen] = React.useState(false); // Main Menu Drawer state
+  const [eventsOpen, setEventsOpen] = React.useState(false); // Events Dialog state
+  // Removed newsOpen state
+  const [donationOpen, setDonationOpen] = React.useState(false); // Donation Drawer state
+
+  // --- Hooks ---
+  const { isSoundEnabled, toggleSound } = useSoundSettings();
+  const queryClient = useQueryClient();
+  const isMobile = useIsMobile(); // Check mobile status
 
   // Use React Query for sound loading state
   const { data: soundsLoaded = false } = useQuery({
@@ -144,48 +152,113 @@ function NavbarContent() {
 
   return (
     <MotionConfig transition={{ layout: { duration: 0.35, type: 'spring', bounce: 0.1 } }}>
-      <nav className="fixed bottom-0 left-0 z-40 w-full pb-safe mb-6">
-        <div className="absolute inset-x-0 -bottom-8 h-32">
+      {/* Floating Buttons (Desktop Only) */}
+      {!isMobile && (
+        <>
+          {/* Removed News Floating Button/Drawer */}
+          {/* <Drawer open={newsOpen} onOpenChange={setNewsOpen}>
+            <DrawerTrigger asChild>
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.7, type: "spring", stiffness: 150, damping: 15 }}
+                className="fixed bottom-6 left-6 z-50"
+              >
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full h-12 w-12 shadow-lg bg-background/80 backdrop-blur-md border-primary/30 hover:bg-primary/10"
+                  aria-label="Temple News"
+                  onClick={safePlayClick}
+                  onMouseEnter={safePlayHover}
+                >
+                  <Newspaper className="h-5 w-5 text-primary" />
+                </Button>
+              </motion.div>
+            </DrawerTrigger>
+          </Drawer> */}
+
+          {/* Donation Floating Button/Drawer */}
+          <Drawer open={donationOpen} onOpenChange={setDonationOpen}>
+            <DrawerTrigger asChild>
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.8, type: "spring", stiffness: 150, damping: 15 }}
+                className="fixed bottom-6 right-6 z-50"
+              >
+                <Button
+                  size="icon"
+                  className="rounded-full h-12 w-12 shadow-lg bg-gradient-to-br from-pink-500 to-yellow-500 text-white hover:opacity-90"
+                  aria-label="Donate Now"
+                  onClick={safePlayClick}
+                  onMouseEnter={safePlayHover}
+                >
+                  <Gift className="h-5 w-5" />
+                </Button>
+              </motion.div>
+            </DrawerTrigger>
+          </Drawer>
+        </>
+      )}
+
+      {/* Main Dock Navigation */}
+      <nav className="fixed bottom-0 left-0 z-40 w-full pb-safe mb-6 pointer-events-none"> {/* Added pointer-events-none */}
+        {/* Removed BottomBlurOut component */}
+        {/* <div className="absolute inset-x-0 -bottom-8 h-32">
           <BottomBlurOut />
-        </div>
-        
+        </div> */}
+
         <div className="container relative mx-auto flex justify-center px-2 pb-2 sm:px-4">
-          <motion.div 
+          {/* Added pointer-events-auto here */}
+          <motion.div
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="relative w-full max-w-md rounded-3xl bg-pink-50/60 p-1.5 shadow-lg shadow-black/5 ring-1 ring-pink-100/60 backdrop-blur-md dark:bg-pink-900/40 dark:shadow-black/10 dark:ring-pink-900/40 sm:max-w-fit"
+            className="relative w-full max-w-md rounded-3xl bg-pink-50/60 p-1.5 shadow-lg shadow-black/5 ring-1 ring-pink-100/60 backdrop-blur-md dark:bg-pink-900/40 dark:shadow-black/10 dark:ring-pink-900/40 sm:max-w-fit pointer-events-auto"
           >
             <div className="grid w-full grid-cols-5 sm:auto-cols-[5rem] sm:grid-flow-col">
               {/* Main Nav Items (first 3) */}
-              {navItems.slice(0, 3).map((item) => (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  onClick={() => {
-                    // Special handling for Events link
-                    if (item.to === '/events') {
-                      setEventsOpen(true)
-                      safePlayClick()
-                    } else {
-                      handleNavClick(item.to)
+              {navItems.slice(0, 3).map((item) => {
+                // Use a button for Events, Link for others
+                const Component = item.to === '/events' ? 'button' : Link;
+                const props = item.to === '/events'
+                  ? { // Props for button
+                      type: 'button' as const,
+                      onClick: () => { // Only open drawer, no navigation
+                        setEventsOpen(true);
+                        safePlayClick();
+                      },
                     }
-                  }}
-                  onMouseEnter={safePlayHover}
-                  className={cn(
-                    "group relative flex flex-col items-center rounded-2xl px-2 py-1.5 sm:px-3",
+                  : { // Props for Link
+                      to: item.to,
+                      onClick: () => handleNavClick(item.to), // Keep original nav click for others
+                      activeProps: { className: "text-primary relative isolate" }
+                    };
+
+                return (
+                  <Component
+                    key={item.to}
+                    {...props} // Spread appropriate props
+                    onMouseEnter={safePlayHover}
+                    className={cn(
+                      "group relative flex flex-col items-center rounded-2xl px-2 py-1.5 sm:px-3",
                     "text-xs font-medium text-foreground/90 transition-colors duration-200",
                     "hover:text-primary hover:bg-white/10 dark:hover:bg-white/20",
                     "focus-visible:outline-none focus-visible:ring-2",
                     "focus-visible:ring-primary focus-visible:ring-offset-2",
-                    "data-[active]:text-primary"
-                  )}
-                  activeProps={{
-                    className: "text-primary relative isolate"
-                  }}
+                      "text-xs font-medium text-foreground/90 transition-colors duration-200",
+                      "hover:text-primary hover:bg-white/10 dark:hover:bg-white/20",
+                      "focus-visible:outline-none focus-visible:ring-2",
+                      "focus-visible:ring-primary focus-visible:ring-offset-2",
+                      // Apply active style manually if it's the button and events are open, or via activeProps for Link
+                      (item.to !== '/events' ? "data-[active]:text-primary" : ""),
+                      (item.to === '/events' && eventsOpen ? "text-primary" : "") // Style button when drawer is open
+                    )}
                 >
                   <div className="relative flex flex-col items-center gap-1 w-full h-full">
-                    {/* Enhanced background card for active state with better visibility */}
-                    {item.to === location.pathname && (
+                    {/* Enhanced background card for active state */}
+                    {/* Show for Link active state OR if it's the button and its drawer is open */}
+                    {(item.to !== '/events' && item.to === location.pathname || item.to === '/events' && eventsOpen) && (
                       <motion.div
                         layout
                         layoutId="nav-active"
@@ -200,14 +273,17 @@ function NavbarContent() {
                         className={cn(
                           "size-[1.25rem] sm:size-5 transition-all duration-200",
                           "text-foreground/80 group-hover:text-primary",
-                          "group-data-[active]:text-primary"
-                        )} 
+                          // Apply active style manually if it's the button and events are open, or via activeProps for Link
+                          (item.to !== '/events' ? "group-data-[active]:text-primary" : ""),
+                          (item.to === '/events' && eventsOpen ? "text-primary" : "")
+                        )}
                       />
                     </div>
                     <span className="font-medium px-1 pb-0.5 text-[0.65rem] sm:text-[0.7rem] sm:px-1.5">{item.label}</span>
                   </div>
-                </Link>
-              ))}
+                  </Component> // Close Component (Link or button)
+                );
+              })}
 
               {/* Search Button */}
               <button
@@ -229,20 +305,12 @@ function NavbarContent() {
               </button>
 
               {/* Menu Button */}
-              <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+              <Drawer open={mainMenuOpen} onOpenChange={setMainMenuOpen}>
                 <DrawerTrigger asChild>
-                  <button 
+                  <button
                     className="group relative flex flex-col items-center rounded-2xl px-2 py-1.5 sm:px-3 hover:bg-white/10 dark:hover:bg-white/5 transition-colors duration-200"
                     onMouseEnter={safePlayHover}
-                    onClick={(e) => {
-                      // Special handling for Events link
-                      if (e.currentTarget.getAttribute('data-to') === '/events') {
-                        setEventsOpen(true)
-                        safePlayClick()
-                      } else {
-                        handleNavClick(e.currentTarget.getAttribute('data-to') || '/')
-                      }
-                    }}
+                    onClick={() => safePlayClick()} // Keep this simplified click for opening the drawer
                   >
                     <div className="relative flex flex-col items-center gap-1 w-full h-full">
                       {/* Add hover effect background */}
@@ -276,35 +344,71 @@ function NavbarContent() {
                         )}
                       </button>
 
-                      {/* Theme Toggle Button */}
+                      {/* Theme Toggle Button - unchanged */}
                       <div className="flex w-full items-center space-x-2 rounded-lg p-2">
                         <ModeToggle iconOnly={false} />
                       </div>
 
                       {/* Divider */}
-                      <div className="h-px bg-border" />
+                      <Separator className="my-2" />
+
+                      {/* Mobile Only News & Donation Buttons */}
+                      {isMobile && (
+                        <>
+                          {/* Removed News Button */}
+                          {/* <button
+                            onClick={() => { setNewsOpen(true); setMainMenuOpen(false); safePlayClick(); }}
+                            onMouseEnter={safePlayHover}
+                            className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent"
+                          >
+                            <Newspaper className="size-5" />
+                            <span>Temple News</span>
+                          </button> */}
+                          <button
+                            onClick={() => { setDonationOpen(true); setMainMenuOpen(false); safePlayClick(); }}
+                            onMouseEnter={safePlayHover}
+                            className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent"
+                          >
+                            <Gift className="size-5" />
+                            <span>Donate Now</span>
+                          </button>
+                          <Separator className="my-2" />
+                        </>
+                      )}
 
                       {/* Navigation Items */}
-                      {navItems.map((item) => (
-                        <Link
-                          key={item.to}
-                          to={item.to}
-                          onClick={() => {
-                            setDrawerOpen(false)
-                            if (item.to === '/events') {
-                              setEventsOpen(true)
-                              safePlayClick()
-                            } else {
-                              handleNavClick(item.to)
+                      {navItems.map((item) => {
+                        // Render button or Link in the main menu drawer as well
+                        const MenuComponent = item.to === '/events' ? 'button' : Link;
+                        const menuProps = item.to === '/events'
+                          ? { // Props for button
+                              type: 'button' as const,
+                              onClick: () => {
+                                setEventsOpen(true); // Open events drawer
+                                setMainMenuOpen(false); // Close main menu
+                                safePlayClick();
+                              },
                             }
-                          }}
-                          onMouseEnter={safePlayHover}
-                          className="flex items-center space-x-2 rounded-lg p-2 hover:bg-accent"
-                        >
-                          <item.icon className="size-5" />
-                          <span>{item.label}</span>
-                        </Link>
-                      ))}
+                          : { // Props for Link
+                              to: item.to,
+                              onClick: () => {
+                                setMainMenuOpen(false); // Close main menu
+                                handleNavClick(item.to); // Handle other nav clicks
+                              }
+                            };
+
+                        return (
+                          <MenuComponent
+                            key={item.to}
+                            {...menuProps}
+                            onMouseEnter={safePlayHover}
+                            className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent" // Added w-full for button
+                          >
+                            <item.icon className="size-5" />
+                            <span>{item.label}</span>
+                          </MenuComponent>
+                        );
+                      })}
                     </div>
                   </div>
                 </DrawerContent>
@@ -326,13 +430,13 @@ function NavbarContent() {
                 <CommandItem
                   key={item.to}
                   onSelect={() => {
-                    setOpen(false)
+                    setOpen(false);
                     if (item.to === '/events') {
-                      setEventsOpen(true)
-                      safePlayClick()
+                      setEventsOpen(true);
+                      safePlayClick();
                     } else {
-                      handleNavClick(item.to)
-                      window.location.href = item.to
+                      handleNavClick(item.to);
+                      window.location.href = item.to;
                     }
                   }}
                   onMouseEnter={safePlayHover}
@@ -352,7 +456,29 @@ function NavbarContent() {
           _onSoundPlay={safePlayClick}
         />
 
-        {/* Safe area spacing */}
+        {/* Removed News Drawer Content */}
+        {/* <Drawer open={newsOpen} onOpenChange={setNewsOpen}>
+          <DrawerContent>
+            <div className="p-4 h-[50vh]">
+              <h2 className="text-lg font-semibold mb-4">Latest News Headlines</h2>
+              <p>News content will load here...</p>
+            </div>
+          </DrawerContent>
+        </Drawer> */}
+
+        {/* Donation Drawer Content (Rendered outside main nav structure) */}
+        <Drawer open={donationOpen} onOpenChange={setDonationOpen}>
+          <DrawerContent>
+            {/* Placeholder for DonationDrawerContent component */}
+            <div className="p-4 h-[50vh]"> {/* Added height for visibility */}
+              <h2 className="text-lg font-semibold mb-4">Donate / Top Donors</h2>
+              {/* TODO: Replace with DonationDrawerContent component */}
+              <p>Donation options and top donors will load here...</p>
+            </div>
+          </DrawerContent>
+        </Drawer>
+
+        {/* Safe area spacing - unchanged */}
         <div className="h-[env(safe-area-inset-bottom)]" />
       </nav>
     </MotionConfig>

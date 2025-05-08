@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import Icons from 'unplugin-icons/vite'
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 import { resolve } from "node:path";
+import { imagetools } from 'vite-imagetools';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,6 +17,13 @@ export default defineConfig({
       jsx: 'react',
       autoInstall: true,
       scale: 1.2
+    }),
+    imagetools({
+      defaultDirectives: new URLSearchParams([
+        ['format', 'webp,avif,jpg'], // Prefer modern formats
+        ['quality', '80'],           // Good quality with smaller file size
+        ['progressive', 'true'],     // Progressive loading
+      ])
     })
   ],
   test: {
