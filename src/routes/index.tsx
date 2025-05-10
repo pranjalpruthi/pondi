@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { HeroSection } from "@/components/homepage/hero-section";
 import { ConstructionUpdates } from "@/components/homepage/ConstructionUpdates";
 import { Gallery } from "@/components/homepage/gallery";
-import { UpcomingEventBanner } from "@/components/upcoming-event-banner"; // Import the new banner component
+// import { UpcomingEventBanner } from "@/components/upcoming-event-banner"; // Removed banner import
 import { QnASection } from "@/components/homepage/qna-section"
 import { VisitUs } from "@/components/homepage/visit-us" // Import the new VisitUs component
 
@@ -28,7 +28,7 @@ function HomePage() {
       {/* Page Content - ensuring it's accessible */}
       <div className="relative z-10 w-full">
         <HeroSection />
-        <UpcomingEventBanner />
+        {/* Removed UpcomingEventBanner component */}
         <ConstructionUpdates />
         <QnASection />
         <Gallery />
