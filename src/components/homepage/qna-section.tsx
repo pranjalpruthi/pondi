@@ -16,7 +16,10 @@ interface YouTubeVideo {
 }
 
 const YOUTUBE_CHANNEL_ID = "UCA7bxZwd7dF3r8GWpShRqug";
-const RSS_FEED_URL = `/youtube-feed/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`;
+// Use a CORS proxy to access YouTube's RSS feed in production
+const RSS_FEED_URL = import.meta.env.DEV 
+  ? `/youtube-feed/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`
+  : `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`)}`;
 
 const fetchPreviousSessions = async (): Promise<YouTubeVideo[]> => {
   try {
