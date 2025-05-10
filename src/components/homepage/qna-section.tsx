@@ -79,13 +79,13 @@ export function QnASection() {
       
       <div className="container mx-auto max-w-5xl relative z-10">
         {/* Section header with styled design */}
-        <div className="mb-16 text-center">
+        <div className="mb-16 text-start">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="mx-auto w-fit mb-6"
+            className="w-fit mb-6"
           >
             <div className="bg-gradient-to-r from-[#e94a9c] via-[#ffc547] to-[#0a84ff] p-0.5 rounded-full">
               <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-full p-3">
@@ -109,7 +109,7 @@ export function QnASection() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
-            className="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto"
+            className="text-lg text-gray-500 dark:text-gray-400 max-w-xl"
           >
             With H.G Sundar Gopal Prabhu
           </motion.p>
@@ -184,7 +184,7 @@ export function QnASection() {
           viewport={{ once: true }}
           className="mt-12"
         >
-          <h3 className="text-xl font-semibold mb-6 text-center bg-gradient-to-r from-[#0a84ff] via-[#ffc547] to-[#e94a9c] text-transparent bg-clip-text">
+          <h3 className="text-xl font-semibold mb-6 text-start bg-gradient-to-r from-[#0a84ff] via-[#ffc547] to-[#e94a9c] text-transparent bg-clip-text">
             Previous Sessions
           </h3>
           

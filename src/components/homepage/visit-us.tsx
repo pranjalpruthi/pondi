@@ -200,32 +200,6 @@ const MapWithSkeleton = ({
 }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   
-  // Check for loading visually
-  useEffect(() => {
-    if (!isLoading || !iframeRef.current) return;
-    
-    // Force onLoad after content appears visually
-    const checkInterval = setInterval(() => {
-      if (iframeRef.current?.contentWindow?.document?.body) {
-        console.log(`Map ${title} appears to have loaded visually`);
-        onLoad();
-        clearInterval(checkInterval);
-      }
-    }, 500);
-    
-    // Safety timeout - force complete after 3 seconds regardless
-    const forceTimeout = setTimeout(() => {
-      console.log(`Force completing map load for ${title} after timeout`);
-      onLoad();
-      clearInterval(checkInterval);
-    }, 3000);
-    
-    return () => {
-      clearInterval(checkInterval);
-      clearTimeout(forceTimeout);
-    };
-  }, [isLoading, onLoad, title]);
-
   return (
     <div className="rounded-2xl overflow-hidden shadow-lg h-[350px] lg:h-[450px] relative border border-white/20 dark:border-gray-800/20 bg-white/20 dark:bg-gray-800/20 backdrop-filter backdrop-blur-sm">
       {isLoading && (
@@ -343,12 +317,9 @@ function QuoteSlider({ quotes = prabhupadaQuotes }) {
                 >
                   {!isTyping && (
                     <blockquote className="text-lg md:text-xl text-gray-700 dark:text-gray-300 italic text-center leading-relaxed px-4 sm:px-10">
-                      <TypingText
-                        text={quotes[currentQuoteIndex].text}
-                        duration={45}
-                        cursor={true}
-                        cursorClassName="h-5 w-[1px] bg-gray-400 dark:bg-gray-500"
-                      />
+                      <span className="whitespace-pre-line">
+                        {quotes[currentQuoteIndex].text}
+                      </span>
                     </blockquote>
                   )}
                 </motion.div>

@@ -2,7 +2,7 @@ import { motion } from "motion/react" // AnimatePresence and useState no longer 
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 // import { Marquee } from "@/components/magicui/marquee"
-import { ChevronRight, Calendar, Building } from "lucide-react" // ChevronLeft no longer needed here
+import { ChevronRight, Calendar, Building, BookOpen, Heart, GraduationCap, Utensils, Award, ShieldHalf } from "lucide-react" // ChevronLeft no longer needed here, added mission icons
 import { Badge } from "@/components/ui/badge"
 // import React, { useState } from "react" // useState no longer needed here
 import Two from "@/components/gallery/two"; // Import the Two component
@@ -37,6 +37,15 @@ const constructionData = {
   ]
 }
 
+const missionStatements = [
+  { text: "Spread the teachings of Lord Sri Krishna as presented by Srila Prabhupada.", icon: BookOpen },
+  { text: "Promote devotional service (bhakti yoga) as the foundation of a meaningful life.", icon: Heart },
+  { text: "Provide spiritual education through scriptures like the Bhagavad Gita and Srimad Bhagavatam.", icon: GraduationCap },
+  { text: "Distribute prasadam freely to ensure no one goes hungry.", icon: Utensils },
+  { text: "Conduct character-building programs for youth and the broader society.", icon: Award },
+  { text: "ISKM Pondicherry has Gokulam Goshala, dedicated to protecting cows and promoting Go-seva as an essential part of Vedic culture and Srila Prabhupada's mission.", icon: ShieldHalf }
+];
+
 export function ConstructionUpdates() {
   // const [currentImageIndex, setCurrentImageIndex] = useState(0); // Removed
   // const images = constructionData.latestUpdate.images; // Will be passed directly
@@ -55,13 +64,13 @@ export function ConstructionUpdates() {
       
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
-        <div className="mb-16 text-center">
+        <div className="mb-16 text-start">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="mx-auto w-fit mb-6"
+            className="w-fit mb-6"
           >
             <div className="bg-gradient-to-r from-[#e94a9c] via-[#ffc547] to-[#0a84ff] p-0.5 rounded-full">
               <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-full p-3">
@@ -85,7 +94,7 @@ export function ConstructionUpdates() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto"
+            className="text-lg text-gray-500 dark:text-gray-400 max-w-xl"
           >
             Join us in building a spiritual haven for future generations
           </motion.p>
@@ -104,22 +113,70 @@ export function ConstructionUpdates() {
             <Card className="overflow-hidden border-0 rounded-2xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg h-full">
               <CardContent className="p-0">
                 <div className="pb-3 pt-5 sm:pb-4 sm:pt-8 px-4 sm:px-8">
-                  <h3 className="text-lg sm:text-xl font-semibold mb-1 text-[#e94a9c] dark:text-[#e94a9c]">
-                    Construction Gallery
+                  <h3 className="text-lg sm:text-xl font-semibold mb-4 text-start text-[#0a84ff] dark:text-[#0a84ff]">
+                    Our Divine Mission
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
-                    Swipe to see the latest construction updates
-                  </p>
+                  <ul className="space-y-3 text-xs sm:text-sm">
+                    {missionStatements.map((mission, index) => (
+                      <motion.li
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                        className="flex items-start p-2.5 rounded-lg bg-gradient-to-r from-sky-500/5 via-blue-500/5 to-indigo-500/5 dark:from-sky-700/10 dark:via-blue-700/10 dark:to-indigo-700/10 shadow-sm hover:shadow-md transition-shadow"
+                      >
+                        <mission.icon className="h-5 w-5 sm:h-6 sm:w-6 mr-2.5 sm:mr-3 mt-0.5 text-[#0a84ff] flex-shrink-0" />
+                        <span className="text-gray-700 dark:text-gray-300 leading-relaxed">{mission.text}</span>
+                      </motion.li>
+                    ))}
+                  </ul>
                 </div>
                 
-                {/* Updated gallery to match coming-soon page style with responsive height */}
+                {/* Gallery inspired by src/components/homepage/gallery.tsx */}
                 <motion.div 
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   transition={{ duration: 0.6 }}
-                  className="h-[300px] sm:h-[350px] md:h-[400px] lg:h-[450px] relative px-4 pb-4"
+                  className="p-1" // Minimal padding, gap will be handled by grid
                 >
-                  <Two imageUrls={constructionData.latestUpdate.images} />
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">
+                    {constructionData.latestUpdate.images.map((imageUrl, index) => (
+                      <motion.div
+                        key={imageUrl + index} // Add index to key for safety if imageUrls are not unique
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: index * 0.05 }} // Faster stagger for potentially more images
+                        whileHover={{
+                          y: -4, // Slightly less lift
+                          transition: { duration: 0.25 }
+                        }}
+                        className="group relative aspect-[4/3] sm:aspect-square" // Use 4/3 for a bit more width, fallback to square on sm+
+                      >
+                        <Card className="overflow-hidden h-full border-0 rounded-lg bg-white/70 dark:bg-gray-800/70 backdrop-blur-md shadow-md transition-all duration-300 group-hover:shadow-xl">
+                          <div className="w-full h-full relative overflow-hidden">
+                            <img
+                              src={imageUrl}
+                              alt={`Construction update ${index + 1}`}
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start p-2 sm:p-3">
+                              <span className="text-white text-[10px] sm:text-xs font-medium line-clamp-2">{`Update Image ${index + 1}`}</span>
+                            </div>
+                          </div>
+                          {/* Decorative accent */}
+                          <div className={`absolute top-0 right-0 w-10 sm:w-12 h-0.5 rounded-bl-md ${
+                            index % 3 === 0 
+                              ? "bg-[#e94a9c]" 
+                              : index % 3 === 1 
+                                ? "bg-[#ffc547]" 
+                                : "bg-[#0a84ff]"
+                          }`}></div>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
                 </motion.div>
               </CardContent>
             </Card>
@@ -146,7 +203,7 @@ export function ConstructionUpdates() {
                     </div>
                   </div>
                   
-                  <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-[#0a84ff] dark:text-[#0a84ff]">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-start text-[#0a84ff] dark:text-[#0a84ff]">
                     {constructionData.latestUpdate.title}
                   </h3>
                   
@@ -189,7 +246,7 @@ export function ConstructionUpdates() {
         >
           <Card className="overflow-hidden border-0 rounded-2xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg">
             <CardContent className="p-4 sm:p-6 lg:p-8">
-              <h3 className="text-lg sm:text-xl font-semibold text-center mb-5 sm:mb-8 bg-gradient-to-r from-[#0a84ff] via-[#ffc547] to-[#e94a9c] text-transparent bg-clip-text">
+              <h3 className="text-lg sm:text-xl font-semibold text-start mb-5 sm:mb-8 bg-gradient-to-r from-[#0a84ff] via-[#ffc547] to-[#e94a9c] text-transparent bg-clip-text">
                 Construction Phases Progress
               </h3>
               
