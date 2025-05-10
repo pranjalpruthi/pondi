@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import million from "million/compiler"; // Import million plugin
 import viteReact from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import Icons from 'unplugin-icons/vite'
@@ -9,10 +10,11 @@ import { imagetools } from 'vite-imagetools';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    TanStackRouterVite({ autoCodeSplitting: true }), 
-    viteReact(), 
+    million.vite({ auto: true }), // Add million plugin, auto mode is common
+    TanStackRouterVite({ autoCodeSplitting: true }),
+    viteReact(),
     tailwindcss(),
-    Icons({ 
+    Icons({
       compiler: 'jsx',
       jsx: 'react',
       autoInstall: true,

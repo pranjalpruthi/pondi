@@ -11,7 +11,7 @@ body {
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
+
   /* Native scrollbar support */
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
@@ -46,14 +46,14 @@ code {
   --ring: oklch(0.871 0.006 286.286);
   --radius: 0.625rem;
   --transition-duration: 0.3s;
-  
+
   /* Scrollbar colors - light mode */
   --scrollbar-size: 8px;
   --scrollbar-track: oklch(0.97 0.003 286.2);
   --scrollbar-thumb: oklch(0.8 0.05 290);
   --scrollbar-thumb-hover: oklch(0.7 0.08 290);
   --scrollbar-thumb-active: oklch(0.6 0.1 290);
-  
+
   /* Rainbow button colors */
   --color-1: 221.2 83.2% 53.3%; /* blue */
   --color-2: 262.1 83.3% 57.8%; /* violet */
@@ -82,7 +82,7 @@ code {
   --border: oklch(0.274 0.006 286.033);
   --input: oklch(0.274 0.006 286.033);
   --ring: oklch(0.442 0.017 285.786);
-  
+
   /* Scrollbar colors - dark mode */
   --scrollbar-track: oklch(0.18 0.01 285.8);
   --scrollbar-thumb: oklch(0.35 0.05 290);
@@ -114,6 +114,30 @@ code {
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --animate-marquee:
+    marquee var(--duration) infinite linear;
+  --animate-marquee-vertical:
+    marquee-vertical var(--duration) linear infinite;
+  @keyframes marquee {
+  from {
+    transform:
+    translateX(0);
+    }
+  to {
+    transform:
+    translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+  from {
+    transform:
+    translateY(0);
+    }
+  to {
+    transform:
+    translateY(calc(-100% - var(--gap)));
+    }
+  }
 }
 
 @layer base {
@@ -123,18 +147,18 @@ code {
   body {
     @apply bg-background text-foreground;
   }
-  
+
   /* Global scrollbar styles */
   ::-webkit-scrollbar {
     width: var(--scrollbar-size);
     height: var(--scrollbar-size);
   }
-  
+
   ::-webkit-scrollbar-track {
     background-color: var(--scrollbar-track);
     border-radius: var(--radius);
   }
-  
+
   ::-webkit-scrollbar-thumb {
     background-color: var(--scrollbar-thumb);
     border-radius: var(--radius);
@@ -142,25 +166,25 @@ code {
     background-clip: padding-box;
     transition: background-color 0.2s ease;
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
     background-color: var(--scrollbar-thumb-hover);
   }
-  
+
   ::-webkit-scrollbar-thumb:active {
     background-color: var(--scrollbar-thumb-active);
   }
-  
+
   ::-webkit-scrollbar-corner {
     background-color: var(--scrollbar-track);
   }
-  
+
   /* Thin scrollbars for specific elements */
   .thin-scrollbar::-webkit-scrollbar {
     width: 4px;
     height: 4px;
   }
-  
+
   .thin-scrollbar::-webkit-scrollbar-thumb {
     border-width: 1px;
   }
@@ -244,7 +268,7 @@ code {
       opacity: 0.8;
     }
   }
-  
+
   @keyframes pulse-glow {
     0%, 100% { 
       transform: scale(0.95); 
@@ -255,7 +279,7 @@ code {
       opacity: 0.7;
     }
   }
-  
+
   @keyframes pulse-glow-fast {
     0%, 100% { 
       transform: scale(0.9); 
@@ -266,7 +290,7 @@ code {
       opacity: 0.6;
     }
   }
-  
+
   @keyframes pulse-fast {
     0%, 100% { 
       transform: scale(0.85); 
@@ -286,19 +310,19 @@ code {
   .animate-buttonheartbeat {
     animation: buttonheartbeat 2s infinite ease-in-out;
   }
-  
+
   .animate-pulse-slow {
     animation: pulse-slow 3s ease-in-out infinite;
   }
-  
+
   .animate-pulse-glow {
     animation: pulse-glow 2.5s ease-in-out infinite;
   }
-  
+
   .animate-pulse-glow-fast {
     animation: pulse-glow-fast 2s ease-in-out infinite;
   }
-  
+
   .animate-pulse-fast {
     animation: pulse-fast 1.5s ease-in-out infinite;
   }

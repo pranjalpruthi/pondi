@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState, useEffect, useRef, useCallback, Fragment } from "react"
+import { motion, AnimatePresence } from "motion/react"
 // import Image from "next/image" // Replace with standard img tag
 import { Button } from "@/components/ui/button" // Corrected import path
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover" // Corrected import path
@@ -108,11 +108,12 @@ export function UpcomingEventBanner() {
   const [isPaused, setIsPaused] = useState(false);
   const [imagesReady, setImagesReady] = useState(false);
   const [useLocalImages, setUseLocalImages] = useState(true);
+  const [dimensions, setDimensions] = useState({ contentWidth: 0, viewportWidth: 0 }); // Restored
   
   // Refs for animation control
   const containerRef = useRef<HTMLDivElement>(null);
-  const contentWidth = useRef(0);
-  const viewportWidth = useRef(0);
+  // const contentWidth = useRef(0); // Will use state now
+  // const viewportWidth = useRef(0); // Will use state now
 
   // Check which image sources to use (local vs fallback)
   useEffect(() => {
@@ -128,25 +129,59 @@ export function UpcomingEventBanner() {
 
   // Measure content for proper animation
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || !imagesReady) return;
     
-    const measureElements = () => {
+    const measure = () => {
       if (!containerRef.current) return;
+      const motionWrapper = containerRef.current.querySelector(".news-item-strip") as HTMLElement;
       
-      // Get width of scrollable content
-      const scrollContent = containerRef.current.firstChild as HTMLElement;
-      contentWidth.current = scrollContent?.scrollWidth || 0;
-      
-      // Get viewport width
-      viewportWidth.current = window.innerWidth;
+      if (motionWrapper && motionWrapper.scrollWidth > 0) {
+        // The motionWrapper contains two sets of newsItems.
+        // Its scrollWidth is the total width of these two sets.
+        // So, the width of a single set is scrollWidth / 2.
+        setDimensions({
+          contentWidth: motionWrapper.scrollWidth / 2,
+          viewportWidth: window.innerWidth,
+        });
+      } else if (motionWrapper) {
+        // Fallback if scrollWidth is 0 (e.g. not rendered yet or display:none)
+        // Attempt to sum children widths as a less reliable fallback
+        let calculatedWidth = 0;
+        for(let i = 0; i < motionWrapper.children.length / 2; i++) { // Iterate only half, assuming duplicated content
+            calculatedWidth += (motionWrapper.children[i] as HTMLElement).offsetWidth || 0;
+        }
+        if (calculatedWidth > 0) {
+            setDimensions({
+                contentWidth: calculatedWidth,
+                viewportWidth: window.innerWidth,
+            });
+        } else {
+            // Absolute fallback if nothing can be measured
+            setDimensions({
+                contentWidth: window.innerWidth * 2, // Default to a large sensible value
+                viewportWidth: window.innerWidth,
+            });
+        }
+      }
     };
     
-    measureElements();
-    
-    // Re-measure on resize
-    window.addEventListener('resize', measureElements);
-    return () => window.removeEventListener('resize', measureElements);
+    measure(); // Initial measure
+
+    const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) => {
+      let timeout: ReturnType<typeof setTimeout> | null = null;
+      return (...args: Parameters<F>): void => { // Changed to void return for event listener
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        timeout = setTimeout(() => func(...args), waitFor);
+      };
+    };
+
+    const debouncedMeasure = debounce(measure, 250);
+    window.addEventListener('resize', debouncedMeasure);
+    return () => window.removeEventListener('resize', debouncedMeasure);
   }, [imagesReady]);
+
 
   // Handle banner dismissal (with 7-day expiration)
   const handleClose = useCallback(() => {
@@ -171,10 +206,10 @@ export function UpcomingEventBanner() {
   if (!isVisible) return null;
 
   // Calculate the animation duration based on content length (faster for smaller content)
-  const animationDuration = Math.max(20, Math.min(30, contentWidth.current / 100));
+  const animationDuration = Math.max(10, Math.min(40, dimensions.contentWidth > 0 ? dimensions.contentWidth / 50 : 20)); // Ensure contentWidth is positive
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 pb-safe">
+    <div className="w-full relative">
       {/* Improved close button */}
       <button
         onClick={handleClose}
@@ -242,24 +277,24 @@ export function UpcomingEventBanner() {
           
           {/* Scrolling content with improved animation performance */}
           <motion.div
-            className="flex whitespace-nowrap pl-24"
-            animate={{ 
-              x: isPaused 
-                ? 0 
-                : [0, -(contentWidth.current) + (viewportWidth.current * 0.8)]
+            className="flex whitespace-nowrap pl-24 news-item-strip" // Added a class for easier selection in measurement
+            animate={{
+              x: isPaused ? 0 : [0, -dimensions.contentWidth]
             }}
-            transition={{ 
-              repeat: Infinity, 
-              duration: isPaused ? 0 : animationDuration, 
+            transition={{
+              repeat: Infinity,
+              duration: (isPaused || dimensions.contentWidth === 0) ? 0 : animationDuration, // Prevent animation if contentWidth is 0
               ease: "linear",
-              repeatType: "loop" 
+              repeatType: "loop"
             }}
-            style={{ 
+            style={{
               willChange: "transform", // Hardware acceleration hint
             }}
           >
-            {newsItems.map((item, index) => (
-              <React.Fragment key={item.id}>
+            {/* Render items twice for continuous loop */}
+            {[...newsItems, ...newsItems].map((item, index) => (
+              // Use a unique key for React, can combine id and index for duplicated items
+              <Fragment key={`${item.id}-${index}`}>
                 <button
                   className="text-sm sm:text-base inline-flex items-center space-x-2
                     hover:underline focus:outline-none focus:ring-2
@@ -272,8 +307,7 @@ export function UpcomingEventBanner() {
                     }
                   }}
                   onClick={() => {
-                    // Pause animation when a news item is opened
-                    setIsPaused(true);
+                    setIsPaused(true); // Pause animation when a news item is opened
                     setOpenDialog(item.id);
                   }}
                 >
@@ -282,10 +316,15 @@ export function UpcomingEventBanner() {
                   <span>{item.emoji2}</span>
                 </button>
                 
-                {index < newsItems.length - 1 && (
+                {/* Render separator only for the first set of items, or adjust logic if needed */}
+                {(index < newsItems.length - 1) && (
                   <span className="mx-4 text-gray-400 relative z-10">|</span>
                 )}
-              </React.Fragment>
+                {/* Add a larger gap after the first set of items if it's the duplicated set */}
+                {(index === newsItems.length - 1) && (
+                   <span className="mx-4 text-transparent relative z-10">|</span> // Invisible separator or adjust spacing
+                )}
+              </Fragment>
             ))}
           </motion.div>
         </div>

@@ -1,9 +1,9 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge"; // Added Badge import
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"; // Added Popover imports
 import { Link } from "@tanstack/react-router";
-import React, { useState, useEffect, useTransition, useCallback, useRef } from "react"; // Added React import and useTransition
+import { useState, useEffect, useTransition, useCallback, useRef } from "react"; // Added React import and useTransition
 import {
     IconBrandInstagram,
     IconBrandFacebook,
@@ -19,10 +19,8 @@ import {
     IconCopy, // Added for copy functionality
     IconCheck, // Added for copy success indication
     IconPigMoney, // Added for Donate popover title
-    IconChevronLeft, // Added for carousel navigation
-    IconChevronRight // Added for carousel navigation
 } from '@tabler/icons-react'; // Added icon imports
-import { Check, Loader2 } from 'lucide-react'; // Added imports for InputButton
+import { Check, Loader2, ArrowRight } from 'lucide-react'; // Added imports for InputButton
 import {
   InputButton,
   InputButtonAction,
@@ -93,6 +91,7 @@ const bankDetails = {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export function HeroSection() {
+  const containerRef = useRef<HTMLDivElement>(null);
   // Carousel state
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -318,7 +317,7 @@ export function HeroSection() {
             {/* Then load the full quality image */}
             <img
               src={optimizedImages[currentIndex]}
-              alt={`Background ${currentIndex + 1}`}
+              alt={`Temple Image ${currentIndex + 1}`}
               className="w-full h-full object-cover filter blur-lg scale-110"
               style={{ opacity: preloadedImages[currentIndex] ? 1 : 0 }}
             />
@@ -594,7 +593,7 @@ export function HeroSection() {
             transition={{ delay: 0.5, duration: 1.2 }}
             className="relative aspect-[4/3] w-full max-w-xl mx-auto lg:ml-auto"
           >
-            <div className="relative w-full h-full rounded-2xl overflow-hidden bg-black/5 dark:bg-white/5 shadow-xl">
+            <div ref={containerRef} className="relative w-full h-full rounded-2xl overflow-hidden bg-black/5 dark:bg-white/5 shadow-xl">
               {/* Loading spinner */}
               {isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/10 dark:bg-white/10 z-20">
@@ -621,26 +620,12 @@ export function HeroSection() {
                 </AnimatePresence>
               </div>
 
-              {/* Navigation Arrows - only visible on hover or on touch devices */}
-              <div className="absolute top-0 bottom-0 left-0 w-12 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity group z-10">
-                <button 
-                  onClick={goToPrevSlide}
-                  className="p-2 rounded-full bg-black/30 text-white backdrop-blur-sm hover:bg-black/50 transition-colors"
-                  aria-label="Previous image"
-                >
-                  <IconChevronLeft className="h-6 w-6" />
-                </button>
-              </div>
-              
-              <div className="absolute top-0 bottom-0 right-0 w-12 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity group z-10">
-                <button 
-                  onClick={goToNextSlide}
-                  className="p-2 rounded-full bg-black/30 text-white backdrop-blur-sm hover:bg-black/50 transition-colors"
-                  aria-label="Next image"
-                >
-                  <IconChevronRight className="h-6 w-6" />
-                </button>
-              </div>
+              {/* Custom Cursor */}
+              <CustomCursor
+                containerRef={containerRef}
+                onClickLeft={goToPrevSlide}
+                onClickRight={goToNextSlide}
+              />
 
               {/* Navigation Dots */}
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
@@ -657,6 +642,7 @@ export function HeroSection() {
                   />
                 ))}
               </div>
+
             </div>
           </motion.div>
         </div>
@@ -681,3 +667,106 @@ export function HeroSection() {
     </section>
   );
 }
+
+interface CustomCursorProps {
+  containerRef: React.RefObject<HTMLDivElement | null>;
+  onClickLeft: () => void;
+  onClickRight: () => void;
+}
+
+interface MousePosition {
+  x: number;
+  y: number;
+}
+
+const CustomCursor: React.FC<CustomCursorProps> = ({
+  containerRef,
+  onClickLeft,
+  onClickRight,
+}) => {
+  const [mousePosition, setMousePosition] = useState<MousePosition>({
+    x: 0,
+    y: 0,
+  });
+  const [isInside, setIsInside] = useState<boolean>(false);
+  const [rotation, setRotation] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const isInside =
+          e.clientX >= rect.left &&
+          e.clientX <= rect.right &&
+          e.clientY >= rect.top &&
+          e.clientY <= rect.bottom;
+        setIsInside(isInside);
+
+        if (isInside) {
+          const centerX = rect.left + rect.width / 2;
+          const isLeftHalf = e.clientX < centerX;
+          setRotation(isLeftHalf);
+        }
+      }
+    };
+    const handleClick = (e: MouseEvent) => {
+      if (isInside && containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        if (e.clientX < centerX) {
+          onClickLeft();
+        } else {
+          onClickRight();
+        }
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("click", handleClick);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("click", handleClick);
+    };
+  }, [containerRef, isInside, onClickLeft, onClickRight]);
+
+  return (
+    <div>
+      <AnimatePresence>
+        {isInside && (
+          <motion.div
+            initial={{
+              scale: 0,
+            }}
+            animate={{
+              scale: 1,
+            }}
+            exit={{
+              scale: 0,
+            }}
+            className="fixed z-50"
+            style={{
+              left: mousePosition.x - 25,
+              top: mousePosition.y - 25,
+            }}
+          >
+            <motion.div
+              whileTap={{ scale: 0.8 }}
+              className="flex items-center justify-center w-[50px] h-[50px] bg-primary text-primary-foreground rounded-full"
+              animate={{
+                rotate: rotation ? 180 : 0,
+                transition: {
+                  duration: 0.5,
+                },
+              }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              <ArrowRight size={24} />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};

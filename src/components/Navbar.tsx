@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { ModeToggle } from "./mode-toggle";
 import { cn } from "@/lib/utils";
 import { HomeIcon, InfoIcon, NewspaperIcon, HeartHandshakeIcon, ShoppingBagIcon, GiftIcon, User, Menu } from 'lucide-react';
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { RainbowButton } from "./ui/rainbow-button";
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 
@@ -103,12 +103,13 @@ export function NavBar({ className }: NavBarProps) {
                 className
             )}
             initial={{ translateY: 0 }}
-            animate={{ 
-                translateY: isVisible ? 0 : '-100%' 
+            animate={{
+                translateY: isVisible ? 0 : '-100%'
             }}
             transition={{ duration: 0.3 }}
         >
-            <div className="container mx-auto px-4">
+            {/* <RainbowGlow position="top" className="opacity-70" containerClassName="h-20" /> Removed RainbowGlow for Navbar */}
+            <div className="container mx-auto px-4"> {/* Removed relative z-10 */}
                 <div className="flex justify-between items-center h-16">
                     {/* Left side with ModeToggle and Temple Name */}
                     <div className="relative flex items-center space-x-3">
@@ -218,17 +219,17 @@ const navItems: Record<string, NavItemType> = {
   contribute: {
     icon: <HeartHandshakeIcon className="w-4 h-4" />,
     title: "Contribute",
-    to: "/contribute"
+    to: "/coming-soon" // Updated to /coming-soon
   },
   blog: {
     icon: <NewspaperIcon className="w-4 h-4" />,
     title: "Blog",
-    to: "/blog"
+    to: "/coming-soon" // Updated to /coming-soon
   },
   shop: {
     icon: <ShoppingBagIcon className="w-4 h-4" />,
     title: "Shop",
-    to: "/shop"
+    to: "/coming-soon" // Updated to /coming-soon
   },
   about: {
     icon: <InfoIcon className="w-4 h-4" />,

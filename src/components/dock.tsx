@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { motion, MotionConfig } from 'framer-motion';
+import { motion, MotionConfig } from 'motion/react';
 import * as React from 'react';
 import { cn } from '@/lib/utils'; // Assuming path is correct
 import IconHome from 'virtual:icons/line-md/home-md-alt-twotone'

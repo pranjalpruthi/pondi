@@ -16,6 +16,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard/route'
 import { Route as IndexImport } from './routes/index'
 import { Route as DonateIndexImport } from './routes/donate/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
+import { Route as ComingSoonIndexImport } from './routes/coming-soon/index'
 import { Route as AboutIndexImport } from './routes/about/index'
 import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
 
@@ -49,6 +50,12 @@ const DashboardIndexRoute = DashboardIndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DashboardRouteRoute,
+} as any)
+
+const ComingSoonIndexRoute = ComingSoonIndexImport.update({
+  id: '/coming-soon/',
+  path: '/coming-soon/',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const AboutIndexRoute = AboutIndexImport.update({
@@ -102,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutIndexImport
       parentRoute: typeof rootRoute
     }
+    '/coming-soon/': {
+      id: '/coming-soon/'
+      path: '/coming-soon'
+      fullPath: '/coming-soon'
+      preLoaderRoute: typeof ComingSoonIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/'
@@ -139,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/events': typeof EventsRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/about': typeof AboutIndexRoute
+  '/coming-soon': typeof ComingSoonIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/donate': typeof DonateIndexRoute
 }
@@ -148,6 +163,7 @@ export interface FileRoutesByTo {
   '/events': typeof EventsRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/about': typeof AboutIndexRoute
+  '/coming-soon': typeof ComingSoonIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/donate': typeof DonateIndexRoute
 }
@@ -159,6 +175,7 @@ export interface FileRoutesById {
   '/events': typeof EventsRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/about/': typeof AboutIndexRoute
+  '/coming-soon/': typeof ComingSoonIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/donate/': typeof DonateIndexRoute
 }
@@ -171,6 +188,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/demo/tanstack-query'
     | '/about'
+    | '/coming-soon'
     | '/dashboard/'
     | '/donate'
   fileRoutesByTo: FileRoutesByTo
@@ -179,6 +197,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/demo/tanstack-query'
     | '/about'
+    | '/coming-soon'
     | '/dashboard'
     | '/donate'
   id:
@@ -188,6 +207,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/demo/tanstack-query'
     | '/about/'
+    | '/coming-soon/'
     | '/dashboard/'
     | '/donate/'
   fileRoutesById: FileRoutesById
@@ -199,6 +219,7 @@ export interface RootRouteChildren {
   EventsRoute: typeof EventsRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   AboutIndexRoute: typeof AboutIndexRoute
+  ComingSoonIndexRoute: typeof ComingSoonIndexRoute
   DonateIndexRoute: typeof DonateIndexRoute
 }
 
@@ -208,6 +229,7 @@ const rootRouteChildren: RootRouteChildren = {
   EventsRoute: EventsRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   AboutIndexRoute: AboutIndexRoute,
+  ComingSoonIndexRoute: ComingSoonIndexRoute,
   DonateIndexRoute: DonateIndexRoute,
 }
 
@@ -226,6 +248,7 @@ export const routeTree = rootRoute
         "/events",
         "/demo/tanstack-query",
         "/about/",
+        "/coming-soon/",
         "/donate/"
       ]
     },
@@ -246,6 +269,9 @@ export const routeTree = rootRoute
     },
     "/about/": {
       "filePath": "about/index.tsx"
+    },
+    "/coming-soon/": {
+      "filePath": "coming-soon/index.tsx"
     },
     "/dashboard/": {
       "filePath": "dashboard/index.tsx",

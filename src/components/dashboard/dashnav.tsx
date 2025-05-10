@@ -60,7 +60,8 @@ import {
 } from "@/components/ui/hover-card"
 
 import { useNavigate } from "@tanstack/react-router"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger }  from "@/components/animate-ui/radix/dialog"
+
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { ModeToggle } from "@/components/mode-toggle"
 
