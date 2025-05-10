@@ -25,6 +25,7 @@ import { useSoundSettings } from '@/components/context/sound-context'; // Assumi
 import { SoundProvider } from '@/components/context/sound-context'; // Assuming path
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { TempleEvents } from '@/components/temple-events'; // Assuming path
+import { DeityDarshan } from '@/components/deity-darshan'; // Import the new DeityDarshan component
 import { useIsMobile } from "@/hooks/use-mobile"; // Import useIsMobile
 
 const navItems = [
@@ -45,7 +46,7 @@ function NavbarContent() {
   const [open, setOpen] = React.useState(false); // Command Dialog state
   const [mainMenuOpen, setMainMenuOpen] = React.useState(false); // Main Menu Drawer state
   const [eventsOpen, setEventsOpen] = React.useState(false); // Events Dialog state
-  // Removed newsOpen state
+  const [deitiesOpen, setDeitiesOpen] = React.useState(false); // Deities Dialog state - NEW
   const [donationOpen, setDonationOpen] = React.useState(false); // Donation Drawer state
 
   // --- Hooks ---
@@ -155,29 +156,6 @@ function NavbarContent() {
       {/* Floating Buttons (Desktop Only) */}
       {!isMobile && (
         <>
-          {/* Removed News Floating Button/Drawer */}
-          {/* <Drawer open={newsOpen} onOpenChange={setNewsOpen}>
-            <DrawerTrigger asChild>
-              <motion.div
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.7, type: "spring", stiffness: 150, damping: 15 }}
-                className="fixed bottom-6 left-6 z-50"
-              >
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="rounded-full h-12 w-12 shadow-lg bg-background/80 backdrop-blur-md border-primary/30 hover:bg-primary/10"
-                  aria-label="Temple News"
-                  onClick={safePlayClick}
-                  onMouseEnter={safePlayHover}
-                >
-                  <Newspaper className="h-5 w-5 text-primary" />
-                </Button>
-              </motion.div>
-            </DrawerTrigger>
-          </Drawer> */}
-
           {/* Donation Floating Button/Drawer */}
           <Drawer open={donationOpen} onOpenChange={setDonationOpen}>
             <DrawerTrigger asChild>
@@ -203,12 +181,7 @@ function NavbarContent() {
       )}
 
       {/* Main Dock Navigation */}
-      <nav className="fixed bottom-0 left-0 z-40 w-full pb-safe mb-6 pointer-events-none"> {/* Added pointer-events-none */}
-        {/* Removed BottomBlurOut component */}
-        {/* <div className="absolute inset-x-0 -bottom-8 h-32">
-          <BottomBlurOut />
-        </div> */}
-
+      <nav className="fixed bottom-0 left-0 z-40 w-full pb-safe mb-6 pointer-events-none">
         <div className="container relative mx-auto flex justify-center px-2 pb-2 sm:px-4">
           {/* Added pointer-events-auto here */}
           <motion.div
@@ -219,14 +192,22 @@ function NavbarContent() {
             <div className="grid w-full grid-cols-5 sm:auto-cols-[5rem] sm:grid-flow-col">
               {/* Main Nav Items (first 3) */}
               {navItems.slice(0, 3).map((item) => {
-                // Use a button for Events, Link for others
-                const Component = item.to === '/events' ? 'button' : Link;
+                // Use a button for Events AND Deities, Link for others
+                const Component = item.to === '/events' || item.to === '/deities' ? 'button' : Link;
                 const props = item.to === '/events'
-                  ? { // Props for button
+                  ? { // Props for Events button
                       type: 'button' as const,
                       onClick: () => { // Only open drawer, no navigation
                         setEventsOpen(true);
                         safePlayClick();
+                      },
+                    }
+                  : item.to === '/deities'
+                  ? { // Props for Deities button
+                      type: 'button' as const,
+                      onClick: () => { // Only open drawer, no navigation
+                        setDeitiesOpen(true);
+                        playTempleBell(); // Use temple bell sound for deities
                       },
                     }
                   : { // Props for Link
@@ -242,45 +223,51 @@ function NavbarContent() {
                     onMouseEnter={safePlayHover}
                     className={cn(
                       "group relative flex flex-col items-center rounded-2xl px-2 py-1.5 sm:px-3",
-                    "text-xs font-medium text-foreground/90 transition-colors duration-200",
-                    "hover:text-primary hover:bg-white/10 dark:hover:bg-white/20",
-                    "focus-visible:outline-none focus-visible:ring-2",
-                    "focus-visible:ring-primary focus-visible:ring-offset-2",
                       "text-xs font-medium text-foreground/90 transition-colors duration-200",
                       "hover:text-primary hover:bg-white/10 dark:hover:bg-white/20",
                       "focus-visible:outline-none focus-visible:ring-2",
                       "focus-visible:ring-primary focus-visible:ring-offset-2",
-                      // Apply active style manually if it's the button and events are open, or via activeProps for Link
-                      (item.to !== '/events' ? "data-[active]:text-primary" : ""),
-                      (item.to === '/events' && eventsOpen ? "text-primary" : "") // Style button when drawer is open
+                      "text-xs font-medium text-foreground/90 transition-colors duration-200",
+                      "hover:text-primary hover:bg-white/10 dark:hover:bg-white/20",
+                      "focus-visible:outline-none focus-visible:ring-2",
+                      "focus-visible:ring-primary focus-visible:ring-offset-2",
+                      // Apply active style manually if it's a drawer button and that drawer is open
+                      (item.to !== '/events' && item.to !== '/deities' ? "data-[active]:text-primary" : ""),
+                      (item.to === '/events' && eventsOpen ? "text-primary" : ""),
+                      (item.to === '/deities' && deitiesOpen ? "text-primary" : "")
                     )}
-                >
-                  <div className="relative flex flex-col items-center gap-1 w-full h-full">
-                    {/* Enhanced background card for active state */}
-                    {/* Show for Link active state OR if it's the button and its drawer is open */}
-                    {(item.to !== '/events' && item.to === location.pathname || item.to === '/events' && eventsOpen) && (
-                      <motion.div
-                        layout
-                        layoutId="nav-active"
-                        className="absolute inset-0 -inset-x-1 sm:-inset-x-1.5 -z-10 rounded-2xl bg-pink-100/20 dark:bg-pink-800/30 shadow-sm"
-                        transition={{ type: "spring", bounce: 0.15 }}
-                      />
-                    )}
-                    {/* Add hover effect background */}
-                    <div className="absolute inset-0 -inset-x-1 sm:-inset-x-1.5 -z-10 rounded-2xl bg-pink-100/0 dark:bg-pink-800/0 transition-colors duration-200 group-hover:bg-pink-100/10 dark:group-hover:bg-pink-800/[0.08]"></div>
-                    <div className="relative rounded-xl p-1.5">
-                      <item.icon 
-                        className={cn(
-                          "size-[1.25rem] sm:size-5 transition-all duration-200",
-                          "text-foreground/80 group-hover:text-primary",
-                          // Apply active style manually if it's the button and events are open, or via activeProps for Link
-                          (item.to !== '/events' ? "group-data-[active]:text-primary" : ""),
-                          (item.to === '/events' && eventsOpen ? "text-primary" : "")
-                        )}
-                      />
+                  >
+                    <div className="relative flex flex-col items-center gap-1 w-full h-full">
+                      {/* Enhanced background card for active state */}
+                      {/* Show for Link active state OR if it's a drawer button and that drawer is open */}
+                      {(
+                        (item.to !== '/events' && item.to !== '/deities' && item.to === location.pathname) || 
+                        (item.to === '/events' && eventsOpen) ||
+                        (item.to === '/deities' && deitiesOpen)
+                      ) && (
+                        <motion.div
+                          layout
+                          layoutId="nav-active"
+                          className="absolute inset-0 -inset-x-1 sm:-inset-x-1.5 -z-10 rounded-2xl bg-pink-100/20 dark:bg-pink-800/30 shadow-sm"
+                          transition={{ type: "spring", bounce: 0.15 }}
+                        />
+                      )}
+                      {/* Add hover effect background */}
+                      <div className="absolute inset-0 -inset-x-1 sm:-inset-x-1.5 -z-10 rounded-2xl bg-pink-100/0 dark:bg-pink-800/0 transition-colors duration-200 group-hover:bg-pink-100/10 dark:group-hover:bg-pink-800/[0.08]"></div>
+                      <div className="relative rounded-xl p-1.5">
+                        <item.icon 
+                          className={cn(
+                            "size-[1.25rem] sm:size-5 transition-all duration-200",
+                            "text-foreground/80 group-hover:text-primary",
+                            // Apply active style manually for drawers/links
+                            (item.to !== '/events' && item.to !== '/deities' ? "group-data-[active]:text-primary" : ""),
+                            (item.to === '/events' && eventsOpen ? "text-primary" : ""),
+                            (item.to === '/deities' && deitiesOpen ? "text-primary" : "")
+                          )}
+                        />
+                      </div>
+                      <span className="font-medium px-1 pb-0.5 text-[0.65rem] sm:text-[0.7rem] sm:px-1.5">{item.label}</span>
                     </div>
-                    <span className="font-medium px-1 pb-0.5 text-[0.65rem] sm:text-[0.7rem] sm:px-1.5">{item.label}</span>
-                  </div>
                   </Component> // Close Component (Link or button)
                 );
               })}
@@ -352,18 +339,9 @@ function NavbarContent() {
                       {/* Divider */}
                       <Separator className="my-2" />
 
-                      {/* Mobile Only News & Donation Buttons */}
+                      {/* Mobile Only Donation Button */}
                       {isMobile && (
                         <>
-                          {/* Removed News Button */}
-                          {/* <button
-                            onClick={() => { setNewsOpen(true); setMainMenuOpen(false); safePlayClick(); }}
-                            onMouseEnter={safePlayHover}
-                            className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent"
-                          >
-                            <Newspaper className="size-5" />
-                            <span>Temple News</span>
-                          </button> */}
                           <button
                             onClick={() => { setDonationOpen(true); setMainMenuOpen(false); safePlayClick(); }}
                             onMouseEnter={safePlayHover}
@@ -379,14 +357,23 @@ function NavbarContent() {
                       {/* Navigation Items */}
                       {navItems.map((item) => {
                         // Render button or Link in the main menu drawer as well
-                        const MenuComponent = item.to === '/events' ? 'button' : Link;
+                        const MenuComponent = item.to === '/events' || item.to === '/deities' ? 'button' : Link;
                         const menuProps = item.to === '/events'
-                          ? { // Props for button
+                          ? { // Props for Events button
                               type: 'button' as const,
                               onClick: () => {
                                 setEventsOpen(true); // Open events drawer
                                 setMainMenuOpen(false); // Close main menu
                                 safePlayClick();
+                              },
+                            }
+                          : item.to === '/deities'
+                          ? { // Props for Deities button
+                              type: 'button' as const,
+                              onClick: () => {
+                                setDeitiesOpen(true); // Open deities drawer
+                                setMainMenuOpen(false); // Close main menu
+                                playTempleBell(); // Play temple bell sound
                               },
                             }
                           : { // Props for Link
@@ -434,6 +421,9 @@ function NavbarContent() {
                     if (item.to === '/events') {
                       setEventsOpen(true);
                       safePlayClick();
+                    } else if (item.to === '/deities') {
+                      setDeitiesOpen(true);
+                      playTempleBell();
                     } else {
                       handleNavClick(item.to);
                       window.location.href = item.to;
@@ -455,18 +445,15 @@ function NavbarContent() {
           onOpenChange={setEventsOpen}
           _onSoundPlay={safePlayClick}
         />
+        
+        {/* Add Deity Darshan Dialog */}
+        <DeityDarshan
+          open={deitiesOpen}
+          onOpenChange={setDeitiesOpen}
+          
+        />
 
-        {/* Removed News Drawer Content */}
-        {/* <Drawer open={newsOpen} onOpenChange={setNewsOpen}>
-          <DrawerContent>
-            <div className="p-4 h-[50vh]">
-              <h2 className="text-lg font-semibold mb-4">Latest News Headlines</h2>
-              <p>News content will load here...</p>
-            </div>
-          </DrawerContent>
-        </Drawer> */}
-
-        {/* Donation Drawer Content (Rendered outside main nav structure) */}
+        {/* Donation Drawer Content */}
         <Drawer open={donationOpen} onOpenChange={setDonationOpen}>
           <DrawerContent>
             {/* Placeholder for DonationDrawerContent component */}
