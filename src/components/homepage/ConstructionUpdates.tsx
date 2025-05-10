@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button"
 import { ChevronRight, Calendar, Building, BookOpen, Heart, GraduationCap, Utensils, Award, ShieldHalf } from "lucide-react" // ChevronLeft no longer needed here, added mission icons
 import { Badge } from "@/components/ui/badge"
 // import React, { useState } from "react" // useState no longer needed here
-import Two from "@/components/gallery/two"; // Import the Two component
-
 const constructionData = {
   sectionTitle: "Temple Construction Progress",
   overallProgress: 45,
