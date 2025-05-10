@@ -1,12 +1,10 @@
 import { motion } from "motion/react"
 import { ExternalLink, MessageCircleQuestion, Calendar, Clock, Youtube } from "lucide-react"
-import { useRef, useEffect } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { XMLParser } from "fast-xml-parser"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton" // Assuming you have a Skeleton component
 
 interface YouTubeVideo {
@@ -18,7 +16,7 @@ interface YouTubeVideo {
 }
 
 const YOUTUBE_CHANNEL_ID = "UCA7bxZwd7dF3r8GWpShRqug";
-const RSS_FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`;
+const RSS_FEED_URL = `/youtube-feed/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`;
 
 const fetchPreviousSessions = async (): Promise<YouTubeVideo[]> => {
   try {
@@ -63,8 +61,6 @@ const fetchPreviousSessions = async (): Promise<YouTubeVideo[]> => {
 
 
 export function QnASection() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
   const {
     data: previousSessions,
     isLoading,
@@ -76,15 +72,6 @@ export function QnASection() {
     staleTime: 1000 * 60 * 30, // 30 minutes
     gcTime: 1000 * 60 * 60, // 1 hour
   });
-
-  // Play video when component mounts
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(_ => { // Changed 'e' to '_'
-        // console.log("Auto-play prevented:", e); // Keep or remove as per preference
-      });
-    }
-  }, []);
 
   return (
     <section className="py-24 px-4 relative overflow-visible">
@@ -141,20 +128,11 @@ export function QnASection() {
               {/* Media section - video/image with overlay */}
               <div className="relative w-full lg:w-1/2 h-[300px] lg:h-auto overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-tr from-[#ffc547]/20 via-[#e94a9c]/10 to-transparent z-10"></div>
-                <video 
-                  ref={videoRef}
+                <img
+                  src="/assets/extra/hgsgpqna.jpg"
+                  alt="Q&A Session Preview"
                   className="absolute inset-0 w-full h-full object-cover"
-                  poster="public/assets/extra/hgsgpqna.jpg"
-                  muted
-                  loop
-                  playsInline
-                >
-                  <source src="/assets/qna_preview.mp4" type="video/mp4" />
-                </video>
-                
-                <Badge className="absolute top-4 left-4 bg-[#e94a9c] text-white border-0 rounded-full px-3 py-1 z-20 font-medium tracking-wide">
-                  LIVE
-                </Badge>
+                />
               </div>
               
               {/* Content section with generous spacing */}
@@ -211,11 +189,11 @@ export function QnASection() {
           </h3>
           
           {isLoading && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {[1, 2, 3].map((item) => (
                 <Card key={item} className="overflow-hidden border-0 rounded-2xl bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm shadow-sm">
                   <Skeleton className="aspect-video w-full" />
-                  <div className="p-4 space-y-2">
+                  <div className="p-3 sm:p-4 space-y-2">
                     <Skeleton className="h-4 w-3/4" />
                     <Skeleton className="h-3 w-1/2" />
                   </div>
@@ -238,7 +216,7 @@ export function QnASection() {
           )}
 
           {!isLoading && !isError && previousSessions && previousSessions.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {previousSessions.slice(0, 6).map((video) => ( // Display up to 6 videos
                 <motion.a
                   key={video.id}
@@ -258,16 +236,16 @@ export function QnASection() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div className="rounded-full bg-white/30 backdrop-blur-sm p-3">
-                          <Youtube className="h-8 w-8 text-white" />
+                          <Youtube className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                         </div>
                       </div>
                     </div>
-                    <div className="p-4 flex-grow flex flex-col justify-between">
+                    <div className="p-3 sm:p-4 flex-grow flex flex-col justify-between">
                       <div>
-                        <h4 className="font-medium text-[#e94a9c] dark:text-[#e94a9c] line-clamp-2 text-sm leading-snug mb-1">
+                        <h4 className="font-medium text-[#e94a9c] dark:text-[#e94a9c] line-clamp-2 text-xs sm:text-sm leading-snug mb-1">
                           {video.title}
                         </h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
                           {video.publishedDate}
                         </p>
                       </div>

@@ -38,4 +38,15 @@ export default defineConfig({
       '@components': resolve(__dirname, './src/components'),
     },
   },
+  server: {
+    proxy: {
+      // Proxy /youtube-feed requests to the YouTube RSS feed
+      '/youtube-feed': {
+        target: 'https://www.youtube.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/youtube-feed/, ''),
+        secure: false, // If the target is HTTPS, this might be needed
+      },
+    },
+  },
 });

@@ -92,7 +92,7 @@ export function ConstructionUpdates() {
         </div>
 
         {/* Main Content Area */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-5 sm:gap-8">
           {/* First Column: Images Carousel (3/5 width on desktop) */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -103,20 +103,24 @@ export function ConstructionUpdates() {
           >
             <Card className="overflow-hidden border-0 rounded-2xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg h-full">
               <CardContent className="p-0">
-                <div className="pb-4 pt-8 px-8">
-                  <h3 className="text-xl font-semibold mb-1 text-[#e94a9c] dark:text-[#e94a9c]">
+                <div className="pb-3 pt-5 sm:pb-4 sm:pt-8 px-4 sm:px-8">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-1 text-[#e94a9c] dark:text-[#e94a9c]">
                     Construction Gallery
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm">
+                  <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm">
                     Swipe to see the latest construction updates
                   </p>
                 </div>
                 
-                {/* Replace simple carousel with Two component */}
-                <div className="relative w-full min-h-[300px] md:min-h-[400px] py-4">
-                  {/* Added min-height and some padding for better layout */}
+                {/* Updated gallery to match coming-soon page style with responsive height */}
+                <motion.div 
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="h-[300px] sm:h-[350px] md:h-[400px] lg:h-[450px] relative px-4 pb-4"
+                >
                   <Two imageUrls={constructionData.latestUpdate.images} />
-                </div>
+                </motion.div>
               </CardContent>
             </Card>
           </motion.div>
@@ -130,32 +134,32 @@ export function ConstructionUpdates() {
             className="lg:col-span-2"
           >
             <Card className="overflow-hidden border-0 rounded-2xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg h-full">
-              <CardContent className="p-6 lg:p-8 flex flex-col h-full">
-                <div className="mb-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <Badge className="bg-[#e94a9c]/10 text-[#e94a9c] dark:bg-[#e94a9c]/20 dark:text-[#e94a9c] px-3 py-1 rounded-full font-medium border-0">
+              <CardContent className="p-4 sm:p-6 lg:p-8 flex flex-col h-full">
+                <div className="mb-4 sm:mb-6">
+                  <div className="flex items-center justify-between mb-3 sm:mb-4">
+                    <Badge className="bg-[#e94a9c]/10 text-[#e94a9c] dark:bg-[#e94a9c]/20 dark:text-[#e94a9c] px-2 sm:px-3 py-1 rounded-full font-medium border-0 text-xs sm:text-sm">
                       Latest Update
                     </Badge>
-                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                      <Calendar className="h-4 w-4 mr-2 text-[#ffc547] dark:text-[#ffc547]" />
+                    <div className="flex items-center text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                      <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 text-[#ffc547] dark:text-[#ffc547]" />
                       {constructionData.latestUpdate.date}
                     </div>
                   </div>
                   
-                  <h3 className="text-xl font-semibold mb-4 text-[#0a84ff] dark:text-[#0a84ff]">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-[#0a84ff] dark:text-[#0a84ff]">
                     {constructionData.latestUpdate.title}
                   </h3>
                   
-                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                  <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-relaxed mb-4 sm:mb-6">
                     {constructionData.latestUpdate.description}
                   </p>
                 </div>
                 
-                <div className="mt-auto bg-gradient-to-r from-[#e94a9c]/5 via-[#ffc547]/5 to-[#0a84ff]/5 dark:from-[#e94a9c]/10 dark:via-[#ffc547]/10 dark:to-[#0a84ff]/10 p-6 -m-6 lg:-m-8 mt-4 lg:mt-auto rounded-t-2xl backdrop-blur-sm">
-                  <h4 className="text-lg font-medium mb-3 text-gray-900 dark:text-white">
+                <div className="mt-auto bg-gradient-to-r from-[#e94a9c]/5 via-[#ffc547]/5 to-[#0a84ff]/5 dark:from-[#e94a9c]/10 dark:via-[#ffc547]/10 dark:to-[#0a84ff]/10 p-4 sm:p-6 -m-4 sm:-m-6 lg:-m-8 mt-4 lg:mt-auto rounded-t-2xl backdrop-blur-sm">
+                  <h4 className="text-base sm:text-lg font-medium mb-2 sm:mb-3 text-gray-900 dark:text-white">
                     Join the Campaign
                   </h4>
-                  <p className="text-gray-700 dark:text-gray-300 mb-4 text-sm">
+                  <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mb-3 sm:mb-4">
                     {constructionData.campaign.message}
                   </p>
                   <Button
@@ -164,10 +168,10 @@ export function ConstructionUpdates() {
                         window.location.href = constructionData.campaign.ctaLink;
                       }
                     }}
-                    className="w-full bg-gradient-to-r from-[#e94a9c] to-[#ffc547] hover:from-[#d3428c] hover:to-[#e6b03f] rounded-full h-11 font-medium text-white shadow-sm transition-all"
+                    className="w-full bg-gradient-to-r from-[#e94a9c] to-[#ffc547] hover:from-[#d3428c] hover:to-[#e6b03f] rounded-full h-10 sm:h-11 text-sm sm:text-base font-medium text-white shadow-sm transition-all"
                   >
                     {constructionData.campaign.ctaText}
-                    <ChevronRight className="h-4 w-4 ml-1" />
+                    <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 ml-1" />
                   </Button>
                 </div>
               </CardContent>
@@ -175,30 +179,30 @@ export function ConstructionUpdates() {
           </motion.div>
         </div>
 
-        {/* Progress Indicators Section */}
+        {/* Progress Indicators Section - Improved for mobile */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-12"
+          className="mt-6 sm:mt-12"
         >
           <Card className="overflow-hidden border-0 rounded-2xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg">
-            <CardContent className="p-6 lg:p-8">
-              <h3 className="text-xl font-semibold text-center mb-8 bg-gradient-to-r from-[#0a84ff] via-[#ffc547] to-[#e94a9c] text-transparent bg-clip-text">
+            <CardContent className="p-4 sm:p-6 lg:p-8">
+              <h3 className="text-lg sm:text-xl font-semibold text-center mb-5 sm:mb-8 bg-gradient-to-r from-[#0a84ff] via-[#ffc547] to-[#e94a9c] text-transparent bg-clip-text">
                 Construction Phases Progress
               </h3>
               
-              <div className="space-y-8">
+              <div className="space-y-5 sm:space-y-8">
                 {/* Overall Progress */}
-                <div className="mb-8">
+                <div className="mb-5 sm:mb-8">
                   <div className="flex justify-between mb-2">
-                    <p className="font-medium text-gray-900 dark:text-white">Overall Completion</p>
-                    <span className="font-medium text-[#e94a9c] dark:text-[#e94a9c]">
+                    <p className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">Overall Completion</p>
+                    <span className="font-medium text-[#e94a9c] dark:text-[#e94a9c] text-sm sm:text-base">
                       {constructionData.overallProgress}%
                     </span>
                   </div>
-                  <div className="relative h-3 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                  <div className="relative h-2 sm:h-3 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       whileInView={{ width: `${constructionData.overallProgress}%` }}
@@ -209,15 +213,15 @@ export function ConstructionUpdates() {
                   </div>
                 </div>
                 
-                {/* Individual Phase Progress */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Individual Phase Progress - 2 columns on all screen sizes */}
+                <div className="grid grid-cols-2 gap-3 sm:gap-6">
                   {constructionData.phases.map((phase, index) => (
-                    <div key={index} className="space-y-2 backdrop-blur-sm bg-white/20 dark:bg-gray-800/20 p-4 rounded-xl">
+                    <div key={index} className="space-y-1 sm:space-y-2 backdrop-blur-sm bg-white/20 dark:bg-gray-800/20 p-3 sm:p-4 rounded-xl">
                       <div className="flex justify-between">
-                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{phase.name}</p>
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{phase.progress}%</span>
+                        <p className="text-xs sm:text-sm font-medium text-gray-800 dark:text-gray-200">{phase.name}</p>
+                        <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">{phase.progress}%</span>
                       </div>
-                      <div className="relative h-2 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                      <div className="relative h-1.5 sm:h-2 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
                           whileInView={{ width: `${phase.progress}%` }}

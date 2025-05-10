@@ -209,27 +209,6 @@ function AboutPage() {
     }
   ]
 
-  const leadershipTeam = [
-    {
-      name: "Swami Maharaj",
-      role: "Temple President",
-      bio: "Serving the mission for over 25 years, guiding the community with wisdom and compassion.",
-      image: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=200&auto=format&fit=crop"
-    },
-    {
-      name: "Bhakti Devi Dasi",
-      role: "Program Director",
-      bio: "Dedicated to organizing spiritual events and educational initiatives for all age groups.",
-      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop"
-    },
-    {
-      name: "Krishna Das",
-      role: "Outreach Coordinator",
-      bio: "Passionate about sharing Krishna Consciousness through community engagement and service.",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop"
-    }
-  ]
-
   // Fallback image URLs (from Unsplash) in case local images don't exist
   const fallbackImages = [
     "https://images.unsplash.com/photo-1625305561707-59145b50c36b?q=80&w=800&auto=format&fit=crop",
@@ -313,9 +292,6 @@ function AboutPage() {
         </Button>
         <Button variant="outline" onClick={() => document.getElementById('programs')?.scrollIntoView({ behavior: 'smooth' })}>
           Programs
-        </Button>
-        <Button variant="outline" onClick={() => document.getElementById('team')?.scrollIntoView({ behavior: 'smooth' })}>
-          Our Team
         </Button>
         <Button variant="outline" onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })}>
           FAQ
@@ -613,53 +589,6 @@ function AboutPage() {
       
       <Separator className="my-16" />
       
-      {/* Our Team Section */}
-      <motion.div
-        id="team"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={fadeInUpVariants}
-        className="mb-12"
-      >
-        <h2 className="text-3xl font-bold text-center mb-8">Leadership Team</h2>
-      </motion.div>
-      
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        variants={containerVariants}
-        className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16"
-      >
-        {leadershipTeam.map((member, index) => (
-          <motion.div
-            key={index}
-            variants={itemVariants}
-            whileHover={{ y: -5 }}
-          >
-            <Card className="overflow-hidden">
-              <div className="h-56 overflow-hidden">
-                <img 
-                  src={member.image} 
-                  alt={member.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <CardHeader>
-                <CardTitle>{member.name}</CardTitle>
-                <CardDescription>{member.role}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">{member.bio}</p>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </motion.div>
-      
-      <Separator className="my-16" />
-      
       {/* FAQ Section */}
       <motion.div
         id="faq"
@@ -777,4 +706,4 @@ function AboutPage() {
       </motion.div>
     </div>
   )
-} 
+}

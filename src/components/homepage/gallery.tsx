@@ -58,7 +58,7 @@ export function Gallery() {
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
           {images.map((image, index) => (
             <motion.div
               key={image.src}
@@ -79,13 +79,13 @@ export function Gallery() {
                     alt={image.alt}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start p-5">
-                    <span className="text-white text-lg font-medium">{image.alt}</span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start p-3 sm:p-5">
+                    <span className="text-white text-xs sm:text-sm md:text-lg font-medium">{image.alt}</span>
                   </div>
                 </div>
                 
                 {/* Decorative accent - color varies based on index */}
-                <div className={`absolute top-0 right-0 w-20 h-1 rounded-bl-full ${
+                <div className={`absolute top-0 right-0 w-12 sm:w-20 h-1 rounded-bl-full ${
                   index % 3 === 0 
                     ? "bg-[#e94a9c]" 
                     : index % 3 === 1 
