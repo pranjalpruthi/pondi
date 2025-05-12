@@ -133,7 +133,7 @@ const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   </h2>
 );
 
-const SocialLink = ({ href, icon: Icon, label }: { href: string, icon: React.ComponentType<{ className?: string }>, label: string }) => (
+const SocialLink = ({ href, icon: Icon, label }: { href: string, icon: React.ComponentType<{ className?: string; [key: string]: any; }>, label: string }) => (
   <HoverCard openDelay={100} closeDelay={100}>
     <HoverCardTrigger asChild>
       <a href={href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-pink-600 transition-colors">
@@ -288,7 +288,7 @@ function AboutPage() {
               initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
             >
-              {missionItems.map((item, _index) => ( // Prefixed index
+              {missionItems.map((item, _index) => ( 
                 <motion.div key={item.id} variants={itemVariants} whileHover={{ y: -6, transition: { duration: 0.2 } }} className="h-full">
                   <Card className="h-full overflow-hidden border-2 border-transparent hover:border-pink-200 dark:hover:border-pink-800/50 transition-colors shadow-sm hover:shadow-lg bg-card rounded-xl">
                     <div className="w-full h-52 overflow-hidden relative">
