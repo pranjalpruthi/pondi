@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router';
 import { Button } from "./ui/button";
 import { ModeToggle } from "./mode-toggle";
 import { cn } from "@/lib/utils";
-import { HomeIcon, InfoIcon, NewspaperIcon, HeartHandshakeIcon, ShoppingBagIcon, GiftIcon, User, Menu } from 'lucide-react';
+import { HomeIcon, InfoIcon, NewspaperIcon, HeartHandshakeIcon, ShoppingBagIcon, GiftIcon, User, Menu, Globe as GlobeIcon } from 'lucide-react'; // Added GlobeIcon
 import { motion } from "motion/react";
 import { RainbowButton } from "./ui/rainbow-button";
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
@@ -240,5 +240,10 @@ const navItems: Record<string, NavItemType> = {
     icon: <GiftIcon className="w-4 h-4" />,
     title: "Donate",
     to: "/donate"
+  },
+  centers: { // Added Centers item
+    icon: <GlobeIcon className="w-4 h-4" />,
+    title: "Centers",
+    to: "/centers"
   }
 };

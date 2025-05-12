@@ -19,7 +19,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"; // Assuming path
-import { Menu, Search, Volume2, VolumeX, Gift } from "lucide-react"; // Added Newspaper, Gift
+import { Menu, Search, Volume2, VolumeX, Gift, Globe as GlobeIcon } from "lucide-react"; // Added GlobeIcon
 import { useSound } from 'use-sound';
 import { useSoundSettings } from '@/components/context/sound-context'; // Assuming path
 import { SoundProvider } from '@/components/context/sound-context'; // Assuming path
@@ -37,9 +37,93 @@ const navItems = [
   },
   { icon: IconTemple, label: 'Deities', to: '/deities', iconClassName: "text-primary/80" },
   { icon: IconCalendar, label: 'Events', to: '/events', iconClassName: "text-primary/80" },
+  { icon: GlobeIcon, label: 'Centers', to: '/centers', iconClassName: "text-primary/80" }, // Added Centers
   { icon: IconInfo, label: 'About', to: '/about', iconClassName: "text-primary/80" },
   { icon: IconDonate, label: 'Donate', to: '/donate', iconClassName: "text-primary/80" },
 ]
+
+// Define a type for individual nav item
+interface NavItemProps {
+  icon: React.ComponentType<{ className?: string }>; // More specific type for icon components
+  label: string;
+  to: string;
+  iconClassName?: string;
+}
+
+// Memoized Nav Item Component
+interface NavItemDisplayProps {
+  item: NavItemProps;
+  isActive: boolean;
+  isDrawerOpen?: boolean;
+  onClick: () => void;
+  onMouseEnter: () => void;
+  componentType: 'link' | 'button';
+}
+
+const NavItemDisplay = React.memo(({ item, isActive, isDrawerOpen, onClick, onMouseEnter, componentType }: NavItemDisplayProps) => {
+  const isEffective = isActive || isDrawerOpen; // Combined active state for styling
+
+  const content = (
+    <div className="relative flex flex-col items-center gap-1 w-full h-full">
+      {isEffective && (
+        <motion.div
+          layout
+          layoutId={`nav-active-${item.to}`} // Dynamic layoutId
+          className="absolute inset-0 -inset-x-1 sm:-inset-x-1.5 -z-10 rounded-2xl bg-pink-100/20 dark:bg-pink-800/30 shadow-sm"
+          transition={{ type: "spring", bounce: 0.15 }}
+          />
+        )}
+        {/* Removed the hover effect background div */}
+        <div className="relative rounded-xl p-1.5">
+        {/* No longer need to cast to any after updating NavItemProps */}
+        <item.icon
+          className={cn(
+            "size-[1.25rem] sm:size-5 transition-all duration-200",
+            item.iconClassName || "text-foreground/80",
+            "group-hover:text-primary",
+            isEffective && "text-primary"
+          )}
+        />
+      </div>
+      <span className="font-medium px-1 pb-0.5 text-[0.65rem] sm:text-[0.7rem] sm:px-1.5">{item.label}</span>
+    </div>
+  );
+
+  const commonClassNames = cn(
+    "group relative flex flex-col items-center rounded-2xl px-2 py-1.5 sm:px-3",
+    "text-xs font-medium text-foreground/90 transition-colors duration-200",
+    "hover:text-primary hover:bg-white/10 dark:hover:bg-white/20",
+    "focus-visible:outline-none focus-visible:ring-2",
+    "focus-visible:ring-primary focus-visible:ring-offset-2",
+    isEffective && "text-primary"
+  );
+
+  if (componentType === 'link') {
+    return (
+      <Link
+        to={item.to}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        className={commonClassNames}
+        activeProps={{ className: "text-primary relative isolate" }} // Keep activeProps for Link's own active state detection
+      >
+        {content}
+      </Link>
+    );
+  } else {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        className={commonClassNames}
+      >
+        {content}
+      </button>
+    );
+  }
+});
+
 
 function NavbarContent() {
   // --- State ---
@@ -189,86 +273,38 @@ function NavbarContent() {
             animate={{ y: 0, opacity: 1 }}
             className="relative w-full max-w-md rounded-3xl bg-pink-50/60 p-1.5 shadow-lg shadow-black/5 ring-1 ring-pink-100/60 backdrop-blur-md dark:bg-pink-900/40 dark:shadow-black/10 dark:ring-pink-900/40 sm:max-w-fit pointer-events-auto"
           >
-            <div className="grid w-full grid-cols-5 sm:auto-cols-[5rem] sm:grid-flow-col">
-              {/* Main Nav Items (first 3) */}
+            {/* Adjusted grid back to grid-cols-5 */}
+            <div className="grid w-full grid-cols-5 sm:auto-cols-min sm:grid-flow-col">
+              {/* Main Nav Items (first 3 - Home, Deities, Events) */}
               {navItems.slice(0, 3).map((item) => {
-                // Use a button for Events AND Deities, Link for others
-                const Component = item.to === '/events' || item.to === '/deities' ? 'button' : Link;
-                const props = item.to === '/events'
-                  ? { // Props for Events button
-                      type: 'button' as const,
-                      onClick: () => { // Only open drawer, no navigation
-                        setEventsOpen(true);
-                        safePlayClick();
-                      },
-                    }
-                  : item.to === '/deities'
-                  ? { // Props for Deities button
-                      type: 'button' as const,
-                      onClick: () => { // Only open drawer, no navigation
-                        setDeitiesOpen(true);
-                        playTempleBell(); // Use temple bell sound for deities
-                      },
-                    }
-                  : { // Props for Link
-                      to: item.to,
-                      onClick: () => handleNavClick(item.to), // Keep original nav click for others
-                      activeProps: { className: "text-primary relative isolate" }
-                    };
+                const isEventsButton = item.to === '/events';
+                const isDeitiesButton = item.to === '/deities';
+                // Centers page is a direct link, not a drawer
+                const componentType = isEventsButton || isDeitiesButton ? 'button' : 'link';
+                
+                let onClickAction = () => handleNavClick(item.to); // Default for links
+                if (isEventsButton) {
+                  onClickAction = () => { setEventsOpen(true); safePlayClick(); };
+                } else if (isDeitiesButton) {
+                  onClickAction = () => { setDeitiesOpen(true); playTempleBell(); };
+                }
+
+                // Determine active state for styling (Link active state or drawer open state)
+                const isActuallyActive = 
+                  (componentType === 'link' && typeof window !== 'undefined' && window.location.pathname === item.to) ||
+                  (isEventsButton && eventsOpen) ||
+                  (isDeitiesButton && deitiesOpen);
 
                 return (
-                  <Component
+                  <NavItemDisplay
                     key={item.to}
-                    {...props} // Spread appropriate props
+                    item={item}
+                    isActive={isActuallyActive} // Pass calculated active state
+                    isDrawerOpen={(isEventsButton && eventsOpen) || (isDeitiesButton && deitiesOpen)}
+                    onClick={onClickAction}
                     onMouseEnter={safePlayHover}
-                    className={cn(
-                      "group relative flex flex-col items-center rounded-2xl px-2 py-1.5 sm:px-3",
-                      "text-xs font-medium text-foreground/90 transition-colors duration-200",
-                      "hover:text-primary hover:bg-white/10 dark:hover:bg-white/20",
-                      "focus-visible:outline-none focus-visible:ring-2",
-                      "focus-visible:ring-primary focus-visible:ring-offset-2",
-                      "text-xs font-medium text-foreground/90 transition-colors duration-200",
-                      "hover:text-primary hover:bg-white/10 dark:hover:bg-white/20",
-                      "focus-visible:outline-none focus-visible:ring-2",
-                      "focus-visible:ring-primary focus-visible:ring-offset-2",
-                      // Apply active style manually if it's a drawer button and that drawer is open
-                      (item.to !== '/events' && item.to !== '/deities' ? "data-[active]:text-primary" : ""),
-                      (item.to === '/events' && eventsOpen ? "text-primary" : ""),
-                      (item.to === '/deities' && deitiesOpen ? "text-primary" : "")
-                    )}
-                  >
-                    <div className="relative flex flex-col items-center gap-1 w-full h-full">
-                      {/* Enhanced background card for active state */}
-                      {/* Show for Link active state OR if it's a drawer button and that drawer is open */}
-                      {(
-                        (item.to !== '/events' && item.to !== '/deities' && item.to === location.pathname) || 
-                        (item.to === '/events' && eventsOpen) ||
-                        (item.to === '/deities' && deitiesOpen)
-                      ) && (
-                        <motion.div
-                          layout
-                          layoutId="nav-active"
-                          className="absolute inset-0 -inset-x-1 sm:-inset-x-1.5 -z-10 rounded-2xl bg-pink-100/20 dark:bg-pink-800/30 shadow-sm"
-                          transition={{ type: "spring", bounce: 0.15 }}
-                        />
-                      )}
-                      {/* Add hover effect background */}
-                      <div className="absolute inset-0 -inset-x-1 sm:-inset-x-1.5 -z-10 rounded-2xl bg-pink-100/0 dark:bg-pink-800/0 transition-colors duration-200 group-hover:bg-pink-100/10 dark:group-hover:bg-pink-800/[0.08]"></div>
-                      <div className="relative rounded-xl p-1.5">
-                        <item.icon 
-                          className={cn(
-                            "size-[1.25rem] sm:size-5 transition-all duration-200",
-                            "text-foreground/80 group-hover:text-primary",
-                            // Apply active style manually for drawers/links
-                            (item.to !== '/events' && item.to !== '/deities' ? "group-data-[active]:text-primary" : ""),
-                            (item.to === '/events' && eventsOpen ? "text-primary" : ""),
-                            (item.to === '/deities' && deitiesOpen ? "text-primary" : "")
-                          )}
-                        />
-                      </div>
-                      <span className="font-medium px-1 pb-0.5 text-[0.65rem] sm:text-[0.7rem] sm:px-1.5">{item.label}</span>
-                    </div>
-                  </Component> // Close Component (Link or button)
+                    componentType={componentType}
+                  />
                 );
               })}
 
@@ -357,41 +393,42 @@ function NavbarContent() {
                       {/* Navigation Items */}
                       {navItems.map((item) => {
                         // Render button or Link in the main menu drawer as well
-                        const MenuComponent = item.to === '/events' || item.to === '/deities' ? 'button' : Link;
-                        const menuProps = item.to === '/events'
-                          ? { // Props for Events button
-                              type: 'button' as const,
-                              onClick: () => {
-                                setEventsOpen(true); // Open events drawer
-                                setMainMenuOpen(false); // Close main menu
-                                safePlayClick();
-                              },
-                            }
-                          : item.to === '/deities'
-                          ? { // Props for Deities button
-                              type: 'button' as const,
-                              onClick: () => {
-                                setDeitiesOpen(true); // Open deities drawer
-                                setMainMenuOpen(false); // Close main menu
-                                playTempleBell(); // Play temple bell sound
-                              },
-                            }
-                          : { // Props for Link
-                              to: item.to,
-                              onClick: () => {
-                                setMainMenuOpen(false); // Close main menu
-                                handleNavClick(item.to); // Handle other nav clicks
-                              }
-                            };
+                        const isEventsMenuButton = item.to === '/events';
+                        const isDeitiesMenuButton = item.to === '/deities';
+                        // Centers is a direct link
+                        const MenuComponent = isEventsMenuButton || isDeitiesMenuButton ? 'button' : Link;
+                        
+                        let menuOnClickAction = () => { // Default for links
+                          setMainMenuOpen(false);
+                          handleNavClick(item.to);
+                        };
+
+                        if (isEventsMenuButton) {
+                          menuOnClickAction = () => {
+                            setEventsOpen(true);
+                            setMainMenuOpen(false);
+                            safePlayClick();
+                          };
+                        } else if (isDeitiesMenuButton) {
+                          menuOnClickAction = () => {
+                            setDeitiesOpen(true);
+                            setMainMenuOpen(false);
+                            playTempleBell();
+                          };
+                        }
+                        
+                        const menuLinkProps = MenuComponent === Link ? { to: item.to } : { type: 'button' as const };
 
                         return (
+                          // @ts-ignore
                           <MenuComponent
-                            key={item.to}
-                            {...menuProps}
+                            key={`menu-${item.to}`}
+                            {...menuLinkProps}
+                            onClick={menuOnClickAction}
                             onMouseEnter={safePlayHover}
-                            className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent" // Added w-full for button
+                            className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent"
                           >
-                            <item.icon className="size-5" />
+                            <item.icon className={cn("size-5", item.iconClassName)} />
                             <span>{item.label}</span>
                           </MenuComponent>
                         );
@@ -424,9 +461,21 @@ function NavbarContent() {
                     } else if (item.to === '/deities') {
                       setDeitiesOpen(true);
                       playTempleBell();
-                    } else {
+                    } else { // For Centers and other direct links
                       handleNavClick(item.to);
-                      window.location.href = item.to;
+                      // For TanStack Router, navigation should be done via <Link to="..."> or router.navigate()
+                      // Using window.location.href is a full page reload.
+                      // If this component is within a TanStack Router context, prefer router.navigate()
+                      // For simplicity here, assuming Link component handles navigation correctly when not a drawer.
+                      // The `Link` component from `@tanstack/react-router` should handle this.
+                      // If direct navigation is needed for some reason: router.navigate({ to: item.to })
+                      // For now, we assume the Link component handles it, or if it's a button, the onClick does.
+                      // The onSelect here is for CommandItem, so direct navigation might be intended.
+                      // Let's use router.navigate if available, or fallback.
+                      // Since router isn't directly in scope, window.location.href is a fallback.
+                      // However, for <Link> components, this onSelect might be redundant if Link itself navigates.
+                      // For items that are not drawers (like /centers, /about, /donate), they should be Links.
+                       if (typeof window !== 'undefined') window.location.href = item.to; // Fallback if not a drawer
                     }
                   }}
                   onMouseEnter={safePlayHover}

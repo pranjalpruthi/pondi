@@ -22,7 +22,7 @@ import {
     IconChevronLeft,
     IconChevronRight,
 } from '@tabler/icons-react'; // Added icon imports
-import { Check, Loader2 } from 'lucide-react'; // Added imports for InputButton
+import { Check, Loader2, X } from 'lucide-react'; // Added imports for InputButton and X
 import {
   InputButton,
   InputButtonAction,
@@ -38,14 +38,12 @@ import React from "react"; // Ensure React is imported for React.memo
 const heroShowcaseImages = [
   '/temple-building/1.webp?w=640&format=webp&quality=70', // Existing
   '/temple-building/2.webp?w=640&format=webp&quality=70', // Existing
-  '/updates/s1.webp?w=640&format=webp&quality=70',  // New
   '/updates/s2.webp?w=640&format=webp&quality=70',  // New
   '/updates/s3.webp?w=640&format=webp&quality=70',  // New
   '/updates/s4.webp?w=640&format=webp&quality=70',  // New
   '/updates/s5.webp?w=640&format=webp&quality=70',  // New
   '/updates/s6.webp?w=640&format=webp&quality=70',  // New
   '/updates/s7.webp?w=640&format=webp&quality=70',  // New,
-  '/extra/ex1.webp?w=640&format=webp&quality=70', // New
   '/temple-building/3.webp?w=640&format=webp&quality=70', // Existing
   '/temple-building/4.webp?w=640&format=webp&quality=70', // Existing
   '/temple-building/5.webp?w=640&format=webp&quality=70', // Existing
@@ -151,6 +149,118 @@ const BackgroundImageCarousel: React.FC<BackgroundImageCarouselProps> = ({
   );
 };
 
+// After the socialLinks array definition, add a new component for the lightbox
+const ImageLightbox = ({ 
+  isOpen, 
+  onClose, 
+  images, 
+  currentIndex, 
+  setCurrentIndex 
+}: { 
+  isOpen: boolean; 
+  onClose: () => void; 
+  images: string[]; 
+  currentIndex: number;
+  setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
+}) => {
+  if (!isOpen) return null;
+  
+  const goToNext = () => {
+    setCurrentIndex((prev: number) => (prev + 1) % images.length);
+  };
+  
+  const goToPrev = () => {
+    setCurrentIndex((prev: number) => (prev - 1 + images.length) % images.length);
+  };
+
+  return (
+    <AnimatePresence>
+      <motion.div 
+        className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+      >
+        <motion.div className="absolute top-4 right-4">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-10 w-10 rounded-full bg-black/20 text-white hover:bg-black/40" 
+            onClick={onClose}
+          >
+            <X className="h-6 w-6" />
+          </Button>
+        </motion.div>
+        
+        <motion.div 
+          className="relative w-full h-full max-w-5xl max-h-[80vh] flex items-center justify-center"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={`lightbox-${currentIndex}`}
+              src={images[currentIndex]}
+              alt={`Gallery Image ${currentIndex + 1}`}
+              className="max-w-full max-h-full object-contain"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+            />
+          </AnimatePresence>
+          
+          <div className="absolute inset-x-0 bottom-4 flex justify-center gap-2 z-10">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentIndex(index);
+                }}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  index === currentIndex
+                    ? 'bg-white w-4'
+                    : 'bg-white/50 hover:bg-white/80'
+                }`}
+                aria-label={`Go to image ${index + 1}`}
+              />
+            ))}
+          </div>
+          
+          <div className="absolute inset-y-0 left-4 flex items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10 rounded-full bg-black/20 text-white hover:bg-black/40"
+              onClick={(e) => {
+                e.stopPropagation();
+                goToPrev();
+              }}
+            >
+              <IconChevronLeft className="h-6 w-6" />
+            </Button>
+          </div>
+          
+          <div className="absolute inset-y-0 right-4 flex items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10 rounded-full bg-black/20 text-white hover:bg-black/40"
+              onClick={(e) => {
+                e.stopPropagation();
+                goToNext();
+              }}
+            >
+              <IconChevronRight className="h-6 w-6" />
+            </Button>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
+
 // Component for Hero Foreground Content
 interface HeroForegroundProps {
   isInView: boolean;
@@ -175,6 +285,12 @@ interface HeroForegroundProps {
   goToPrevRightSlide: () => void;
   goToRightSlide: (index: number) => void;
   isRightCarouselLoading: boolean; // Assuming a separate loading for this one if needed
+  
+  // Add new props for lightbox
+  isLightboxOpen: boolean;
+  setIsLightboxOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  lightboxIndex: number;
+  setLightboxIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const HeroForeground = React.memo<HeroForegroundProps>(({
@@ -196,10 +312,12 @@ const HeroForeground = React.memo<HeroForegroundProps>(({
   goToNextRightSlide,
   goToPrevRightSlide,
   goToRightSlide,
-  isRightCarouselLoading
+  isRightCarouselLoading,
+  setIsLightboxOpen,
+  setLightboxIndex,
 }) => {
   return (
-    <div className="container mx-auto px-4 z-10 relative">
+    <div className="container mx-auto px-6 z-10 relative"> {/* Increased horizontal padding */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* Left Content - Text and CTA */}
         <motion.div
@@ -442,7 +560,7 @@ const HeroForeground = React.memo<HeroForegroundProps>(({
           className="relative aspect-[4/3] w-full max-w-xl mx-auto lg:ml-auto"
         >
           <div className="relative w-full h-full rounded-2xl overflow-hidden bg-black/5 dark:bg-white/5 shadow-xl">
-            {isRightCarouselLoading && isInView && ( // Use prop for loading state
+            {isRightCarouselLoading && isInView && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/10 dark:bg-white/10 z-20">
                 <Loader2 className="animate-spin h-12 w-12 text-primary" />
               </div>
@@ -451,16 +569,20 @@ const HeroForeground = React.memo<HeroForegroundProps>(({
               <AnimatePresence mode="wait">
                 {isInView && (
                   <motion.img
-                    key={`carousel-fg-${currentRightCarouselIndex}`} // Use dedicated index
-                    src={rightCarouselImages[currentRightCarouselIndex]} // Use prop
+                    key={`carousel-fg-${currentRightCarouselIndex}`}
+                    src={rightCarouselImages[currentRightCarouselIndex]}
                     alt={`Showcase Image ${currentRightCarouselIndex + 1}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover cursor-pointer"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.5 }}
                     style={{
                       boxShadow: "0 25px 50px -12px rgba(233, 74, 156, 0.25), 0 8px 24px -8px rgba(255, 215, 0, 0.15)"
+                    }}
+                    onClick={() => {
+                      setLightboxIndex(currentRightCarouselIndex);
+                      setIsLightboxOpen(true);
                     }}
                   />
                 )}
@@ -471,7 +593,7 @@ const HeroForeground = React.memo<HeroForegroundProps>(({
                 variant="ghost"
                 size="icon"
                 className="h-10 w-10 rounded-full bg-black/20 text-white hover:bg-black/40"
-                onClick={goToPrevRightSlide} // Use dedicated handler
+                onClick={goToPrevRightSlide}
               >
                 <IconChevronLeft className="h-6 w-6" />
               </Button>
@@ -479,18 +601,18 @@ const HeroForeground = React.memo<HeroForegroundProps>(({
                 variant="ghost"
                 size="icon"
                 className="h-10 w-10 rounded-full bg-black/20 text-white hover:bg-black/40"
-                onClick={goToNextRightSlide} // Use dedicated handler
+                onClick={goToNextRightSlide}
               >
                 <IconChevronRight className="h-6 w-6" />
               </Button>
             </div>
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
-              {rightCarouselImages.map((_, index) => ( // Use prop
+              {rightCarouselImages.map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => goToRightSlide(index)} // Use dedicated handler
+                  onClick={() => goToRightSlide(index)}
                   className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    index === currentRightCarouselIndex // Use dedicated index
+                    index === currentRightCarouselIndex
                       ? 'bg-white w-4'
                       : 'bg-white/50 hover:bg-white/80'
                   }`}
@@ -523,6 +645,10 @@ export function HeroSection() {
   const [isNewsletterPending, startNewsletterTransition] = useTransition();
   const [isNewsletterSuccess, setIsNewsletterSuccess] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState('');
+
+  // Add state for the lightbox
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const handleNewsletterSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -655,10 +781,10 @@ export function HeroSection() {
       className="relative min-h-screen flex items-center py-24 overflow-hidden"
     >
       <BackgroundImageCarousel
-        currentIndex={currentRightCarouselIndex} // Use the right carousel's index
+        currentIndex={currentRightCarouselIndex}
         images={heroShowcaseImages}
         blurredBackgrounds={blurredBackgrounds}
-        preloadedImages={rightCarouselPreloaded} // Use the right carousel's preloaded status
+        preloadedImages={rightCarouselPreloaded}
         isInView={isInView}
       />
       <HeroForeground
@@ -666,7 +792,7 @@ export function HeroSection() {
         bankDetails={bankDetails}
         locationDetails={locationDetails}
         socialLinks={socialLinks}
-        rightCarouselImages={heroShowcaseImages} // Pass images for the right carousel
+        rightCarouselImages={heroShowcaseImages}
         onCopyToClipboard={copyToClipboard}
         copiedValue={copiedValue}
         showNewsletterInput={showNewsletterInput}
@@ -676,12 +802,26 @@ export function HeroSection() {
         isNewsletterSuccess={isNewsletterSuccess}
         newsletterEmail={newsletterEmail}
         setNewsletterEmail={setNewsletterEmail}
-        // Pass state and handlers for right carousel
         currentRightCarouselIndex={currentRightCarouselIndex}
         goToNextRightSlide={goToNextRightSlide}
         goToPrevRightSlide={goToPrevRightSlide}
         goToRightSlide={goToRightSlide}
         isRightCarouselLoading={isRightCarouselLoading}
+        
+        // Add new props for lightbox functionality
+        isLightboxOpen={isLightboxOpen}
+        setIsLightboxOpen={setIsLightboxOpen}
+        lightboxIndex={lightboxIndex}
+        setLightboxIndex={setLightboxIndex}
+      />
+      
+      {/* Add the ImageLightbox component */}
+      <ImageLightbox 
+        isOpen={isLightboxOpen}
+        onClose={() => setIsLightboxOpen(false)}
+        images={heroShowcaseImages}
+        currentIndex={lightboxIndex}
+        setCurrentIndex={setLightboxIndex}
       />
       
       {/* Simplified decorative element */}

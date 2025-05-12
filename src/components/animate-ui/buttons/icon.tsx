@@ -41,7 +41,7 @@ const animations = {
 };
 
 type IconButtonProps = Omit<HTMLMotionProps<'button'>, 'color'> & {
-  icon: React.ElementType;
+  icon: React.ComponentType<{ className?: string }>; // More specific type for Icon
   active?: boolean;
   className?: string;
   animate?: boolean;

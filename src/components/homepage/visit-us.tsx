@@ -43,10 +43,10 @@ const colors = {
 
 // Temple location data
 const templeInfo = {
-  address: "Pudhuvai Vrindavanam, RS No-54/3, Koodappakkam, Main Road, Near Pogo Land, Pathukannu, Puducherry 605502",
+  address: "ISKM Pondicherry, RS No-54/3, Koodappakkam, Main Road, Near Pogo Land, Pathukannu, Puducherry 605502",
   phone: "+91 90426 42103",
   email: "info@iskmpondicherry.org",
-  mapsLink: "https://maps.app.goo.gl/8CGJUsGp4Vt8fLdN7",
+  mapsLink: "https://maps.google.com/maps?q=ISKM+Pondicherry,RS+No-54/3,Koodappakkam,Main+Road,Near+Pogo+Land,Pathukannu,Puducherry+605502",
   hours: [
     { day: "Monday - Sunday (Morning)", hours: "4:30 AM - 12:00 PM" },
     { day: "Monday - Sunday (Evening)", hours: "4:30 PM - 6:30 PM" }
@@ -104,7 +104,7 @@ const transportationData = {
     cost: "₹225-300 (US $3-4)",
     selfDriveCost: "₹150-225 (US $2-3)",
     description: "Puducherry Airport (PNY) is the closest airport, located just 5-6 km from the city center in Lawspet. It primarily serves domestic flights, with regular connections to Bengaluru and Hyderabad. This airport is ideal for travelers coming from South Indian cities or those seeking the shortest transfer to the heart of Pondicherry.",
-    mapEmbedUrl: "https://maps.google.com/maps?saddr=Puducherry+Airport&daddr=Pudhuvai+Vrindavanam,+Koodappakkam,+Puducherry&output=embed&z=13&hl=en"
+    mapEmbedUrl: "https://maps.google.com/maps?saddr=Puducherry+Airport&daddr=ISKM+Pondicherry,RS+No-54/3,Koodappakkam,Main+Road,Near+Pogo+Land,Pathukannu,Puducherry+605502&output=embed&z=13&hl=en"
   },
   chennaiAirport: {
     name: "Chennai International Airport (MAA)",
@@ -119,7 +119,7 @@ const transportationData = {
     busService: "SETC/TNSTC operates AC/Non-AC buses from Chennai Airport to Pondicherry",
     busCost: "₹250-350 (US $3-4.5)",
     description: "Chennai International Airport (MAA) is the nearest major international airport, situated about 125-148 km from Pondicherry. It offers extensive domestic and international connectivity, making it the preferred choice for most travelers flying in from other parts of India or abroad. From Chennai, Pondicherry can be reached by taxi, bus, or train in approximately 3-4 hours.",
-    mapEmbedUrl: "https://maps.google.com/maps?saddr=Chennai+International+Airport&daddr=Pudhuvai+Vrindavanam,+Koodappakkam,+Puducherry&output=embed&z=10&hl=en"
+    mapEmbedUrl: "https://maps.google.com/maps?saddr=Chennai+International+Airport&daddr=ISKM+Pondicherry,RS+No-54/3,Koodappakkam,Main+Road,Near+Pogo+Land,Pathukannu,Puducherry+605502&output=embed&z=10&hl=en"
   },
   trichyAirport: {
     name: "Tiruchirapalli International Airport (TRZ)",
@@ -133,7 +133,7 @@ const transportationData = {
     busService: "SETC operates limited bus services from Trichy to Pondicherry",
     busCost: "₹300-400 (US $4-5)",
     description: "Tiruchirapalli International Airport, also known as Trichy Airport, is another viable option, especially for travelers from southern and central Tamil Nadu or those arriving on select international routes. While farther than Chennai, it can be convenient for certain itineraries, though onward travel to Pondicherry will typically require a longer road journey.",
-    mapEmbedUrl: "https://maps.google.com/maps?saddr=Tiruchirapalli+International+Airport&daddr=Pudhuvai+Vrindavanam,+Koodappakkam,+Puducherry&output=embed&z=9&hl=en"
+    mapEmbedUrl: "https://maps.google.com/maps?saddr=Tiruchirapalli+International+Airport&daddr=ISKM+Pondicherry,RS+No-54/3,Koodappakkam,Main+Road,Near+Pogo+Land,Pathukannu,Puducherry+605502&output=embed&z=9&hl=en"
   },
   bus: {
     schedule: {
@@ -149,7 +149,7 @@ const transportationData = {
       { name: "Dr. B.R. Ambedkar Bus Stop", distance: "0.9 km from Koodappakkam" },
       { name: "Koodappakkam Bus Stop", distance: "1.1 km" }
     ],
-    mapEmbedUrl: "https://maps.google.com/maps?saddr=Pondicherry+New+Bus+Stand&daddr=Pudhuvai+Vrindavanam,+Koodappakkam,+Puducherry&output=embed&z=13&hl=en"
+    mapEmbedUrl: "https://maps.google.com/maps?saddr=Pondicherry+New+Bus+Stand&daddr=ISKM+Pondicherry,RS+No-54/3,Koodappakkam,Main+Road,Near+Pogo+Land,Pathukannu,Puducherry+605502&output=embed&z=13&hl=en"
   },
   car: {
     directions: [
@@ -162,7 +162,7 @@ const transportationData = {
     ],
     landmark: "Located near Pogo Land in Pathukannu",
     elevation: "6 meters above sea level",
-    mapEmbedUrl: "https://maps.google.com/maps?saddr=Pondicherry&daddr=Pudhuvai+Vrindavanam,+Koodappakkam,+Puducherry&output=embed&z=13&hl=en"
+    mapEmbedUrl: "https://maps.google.com/maps?saddr=Pondicherry&daddr=ISKM+Pondicherry,RS+No-54/3,Koodappakkam,Main+Road,Near+Pogo+Land,Pathukannu,Puducherry+605502&output=embed&z=13&hl=en"
   },
   train: {
     station: "Puducherry Railway Station",
@@ -471,13 +471,12 @@ export function VisitUs() {
   return (
     <TooltipProvider>
       <section 
-        className="py-12 md:py-24 relative overflow-visible bg-cover bg-center bg-fixed"
-        style={{ backgroundImage: "url('/temple-building/4.webp')" }}
+        className="py-12 md:py-24 relative overflow-visible" 
+        // Removed: bg-cover bg-center bg-fixed and style={{ backgroundImage: "url('/temple-building/4.webp')" }}
       >
-        {/* Enhanced background effect with layered blur */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-white/20 dark:from-black/40 dark:to-black/20 backdrop-blur-sm z-0"></div>
+        {/* Removed: Enhanced background effect with layered blur div */}
         
-        <div className="container mx-auto z-10 relative px-4 md:px-6">
+        <div className="container mx-auto z-10 relative px-4 md:px-6"> {/* Ensure content is still structured if needed, or adjust classes if section itself provides padding/margin */}
           {/* Section Header */}
           <div className="mb-12 md:mb-16 text-center">
             <motion.div 
@@ -641,15 +640,15 @@ export function VisitUs() {
                             className="bg-gradient-to-r from-[#ffc547]/5 to-transparent dark:from-[#ffc547]/10 dark:to-transparent p-4 rounded-xl"
                           >
                             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                              <strong>Temple Name:</strong> ISKM Pudhuvai Vrindavanam
+                              <strong>Temple Name:</strong> ISKM Pondicherry
                             </p>
                             <div className="mt-3 flex items-center">
                               <div className="p-2 bg-[#e94a9c]/10 rounded-md mr-2">
                                 <MapPin className="h-4 w-4 text-[#e94a9c]" />
                               </div>
                               <div>
-                                <p className="text-sm font-medium text-gray-900 dark:text-white">Exact Coordinates</p>
-                                <p className="text-xs text-gray-700 dark:text-gray-300">11.948861, 79.818114</p>
+                                <p className="text-sm font-medium text-gray-900 dark:text-white">Address</p>
+                                <p className="text-xs text-gray-700 dark:text-gray-300">{templeData.address}</p>
                               </div>
                             </div>
                           </motion.div>
@@ -697,7 +696,7 @@ export function VisitUs() {
                           )}
                           
                           <iframe 
-                            src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3903.4022259758287!2d79.818114!3d11.948861!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5365c6121ae3f1%3A0xc9c3539f6f16d311!2sHare%20Krishna%20Temple%2C%20ISKM%20Pudhuvai%20Vrindavan!5e0!3m2!1sen!2sin!4v1720116775794!5m2!1sen!2sin`} 
+                            src={"https://maps.google.com/maps?q=ISKM+Pondicherry,RS+No-54/3,Koodappakkam,Main+Road,Near+Pogo+Land,Pathukannu,Puducherry+605502&output=embed&z=15&hl=en"} 
                             className={cn(
                               "w-full h-full min-h-[350px] border-0 transition-opacity duration-500",
                               mapsLoading.temple ? "opacity-0" : "opacity-100"
@@ -1558,4 +1557,4 @@ export function VisitUs() {
       </section>
     </TooltipProvider>
   )
-} 
+}

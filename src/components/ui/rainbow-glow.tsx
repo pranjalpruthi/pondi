@@ -1,12 +1,13 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
+import React from "react"; // Import React for React.memo
 
 interface RainbowGlowProps {
-  className?: string
-  containerClassName?: string
-  position?: "top" | "bottom"
+  className?: string;
+  containerClassName?: string;
+  position?: "top" | "bottom";
 }
 
-export function RainbowGlow({ className, containerClassName, position = "bottom" }: RainbowGlowProps) {
+export const RainbowGlow = React.memo(({ className, containerClassName, position = "bottom" }: RainbowGlowProps) => {
   const isTop = position === "top";
   return (
     <div className={cn(
@@ -16,38 +17,41 @@ export function RainbowGlow({ className, containerClassName, position = "bottom"
     )}>
       <div className="relative w-full h-full">
         <div className="absolute inset-0 flex justify-center">
-          {/* Multiple glowing orbs with different animations */}
+          {/* Multiple glowing orbs - now static */}
           <div className={cn(
-            "absolute h-24 w-[40%] animate-pulse-glow bg-gradient-to-r from-purple-500/30 via-pink-500/30 to-orange-500/30 blur-3xl rounded-full",
+            "absolute h-24 w-[40%] bg-gradient-to-r from-purple-500/30 via-pink-500/30 to-orange-500/30 blur-3xl rounded-full",
+            // Removed: animate-pulse-glow, will-change-*
             isTop ? "top-[-20%]" : "bottom-[-20%]"
           )}
           />
           <div className={cn(
-            "absolute h-24 w-[45%] animate-pulse-glow-fast bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 blur-3xl rounded-full",
+            "absolute h-24 w-[45%] bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 blur-3xl rounded-full",
+            // Removed: animate-pulse-glow-fast, will-change-*
             isTop ? "top-[-25%]" : "bottom-[-25%]"
           )}
-            style={{ animationDelay: "-1s" }}
+            // Removed: style={{ animationDelay: "-1s" }}
           />
           <div className={cn(
-            "absolute h-20 w-[35%] animate-pulse-slow bg-gradient-to-r from-pink-500/25 via-purple-500/25 to-indigo-500/25 blur-3xl rounded-full",
+            "absolute h-20 w-[35%] bg-gradient-to-r from-pink-500/25 via-purple-500/25 to-indigo-500/25 blur-3xl rounded-full",
+            // Removed: animate-pulse-slow, will-change-*
             isTop ? "top-[-15%]" : "bottom-[-15%]"
           )}
-            style={{ animationDelay: "-2s" }}
+            // Removed: style={{ animationDelay: "-2s" }}
           />
         </div>
       </div>
 
-      {/* Rainbow Border Glow */}
+      {/* Rainbow Border Glow - now static */}
       <div className={cn(
         "absolute left-0 right-0 h-[2px] z-[2]",
         isTop ? "top-0" : "bottom-0",
         className
       )}>
-        <div className="relative w-full h-full animate-rainbow bg-gradient-to-r
-          from-purple-500/50 via-pink-500/50 to-orange-500/50
-          [--speed:4s]"
+        <div className="relative w-full h-full bg-gradient-to-r
+          from-purple-500/50 via-pink-500/50 to-orange-500/50"
+          // Removed: animate-rainbow, [--speed:4s], will-change-[background]
         />
       </div>
     </div>
   )
-}
+});

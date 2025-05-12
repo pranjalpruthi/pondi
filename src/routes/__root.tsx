@@ -18,7 +18,7 @@ export const Route = createRootRoute({
        {/* <TanstackQueryProvider> */}
           <div className="relative min-h-screen flex flex-col bg-background">
             {!isDashboardRoute && <NavBar />}
-            <main className="flex-1 pb-24 pt-5">
+            <main className="flex-1 pt-5">
               <Outlet />
             </main>
             {!isDashboardRoute && <Navbar />}

@@ -95,7 +95,7 @@ function InputButtonAction({ className, ...props }: InputButtonActionProps) {
 }
 
 type InputButtonSubmitProps = HTMLMotionProps<'button'> & {
-  icon?: React.ElementType;
+  icon?: React.ComponentType<{ className?: string }>; // More specific type for Icon
 };
 
 function InputButtonSubmit({

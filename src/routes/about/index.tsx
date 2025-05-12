@@ -1,709 +1,592 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { motion, useScroll, useTransform } from "motion/react"
 import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle,
-  CardFooter
+  Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert" // Added Alert
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card" // Added HoverCard
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar" // Added Avatar
 import { useRef } from 'react'
+import { 
+  ChevronRight, Calendar, Building, BookOpen, Heart, GraduationCap, Utensils, Award, ShieldHalf, 
+  Target, Users, Leaf, Handshake, Banknote, Facebook, Instagram, Youtube// Added new icons
+} from "lucide-react"
+import { VisitUs } from "@/components/homepage/visit-us" // Import VisitUs component
+import { CopyButton } from "@/components/animate-ui/buttons/copy" // Import CopyButton
 
 export const Route = createFileRoute('/about/')({
   component: AboutPage,
 })
 
+// --- Constants & Data ---
+// const LOTUS_PINK = "#e94a9c"; // Removed unused constant
+
+
+const templeDetails = {
+  name: "ISKM (International Shri Krishna Mandir) Pondicherry",
+  shortName: "ISKM Pondicherry",
+  address: "Pudhuvai Vrindavanam, RS No-54/3, koodappakkam, main road, near pogo land, Pathukannu, Puducherry 605502",
+  mapsLink: "https://maps.app.goo.gl/8CGJUsGp4Vt8fLdN7",
+  phone: "+91 90426 42103", // Assuming this is the correct phone from VisitUs
+  email: "info@iskmpondicherry.org",
+  timings: [
+    { period: "Mangal Aarati", time: "4:30 AM" },
+    { period: "Darshan Aarati", time: "7:15 AM" },
+    { period: "Guru Puja", time: "7:20 AM" },
+    { period: "Bhagvatam Discourse", time: "8:00 AM" },
+    { period: "Temple Closes (Midday)", time: "12:00 PM" },
+    { period: "Gaura Arati", time: "5:30 PM" },
+    { period: "Temple Closes (Evening)", time: "6:30 PM" },
+  ],
+  bankDetails: {
+    accountName: "ISKM PONDICHERRY",
+    accountNumber: "1197110110052583",
+    ifsc: "UJVN0001197",
+    bankName: "UJJIVAN BANK, PONDICHERRY BRANCH",
+    type: "SAVINGS ACCOUNT"
+  },
+  socialLinks: {
+    facebook: "https://facebook.com/iskm.pondy",
+    instagram: "https://instagram.com/iskm_pondy",
+    youtube: "https://www.youtube.com/@ISKMPondy"
+  }
+};
+
+const historyContent = {
+  title: "Our Sacred Journey",
+  paragraph1: `ISKM (International Shri Krishna Mandir) Pondicherry is established under the guidance of Srila Prabhupada’s original teachings. Founded with the vision to revive Vedic culture and Krishna consciousness, ISKM Pondicherry serves as a vital spiritual hub for devotees and the wider community.`,
+  paragraph2: `Our core purpose is to share the timeless wisdom encapsulated in the Bhagavad Gita and other Vedic scriptures, promoting devotional service (bhakti yoga) as the key to a fulfilling life. We are committed to offering free prasadam distribution, ensuring spiritual nourishment reaches all, and providing comprehensive spiritual education and guidance, particularly empowering the youth on their path of self-discovery and devotion.`
+};
+
+const missionItems = [
+  { id: 1, icon: BookOpen, title: "Spread Teachings", description: "Spread the teachings of Lord Sri Krishna as presented by Srila Prabhupada.", image: "/gallery/temple-5.webp" },
+  { id: 2, icon: Heart, title: "Promote Bhakti Yoga", description: "Promote devotional service (bhakti yoga) as the foundation of a meaningful life.", image: "/deity/deites1.webp" },
+  { id: 3, icon: GraduationCap, title: "Spiritual Education", description: "Provide spiritual education via Bhagavad Gita and Srimad Bhagavatam.", image: "/gallery/temple-9.webp" },
+  { id: 4, icon: Utensils, title: "Distribute Prasadam", description: "Distribute prasadam freely to ensure no one goes hungry.", image: "/gallery/temple-15.webp" },
+  { id: 5, icon: Award, title: "Character Building", description: "Conduct character-building programs for youth and the broader society.", image: "/gallery/temple-11.webp" },
+  { id: 6, icon: ShieldHalf, title: "Gokulam Goshala", description: "Protect cows and promote Go-seva as part of Vedic culture and Srila Prabhupada's mission.", image: "/gallery/temple-1.webp" } // Placeholder Goshala image
+];
+
+const visionItems = [
+  { id: 1, icon: Users, title: "Vibrant Community", description: "Build a spiritually vibrant community rooted in Krishna consciousness." },
+  { id: 2, icon: Target, title: "Serve All", description: "Ensure no one within reach remains hungry, fulfilling Srila Prabhupada’s instruction." },
+  { id: 3, icon: BookOpen, title: "Accessible Wisdom", description: "Make Vedic wisdom accessible to all, regardless of caste and creed." },
+  { id: 4, icon: Leaf, title: "Transform Lives", description: "Transform lives through simple living, high thinking, and pure devotion." },
+  { id: 5, icon: Handshake, title: "Inspire Society", description: "Inspire a society that is peaceful, purposeful, and God-centered." },
+  { id: 6, icon: ShieldHalf, title: "Revive Vedic Culture", description: "Revive Vedic culture by protecting cows and re-establishing Varnashrama Dharma." }
+];
+
+const constructionData = {
+  sectionTitle: "Temple Construction Progress",
+  overallProgress: 45, // Keep this updated
+  latestUpdate: {
+    title: "Phase 1: Foundation Stone Laid",
+    date: "May 09, 2025",
+    description: "With immense joy and gratitude, we announce the successful completion of the foundation stone laying ceremony. This marks a significant milestone in our journey to build a divine abode. The groundwork is now underway, preparing for the next phase of construction.",
+    images: [
+      "/temple-building/1.webp", "/temple-building/2.webp", "/temple-building/3.webp",
+      "/temple-building/4.webp", "/temple-building/5.webp", "/temple-building/6.webp",
+      "/temple-building/7.webp", "/temple-building/8.webp",
+    ],
+  },
+  campaign: {
+    message: "Every contribution, big or small, brings us closer to realizing this sacred dream. Join us in building a legacy of faith and devotion.",
+    ctaText: "Support the Construction",
+    ctaLink: "/donate", // Link to main donate page for now
+  },
+  phases: [
+    { name: "Foundation", progress: 100 }, { name: "Structure", progress: 60 },
+    { name: "Interior", progress: 15 }, { name: "Landscaping", progress: 5 },
+  ]
+};
+
+const faqItems = [
+  { question: "What is Krishna Consciousness?", answer: "Krishna Consciousness is the awakening of our original, pure consciousness where one realizes their eternal relationship with Krishna (God). It is a scientific and practical approach to spiritual life based on the teachings of the Bhagavad Gita and other Vedic scriptures." },
+  { question: "Do I need to be Hindu to visit or participate?", answer: "No, ISKM welcomes people from all backgrounds, faiths, and walks of life. The teachings and practices of Krishna Consciousness are universal and can be embraced by anyone interested in spiritual growth." },
+  { question: "What should I wear when visiting the temple?", answer: "We recommend modest attire when visiting the temple. For men, shirts and pants or dhotis are appropriate. For women, saris, long skirts, or dresses that cover the legs are recommended. You might also want to bring a shawl to cover your shoulders." },
+  { question: "What is prasadam?", answer: "Prasadam literally means 'mercy' and refers to vegetarian food that has been offered to Krishna with devotion. We believe that when food is offered to Krishna, it becomes spiritualized and purifies those who consume it." }
+];
+
+// --- Animation Variants ---
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+}
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } }
+}
+const fadeInUpVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+}
+
+// --- Helper Components ---
+const SectionTitle = ({ children }: { children: React.ReactNode }) => (
+  <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800 dark:text-gray-100">
+    {children}
+  </h2>
+);
+
+const SocialLink = ({ href, icon: Icon, label }: { href: string, icon: React.ComponentType<{ className?: string }>, label: string }) => (
+  <HoverCard openDelay={100} closeDelay={100}>
+    <HoverCardTrigger asChild>
+      <a href={href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-pink-600 transition-colors">
+        <Icon className="h-6 w-6" />
+      </a>
+    </HoverCardTrigger>
+    <HoverCardContent className="w-auto p-2 text-xs" side="top">
+      {label ? <p>{label}</p> : null} {/* Wrap label in a <p> tag */}
+    </HoverCardContent>
+  </HoverCard>
+);
+
+// --- Main Component ---
 function AboutPage() {
-  // Refs for scroll animations
   const containerRef = useRef(null)
   const heroRef = useRef(null)
-  const quoteRef = useRef(null)
   
-  // Parallax scroll effect for hero image
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"]
-  })
-  
-  const heroImageY = useTransform(scrollYProgress, [0, 1], [0, 100])
-  
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15
-      }
-    }
-  }
-  
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100
-      }
-    }
-  }
-
-  const fadeInUpVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut"
-      }
-    }
-  }
-
-  const fadeInLeftVariants = {
-    hidden: { opacity: 0, x: -50 },
-    visible: { 
-      opacity: 1, 
-      x: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut"
-      }
-    }
-  }
-
-  const fadeInRightVariants = {
-    hidden: { opacity: 0, x: 50 },
-    visible: { 
-      opacity: 1, 
-      x: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut"
-      }
-    }
-  }
-
-  const missionItems = [
-    {
-      id: 1,
-      icon: "🕉️",
-      title: "Spread Krishna's Teachings",
-      description: "Spread the teachings of Lord Sri Krishna as presented by Srila Prabhupada.",
-      image: "/images/about/krishna-teachings.jpg"
-    },
-    {
-      id: 2,
-      icon: "🙏",
-      title: "Promote Devotional Service",
-      description: "Promote devotional service (bhakti yoga) as the foundation of a meaningful life.",
-      image: "/images/about/bhakti-yoga.jpg"
-    },
-    {
-      id: 3,
-      icon: "📚",
-      title: "Provide Spiritual Education",
-      description: "Provide spiritual education through scriptures like the Bhagavad Gita and Srimad Bhagavatam.",
-      image: "/images/about/scripture-study.jpg"
-    },
-    {
-      id: 4,
-      icon: "🍚",
-      title: "Distribute Prasadam",
-      description: "Distribute prasadam freely to ensure no one goes hungry.",
-      image: "/images/about/prasadam.jpg"
-    },
-    {
-      id: 5,
-      icon: "👨‍👩‍👧‍👦",
-      title: "Character-Building Programs",
-      description: "Conduct character-building programs for youth and the broader society.",
-      image: "/images/about/youth-programs.jpg"
-    },
-    {
-      id: 6,
-      icon: "🐄",
-      title: "Gokulam Goshala",
-      description: "ISKM Pondicherry has Gokulam Goshala, dedicated to protecting cows and promoting Go-seva as an essential part of Vedic culture and Srila Prabhupada's mission.",
-      image: "/images/about/goshala.jpg"
-    }
-  ]
-
-  const valueItems = [
-    {
-      id: 1,
-      icon: "💖",
-      title: "Compassion",
-      description: "Practice compassion towards all living entities, recognizing the divine spark in every soul."
-    },
-    {
-      id: 2,
-      icon: "🧠",
-      title: "Spiritual Knowledge",
-      description: "Cultivate transcendental knowledge through studying sacred texts and applying their wisdom."
-    },
-    {
-      id: 3,
-      icon: "🌱",
-      title: "Simple Living",
-      description: "Embrace a lifestyle of simplicity, mindfulness, and respect for Mother Earth."
-    },
-    {
-      id: 4,
-      icon: "🤝",
-      title: "Community Service",
-      description: "Serve the community selflessly as an expression of devotion to Krishna."
-    }
-  ]
-
-  const programItems = [
-    {
-      id: 1,
-      title: "Daily Arati",
-      schedule: "Morning: 4:30 AM, Noon: 12:00 PM, Evening: 7:00 PM",
-      description: "Temple worship with beautiful deity darshan, kirtan, and arati ceremonies."
-    },
-    {
-      id: 2,
-      title: "Sunday Feast Program",
-      schedule: "Every Sunday, 4:30 PM - 8:00 PM",
-      description: "Join us for kirtan, discourse on Bhagavad Gita, and delicious prasadam feast."
-    },
-    {
-      id: 3,
-      title: "Bhagavad Gita Study",
-      schedule: "Thursdays, 6:00 PM - 7:30 PM",
-      description: "In-depth study and discussion of Bhagavad Gita As It Is with senior devotees."
-    },
-    {
-      id: 4,
-      title: "Kirtan Mela",
-      schedule: "First Saturday of every month, 6:00 PM - 9:00 PM",
-      description: "Immerse yourself in the transcendental sound vibration of Krishna's holy names."
-    }
-  ]
-
-  const faqItems = [
-    {
-      question: "What is Krishna Consciousness?",
-      answer: "Krishna Consciousness is the awakening of our original, pure consciousness where one realizes their eternal relationship with Krishna (God). It is a scientific and practical approach to spiritual life based on the teachings of the Bhagavad Gita and other Vedic scriptures."
-    },
-    {
-      question: "Do I need to be Hindu to visit or participate?",
-      answer: "No, ISKM welcomes people from all backgrounds, faiths, and walks of life. The teachings and practices of Krishna Consciousness are universal and can be embraced by anyone interested in spiritual growth."
-    },
-    {
-      question: "What should I wear when visiting the temple?",
-      answer: "We recommend modest attire when visiting the temple. For men, shirts and pants or dhotis are appropriate. For women, saris, long skirts, or dresses that cover the legs are recommended. You might also want to bring a shawl to cover your shoulders."
-    },
-    {
-      question: "What is prasadam?",
-      answer: "Prasadam literally means 'mercy' and refers to vegetarian food that has been offered to Krishna with devotion. We believe that when food is offered to Krishna, it becomes spiritualized and purifies those who consume it."
-    }
-  ]
-
-  // Fallback image URLs (from Unsplash) in case local images don't exist
-  const fallbackImages = [
-    "https://images.unsplash.com/photo-1625305561707-59145b50c36b?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1626239656531-95cf6b18be5b?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1622677890084-3c1eef022d5a?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1628513468105-9a0383e9a0db?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1561489404-42f13bbfc5e9?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1584966183581-a98257663730?q=80&w=800&auto=format&fit=crop"
-  ]
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] })
+  const heroImageY = useTransform(scrollYProgress, [0, 1], [0, 150]) // Increased parallax
 
   return (
-    <div ref={containerRef} className="relative max-w-6xl mx-auto px-4 py-12 md:py-20 overflow-hidden">
-      {/* Decorative element - Lotus pattern */}
-      <div className="absolute top-0 right-0 w-64 h-64 opacity-5 pointer-events-none">
-        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <path fill="currentColor" d="M100,15 C125,15 150,35 150,55 C175,55 185,80 185,100 C185,120 175,145 150,145 C150,165 125,185 100,185 C75,185 50,165 50,145 C25,145 15,120 15,100 C15,80 25,55 50,55 C50,35 75,15 100,15 Z" />
-        </svg>
-      </div>
-      
-      <div className="absolute bottom-0 left-0 w-64 h-64 opacity-5 pointer-events-none">
-        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <path fill="currentColor" d="M100,15 C125,15 150,35 150,55 C175,55 185,80 185,100 C185,120 175,145 150,145 C150,165 125,185 100,185 C75,185 50,165 50,145 C25,145 15,120 15,100 C15,80 25,55 50,55 C50,35 75,15 100,15 Z" />
-        </svg>
-      </div>
-      
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
+    // Removed background image, overlay, and decorative SVG blobs for performance.
+    // Kept padding on this outer div for now.
+    <div 
+      ref={containerRef} 
+      className="relative px-4 py-16 md:py-24" 
+    >
+      {/* Content Wrapper */}
+      <div className="relative z-10 max-w-7xl mx-auto"> {/* Added wrapper with max-width and centering */}
+        {/* Page Header */}
+        <motion.div
+        initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center mb-12"
+        transition={{ duration: 0.6 }}
+        className="text-center mb-16 md:mb-20"
       >
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">
-          About <span className="text-primary">ISKM Pondicherry</span>
+        <h1 className="text-4xl md:text-6xl font-extrabold mb-4 bg-gradient-to-r from-pink-600 via-orange-500 to-yellow-400 text-transparent bg-clip-text">
+          About {templeDetails.shortName}
         </h1>
-        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          Dedicated to spreading spiritual knowledge and promoting a compassionate lifestyle based on Vedic principles.
+        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+          Reviving Vedic culture and spreading Krishna consciousness through devotion, education, and service.
         </p>
       </motion.div>
       
-      {/* Hero Image with Parallax */}
+      {/* Hero Image */}
       <motion.div
         ref={heroRef}
-        initial={{ opacity: 0, scale: 0.95 }}
+        initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.7, delay: 0.2 }}
-        className="relative w-full h-64 md:h-[500px] mb-16 rounded-xl overflow-hidden"
+        transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+        className="relative w-full h-72 md:h-[600px] mb-20 rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-gray-800"
       >
         <motion.img 
           style={{ y: heroImageY }}
-          src="https://images.unsplash.com/photo-1518607692857-bff9babd9d40?q=80&w=1200&auto=format&fit=crop"
-          alt="ISKM Pondicherry Temple"
-          className="w-full h-[120%] object-cover"
+          src="/gallery/temple-16.webp" // Selected Hero Image
+          alt={`${templeDetails.shortName} Temple Exterior`}
+          className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
-          <div className="p-6 md:p-8">
-            <h2 className="text-white text-2xl md:text-3xl font-bold">
-              ISKM Pondicherry
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-transparent flex items-end">
+          <div className="p-8 md:p-12 text-white">
+            <h2 className="text-3xl md:text-5xl font-bold mb-3 drop-shadow-md">
+              A Beacon of Spiritual Light
             </h2>
-            <p className="text-white/90 mt-2 max-w-xl">
-              A spiritual sanctuary dedicated to the teachings of Lord Krishna and Srila Prabhupada
+            <p className="text-lg md:text-xl max-w-2xl opacity-90 drop-shadow-sm">
+              Discover peace, wisdom, and community, guided by the timeless teachings of Lord Krishna and Srila Prabhupada.
             </p>
           </div>
         </div>
       </motion.div>
       
-      {/* Quick Navigation */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="mb-16 flex justify-center flex-wrap gap-3"
-      >
-        <Button variant="outline" onClick={() => document.getElementById('history')?.scrollIntoView({ behavior: 'smooth' })}>
-          Our History
-        </Button>
-        <Button variant="outline" onClick={() => document.getElementById('mission')?.scrollIntoView({ behavior: 'smooth' })}>
-          Our Mission
-        </Button>
-        <Button variant="outline" onClick={() => document.getElementById('values')?.scrollIntoView({ behavior: 'smooth' })}>
-          Our Values
-        </Button>
-        <Button variant="outline" onClick={() => document.getElementById('programs')?.scrollIntoView({ behavior: 'smooth' })}>
-          Programs
-        </Button>
-        <Button variant="outline" onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })}>
-          FAQ
-        </Button>
-        <Button variant="outline" onClick={() => document.getElementById('visit')?.scrollIntoView({ behavior: 'smooth' })}>
-          Visit Us
-        </Button>
-      </motion.div>
+      {/* Quick Navigation - Removed, sections flow naturally */}
       
-      {/* Brief History Section */}
-      <motion.div
+      {/* History Section - Updated Content */}
+      <motion.section
         id="history"
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: true, amount: 0.2 }}
         variants={fadeInUpVariants}
-        className="mb-16"
+        className="mb-24 md:mb-32"
       >
-        <Card className="border-0 bg-primary/5">
-          <CardContent className="p-6 md:p-8">
-            <div className="flex flex-col md:flex-row gap-8 items-center">
-              <div className="md:w-2/5">
-                <div className="relative">
-                  <div className="absolute -top-2 -left-2 w-12 h-12 border-t-2 border-l-2 border-primary"></div>
-                  <div className="absolute -bottom-2 -right-2 w-12 h-12 border-b-2 border-r-2 border-primary"></div>
-                  <img 
-                    src="https://images.unsplash.com/photo-1519846608558-08e6e9a4eeec?q=80&w=600&auto=format&fit=crop"
-                    alt="Temple history"
-                    className="rounded-md shadow-lg w-full"
-                  />
-                </div>
-              </div>
-              <div className="md:w-3/5">
-                <h3 className="text-2xl font-bold mb-3">Our History</h3>
-                <p className="text-muted-foreground mb-4">
-                  ISKM Pondicherry was established to bring the teachings of Srila Prabhupada to the region, 
-                  creating a spiritual sanctuary for those seeking connection with Krishna and a deeper understanding 
-                  of Vedic wisdom.
+        <Card className="border-0 bg-gradient-to-br from-pink-50 dark:from-pink-900/10 via-transparent to-transparent overflow-hidden rounded-2xl shadow-lg">
+          <CardContent className="p-8 md:p-12">
+            <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
+              <motion.div 
+                className="lg:w-2/5 relative order-2 lg:order-1"
+                initial={{ opacity: 0, x: -40 }}
+                whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: 0.2 }}
+              >
+                <div className="absolute -top-4 -left-4 w-20 h-20 border-t-4 border-l-4 border-pink-300 dark:border-pink-700 rounded-tl-2xl opacity-70"></div>
+                <div className="absolute -bottom-4 -right-4 w-20 h-20 border-b-4 border-r-4 border-pink-300 dark:border-pink-700 rounded-br-2xl opacity-70"></div>
+                <img 
+                  src="/gallery/temple-2.webp" // Selected History Image
+                  alt="Founding inspiration"
+                  className="rounded-2xl shadow-xl w-full relative z-10"
+                />
+              </motion.div>
+              <motion.div 
+                className="lg:w-3/5 order-1 lg:order-2"
+                initial={{ opacity: 0, x: 40 }}
+                whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: 0.3 }}
+              >
+                <h2 className="text-3xl md:text-4xl font-bold mb-5 text-pink-700 dark:text-pink-400">{historyContent.title}</h2>
+                <p className="text-muted-foreground mb-5 text-base md:text-lg leading-relaxed">
+                  {historyContent.paragraph1}
                 </p>
-                <p className="text-muted-foreground">
-                  Since our founding, we have grown into a vibrant community center, offering a wide range of 
-                  spiritual programs, educational initiatives, and community services to people from all walks of life.
+                <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
+                  {historyContent.paragraph2}
                 </p>
-                <div className="mt-6">
-                  <Button variant="outline" size="sm">Learn More About Our Heritage</Button>
+                <div className="mt-8">
+                   <Link to="/donate"> {/* Example Link */}
+                    <Button variant="outline" className="border-pink-500 text-pink-600 hover:bg-pink-50 dark:border-pink-700 dark:text-pink-400 dark:hover:bg-pink-900/20">
+                      Support Our Mission <ChevronRight className="inline h-4 w-4 ml-1.5"/>
+                    </Button>
+                   </Link>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </motion.section>
       
-      <Separator className="my-16" />
+      <Separator className="my-24 md:my-32 border-pink-200 dark:border-pink-800/30" />
       
-      {/* Mission Section */}
-      <motion.div
-        id="mission"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={fadeInUpVariants}
-        className="mb-12"
-      >
-        <h2 className="text-3xl font-bold text-center mb-8">Our Mission</h2>
-      </motion.div>
-      
-      <motion.div
-        variants={containerVariants}
+      {/* Mission & Vision Section (Combined with Tabs) */}
+      <motion.section
+        id="mission-vision"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.1 }}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16"
+        variants={fadeInUpVariants}
+        className="mb-24 md:mb-32"
       >
-        {missionItems.map((item, index) => (
-          <motion.div
-            key={item.id}
-            variants={itemVariants}
-            whileHover={{ y: -5 }}
-            className="h-full"
+        <Tabs defaultValue="mission" className="w-full">
+          <motion.div 
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
           >
-            <Card className="h-full overflow-hidden border-2 hover:border-primary/50 transition-colors">
-              <div className="w-full h-48 overflow-hidden">
-                <img 
-                  src={fallbackImages[index]} 
-                  alt={item.title}
-                  className="w-full h-full object-cover transition-transform hover:scale-105 duration-500"
-                  onError={(e) => {
-                    // Fallback if the image doesn't load
-                    e.currentTarget.src = fallbackImages[index];
-                  }}
-                />
-              </div>
-              <CardHeader>
-                <div className="text-3xl mb-2" aria-hidden="true">{item.icon}</div>
-                <CardTitle>{item.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">{item.description}</p>
-              </CardContent>
-            </Card>
+            <TabsList className="inline-flex h-12 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-900/20 p-1.5 text-muted-foreground">
+              <TabsTrigger value="mission" className="px-6 py-2.5 text-sm font-medium rounded-full data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-pink-600 data-[state=active]:shadow-md">Our Mission</TabsTrigger>
+              <TabsTrigger value="vision" className="px-6 py-2.5 text-sm font-medium rounded-full data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-pink-600 data-[state=active]:shadow-md">Our Vision</TabsTrigger>
+            </TabsList>
           </motion.div>
-        ))}
-      </motion.div>
-      
-      <Separator className="my-16" />
-      
-      {/* Values Section */}
-      <motion.div
-        id="values"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={fadeInUpVariants}
-        className="mb-12"
+
+          <TabsContent value="mission">
+            <motion.div
+              variants={containerVariants}
+              initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+            >
+              {missionItems.map((item, _index) => ( // Prefixed index
+                <motion.div key={item.id} variants={itemVariants} whileHover={{ y: -6, transition: { duration: 0.2 } }} className="h-full">
+                  <Card className="h-full overflow-hidden border-2 border-transparent hover:border-pink-200 dark:hover:border-pink-800/50 transition-colors shadow-sm hover:shadow-lg bg-card rounded-xl">
+                    <div className="w-full h-52 overflow-hidden relative">
+                      <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform hover:scale-105 duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                      <div className="absolute top-4 left-4 bg-white/80 dark:bg-gray-900/80 p-2 rounded-full shadow">
+                         <item.icon className="h-6 w-6 text-pink-600" />
+                      </div>
+                    </div>
+                    <CardHeader className="pt-4 pb-2">
+                      <CardTitle className="text-lg font-semibold">{item.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pb-5">
+                      <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </motion.div>
+          </TabsContent>
+
+          <TabsContent value="vision">
+             <motion.div
+              variants={containerVariants}
+              initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+            >
+              {visionItems.map((item) => (
+                <motion.div key={item.id} variants={itemVariants} whileHover={{ y: -6, transition: { duration: 0.2 } }} className="h-full">
+                  <Card className="h-full border-0 bg-gradient-to-br from-pink-50 dark:from-pink-900/10 to-transparent p-6 rounded-xl shadow-sm hover:shadow-lg transition-shadow">
+                    <div className="flex items-start gap-4">
+                      <div className="mt-1 text-pink-500"><item.icon className="h-7 w-7" /></div>
+                      <div>
+                        <h3 className="font-semibold text-lg mb-1.5 text-gray-800 dark:text-gray-100">{item.title}</h3>
+                        <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
+            </motion.div>
+          </TabsContent>
+        </Tabs>
+      </motion.section>
+
+      <Separator className="my-24 md:my-32 border-pink-200 dark:border-pink-800/30" />
+
+      {/* Construction Updates Section */}
+      <motion.section 
+        id="construction"
+        className="mb-24 md:mb-32 py-16 md:py-20 bg-gradient-to-b from-gray-50 dark:from-gray-900/30 to-transparent rounded-3xl"
+        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeInUpVariants}
       >
-        <h2 className="text-3xl font-bold text-center mb-8">Our Values</h2>
-        <p className="text-center text-muted-foreground max-w-3xl mx-auto mb-10">
-          These core values guide our actions and define who we are as a spiritual community.
-        </p>
-      </motion.div>
-      
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        variants={containerVariants}
-        className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16"
-      >
-        {valueItems.map((item, index) => (
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="mb-12 md:mb-16 text-center">
+             <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} viewport={{ once: true }}
+              className="inline-block mb-6"
+            >
+              <div className="bg-gradient-to-r from-pink-500 via-orange-400 to-yellow-300 p-1 rounded-full shadow-lg">
+                <div className="bg-background rounded-full p-4">
+                  <Building className="h-8 w-8 text-pink-600" />
+                </div>
+              </div>
+            </motion.div>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}
+              className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-pink-600 via-orange-500 to-yellow-400 text-transparent bg-clip-text"
+            >
+              {constructionData.sectionTitle}
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-lg text-muted-foreground max-w-xl mx-auto"
+            >
+              Building a spiritual haven for generations to come. Track our progress and be a part of this sacred endeavor.
+            </motion.p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 md:gap-8">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.3 }}
+              className="lg:col-span-3 w-full"
+            >
+              <Card className="overflow-hidden border-0 rounded-2xl bg-card/80 backdrop-blur-lg shadow-lg h-full">
+                <CardHeader>
+                   <CardTitle className="text-xl text-pink-600">Construction Gallery</CardTitle>
+                   <CardDescription>Visual milestones of the temple project.</CardDescription>
+                </CardHeader>
+                <CardContent className="p-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                    {constructionData.latestUpdate.images.map((imageUrl, index) => (
+                      <motion.div key={imageUrl + index} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: index * 0.05 }} whileHover={{ y: -4, transition: { duration: 0.25 } }} className="group relative aspect-square">
+                        <Card className="overflow-hidden h-full border rounded-lg bg-background/50 shadow-sm transition-all duration-300 group-hover:shadow-md">
+                          <img src={imageUrl} alt={`Construction update ${index + 1}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" width="200" height="200" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start p-2">
+                            <span className="text-white text-[10px] font-medium line-clamp-1">{`Update ${index + 1}`}</span>
+                          </div>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.4 }}
+              className="lg:col-span-2 flex flex-col"
+            >
+              <Card className="overflow-hidden border-0 rounded-2xl bg-card/80 backdrop-blur-lg shadow-lg flex-grow flex flex-col">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <Badge className="bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400 px-3 py-1 rounded-full font-medium border-0 text-sm">Latest Update</Badge>
+                    <div className="flex items-center text-sm text-muted-foreground"><Calendar className="h-4 w-4 mr-1.5 text-orange-500" />{constructionData.latestUpdate.date}</div>
+                  </div>
+                  <CardTitle className="text-xl text-blue-600 dark:text-blue-400">{constructionData.latestUpdate.title}</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-grow"><p className="text-muted-foreground leading-relaxed">{constructionData.latestUpdate.description}</p></CardContent>
+                <CardFooter className="bg-gradient-to-t from-pink-50 dark:from-pink-900/10 to-transparent pt-6 mt-auto rounded-b-2xl">
+                  <div className="w-full">
+                    <h4 className="text-lg font-medium mb-2 text-gray-800 dark:text-gray-100">Join the Sacred Effort</h4>
+                    <p className="text-sm text-muted-foreground mb-4">{constructionData.campaign.message}</p>
+                    <Link to={constructionData.campaign.ctaLink}>
+                      <Button className="w-full bg-gradient-to-r from-pink-600 to-orange-500 hover:opacity-90 rounded-full h-11 text-base font-medium text-white shadow-md transition-all">
+                        {constructionData.campaign.ctaText} <ChevronRight className="h-4 w-4 ml-1.5" />
+                      </Button>
+                    </Link>
+                  </div>
+                </CardFooter>
+              </Card>
+            </motion.div>
+          </div>
+
           <motion.div
-            key={item.id}
-            variants={index % 2 === 0 ? fadeInLeftVariants : fadeInRightVariants}
+            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.5 }}
+            className="mt-8 md:mt-12"
           >
-            <Card className="bg-gradient-to-r from-primary/5 to-transparent border-0">
-              <CardContent className="p-6">
-                <div className="flex items-start gap-4">
-                  <div className="text-4xl text-primary">{item.icon}</div>
-                  <div>
-                    <h3 className="font-bold text-xl mb-2">{item.title}</h3>
-                    <p className="text-muted-foreground">{item.description}</p>
+            <Card className="overflow-hidden border-0 rounded-2xl bg-card/80 backdrop-blur-lg shadow-lg">
+              <CardContent className="p-6 md:p-8">
+                <h3 className="text-xl font-semibold text-center mb-6 md:mb-8 bg-gradient-to-r from-blue-500 via-orange-400 to-pink-500 text-transparent bg-clip-text">Construction Phases Progress</h3>
+                <div className="space-y-6 md:space-y-8">
+                  <div className="mb-6">
+                    <div className="flex justify-between items-end mb-2">
+                      <p className="font-semibold text-foreground text-base md:text-lg">Overall Completion</p>
+                      <span className="font-bold text-2xl md:text-3xl text-pink-600">{constructionData.overallProgress}%</span>
+                    </div>
+                    <div className="relative h-3 w-full bg-muted rounded-full overflow-hidden">
+                      <motion.div initial={{ width: 0 }} whileInView={{ width: `${constructionData.overallProgress}%` }} viewport={{ once: true }} transition={{ duration: 1.2, delay: 0.7, ease: "easeOut" }} className="absolute top-0 left-0 h-full bg-gradient-to-r from-pink-500 via-orange-400 to-yellow-300 rounded-full" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    {constructionData.phases.map((phase, index) => (
+                      <div key={index} className="space-y-2 bg-background/30 p-4 rounded-xl border border-border/50">
+                        <div className="flex justify-between items-center">
+                          <p className="text-sm font-medium text-foreground">{phase.name}</p>
+                          <span className="text-sm font-semibold text-muted-foreground">{phase.progress}%</span>
+                        </div>
+                        <div className="relative h-2 w-full bg-muted rounded-full overflow-hidden">
+                          <motion.div initial={{ width: 0 }} whileInView={{ width: `${phase.progress}%` }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.8 + (index * 0.1), ease: "easeOut" }} className={`absolute top-0 left-0 h-full rounded-full ${index % 3 === 0 ? "bg-pink-500" : index % 3 === 1 ? "bg-orange-400" : "bg-yellow-400"}`} />
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </CardContent>
             </Card>
           </motion.div>
-        ))}
-      </motion.div>
+        </div>
+      </motion.section>
       
+      <Separator className="my-24 md:my-32 border-pink-200 dark:border-pink-800/30" />
+
       {/* Testimonial Quote Section */}
-      <motion.div
-        ref={quoteRef}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={fadeInUpVariants}
-        className="relative mb-16 py-12 px-4 md:py-16 md:px-8 bg-primary/5 rounded-2xl overflow-hidden"
+      <motion.section
+        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={fadeInUpVariants}
+        className="relative mb-24 md:mb-32 py-16 px-4 md:py-20 md:px-8 bg-pink-50 dark:bg-pink-900/10 rounded-3xl overflow-hidden border border-pink-100 dark:border-pink-900/20"
       >
-        {/* Decorative quote marks */}
-        <div className="absolute top-0 left-0 text-primary/10 text-9xl md:text-[12rem] font-serif leading-none pointer-events-none">
-          "
-        </div>
-        <div className="absolute bottom-0 right-8 text-primary/10 text-9xl md:text-[12rem] font-serif leading-none pointer-events-none">
-          "
-        </div>
-        
+        <div className="absolute -top-10 -left-10 text-pink-100 dark:text-pink-900/30 text-[12rem] font-serif leading-none pointer-events-none opacity-50">"</div>
+        <div className="absolute -bottom-16 -right-10 text-pink-100 dark:text-pink-900/30 text-[12rem] font-serif leading-none pointer-events-none opacity-50">"</div>
         <div className="relative z-10 max-w-3xl mx-auto text-center">
-          <p className="text-xl md:text-2xl italic text-foreground mb-6">
-            "Krishna consciousness is the scientific process of spiritual life. It is not a religious faith or sentiment. 
-            It is the actual scientific understanding of our relationship with God."
+          <p className="text-xl md:text-3xl italic text-gray-700 dark:text-gray-200 mb-10 leading-relaxed font-serif">
+            "Krishna consciousness is the scientific process of spiritual life... the actual scientific understanding of our relationship with God."
           </p>
           <div className="flex items-center justify-center">
-            <div className="w-16 h-16 rounded-full overflow-hidden mr-4">
-              <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Srila_Prabhupada.JPG/330px-Srila_Prabhupada.JPG"
-                alt="Srila Prabhupada"
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <Avatar className="w-20 h-20 mr-5 border-4 border-white dark:border-gray-700 shadow-lg">
+              <AvatarImage src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Srila_Prabhupada.JPG/330px-Srila_Prabhupada.JPG" alt="Srila Prabhupada" />
+              <AvatarFallback>SP</AvatarFallback>
+            </Avatar>
             <div className="text-left">
-              <p className="font-bold">Srila Prabhupada</p>
-              <p className="text-sm text-muted-foreground">Founder-Acharya of ISKCON</p>
+              <p className="font-bold text-xl text-gray-800 dark:text-gray-100">Srila Prabhupada</p>
+              <p className="text-md text-pink-600 dark:text-pink-400">Founder-Acharya of ISKCON</p>
             </div>
           </div>
         </div>
-      </motion.div>
+      </motion.section>
       
-      <Separator className="my-16" />
-      
-      {/* Programs Section */}
-      <motion.div
-        id="programs"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={fadeInUpVariants}
-        className="mb-12"
-      >
-        <h2 className="text-3xl font-bold text-center mb-8">Programs & Activities</h2>
-      </motion.div>
-      
-      <Tabs defaultValue="daily" className="mb-16">
-        <TabsList className="grid w-full max-w-lg mx-auto grid-cols-3 mb-8">
-          <TabsTrigger value="daily">Daily Programs</TabsTrigger>
-          <TabsTrigger value="weekly">Weekly Events</TabsTrigger>
-          <TabsTrigger value="special">Special Events</TabsTrigger>
-        </TabsList>
-        <TabsContent value="daily" className="space-y-4">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={containerVariants}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          >
-            {programItems.slice(0, 2).map((program) => (
-              <motion.div 
-                key={program.id}
-                variants={itemVariants}
-              >
-                <Card>
-                  <CardHeader>
-                    <CardTitle>{program.title}</CardTitle>
-                    <CardDescription>{program.schedule}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p>{program.description}</p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button variant="outline" size="sm">Learn More</Button>
-                  </CardFooter>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-        </TabsContent>
-        <TabsContent value="weekly" className="space-y-4">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={containerVariants}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          >
-            {programItems.slice(1, 3).map((program) => (
-              <motion.div 
-                key={program.id}
-                variants={itemVariants}
-              >
-                <Card>
-                  <CardHeader>
-                    <CardTitle>{program.title}</CardTitle>
-                    <CardDescription>{program.schedule}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p>{program.description}</p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button variant="outline" size="sm">Learn More</Button>
-                  </CardFooter>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-        </TabsContent>
-        <TabsContent value="special" className="space-y-4">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={containerVariants}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          >
-            {[programItems[3], programItems[0]].map((program) => (
-              <motion.div 
-                key={program.id}
-                variants={itemVariants}
-              >
-                <Card>
-                  <CardHeader>
-                    <CardTitle>{program.title}</CardTitle>
-                    <CardDescription>{program.schedule}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p>{program.description}</p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button variant="outline" size="sm">Learn More</Button>
-                  </CardFooter>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-        </TabsContent>
-      </Tabs>
-      
-      <Separator className="my-16" />
+      <Separator className="my-24 md:my-32 border-pink-200 dark:border-pink-800/30" />
       
       {/* FAQ Section */}
-      <motion.div
+      <motion.section
         id="faq"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={fadeInUpVariants}
-        className="mb-12"
+        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeInUpVariants}
+        className="mb-24 md:mb-32"
       >
-        <h2 className="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-      </motion.div>
+        <SectionTitle>Frequently Asked Questions</SectionTitle>
+        <motion.div
+          initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeInUpVariants}
+          className="max-w-3xl mx-auto"
+        >
+          <Accordion type="single" collapsible className="w-full space-y-4">
+            {faqItems.map((faq, index) => (
+              <AccordionItem key={index} value={`item-${index}`} className="bg-card border border-gray-200 dark:border-gray-700/50 rounded-xl px-5 shadow-sm data-[state=open]:shadow-md">
+                <AccordionTrigger className="text-left font-semibold text-base hover:no-underline text-gray-800 dark:text-gray-100">{faq.question}</AccordionTrigger>
+                <AccordionContent className="pt-1 pb-4">
+                  <p className="text-muted-foreground leading-relaxed text-sm">{faq.answer}</p>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+          <div className="text-center mt-12">
+            <p className="text-muted-foreground mb-4">Have more questions?</p>
+            <Button size="lg" className="bg-pink-600 hover:bg-pink-700 text-white rounded-full px-8 py-3">Contact Us</Button>
+          </div>
+        </motion.div>
+      </motion.section>
       
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        variants={fadeInUpVariants}
-        className="max-w-3xl mx-auto mb-16"
+      <Separator className="my-24 md:my-32 border-pink-200 dark:border-pink-800/30" />
+
+      {/* Bank Details Section */}
+       <motion.section
+        id="support"
+        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeInUpVariants}
+        className="mb-24 md:mb-32 max-w-3xl mx-auto"
       >
-        <Accordion type="single" collapsible className="w-full">
-          {faqItems.map((faq, index) => (
-            <AccordionItem key={index} value={`item-${index}`}>
-              <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
-              <AccordionContent>
-                <p className="text-muted-foreground">{faq.answer}</p>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-        <div className="text-center mt-8">
-          <p className="text-sm text-muted-foreground mb-4">Have other questions?</p>
-          <Button>Contact Us</Button>
-        </div>
-      </motion.div>
+        <SectionTitle>Support Our Seva</SectionTitle>
+         <Alert className="bg-gradient-to-tr from-yellow-50 via-orange-50 to-pink-50 dark:from-yellow-900/10 dark:via-orange-900/10 dark:to-pink-900/10 border-orange-200 dark:border-orange-800/50 rounded-xl shadow-md">
+           <Banknote className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+           <AlertTitle className="font-semibold text-orange-800 dark:text-orange-300">Bank Transfer Details</AlertTitle>
+           <AlertDescription className="mt-2 text-orange-700 dark:text-orange-300/90 text-sm space-y-1.5">
+             <div className="flex justify-between items-center">
+               <span>Account Name:</span>
+               <span className="font-medium flex items-center gap-1.5">{templeDetails.bankDetails.accountName} <CopyButton size="sm" variant="ghost" content={templeDetails.bankDetails.accountName} className="text-orange-600 dark:text-orange-400" /></span>
+             </div>
+             <div className="flex justify-between items-center">
+               <span>Account Number:</span>
+               <span className="font-medium flex items-center gap-1.5">{templeDetails.bankDetails.accountNumber} <CopyButton size="sm" variant="ghost" content={templeDetails.bankDetails.accountNumber} className="text-orange-600 dark:text-orange-400" /></span>
+             </div>
+             <div className="flex justify-between items-center">
+               <span>IFSC Code:</span>
+                <span className="font-medium flex items-center gap-1.5">{templeDetails.bankDetails.ifsc} <CopyButton size="sm" variant="ghost" content={templeDetails.bankDetails.ifsc} className="text-orange-600 dark:text-orange-400" /></span>
+             </div>
+             <div className="flex justify-between items-center">
+               <span>Bank:</span>
+               <span className="font-medium">{templeDetails.bankDetails.bankName}</span>
+             </div>
+             <div className="flex justify-between items-center">
+               <span>Account Type:</span>
+               <span className="font-medium">{templeDetails.bankDetails.type}</span>
+             </div>
+           </AlertDescription>
+         </Alert>
+         <div className="text-center mt-6">
+            <Link to="/donate">
+                <Button size="lg" className="bg-pink-600 hover:bg-pink-700 text-white rounded-full px-8 py-3">
+                    Donate Online <ChevronRight className="h-4 w-4 ml-1.5"/>
+                </Button>
+            </Link>
+         </div>
+      </motion.section>
+
+      <Separator className="my-24 md:my-32 border-pink-200 dark:border-pink-800/30" />
       
-      <Separator className="my-16" />
-      
-      {/* Visit Us Section */}
-      <motion.div
+      {/* Visit Us Section (Using Imported Component) */}
+      <motion.section
         id="visit"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={fadeInUpVariants}
-        className="max-w-4xl mx-auto mb-16"
+        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeInUpVariants}
+        className="mb-16"
       >
-        <h2 className="text-3xl font-bold text-center mb-6">Visit Us</h2>
-        <p className="text-center text-muted-foreground mb-8">
-          We invite you to visit ISKM Pondicherry to experience the spiritual atmosphere, 
-          attend our programs, and engage in devotional service. All are welcome regardless 
-          of background or beliefs.
-        </p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          <div>
-            <Card>
-              <CardHeader>
-                <CardTitle>Location & Contact</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h4 className="font-semibold mb-1">Address</h4>
-                  <p className="text-sm text-muted-foreground">
-                    ISKM Pondicherry Temple,<br/>
-                    12 Temple Street, Bharathi Nagar,<br/>
-                    Pondicherry 605001, India
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-1">Phone</h4>
-                  <p className="text-sm text-muted-foreground">+91 413-2245555</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-1">Email</h4>
-                  <p className="text-sm text-muted-foreground">info@iskmpondicherry.org</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-1">Temple Hours</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Morning: 4:30 AM - 12:00 PM<br/>
-                    Evening: 4:30 PM - 8:30 PM
-                  </p>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button>Get Directions</Button>
-              </CardFooter>
-            </Card>
-          </div>
-          
-          <div className="aspect-auto w-full">
-            <Card className="h-full">
-              <CardContent className="p-0 h-full">
-                {/* Embedding Google Map */}
-                <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3903.0379456526706!2d79.8196995!3d11.9340466!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5364c114a0bc37%3A0x7da0316fe6016cbb!2sPondicherry!5e0!3m2!1sen!2sin!4v1623498314852!5m2!1sen!2sin" 
-                  width="100%" 
-                  height="100%" 
-                  style={{ border: 0, borderRadius: "var(--radius)" }} 
-                  allowFullScreen 
-                  loading="lazy"
-                  title="ISKM Pondicherry Location"
-                ></iframe>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-        
-        <div className="text-center">
-          <p className="text-muted-foreground mb-4">We look forward to welcoming you!</p>
-          <Button size="lg" className="bg-primary hover:bg-primary/90">
-            Plan Your Visit
-          </Button>
-        </div>
-      </motion.div>
+         {/* The VisitUs component will be rendered here. It uses its own data internally. */}
+         {/* We might need to pass props if the component is designed to accept them, */}
+         {/* but based on its previous usage, it seems self-contained. */}
+         <VisitUs />
+      </motion.section>
+
+       {/* Social Links Footer */}
+       <motion.div 
+        initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.5 }}
+        className="text-center mt-16"
+       >
+         <p className="text-muted-foreground mb-4">Connect with us:</p>
+         <div className="flex justify-center items-center gap-6">
+           <SocialLink href={templeDetails.socialLinks.facebook} icon={Facebook} label="Facebook" />
+           <SocialLink href={templeDetails.socialLinks.instagram} icon={Instagram} label="Instagram" />
+           <SocialLink href={templeDetails.socialLinks.youtube} icon={Youtube} label="YouTube" />
+         </div>
+       </motion.div>
+      </div> {/* End Content Wrapper */}
     </div>
   )
 }

@@ -158,6 +158,9 @@ export function ConstructionUpdates() {
                               src={imageUrl}
                               alt={`Construction update ${index + 1}`}
                               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                              loading="lazy"
+                              width="300" // Placeholder: Adjust based on typical rendered size or aspect ratio
+                              height="225" // Placeholder: Assuming 4/3 aspect for a 300px width
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start p-2 sm:p-3">
                               <span className="text-white text-[10px] sm:text-xs font-medium line-clamp-2">{`Update Image ${index + 1}`}</span>
