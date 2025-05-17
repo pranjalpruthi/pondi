@@ -68,6 +68,17 @@ import { useTheme } from '@/components/theme-provider'
 import { cn } from '@/lib/utils' // Assuming you have a cn utility
 import { Progress } from '@/components/ui/progress';
 
+// Component for the initial full-page loader (similar to home page)
+const InitialPageLoader = () => (
+  <div className="fixed inset-0 flex flex-col justify-center items-center h-screen w-screen bg-background z-[9999] text-center">
+    <img src="/assets/iskmj.jpg" alt="ISKM Logo" className="w-24 h-24 rounded-full mb-6 animate-pulse" />
+    <p className="text-xl font-semibold text-primary">Hare Kṛṣṇa Hare Kṛṣṇa</p>
+    <p className="text-xl font-semibold text-primary">Kṛṣṇa Kṛṣṇa Hare Hare</p>
+    <p className="text-xl font-semibold text-primary">Hare Rāma Hare Rāma</p>
+    <p className="text-xl font-semibold text-primary">Rāma Rāma Hare Hare</p>
+  </div>
+);
+
 // Helper function to determine fast breaking time details
 const getFastBreakingTimeDetails = (day: CalendarDay): string | null => {
   // This function is typically called when day.fasting_info.is_fasting_day is true.
@@ -253,7 +264,8 @@ const formatDateDisplay = (
 
 // Calendar component
 function VaishnavCalendar() {
-  const { theme } = useTheme()
+  const { theme } = useTheme();
+  const [isPageLoading, setIsPageLoading] = useState(true);
   const today = new Date()
   today.setHours(0, 0, 0, 0) // Normalize today's date for accurate comparison
 
@@ -264,6 +276,14 @@ function VaishnavCalendar() {
   const [playPopOff] = useSound('/sounds/pop-off.wav', { volume: 0.25, soundEnabled: isSoundEnabled });
   const [playSwitchOn] = useSound('/sounds/switch-on.mp3', { volume: 0.3, soundEnabled: isSoundEnabled });
   const [playSwitchOff] = useSound('/sounds/switch-off.mp3', { volume: 0.3, soundEnabled: isSoundEnabled });
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsPageLoading(false);
+    }, 1000); // Load for 1 second, similar to home page
+
+    return () => clearTimeout(timer); // Cleanup timer on unmount
+  }, []);
 
   const safePlayHover = useCallback(() => { if (isSoundEnabled) playHover(); }, [isSoundEnabled, playHover]);
   const safePlayClick = useCallback(() => { if (isSoundEnabled) playClick(); }, [isSoundEnabled, playClick]);
@@ -1038,6 +1058,10 @@ function VaishnavCalendar() {
         )}
       </div>
     );
+  }
+
+  if (isPageLoading) {
+    return <InitialPageLoader />;
   }
 
   return (

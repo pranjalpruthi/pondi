@@ -25,6 +25,9 @@ const LazySlokaLearningSection = React.lazy(() =>
 const LazyFeaturedBooksSection = React.lazy(() =>
   import('@/components/homepage/featured-books-section').then(module => ({ default: module.FeaturedBooksSection }))
 );
+const LazyUpcomingEventBanner = React.lazy(() =>
+  import('@/components/upcoming-event-banner').then(module => ({ default: module.UpcomingEventBanner }))
+);
 
 export const Route = createFileRoute('/')({
   component: HomePage
@@ -69,7 +72,7 @@ function HomePage() {
 
   return (
     <main 
-      className="flex flex-col min-h-screen relative w-full"
+      className="flex flex-col min-h-screen relative w-full pb-36" // Increased pb for fixed banner + dock
       style={{ willChange: 'transform' }} // Hint for rendering performance
     >
       {/* Background element remains */}
@@ -107,6 +110,10 @@ function HomePage() {
           <LazyVisitUs />
         </Suspense>
       </div>
+      {/* UpcomingEventBanner is now fixed, so it can be outside the main content flow div, but still within main for structure */}
+      <Suspense fallback={null}> {/* No loader for a fixed banner that appears quickly */}
+        <LazyUpcomingEventBanner />
+      </Suspense>
     </main>
   )
 }

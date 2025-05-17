@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { motion } from 'motion/react'; // AnimatePresence might not be part of motion/react, using keyed motion.divs
+import { useIsMobile } from '@/hooks/use-mobile'; // Added for responsive book size
 import { ModernBookCover } from '@/components/cuicui/modern-book-cover';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -156,6 +157,7 @@ const allBooksData: BookDetailData[] = [ia77BookDetails, wwokBookDetails, usuage
 export function FeaturedBooksSection() {
   const [selectedBook, setSelectedBook] = React.useState<BookDetailData>(allBooksData[0]);
   const [orderNumber, setOrderNumber] = React.useState('');
+  const isMobile = useIsMobile(); // Added for responsive book size
 
   React.useEffect(() => {
     if (selectedBook) {
@@ -192,7 +194,7 @@ export function FeaturedBooksSection() {
             transition={{ ...springTransition, delay: 0.05 }}
             className="md:col-span-4 flex justify-center md:justify-start items-center"
           >
-            <ModernBookCover size="lg" color={selectedBook.id === 'wwok' ? 'yellow' : selectedBook.id === 'usuage' ? 'neutral' : 'zinc'} className="shadow-xl hover:shadow-zinc-400/30 dark:hover:shadow-black/50 transition-shadow duration-300">
+            <ModernBookCover size={isMobile ? "md" : "lg"} color={selectedBook.id === 'wwok' ? 'yellow' : selectedBook.id === 'usuage' ? 'neutral' : 'zinc'} className="shadow-xl hover:shadow-zinc-400/30 dark:hover:shadow-black/50 transition-shadow duration-300">
               <img
                 src={selectedBook.coverImage}
                 alt={selectedBook.title}
@@ -264,26 +266,26 @@ export function FeaturedBooksSection() {
 
             <div className="pt-2 flex flex-col sm:flex-row gap-3">
               <a href={whatsAppOrderUrl} target="_blank" rel="noopener noreferrer" className="flex-1">
-                <Button size="lg" className="w-full rounded-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
+                <Button size={isMobile ? "sm" : "lg"} className="w-full rounded-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
                   <ShoppingCart className="mr-2 h-4 w-4" /> Order via WhatsApp
                 </Button>
               </a>
               {selectedBook.productLink ? (
                 <a href={selectedBook.productLink} target="_blank" rel="noopener noreferrer" className="flex-1">
-                  <Button size="lg" variant="outline" className="w-full rounded-full border-purple-500/80 text-purple-600 hover:bg-purple-500/10 dark:border-purple-500/60 dark:text-purple-400 dark:hover:bg-purple-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
+                  <Button size={isMobile ? "sm" : "lg"} variant="outline" className="w-full rounded-full border-purple-500/80 text-purple-600 hover:bg-purple-500/10 dark:border-purple-500/60 dark:text-purple-400 dark:hover:bg-purple-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
                     View Product Page <Eye className="ml-2 h-4 w-4" />
                   </Button>
                 </a>
               ) : selectedBook.ebookPreviewLink && (
                  <a href={selectedBook.ebookPreviewLink} target="_blank" rel="noopener noreferrer" className="flex-1">
-                  <Button size="lg" variant="outline" className="w-full rounded-full border-purple-500/80 text-purple-600 hover:bg-purple-500/10 dark:border-purple-500/60 dark:text-purple-400 dark:hover:bg-purple-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
+                  <Button size={isMobile ? "sm" : "lg"} variant="outline" className="w-full rounded-full border-purple-500/80 text-purple-600 hover:bg-purple-500/10 dark:border-purple-500/60 dark:text-purple-400 dark:hover:bg-purple-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
                     Read eBook Preview <Eye className="ml-2 h-4 w-4" />
                   </Button>
                 </a>
               )}
                {selectedBook.playlistLink && (
                  <a href={selectedBook.playlistLink} target="_blank" rel="noopener noreferrer" className="flex-1">
-                  <Button size="lg" variant="outline" className="w-full rounded-full border-blue-500/80 text-blue-600 hover:bg-blue-500/10 dark:border-blue-500/60 dark:text-blue-400 dark:hover:bg-blue-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
+                  <Button size={isMobile ? "sm" : "lg"} variant="outline" className="w-full rounded-full border-blue-500/80 text-blue-600 hover:bg-blue-500/10 dark:border-blue-500/60 dark:text-blue-400 dark:hover:bg-blue-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
                     Watch Playlist <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-youtube ml-2 h-4 w-4"><path d="M2.8 7.1a2.2 2.2 0 0 1 1.7-1.7C7.3 5 12 5 12 5s4.7 0 7.5.4a2.2 2.2 0 0 1 1.7 1.7c.3 2.1.3 4.9.3 4.9s0 2.8-.3 4.9a2.2 2.2 0 0 1-1.7 1.7c-2.8.4-7.5.4-7.5.4s-4.7 0-7.5-.4a2.2 2.2 0 0 1-1.7-1.7c-.3-2.1-.3-4.9-.3-4.9s0-2.8.3-4.9Z"/><path d="m10 9 5 3-5 3Z"/></svg>
                   </Button>
                 </a>
@@ -297,23 +299,28 @@ export function FeaturedBooksSection() {
           <h4 className="text-xl md:text-2xl font-semibold tracking-tight text-center mb-6 md:mb-8 text-gray-700 dark:text-gray-300">
             More Publications
           </h4>
-          <div className="flex flex-wrap justify-center gap-6 md:gap-8">
+          <div className="flex overflow-x-auto py-2 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent justify-start sm:justify-center sm:flex-wrap gap-3 sm:gap-6 md:gap-8">
             {allBooksData.map((book) => (
               <motion.div
                 key={`selector-${book.id}`}
                 onClick={() => setSelectedBook(book)}
-                className={`cursor-pointer p-3 rounded-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 ${selectedBook.id === book.id ? 'ring-2 ring-purple-500 shadow-xl bg-purple-500/5 dark:bg-purple-500/10' : 'hover:shadow-lg bg-card'}`}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+                className={`cursor-pointer p-2 sm:p-3 rounded-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 ${selectedBook.id === book.id ? 'ring-2 ring-purple-500 shadow-xl bg-purple-500/5 dark:bg-purple-500/10' : 'hover:shadow-lg bg-card'} ${isMobile ? 'scale-[0.85] origin-bottom flex-shrink-0' : ''}`}
+                whileHover={{ scale: isMobile ? 0.88 : 1.03 }}
+                whileTap={{ scale: isMobile ? 0.82 : 0.97 }}
               >
-                <ModernBookCover size="sm" color={book.id === 'wwok' ? 'yellow' : book.id === 'usuage' ? 'neutral' : 'zinc'} className="pointer-events-none mx-auto">
+                <ModernBookCover 
+                  size="sm" 
+                  color={book.id === 'wwok' ? 'yellow' : book.id === 'usuage' ? 'neutral' : 'zinc'} 
+                  className="mx-auto"
+                  forceRotate={isMobile && selectedBook.id === book.id} // Apply rotation if selected on mobile
+                >
                   <img
                     src={book.coverImage}
                     alt={book.title}
                     className="w-full h-full object-cover"
                   />
                 </ModernBookCover>
-                <p className={`mt-3 text-center text-xs sm:text-sm font-medium w-[152px] truncate ${selectedBook.id === book.id ? 'text-purple-700 dark:text-purple-300' : 'text-muted-foreground'}`}>
+                <p className={`mt-2 text-center text-xs font-medium w-full truncate ${selectedBook.id === book.id ? 'text-purple-700 dark:text-purple-300' : 'text-muted-foreground'}`}>
                   {book.title}
                 </p>
               </motion.div>

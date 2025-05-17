@@ -42,6 +42,7 @@ interface BookProps {
   size?: "sm" | "md" | "lg";
   color?: keyof typeof colorMap;
   isStatic?: boolean;
+  forceRotate?: boolean; // New prop for tap effect on mobile
   className?: string;
   children: ReactNode;
 }
@@ -51,10 +52,16 @@ export const ModernBookCover = ({
   size = "md",
   color = "zinc",
   isStatic = false,
+  forceRotate = false, // Default to false
   className = "",
   children,
 }: BookProps) => {
   const gradient = colorMap[color] || colorMap.zinc;
+
+  const transformClass = 
+    isStatic || forceRotate
+      ? "[transform:rotateY(-30deg)]"
+      : "[transform:rotateY(0deg)] group-hover:[transform:rotateY(-30deg)]";
 
   return (
     <div
@@ -65,11 +72,7 @@ export const ModernBookCover = ({
           width: sizeMap[size].width,
           transition: "transform 1000ms ease",
         }}
-        className={`relative [transform-style:preserve-3d] ${
-          isStatic
-            ? "[transform:rotateY(-30deg)]"
-            : "[transform:rotateY(0deg)] group-hover:[transform:rotateY(-30deg)]"
-        } aspect-3/4 ${radiusMap[radius]}`}
+        className={`relative [transform-style:preserve-3d] ${transformClass} aspect-3/4 ${radiusMap[radius]}`}
       >
         {/* Front Side */}
         <div

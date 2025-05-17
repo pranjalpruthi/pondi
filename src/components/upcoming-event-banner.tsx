@@ -209,7 +209,7 @@ export function UpcomingEventBanner() {
   const animationDuration = Math.max(10, Math.min(40, dimensions.contentWidth > 0 ? dimensions.contentWidth / 50 : 20)); // Ensure contentWidth is positive
 
   return (
-    <div className="w-full relative">
+    <div className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+4.5rem)] sm:bottom-[calc(env(safe-area-inset-bottom,0px)+5rem)] left-0 right-0 w-full z-30">
       {/* Improved close button */}
       <button
         onClick={handleClose}
