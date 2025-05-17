@@ -25,9 +25,7 @@ const LazySlokaLearningSection = React.lazy(() =>
 const LazyFeaturedBooksSection = React.lazy(() =>
   import('@/components/homepage/featured-books-section').then(module => ({ default: module.FeaturedBooksSection }))
 );
-const LazyUpcomingEventBanner = React.lazy(() =>
-  import('@/components/upcoming-event-banner').then(module => ({ default: module.UpcomingEventBanner }))
-);
+// Removed LazyUpcomingEventBanner import from here
 
 export const Route = createFileRoute('/')({
   component: HomePage
@@ -110,10 +108,7 @@ function HomePage() {
           <LazyVisitUs />
         </Suspense>
       </div>
-      {/* UpcomingEventBanner is now fixed, so it can be outside the main content flow div, but still within main for structure */}
-      <Suspense fallback={null}> {/* No loader for a fixed banner that appears quickly */}
-        <LazyUpcomingEventBanner />
-      </Suspense>
+      {/* LazyUpcomingEventBanner removed from here */}
     </main>
   )
 }

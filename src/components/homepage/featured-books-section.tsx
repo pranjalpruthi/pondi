@@ -185,14 +185,15 @@ export function FeaturedBooksSection() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-10 gap-8 md:gap-10 items-start">
+        {/* Adjusted grid for better tablet layout: stacks on mobile, 2-col on tablet, 10-col (4/6 split) on large screens */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-10 gap-8 md:gap-10 items-start">
           {/* Left Side: Book Cover */}
           <motion.div
             key={`${selectedBook.id}-cover`}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ ...springTransition, delay: 0.05 }}
-            className="md:col-span-4 flex justify-center md:justify-start items-center"
+            className="md:col-span-1 lg:col-span-4 flex justify-center items-center" // md:justify-start removed to keep cover centered on tablet 2-col
           >
             <ModernBookCover size={isMobile ? "md" : "lg"} color={selectedBook.id === 'wwok' ? 'yellow' : selectedBook.id === 'usuage' ? 'neutral' : 'zinc'} className="shadow-xl hover:shadow-zinc-400/30 dark:hover:shadow-black/50 transition-shadow duration-300">
               <img
@@ -209,7 +210,7 @@ export function FeaturedBooksSection() {
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={springTransition}
-            className="md:col-span-6 space-y-4"
+            className="md:col-span-1 lg:col-span-6 space-y-4" // Adjusted col-span for tablet and large screens
           >
             <div className="flex flex-wrap gap-2">
               {selectedBook.badges.map((badge, index) => (
@@ -264,27 +265,27 @@ export function FeaturedBooksSection() {
               </motion.ul>
             )}
 
-            <div className="pt-2 flex flex-col sm:flex-row gap-3">
-              <a href={whatsAppOrderUrl} target="_blank" rel="noopener noreferrer" className="flex-1">
+            <div className="pt-2 flex flex-wrap gap-3 items-center"> {/* Changed to flex-wrap, removed flex-col sm:flex-row */}
+              <a href={whatsAppOrderUrl} target="_blank" rel="noopener noreferrer" className="min-w-[200px] grow"> {/* Removed flex-1, added grow and min-width */}
                 <Button size={isMobile ? "sm" : "lg"} className="w-full rounded-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
                   <ShoppingCart className="mr-2 h-4 w-4" /> Order via WhatsApp
                 </Button>
               </a>
               {selectedBook.productLink ? (
-                <a href={selectedBook.productLink} target="_blank" rel="noopener noreferrer" className="flex-1">
+                <a href={selectedBook.productLink} target="_blank" rel="noopener noreferrer" className="min-w-[200px] grow"> {/* Removed flex-1, added grow and min-width */}
                   <Button size={isMobile ? "sm" : "lg"} variant="outline" className="w-full rounded-full border-purple-500/80 text-purple-600 hover:bg-purple-500/10 dark:border-purple-500/60 dark:text-purple-400 dark:hover:bg-purple-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
                     View Product Page <Eye className="ml-2 h-4 w-4" />
                   </Button>
                 </a>
               ) : selectedBook.ebookPreviewLink && (
-                 <a href={selectedBook.ebookPreviewLink} target="_blank" rel="noopener noreferrer" className="flex-1">
+                 <a href={selectedBook.ebookPreviewLink} target="_blank" rel="noopener noreferrer" className="min-w-[200px] grow"> {/* Removed flex-1, added grow and min-width */}
                   <Button size={isMobile ? "sm" : "lg"} variant="outline" className="w-full rounded-full border-purple-500/80 text-purple-600 hover:bg-purple-500/10 dark:border-purple-500/60 dark:text-purple-400 dark:hover:bg-purple-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
                     Read eBook Preview <Eye className="ml-2 h-4 w-4" />
                   </Button>
                 </a>
               )}
                {selectedBook.playlistLink && (
-                 <a href={selectedBook.playlistLink} target="_blank" rel="noopener noreferrer" className="flex-1">
+                 <a href={selectedBook.playlistLink} target="_blank" rel="noopener noreferrer" className="min-w-[200px] grow"> {/* Removed flex-1, added grow and min-width */}
                   <Button size={isMobile ? "sm" : "lg"} variant="outline" className="w-full rounded-full border-blue-500/80 text-blue-600 hover:bg-blue-500/10 dark:border-blue-500/60 dark:text-blue-400 dark:hover:bg-blue-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
                     Watch Playlist <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-youtube ml-2 h-4 w-4"><path d="M2.8 7.1a2.2 2.2 0 0 1 1.7-1.7C7.3 5 12 5 12 5s4.7 0 7.5.4a2.2 2.2 0 0 1 1.7 1.7c.3 2.1.3 4.9.3 4.9s0 2.8-.3 4.9a2.2 2.2 0 0 1-1.7 1.7c-2.8.4-7.5.4-7.5.4s-4.7 0-7.5-.4a2.2 2.2 0 0 1-1.7-1.7c-.3-2.1-.3-4.9-.3-4.9s0-2.8.3-4.9Z"/><path d="m10 9 5 3-5 3Z"/></svg>
                   </Button>
@@ -299,12 +300,14 @@ export function FeaturedBooksSection() {
           <h4 className="text-xl md:text-2xl font-semibold tracking-tight text-center mb-6 md:mb-8 text-gray-700 dark:text-gray-300">
             More Publications
           </h4>
-          <div className="flex overflow-x-auto py-2 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent justify-start sm:justify-center sm:flex-wrap gap-3 sm:gap-6 md:gap-8">
+          {/* Removed sm:justify-center and sm:flex-wrap to ensure horizontal scroll on all sizes */}
+          <div className="flex overflow-x-auto py-2 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent justify-start gap-3 sm:gap-4 md:gap-6">
             {allBooksData.map((book) => (
               <motion.div
                 key={`selector-${book.id}`}
                 onClick={() => setSelectedBook(book)}
-                className={`cursor-pointer p-2 sm:p-3 rounded-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 ${selectedBook.id === book.id ? 'ring-2 ring-purple-500 shadow-xl bg-purple-500/5 dark:bg-purple-500/10' : 'hover:shadow-lg bg-card'} ${isMobile ? 'scale-[0.85] origin-bottom flex-shrink-0' : ''}`}
+                // Ensured flex-shrink-0 is always active for horizontal scrolling
+                className={`cursor-pointer p-2 sm:p-3 rounded-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 flex-shrink-0 ${selectedBook.id === book.id ? 'ring-2 ring-purple-500 shadow-xl bg-purple-500/5 dark:bg-purple-500/10' : 'hover:shadow-lg bg-card'} ${isMobile ? 'scale-[0.85] origin-bottom' : ''}`}
                 whileHover={{ scale: isMobile ? 0.88 : 1.03 }}
                 whileTap={{ scale: isMobile ? 0.82 : 0.97 }}
               >
@@ -312,7 +315,7 @@ export function FeaturedBooksSection() {
                   size="sm" 
                   color={book.id === 'wwok' ? 'yellow' : book.id === 'usuage' ? 'neutral' : 'zinc'} 
                   className="mx-auto"
-                  forceRotate={isMobile && selectedBook.id === book.id} // Apply rotation if selected on mobile
+                  forceRotate={isMobile && selectedBook.id === book.id}
                 >
                   <img
                     src={book.coverImage}

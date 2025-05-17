@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, Fragment } from "react"
-import { motion, AnimatePresence } from "motion/react"
+import { motion, AnimatePresence } from "motion/react" // Ensure motion is imported
 // import Image from "next/image" // Replace with standard img tag
 import { Button } from "@/components/ui/button" // Corrected import path
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover" // Corrected import path
@@ -109,7 +109,7 @@ export function UpcomingEventBanner() {
   const [imagesReady, setImagesReady] = useState(false);
   const [useLocalImages, setUseLocalImages] = useState(true);
   const [dimensions, setDimensions] = useState({ contentWidth: 0, viewportWidth: 0 }); // Restored
-  
+
   // Refs for animation control
   const containerRef = useRef<HTMLDivElement>(null);
   // const contentWidth = useRef(0); // Will use state now
@@ -209,7 +209,9 @@ export function UpcomingEventBanner() {
   const animationDuration = Math.max(10, Math.min(40, dimensions.contentWidth > 0 ? dimensions.contentWidth / 50 : 20)); // Ensure contentWidth is positive
 
   return (
-    <div className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+4.5rem)] sm:bottom-[calc(env(safe-area-inset-bottom,0px)+5rem)] left-0 right-0 w-full z-30">
+    <div 
+      className="fixed bottom-[env(safe-area-inset-bottom,0px)] left-0 right-0 w-full z-30" // Changed bottom positioning
+    >
       {/* Improved close button */}
       <button
         onClick={handleClose}

@@ -183,7 +183,7 @@ const IconWrapper = ({
   children: React.ReactNode, 
   color: "pink" | "gold" | "blue" 
 }) => (
-  <div className={`bg-${colors[color].light} p-3 rounded-full mb-2 flex items-center justify-center w-14 h-14 mx-auto`}>
+  <div className={`bg-[${colors[color].light}] p-3 rounded-full mb-2 flex items-center justify-center w-14 h-14 mx-auto`}> {/* Corrected dynamic background class */}
     {children}
   </div>
 );
@@ -466,8 +466,8 @@ export function VisitUs() {
   // Add query for templeEtiquette
   const { data: etiquette } = useQuery({
     queryKey: ['templeEtiquette'],
-    queryFn: () => Promise.resolve(templeEtiquette),
-  initialData: templeEtiquette
+    queryFn: () => Promise.resolve(templeEtiquette), // Added missing comma
+    initialData: templeEtiquette
 });
 
   const { isSoundEnabled } = useSoundSettings();
@@ -494,13 +494,13 @@ export function VisitUs() {
         
         <div className="container mx-auto z-10 relative px-4 md:px-6"> {/* Ensure content is still structured if needed, or adjust classes if section itself provides padding/margin */}
           {/* Section Header */}
-          <div className="mb-12 md:mb-16 text-center">
+          <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-16 text-center"> {/* Adjusted margins */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
-              className="mx-auto w-fit mb-6"
+              className="mx-auto w-fit mb-4 sm:mb-6"
             >
               <div className="bg-gradient-to-r from-[#e94a9c] via-[#ffc547] to-[#0a84ff] p-0.5 rounded-full shadow-lg">
                 <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-full p-3">
@@ -514,10 +514,10 @@ export function VisitUs() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#ffc547] via-[#0a84ff] to-[#e94a9c] text-transparent bg-clip-text"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-[#ffc547] via-[#0a84ff] to-[#e94a9c] text-transparent bg-clip-text" // Adjusted font sizes
             >
               <WritingText
-                text="Visit Us"
+                text="Visit ISKM Pudhuvai Vrindavan" // Changed title text
                 inView={true}
                 spacing={0}
                 transition={{
@@ -534,10 +534,10 @@ export function VisitUs() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto"
+              className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto" // Adjusted font sizes
             >
               <TypingText
-                text="We invite you to visit our temple and experience spiritual bliss"
+                text="We invite you to visit our temple and experience spiritual bliss." // Added period
                 delay={1200}
                 duration={50}
                 inView={true}
@@ -1036,22 +1036,23 @@ export function VisitUs() {
                     <AnimatePresence mode="wait">
                       <Tabs defaultValue="puducherry" className="w-full">
                         <div className="flex justify-center mb-5">
-                          <TabsList className="bg-gray-100/50 dark:bg-gray-800/50 p-1.5 rounded-xl w-full max-w-2xl">
+                          {/* Added flex flex-wrap justify-center gap-1 to TabsList for airport sub-tabs */}
+                          <TabsList className="flex flex-wrap justify-center gap-1 bg-gray-100/50 dark:bg-gray-800/50 p-1.5 rounded-xl w-full max-w-2xl">
                             <TabsTrigger 
                               value="puducherry" 
-                              className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 rounded-lg px-3 py-2.5 text-sm flex-1 touch-manipulation"
+                              className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 rounded-lg px-3 py-2.5 text-sm touch-manipulation" // Removed flex-1
                             >
                               Puducherry Airport
                             </TabsTrigger>
                             <TabsTrigger 
                               value="chennai" 
-                              className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 rounded-lg px-3 py-2.5 text-sm flex-1 touch-manipulation"
+                              className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 rounded-lg px-3 py-2.5 text-sm touch-manipulation" // Removed flex-1
                             >
                               Chennai Airport
                             </TabsTrigger>
                             <TabsTrigger 
                               value="trichy" 
-                              className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 rounded-lg px-3 py-2.5 text-sm flex-1 touch-manipulation"
+                              className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 rounded-lg px-3 py-2.5 text-sm touch-manipulation" // Removed flex-1
                             >
                               Trichy Airport
                             </TabsTrigger>

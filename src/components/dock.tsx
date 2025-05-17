@@ -27,6 +27,10 @@ import { TempleEvents } from '@/components/temple-events';
 import { DeityDarshan } from '@/components/deity-darshan';
 import { useIsMobile } from "@/hooks/use-mobile";
 import { RainbowGlow } from "@/components/ui/rainbow-glow"; // Added RainbowGlow import
+import { Suspense } from 'react'; // Added Suspense import
+const LazyUpcomingEventBanner = React.lazy(() => // Added import for the banner
+  import('@/components/upcoming-event-banner').then(module => ({ default: module.UpcomingEventBanner }))
+);
 
 const navItems = [
   { 
@@ -474,6 +478,11 @@ function NavbarContent() {
         {/* Safe area spacing - Unchanged */}
         <div className="h-[env(safe-area-inset-bottom)]" />
       </motion.nav> {/* Corrected: Added closing tag for motion.nav */}
+
+      {/* Upcoming Event Banner - Placed here to be part of the fixed layout, but styled to be above the dock */}
+      <Suspense fallback={null}>
+        <LazyUpcomingEventBanner />
+      </Suspense>
     </MotionConfig>
   )
 }

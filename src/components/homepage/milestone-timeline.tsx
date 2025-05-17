@@ -87,7 +87,7 @@ export function MilestoneTimeline() {
 
   return (
     <motion.div 
-      className="w-full py-12 md:py-16 bg-secondary/30"
+      className="w-full py-12 md:py-16" // Removed bg-secondary/30
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
