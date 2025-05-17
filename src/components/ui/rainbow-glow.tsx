@@ -2,54 +2,58 @@ import { cn } from "@/lib/utils";
 import React from "react"; // Import React for React.memo
 
 interface RainbowGlowProps {
-  className?: string;
-  containerClassName?: string;
+  className?: string; // For the thin line itself
+  containerClassName?: string; // For the overall container of the glow effect
   position?: "top" | "bottom";
+  glowHeight?: string; // e.g., "h-10", "h-16"
+  glowOpacity?: number; // e.g., 0.3, 0.5
+  blurAmount?: string; // e.g., "blur-2xl", "blur-3xl"
 }
 
-export const RainbowGlow = React.memo(({ className, containerClassName, position = "bottom" }: RainbowGlowProps) => {
+export const RainbowGlow = React.memo(({ 
+  className, 
+  containerClassName, 
+  position = "bottom",
+  glowHeight = "h-12", // Default softer glow height
+  glowOpacity = 0.4, // Default opacity
+  blurAmount = "blur-2xl" // Default blur
+}: RainbowGlowProps) => {
   const isTop = position === "top";
+
+  // Gradient for the main soft glow, more concentrated at the edge
+  const glowGradient = isTop 
+    ? "bg-gradient-to-b" 
+    : "bg-gradient-to-t";
+
   return (
     <div className={cn(
-      "absolute left-0 right-0 h-32 z-[1]",
+      "absolute left-0 right-0 pointer-events-none", // Prevent interaction with glow
       isTop ? "top-0" : "bottom-0",
+      glowHeight, // Use prop for height
       containerClassName
     )}>
-      <div className="relative w-full h-full">
-        <div className="absolute inset-0 flex justify-center">
-          {/* Multiple glowing orbs - now static */}
-          <div className={cn(
-            "absolute h-24 w-[40%] bg-gradient-to-r from-purple-500/30 via-pink-500/30 to-orange-500/30 blur-3xl rounded-full",
-            // Removed: animate-pulse-glow, will-change-*
-            isTop ? "top-[-20%]" : "bottom-[-20%]"
-          )}
-          />
-          <div className={cn(
-            "absolute h-24 w-[45%] bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 blur-3xl rounded-full",
-            // Removed: animate-pulse-glow-fast, will-change-*
-            isTop ? "top-[-25%]" : "bottom-[-25%]"
-          )}
-            // Removed: style={{ animationDelay: "-1s" }}
-          />
-          <div className={cn(
-            "absolute h-20 w-[35%] bg-gradient-to-r from-pink-500/25 via-purple-500/25 to-indigo-500/25 blur-3xl rounded-full",
-            // Removed: animate-pulse-slow, will-change-*
-            isTop ? "top-[-15%]" : "bottom-[-15%]"
-          )}
-            // Removed: style={{ animationDelay: "-2s" }}
-          />
-        </div>
-      </div>
-
-      {/* Rainbow Border Glow - now static */}
+      {/* Soft, wider gradient glow for depth */}
+      <div 
+        className={cn(
+          "absolute inset-x-0 w-full",
+          isTop ? "top-0" : "bottom-0",
+          glowHeight,
+          glowGradient,
+          "from-pink-500/60 via-purple-500/40 to-transparent", // Example gradient, adjust as needed
+          blurAmount, // Use prop for blur
+          "opacity-[var(--glow-opacity)]" // Use CSS variable for opacity
+        )}
+        style={{ '--glow-opacity': glowOpacity } as React.CSSProperties}
+      />
+      
+      {/* Thin, sharper rainbow line at the very edge */}
       <div className={cn(
-        "absolute left-0 right-0 h-[2px] z-[2]",
+        "absolute left-0 right-0 h-[1.5px] z-[1]", // Thinner line, slightly above the soft glow
         isTop ? "top-0" : "bottom-0",
         className
       )}>
         <div className="relative w-full h-full bg-gradient-to-r
-          from-purple-500/50 via-pink-500/50 to-orange-500/50"
-          // Removed: animate-rainbow, [--speed:4s], will-change-[background]
+          from-purple-500/80 via-pink-500/80 to-orange-500/80" // Slightly more vibrant line
         />
       </div>
     </div>

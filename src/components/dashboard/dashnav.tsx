@@ -370,7 +370,7 @@ export const DashNav = () => {
           "flex flex-col items-center gap-4",
           isCollapsed ? "px-0" : "p-4"
         )}>
-          <ModeToggle iconOnly={isCollapsed} />
+          <ModeToggle />
           {!isCollapsed && (
             <>
               <Separator />

@@ -22,6 +22,9 @@ const LazyFeaturedSection = React.lazy(() =>
 const LazySlokaLearningSection = React.lazy(() =>
   import('@/components/homepage/sloka-learning-section').then(module => ({ default: module.SlokaLearningSection }))
 );
+const LazyFeaturedBooksSection = React.lazy(() =>
+  import('@/components/homepage/featured-books-section').then(module => ({ default: module.FeaturedBooksSection }))
+);
 
 export const Route = createFileRoute('/')({
   component: HomePage
@@ -55,7 +58,7 @@ function HomePage() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsPageLoading(false);
-    }, 1500); // Load for 1.5 seconds
+    }, 1000); // Load for 1 seconds
 
     return () => clearTimeout(timer); // Cleanup timer on unmount
   }, []);
@@ -75,11 +78,10 @@ function HomePage() {
       {/* Actual page content */}
       <div className="relative z-10 w-full">
         <HeroSection />
-        
-        {/* Added Milestone Timeline */}
         <Suspense fallback={<SectionLoader />}>
-          <LazyMilestoneTimeline />
+          <LazyFeaturedSection />
         </Suspense>
+
 
         <Suspense fallback={<SectionLoader />}>
           <LazyYouTubeMarquee />
@@ -89,16 +91,20 @@ function HomePage() {
           <LazyQnASection />
         </Suspense>
 
-        <Suspense fallback={<SectionLoader />}>
-          <LazyVisitUs />
-        </Suspense>
 
-        <Suspense fallback={<SectionLoader />}>
-          <LazyFeaturedSection />
-        </Suspense>
 
         <Suspense fallback={<SectionLoader />}>
           <LazySlokaLearningSection />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <LazyFeaturedBooksSection />
+        </Suspense>
+        {/* Added Milestone Timeline */}
+        <Suspense fallback={<SectionLoader />}>
+          <LazyMilestoneTimeline />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <LazyVisitUs />
         </Suspense>
       </div>
     </main>

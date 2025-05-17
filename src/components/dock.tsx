@@ -1,15 +1,14 @@
 import { Link } from '@tanstack/react-router';
-import { motion, MotionConfig } from 'motion/react';
+import { motion, MotionConfig, AnimatePresence } from 'motion/react'; // Added AnimatePresence
 import * as React from 'react';
-import { cn } from '@/lib/utils'; // Assuming path is correct
+import { cn } from '@/lib/utils';
+import useMeasure from 'react-use-measure'; // Added useMeasure
+import useClickOutside from '@/components/motion-primitives/useClickOutside'; // Added useClickOutside
 import IconHome from 'virtual:icons/line-md/home-md-alt-twotone'
 import IconTemple from 'virtual:icons/fluent-emoji-flat/hindu-temple'
 import IconCalendar from 'virtual:icons/uim/calender'
 import IconInfo from 'virtual:icons/line-md/alert-circle-twotone-loop';
-import IconDonate from 'virtual:icons/fluent-emoji/love-letter';
 import { ModeToggle } from '@/components/mode-toggle'; // Assuming path
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"; // Assuming path
-import { Button } from "@/components/ui/button"; // Assuming path
 import { Separator } from "@/components/ui/separator"; // Assuming path
 import {
   CommandDialog,
@@ -19,14 +18,15 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"; // Assuming path
-import { Menu, Search, Volume2, VolumeX, Gift, Globe as GlobeIcon } from "lucide-react"; // Added GlobeIcon
+import { Menu, Search, Volume2, VolumeX, Globe as GlobeIcon } from "lucide-react";
 import { useSound } from 'use-sound';
-import { useSoundSettings } from '@/components/context/sound-context'; // Assuming path
-import { SoundProvider } from '@/components/context/sound-context'; // Assuming path
+import { useSoundSettings } from '@/components/context/sound-context';
+import { SoundProvider } from '@/components/context/sound-context';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { TempleEvents } from '@/components/temple-events'; // Assuming path
-import { DeityDarshan } from '@/components/deity-darshan'; // Import the new DeityDarshan component
-import { useIsMobile } from "@/hooks/use-mobile"; // Import useIsMobile
+import { TempleEvents } from '@/components/temple-events';
+import { DeityDarshan } from '@/components/deity-darshan';
+import { useIsMobile } from "@/hooks/use-mobile";
+import { RainbowGlow } from "@/components/ui/rainbow-glow"; // Added RainbowGlow import
 
 const navItems = [
   { 
@@ -37,445 +37,415 @@ const navItems = [
   },
   { icon: IconTemple, label: 'Deities', to: '/deities', iconClassName: "text-primary/80" },
   { icon: IconCalendar, label: 'Events', to: '/events', iconClassName: "text-primary/80" },
-  { icon: GlobeIcon, label: 'Centers', to: '/centers', iconClassName: "text-primary/80" }, // Added Centers
+  { icon: GlobeIcon, label: 'Centers', to: '/centers', iconClassName: "text-primary/80" },
   { icon: IconInfo, label: 'About', to: '/about', iconClassName: "text-primary/80" },
-  { icon: IconDonate, label: 'Donate', to: '/donate', iconClassName: "text-primary/80" },
-]
-
-// Define a type for individual nav item
-interface NavItemProps {
-  icon: React.ComponentType<{ className?: string }>; // More specific type for icon components
-  label: string;
-  to: string;
-  iconClassName?: string;
-}
-
-// Memoized Nav Item Component
-interface NavItemDisplayProps {
-  item: NavItemProps;
-  isActive: boolean;
-  isDrawerOpen?: boolean;
-  onClick: () => void;
-  onMouseEnter: () => void;
-  componentType: 'link' | 'button';
-}
-
-const NavItemDisplay = React.memo(({ item, isActive, isDrawerOpen, onClick, onMouseEnter, componentType }: NavItemDisplayProps) => {
-  const isEffective = isActive || isDrawerOpen; // Combined active state for styling
-
-  const content = (
-    <div className="relative flex flex-col items-center gap-1 w-full h-full">
-      {isEffective && (
-        <motion.div
-          layout
-          layoutId={`nav-active-${item.to}`} // Dynamic layoutId
-          className="absolute inset-0 -inset-x-1 sm:-inset-x-1.5 -z-10 rounded-2xl bg-pink-100/20 dark:bg-pink-800/30 shadow-sm"
-          transition={{ type: "spring", bounce: 0.15 }}
-          />
-        )}
-        {/* Removed the hover effect background div */}
-        <div className="relative rounded-xl p-1.5">
-        {/* No longer need to cast to any after updating NavItemProps */}
-        <item.icon
-          className={cn(
-            "size-[1.25rem] sm:size-5 transition-all duration-200",
-            item.iconClassName || "text-foreground/80",
-            "group-hover:text-primary",
-            isEffective && "text-primary"
-          )}
-        />
-      </div>
-      <span className="font-medium px-1 pb-0.5 text-[0.65rem] sm:text-[0.7rem] sm:px-1.5">{item.label}</span>
-    </div>
-  );
-
-  const commonClassNames = cn(
-    "group relative flex flex-col items-center rounded-2xl px-2 py-1.5 sm:px-3",
-    "text-xs font-medium text-foreground/90 transition-colors duration-200",
-    "hover:text-primary hover:bg-white/10 dark:hover:bg-white/20",
-    "focus-visible:outline-none focus-visible:ring-2",
-    "focus-visible:ring-primary focus-visible:ring-offset-2",
-    isEffective && "text-primary"
-  );
-
-  if (componentType === 'link') {
-    return (
-      <Link
-        to={item.to}
-        onClick={onClick}
-        onMouseEnter={onMouseEnter}
-        className={commonClassNames}
-        activeProps={{ className: "text-primary relative isolate" }} // Keep activeProps for Link's own active state detection
-      >
-        {content}
-      </Link>
-    );
-  } else {
-    return (
-      <button
-        type="button"
-        onClick={onClick}
-        onMouseEnter={onMouseEnter}
-        className={commonClassNames}
-      >
-        {content}
-      </button>
-    );
-  }
-});
-
+];
 
 function NavbarContent() {
   // --- State ---
   const [open, setOpen] = React.useState(false); // Command Dialog state
-  const [mainMenuOpen, setMainMenuOpen] = React.useState(false); // Main Menu Drawer state
   const [eventsOpen, setEventsOpen] = React.useState(false); // Events Dialog state
-  const [deitiesOpen, setDeitiesOpen] = React.useState(false); // Deities Dialog state - NEW
-  const [donationOpen, setDonationOpen] = React.useState(false); // Donation Drawer state
+  const [deitiesOpen, setDeitiesOpen] = React.useState(false); // Deities Dialog state
 
   // --- Hooks ---
   const { isSoundEnabled, toggleSound } = useSoundSettings();
   const queryClient = useQueryClient();
-  const isMobile = useIsMobile(); // Check mobile status
+  const isMobile = useIsMobile();
 
-  // Use React Query for sound loading state
+  // State for the new expandable dock (from snippet)
+  const [activeDockItem, setActiveDockItem] = React.useState<number | null>(null); // For the main Menu's content panel
+  const [activeLabelItemId, setActiveLabelItemId] = React.useState<number | null>(null); // For click-to-expand labels
+  const [hoveredLabelItemId, setHoveredLabelItemId] = React.useState<number | null>(null); // For hover-to-expand labels
+  const [contentRef, { height: heightContent }] = useMeasure();
+  const [menuRef, { width: widthContainer }] = useMeasure();
+  const dockWrapperRef = React.useRef<HTMLDivElement>(null);
+  const [isDockOpen, setIsDockOpen] = React.useState(false);
+  const [maxDockWidth, setMaxDockWidth] = React.useState(0);
+
+  // State for dock visibility on scroll
+  const [isDockVisible, setIsDockVisible] = React.useState(true);
+  const [lastScrollY, setLastScrollY] = React.useState(0);
+
+  // useClickOutside hook (from snippet, adapted path)
+  useClickOutside(dockWrapperRef, () => {
+    if (isDockOpen) { 
+      setIsDockOpen(false);
+      setActiveDockItem(null);
+    }
+    // setActiveLabelItemId(null); // Optionally clear clicked active label on click outside
+    setHoveredLabelItemId(null); // Always clear hover state on click outside
+  });
+
+  // useEffect for maxWidth (from snippet)
+  React.useEffect(() => {
+    if (!widthContainer || maxDockWidth > 0) return;
+    setMaxDockWidth(widthContainer);
+  }, [widthContainer, maxDockWidth]);
+
+  // useEffect for dock visibility on scroll
+  React.useEffect(() => {
+    const controlDockVisibility = () => {
+      const currentScrollY = window.scrollY;
+      // If dock content is open, keep it visible
+      if (isDockOpen) {
+        setIsDockVisible(true);
+        setLastScrollY(currentScrollY); // Update lastScrollY to prevent immediate hide on content close
+        return;
+      }
+
+      if (currentScrollY > lastScrollY && currentScrollY > 80) { // Scrolling down
+        setIsDockVisible(false);
+      } else { // Scrolling up or at the top
+        setIsDockVisible(true);
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', controlDockVisibility);
+    return () => {
+      window.removeEventListener('scroll', controlDockVisibility);
+    };
+  }, [lastScrollY, isDockOpen]);
+
+
+  // Use React Query for sound loading state (existing)
   const { data: soundsLoaded = false } = useQuery({
     queryKey: ['soundsLoaded'],
     queryFn: async () => {
-      // Preload all sounds
       const sounds = [
         '/sounds/switch-on.mp3',
         '/sounds/click.wav',
         '/sounds/enable-sound.mp3',
         '/sounds/disable-sound.mp3',
         '/sounds/templebell.mp3'
-      ]
-      
+      ];
       await Promise.all(
         sounds.map(sound => 
           new Promise((resolve) => {
-            const audio = new Audio(sound)
-            audio.addEventListener('canplaythrough', resolve, { once: true })
-            audio.load()
+            const audio = new Audio(sound);
+            audio.addEventListener('canplaythrough', resolve, { once: true });
+            audio.load();
           })
         )
-      )
-      return true
+      );
+      return true;
     },
-    staleTime: Infinity // Sound loading state won't go stale
-  })
+    staleTime: Infinity,
+  });
 
-  // Sound effects with memoization
-  const [playHover] = useSound('/sounds/switch-on.mp3', { 
-    volume: 0.5,
-    soundEnabled: isSoundEnabled
-  })
+  const [playHover] = useSound('/sounds/switch-on.mp3', { volume: 0.5, soundEnabled: isSoundEnabled });
+  const [playClick] = useSound('/sounds/click.wav', { volume: 0.25, soundEnabled: isSoundEnabled });
+  const [playEnableSound] = useSound('/sounds/enable-sound.mp3', { volume: 0.5, soundEnabled: true });
+  const [playDisableSound] = useSound('/sounds/disable-sound.mp3', { volume: 0.5, soundEnabled: true });
+  const [playTempleBell] = useSound('/sounds/templebell.mp3', { volume: 0.5, soundEnabled: isSoundEnabled });
+
+  const safePlayHover = React.useCallback(() => {
+    if (soundsLoaded && isSoundEnabled) playHover();
+  }, [soundsLoaded, isSoundEnabled, playHover]);
+
+  const safePlayClick = React.useCallback(() => {
+    if (soundsLoaded && isSoundEnabled) playClick();
+  }, [soundsLoaded, isSoundEnabled, playClick]);
   
-  const [playClick] = useSound('/sounds/click.wav', { 
-    volume: 0.25,
-    soundEnabled: isSoundEnabled
-  })
+  const handleSoundToggle = React.useCallback(() => {
+    if (!isSoundEnabled) playEnableSound(); else playDisableSound();
+    toggleSound();
+    queryClient.invalidateQueries({ queryKey: ['soundState'] });
+  }, [isSoundEnabled, playEnableSound, playDisableSound, toggleSound, queryClient]);
 
-  const [playEnableSound] = useSound('/sounds/enable-sound.mp3', { 
-    volume: 0.5,
-    soundEnabled: true
-  })
-  
-  const [playDisableSound] = useSound('/sounds/disable-sound.mp3', { 
-    volume: 0.5,
-    soundEnabled: true
-  })
-
-  const [playTempleBell] = useSound('/sounds/templebell.mp3', { 
-    volume: 0.5,
-    soundEnabled: isSoundEnabled
-  })
-
-  // Safe play functions using React Query state
-  const safePlayHover = () => {
-    if (soundsLoaded && isSoundEnabled) {
-      playHover()
-    }
-  }
-
-  const safePlayClick = () => {
-    if (soundsLoaded && isSoundEnabled) {
-      playClick()
-    }
-  }
-
-  const handleSoundToggle = () => {
-    if (!isSoundEnabled) {
-      playEnableSound()
-    } else {
-      playDisableSound()
-    }
-    toggleSound()
-    // Invalidate any queries that depend on sound state
-    queryClient.invalidateQueries({ queryKey: ['soundState'] })
-  }
-
-  // Handle navigation with special sounds
-  const handleNavClick = (to: string) => {
-    if (to === '/deities' && isSoundEnabled) {
-      playTempleBell()
-    } else {
-      safePlayClick()
-    }
-  }
+  const handleNavClick = React.useCallback((to: string) => {
+    if (to === '/deities' && isSoundEnabled) playTempleBell(); else safePlayClick();
+  }, [isSoundEnabled, playTempleBell, safePlayClick]);
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        setOpen((open) => !open)
+        e.preventDefault();
+        setOpen((currentOpen) => !currentOpen);
       }
-    }
-    document.addEventListener("keydown", down)
-    return () => document.removeEventListener("keydown", down)
-  }, [])
+    };
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, []);
+
+  // Refined spring transition for the dock and its expandable content
+  const dockSpringTransition = {
+    type: "spring",
+    stiffness: 400, // Increased stiffness for a slightly quicker response
+    damping: 30,    // Adjusted damping for a smooth but not overly bouncy feel
+    mass: 0.8,      // Adjusted mass
+  };
+
+  // Specific spring for the main dock's appearance (slide up)
+  const mainDockAppearanceTransition = {
+    type: "spring",
+    stiffness: 250,
+    damping: 30,
+    delay: 0.2, // Optional delay for appearance
+  };
+
+  const DOCK_ITEMS = React.useMemo(() => [
+    {
+      id: 1,
+      label: 'Home',
+      title: <IconHome className='size-5' />,
+      action: () => handleNavClick('/'), // Direct action
+      isLink: true,
+      to: '/',
+    },
+    {
+      id: 2,
+      label: 'Deities',
+      title: <IconTemple className='size-5' />,
+      action: () => { setDeitiesOpen(true); playTempleBell(); }, // Direct action
+    },
+    {
+      id: 3,
+      label: 'Events',
+      title: <IconCalendar className='size-5' />,
+      action: () => { setEventsOpen(true); safePlayClick(); }, // Direct action
+    },
+    {
+      id: 4,
+      label: 'Search',
+      title: <Search className='size-5' />,
+      action: () => { setOpen(true); safePlayClick(); }, // Direct action
+    },
+    {
+      id: 5,
+      label: 'Menu', // This one will be expandable
+      title: <Menu className='size-5' />,
+      isExpandable: true,
+      content: ( // Content for the "Menu" item
+        <div className='flex flex-col space-y-2 p-2 max-h-[calc(100vh-200px)] overflow-y-auto'>
+          <button
+            onClick={() => { handleSoundToggle(); safePlayClick(); /* setIsDockOpen(false); setActiveDockItem(null); */ }} // Keep dock open for menu actions
+            onMouseEnter={safePlayHover}
+            className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent text-left"
+          >
+            {isSoundEnabled ? (
+              <><Volume2 className="size-5" /><span>Disable Sound</span></>
+            ) : (
+              <><VolumeX className="size-5" /><span>Enable Sound</span></>
+            )}
+          </button>
+          <div className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent">
+            <ModeToggle />
+          </div>
+          <Separator />
+          {isMobile && (
+            <>
+              <Separator />
+            </>
+          )}
+          {navItems.filter(item => ['/centers', '/about'].includes(item.to) && !(isMobile && item.to === '/donate')).map(navItem => (
+            <Link
+              key={`dock-menu-${navItem.to}`}
+              to={navItem.to}
+              onClick={() => { handleNavClick(navItem.to); setIsDockOpen(false); setActiveDockItem(null); }}
+              onMouseEnter={safePlayHover}
+              className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent"
+            >
+              <navItem.icon className={cn("size-5", navItem.iconClassName)} />
+              <span>{navItem.label}</span>
+            </Link>
+          ))}
+        </div>
+      ),
+    },
+  ], [isMobile, isSoundEnabled, handleNavClick, handleSoundToggle, playTempleBell, safePlayClick, safePlayHover, setDeitiesOpen, setEventsOpen, setOpen, toggleSound, navItems]);
+
 
   return (
     <MotionConfig transition={{ layout: { duration: 0.35, type: 'spring', bounce: 0.1 } }}>
-      {/* Floating Buttons (Desktop Only) */}
-      {!isMobile && (
-        <>
-          {/* Donation Floating Button/Drawer */}
-          <Drawer open={donationOpen} onOpenChange={setDonationOpen}>
-            <DrawerTrigger asChild>
-              <motion.div
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.8, type: "spring", stiffness: 150, damping: 15 }}
-                className="fixed bottom-6 right-6 z-50"
-              >
-                <Button
-                  size="icon"
-                  className="rounded-full h-12 w-12 shadow-lg bg-gradient-to-br from-pink-500 to-yellow-500 text-white hover:opacity-90"
-                  aria-label="Donate Now"
-                  onClick={safePlayClick}
-                  onMouseEnter={safePlayHover}
-                >
-                  <Gift className="h-5 w-5" />
-                </Button>
-              </motion.div>
-            </DrawerTrigger>
-          </Drawer>
-        </>
-      )}
-
       {/* Main Dock Navigation */}
-      <nav className="fixed bottom-0 left-0 z-40 w-full pb-safe mb-6 pointer-events-none">
+      <motion.nav 
+        className="fixed bottom-0 left-0 z-40 w-full pb-safe mb-6 pointer-events-none"
+        initial={{ y: 0 }}
+        animate={{ y: isDockVisible ? 0 : 100 }} // 100 is an example, adjust if dock height is different
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      >
         <div className="container relative mx-auto flex justify-center px-2 pb-2 sm:px-4">
-          {/* Added pointer-events-auto here */}
           <motion.div
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className="relative w-full max-w-md rounded-3xl bg-pink-50/60 p-1.5 shadow-lg shadow-black/5 ring-1 ring-pink-100/60 backdrop-blur-md dark:bg-pink-900/40 dark:shadow-black/10 dark:ring-pink-900/40 sm:max-w-fit pointer-events-auto"
+            // Removed initial and animate for y here, handled by parent motion.nav
+            // Kept opacity animation for initial load if desired, or can be removed if parent handles all appearance
+            initial={{ opacity: 0 }} // Only initial opacity if mainDockAppearanceTransition handles y
+            animate={{ opacity: 1 }}
+            transition={mainDockAppearanceTransition} // This transition might primarily be for opacity now
+            className="relative w-full max-w-md rounded-3xl bg-pink-50/60 shadow-lg shadow-black/5 ring-1 ring-pink-100/60 backdrop-blur-md dark:bg-pink-900/40 dark:shadow-black/10 dark:ring-pink-900/40 sm:max-w-fit pointer-events-auto overflow-hidden"
+            ref={dockWrapperRef}
+            onMouseLeave={() => setHoveredLabelItemId(null)} // Clear hover when mouse leaves the entire dock
           >
-            {/* Adjusted grid back to grid-cols-5 */}
-            <div className="grid w-full grid-cols-5 sm:auto-cols-min sm:grid-flow-col">
-              {/* Main Nav Items (first 3 - Home, Deities, Events) */}
-              {navItems.slice(0, 3).map((item) => {
-                const isEventsButton = item.to === '/events';
-                const isDeitiesButton = item.to === '/deities';
-                // Centers page is a direct link, not a drawer
-                const componentType = isEventsButton || isDeitiesButton ? 'button' : 'link';
-                
-                let onClickAction = () => handleNavClick(item.to); // Default for links
-                if (isEventsButton) {
-                  onClickAction = () => { setEventsOpen(true); safePlayClick(); };
-                } else if (isDeitiesButton) {
-                  onClickAction = () => { setDeitiesOpen(true); playTempleBell(); };
-                }
-
-                // Determine active state for styling (Link active state or drawer open state)
-                const isActuallyActive = 
-                  (componentType === 'link' && typeof window !== 'undefined' && window.location.pathname === item.to) ||
-                  (isEventsButton && eventsOpen) ||
-                  (isDeitiesButton && deitiesOpen);
-
-                return (
-                  <NavItemDisplay
-                    key={item.to}
-                    item={item}
-                    isActive={isActuallyActive} // Pass calculated active state
-                    isDrawerOpen={(isEventsButton && eventsOpen) || (isDeitiesButton && deitiesOpen)}
-                    onClick={onClickAction}
-                    onMouseEnter={safePlayHover}
-                    componentType={componentType}
-                  />
-                );
-              })}
-
-              {/* Search Button */}
-              <button
-                onClick={() => {
-                  setOpen(true)
-                  handleNavClick('/')
-                }}
-                onMouseEnter={safePlayHover}
-                className="group relative flex flex-col items-center rounded-2xl px-2 py-1.5 sm:px-3 hover:bg-white/10 dark:hover:bg-white/5 transition-colors duration-200"
-              >
-                <div className="relative flex flex-col items-center gap-1 w-full h-full">
-                  {/* Add hover effect background */}
-                  <div className="absolute inset-0 -inset-x-1 sm:-inset-x-1.5 -z-10 rounded-2xl bg-pink-100/0 dark:bg-pink-800/0 transition-colors duration-200 group-hover:bg-pink-100/10 dark:group-hover:bg-pink-800/[0.08]"></div>
-                  <div className="relative rounded-xl p-1.5">
-                    <Search className="size-[1.25rem] sm:size-5 text-foreground/80 group-hover:text-primary transition-colors duration-200" />
-                  </div>
-                  <span className="font-medium px-1 pb-0.5 text-[0.65rem] sm:text-[0.7rem] sm:px-1.5">Search</span>
-                </div>
-              </button>
-
-              {/* Menu Button */}
-              <Drawer open={mainMenuOpen} onOpenChange={setMainMenuOpen}>
-                <DrawerTrigger asChild>
-                  <button
-                    className="group relative flex flex-col items-center rounded-2xl px-2 py-1.5 sm:px-3 hover:bg-white/10 dark:hover:bg-white/5 transition-colors duration-200"
-                    onMouseEnter={safePlayHover}
-                    onClick={() => safePlayClick()} // Keep this simplified click for opening the drawer
-                  >
-                    <div className="relative flex flex-col items-center gap-1 w-full h-full">
-                      {/* Add hover effect background */}
-                      <div className="absolute inset-0 -inset-x-1 sm:-inset-x-1.5 -z-10 rounded-2xl bg-pink-100/0 dark:bg-pink-800/0 transition-colors duration-200 group-hover:bg-pink-100/10 dark:group-hover:bg-pink-800/[0.08]"></div>
-                      <div className="relative rounded-xl p-1.5">
-                        <Menu className="size-[1.25rem] sm:size-5 text-foreground/80 group-hover:text-primary transition-colors duration-200" />
-                      </div>
-                      <span className="font-medium px-1 pb-0.5 text-[0.65rem] sm:text-[0.7rem] sm:px-1.5">Menu</span>
-                    </div>
-                  </button>
-                </DrawerTrigger>
-                <DrawerContent>
-                  <div className="p-4">
-                    <div className="space-y-4">
-                      {/* Sound Toggle Button */}
-                      <button
-                        onClick={handleSoundToggle}
-                        onMouseEnter={safePlayHover}
-                        className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent"
+            <RainbowGlow 
+              position="top" 
+              className="opacity-50"
+              containerClassName="h-16" // Adjusted container height for the glow
+              glowHeight="h-10"      // Use new props
+              glowOpacity={0.3}
+              blurAmount="blur-xl"
+            />
+            {/* New Expandable Dock Implementation */}
+            <MotionConfig transition={dockSpringTransition}>
+              <div className='h-full w-full p-1.5'>
+                <div className='overflow-hidden rounded-t-2xl'>
+                  <AnimatePresence initial={false} mode='sync'>
+                    {isDockOpen && activeDockItem === DOCK_ITEMS.find(i => i.isExpandable)?.id && (
+                      <motion.div
+                        key='content'
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: heightContent || 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        style={{ width: maxDockWidth > 0 ? maxDockWidth : 'auto' }}
                       >
-                        {isSoundEnabled ? (
-                          <>
-                            <Volume2 className="size-5" />
-                            <span>Disable Sound</span>
-                          </>
-                        ) : (
-                          <>
-                            <VolumeX className="size-5" />
-                            <span>Enable Sound</span>
-                          </>
-                        )}
-                      </button>
+                        <div ref={contentRef} className='p-0'>
+                          {DOCK_ITEMS.find(item => item.id === activeDockItem && item.isExpandable)?.content}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+                <div className='flex space-x-1 sm:space-x-2 p-1 sm:p-2 justify-center' ref={menuRef}>
+                  {DOCK_ITEMS.map((item) => {
+                    const isLabelClickedActive = activeLabelItemId === item.id && !item.isExpandable;
+                    const isLabelHoveredActive = hoveredLabelItemId === item.id && !item.isExpandable;
+                    const isLabelVisible = isLabelClickedActive || isLabelHoveredActive;
+                    
+                    const isMainMenuPanelActive = item.isExpandable && activeDockItem === item.id && isDockOpen;
 
-                      {/* Theme Toggle Button - unchanged */}
-                      <div className="flex w-full items-center space-x-2 rounded-lg p-2">
-                        <ModeToggle iconOnly={false} />
-                      </div>
+                    const handleItemClick = () => {
+                      if (item.label === 'Deities' && !item.isExpandable) playTempleBell(); else safePlayClick();
 
-                      {/* Divider */}
-                      <Separator className="my-2" />
-
-                      {/* Mobile Only Donation Button */}
-                      {isMobile && (
-                        <>
-                          <button
-                            onClick={() => { setDonationOpen(true); setMainMenuOpen(false); safePlayClick(); }}
-                            onMouseEnter={safePlayHover}
-                            className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent"
-                          >
-                            <Gift className="size-5" />
-                            <span>Donate Now</span>
-                          </button>
-                          <Separator className="my-2" />
-                        </>
-                      )}
-
-                      {/* Navigation Items */}
-                      {navItems.map((item) => {
-                        // Render button or Link in the main menu drawer as well
-                        const isEventsMenuButton = item.to === '/events';
-                        const isDeitiesMenuButton = item.to === '/deities';
-                        // Centers is a direct link
-                        const MenuComponent = isEventsMenuButton || isDeitiesMenuButton ? 'button' : Link;
-                        
-                        let menuOnClickAction = () => { // Default for links
-                          setMainMenuOpen(false);
-                          handleNavClick(item.to);
-                        };
-
-                        if (isEventsMenuButton) {
-                          menuOnClickAction = () => {
-                            setEventsOpen(true);
-                            setMainMenuOpen(false);
-                            safePlayClick();
-                          };
-                        } else if (isDeitiesMenuButton) {
-                          menuOnClickAction = () => {
-                            setDeitiesOpen(true);
-                            setMainMenuOpen(false);
-                            playTempleBell();
-                          };
+                      if (item.isExpandable) { // Main Menu item
+                        setActiveLabelItemId(null); // Clear any clicked label
+                        setHoveredLabelItemId(null); // Clear hover state
+                        setIsDockOpen(prev => !prev);
+                        setActiveDockItem(isDockOpen && activeDockItem === item.id ? null : item.id);
+                      } else { // Regular items (Home, Deities, Events, Search)
+                        // Toggle activeLabelItemId on click
+                        setActiveLabelItemId(prevId => (prevId === item.id ? null : item.id));
+                        setHoveredLabelItemId(null); // Click takes precedence over hover
+                        setIsDockOpen(false); // Close main menu panel if open
+                        setActiveDockItem(null);
+                        if (item.action && typeof item.action === 'function') {
+                          item.action();
                         }
-                        
-                        const menuLinkProps = MenuComponent === Link ? { to: item.to } : { type: 'button' as const };
+                      }
+                    };
+                    
+                    const handleItemMouseEnter = () => {
+                      if (!item.isExpandable) {
+                        setHoveredLabelItemId(item.id);
+                        safePlayHover();
+                      }
+                    };
 
-                        return (
-                          // @ts-ignore
-                          <MenuComponent
-                            key={`menu-${item.to}`}
-                            {...menuLinkProps}
-                            onClick={menuOnClickAction}
-                            onMouseEnter={safePlayHover}
-                            className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent"
+                    // onMouseLeave for individual items is handled by the parent dockWrapperRef's onMouseLeave
+
+                    const itemContent = (
+                      <div className={cn(
+                        "flex items-center h-full w-full transition-all duration-200 ease-out",
+                        isLabelVisible ? "justify-start pl-2 pr-1 sm:pl-3 sm:pr-2" : "justify-center"
+                      )}>
+                        {item.title} {/* Icon */}
+                        <AnimatePresence>
+                          {isLabelVisible && (
+                            <motion.span
+                              className="ml-1.5 sm:ml-2 text-xs sm:text-sm font-medium whitespace-nowrap"
+                              initial={{ opacity: 0, x: -8 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              exit={{ opacity: 0, x: -8, transition: { duration: 0.15 } }}
+                              transition={{ duration: 0.2, ease: "easeOut", delay: 0.1 }}
+                            >
+                              {item.label}
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    );
+                    
+                    const baseItemClasses = "relative flex items-center rounded-xl cursor-pointer overflow-hidden h-10 sm:h-12 text-foreground/80 transition-colors focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]";
+                    const activeStateClasses = (isMainMenuPanelActive || isLabelVisible) // Highlight if main menu panel is active OR if label is visible (clicked or hovered)
+                      ? "bg-pink-100/70 dark:bg-pink-700/70 text-primary"
+                      : "hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary";
+                    
+                    const itemWidth = item.isExpandable 
+                                      ? (isMobile ? 40 : 48) 
+                                      : (isLabelVisible ? (isMobile ? 100 : 120) : (isMobile ? 40 : 48));
+
+                    if (item.isLink && item.to) { // Home item
+                      return (
+                        <motion.div
+                          key={item.id}
+                          layout
+                          className={cn(baseItemClasses, activeStateClasses)}
+                          animate={{ width: itemWidth }}
+                          transition={dockSpringTransition}
+                          onMouseEnter={handleItemMouseEnter}
+                        >
+                          <Link
+                            to={item.to}
+                            aria-label={item.label}
+                            className="w-full h-full flex"
+                            onClick={handleItemClick}
                           >
-                            <item.icon className={cn("size-5", item.iconClassName)} />
-                            <span>{item.label}</span>
-                          </MenuComponent>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </DrawerContent>
-              </Drawer>
-            </div>
+                            {itemContent}
+                          </Link>
+                        </motion.div>
+                      );
+                    } else { // Button items (Deities, Events, Search, Menu)
+                      return (
+                        <motion.button
+                          key={item.id}
+                          type="button"
+                          aria-label={item.label}
+                          layout
+                          className={cn(baseItemClasses, activeStateClasses)}
+                          animate={{ width: itemWidth }}
+                          transition={dockSpringTransition}
+                          onClick={handleItemClick}
+                          onMouseEnter={handleItemMouseEnter}
+                        >
+                          {itemContent}
+                        </motion.button>
+                      );
+                    }
+                  })}
+                </div>
+              </div>
+            </MotionConfig>
           </motion.div>
         </div>
 
-        {/* Command Dialog */}
-        <CommandDialog open={open} onOpenChange={(isOpen) => {
-          setOpen(isOpen)
-          if (!isOpen) handleNavClick('/')
+        {/* Command Dialog - Unchanged */}
+        <CommandDialog open={open} onOpenChange={(currentOpenState) => {
+          setOpen(currentOpenState);
+          if (!currentOpenState) { /* Assuming handleNavClick('/') was for resetting state or sound */ }
         }}>
           <CommandInput placeholder="Type a command or search..." />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup heading="Navigation">
-              {navItems.map((item) => (
+              {navItems.map((item) => ( // navItems still used for CommandDialog
                 <CommandItem
-                  key={item.to}
+                  key={`cmd-${item.to}`}
                   onSelect={() => {
                     setOpen(false);
                     if (item.to === '/events') {
-                      setEventsOpen(true);
-                      safePlayClick();
+                      setEventsOpen(true); safePlayClick();
                     } else if (item.to === '/deities') {
-                      setDeitiesOpen(true);
-                      playTempleBell();
-                    } else { // For Centers and other direct links
-                      handleNavClick(item.to);
-                      // For TanStack Router, navigation should be done via <Link to="..."> or router.navigate()
-                      // Using window.location.href is a full page reload.
-                      // If this component is within a TanStack Router context, prefer router.navigate()
-                      // For simplicity here, assuming Link component handles navigation correctly when not a drawer.
-                      // The `Link` component from `@tanstack/react-router` should handle this.
-                      // If direct navigation is needed for some reason: router.navigate({ to: item.to })
-                      // For now, we assume the Link component handles it, or if it's a button, the onClick does.
-                      // The onSelect here is for CommandItem, so direct navigation might be intended.
-                      // Let's use router.navigate if available, or fallback.
-                      // Since router isn't directly in scope, window.location.href is a fallback.
-                      // However, for <Link> components, this onSelect might be redundant if Link itself navigates.
-                      // For items that are not drawers (like /centers, /about, /donate), they should be Links.
-                       if (typeof window !== 'undefined') window.location.href = item.to; // Fallback if not a drawer
+                      setDeitiesOpen(true); playTempleBell();
+                    } else {
+                      // For direct links, navigate using Link's behavior or router.navigate()
+                      // This onSelect might trigger navigation if Link component isn't used here.
+                      // For now, assuming direct window.location.href for simplicity if not handled by router.
+                      // Ideally, use router.navigate({ to: item.to }) if router is in scope.
+                      handleNavClick(item.to); // Play sound
+                       if (typeof window !== 'undefined' && !['/events', '/deities'].includes(item.to)) {
+                         // This is a hacky way to navigate. Prefer <Link> or router.navigate()
+                         // For items that are pure links, the CommandItem should probably wrap a Link
+                         // or use router.navigate()
+                         window.location.assign(item.to);
+                       }
                     }
                   }}
                   onMouseEnter={safePlayHover}
@@ -488,35 +458,22 @@ function NavbarContent() {
           </CommandList>
         </CommandDialog>
 
-        {/* Add Events Dialog */}
+        {/* Add Events Dialog - Unchanged */}
         <TempleEvents 
           open={eventsOpen} 
           onOpenChange={setEventsOpen}
           _onSoundPlay={safePlayClick}
         />
         
-        {/* Add Deity Darshan Dialog */}
+        {/* Add Deity Darshan Dialog - Unchanged */}
         <DeityDarshan
           open={deitiesOpen}
           onOpenChange={setDeitiesOpen}
-          
         />
 
-        {/* Donation Drawer Content */}
-        <Drawer open={donationOpen} onOpenChange={setDonationOpen}>
-          <DrawerContent>
-            {/* Placeholder for DonationDrawerContent component */}
-            <div className="p-4 h-[50vh]"> {/* Added height for visibility */}
-              <h2 className="text-lg font-semibold mb-4">Donate / Top Donors</h2>
-              {/* TODO: Replace with DonationDrawerContent component */}
-              <p>Donation options and top donors will load here...</p>
-            </div>
-          </DrawerContent>
-        </Drawer>
-
-        {/* Safe area spacing - unchanged */}
+        {/* Safe area spacing - Unchanged */}
         <div className="h-[env(safe-area-inset-bottom)]" />
-      </nav>
+      </motion.nav> {/* Corrected: Added closing tag for motion.nav */}
     </MotionConfig>
   )
 }

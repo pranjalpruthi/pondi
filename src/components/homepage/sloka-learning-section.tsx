@@ -95,8 +95,8 @@ export function SlokaLearningSection() {
             >
               {/* Changed Link to a tag inside RainbowButton, removed asChild */}
               <RainbowButton className="gap-2 w-full sm:w-2/3 md:w-1/2 lg:w-2/5 mx-auto rounded-full">
-                <a href="https://youtube.com/playlist?list=PLQGHF3mp1o7-n4Y-haUTJjaGDgsozFWM8" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-full h-full">
-                  Full Course Playlist <PlayCircle className="w-4 h-4 ml-2 inline-block" />
+                <a href="https://youtube.com/playlist?list=PLQGHF3mp1o79L2nIKJBTiDreq1JRjBcqc" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-full h-full">
+                ▶︎ Explore 🍯 <PlayCircle className="w-4 h-4 ml-2 inline-block" />
                 </a>
               </RainbowButton>
               <div className="flex flex-col sm:flex-row gap-4">

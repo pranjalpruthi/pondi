@@ -2,23 +2,42 @@ import * as React from "react"
 import { useTheme } from "@/components/theme-provider"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "motion/react"
+import { useSound } from 'use-sound';
+import { useSoundSettings } from '@/components/context/sound-context';
 
 interface ModeToggleProps {
-  iconOnly?: boolean
 }
 
-export function ModeToggle({}: ModeToggleProps) {
+const ModeToggleComponent = ({}: ModeToggleProps) => {
   const { theme, setTheme } = useTheme()
+  const { isSoundEnabled } = useSoundSettings();
+  const [playHaribol] = useSound('/sounds/haribol.mp3', { 
+    volume: 0.75,
+    soundEnabled: isSoundEnabled 
+  });
   const [mounted, setMounted] = React.useState(false)
   const [isPressed, setIsPressed] = React.useState(false)
 
   React.useEffect(() => setMounted(true), [])
 
-  if (!mounted) return null
+  const playToggleSound = React.useCallback(() => {
+    if (isSoundEnabled) {
+      // Consider stopping sound if you want it to retrigger cleanly on rapid clicks
+      // stopHaribol(); // if you had a stop function from useSound
+      playHaribol();
+    }
+  }, [isSoundEnabled, playHaribol]);
 
-  const toggleTheme = () => {
+  const toggleTheme = React.useCallback(() => {
     setTheme(theme === "dark" ? "light" : "dark")
-  }
+    playToggleSound();
+  }, [theme, setTheme, playToggleSound])
+
+  const handlePointerDown = React.useCallback(() => setIsPressed(true), [])
+  const handlePointerUp = React.useCallback(() => setIsPressed(false), [])
+  const handlePointerLeave = React.useCallback(() => setIsPressed(false), [])
+
+  if (!mounted) return null
 
   return (
     <motion.div
@@ -28,49 +47,32 @@ export function ModeToggle({}: ModeToggleProps) {
       className="relative z-50"
     >
       <div className="absolute inset-0 pointer-events-none z-30">
-        {/* Outer glow - slowest, largest */}
-        <div className={`
-          absolute -inset-6 rounded-full blur-2xl
-          [animation:_pulse_4s_ease-in-out_infinite]
-          ${theme === "dark" 
-            ? "bg-amber-500/60" 
-            : "bg-yellow-300/70"
-          }
-        `} />
-        {/* Middle outer glow */}
+        {/* Simplified Glow Effect (2 layers for performance) */}
+        {/* Outer Glow Layer */}
         <div className={`
           absolute -inset-5 rounded-full blur-xl
-          [animation:_pulse_3s_ease-in-out_infinite]
+          [animation:_pulse_3.5s_ease-in-out_infinite]
           ${theme === "dark" 
-            ? "bg-amber-400/55" 
-            : "bg-yellow-200/65"
+            ? "bg-amber-400/50" // Adjusted color/opacity
+            : "bg-yellow-200/60" // Adjusted color/opacity
           }
         `} />
-        {/* Middle inner glow */}
+        {/* Inner Glow Layer */}
         <div className={`
-          absolute -inset-4 rounded-full blur-lg
-          [animation:_pulse_2.5s_ease-in-out_infinite]
+          absolute -inset-3 rounded-full blur-lg
+          [animation:_pulse_2.2s_ease-in-out_infinite]
           ${theme === "dark" 
-            ? "bg-amber-300/50" 
-            : "bg-yellow-100/60"
-          }
-        `} />
-        {/* Inner glow - fastest, smallest */}
-        <div className={`
-          absolute -inset-2 rounded-full blur-md
-          [animation:_pulse_2s_ease-in-out_infinite]
-          ${theme === "dark" 
-            ? "bg-amber-200/45" 
-            : "bg-yellow-50/55"
+            ? "bg-amber-300/40" // Adjusted color/opacity
+            : "bg-yellow-100/50" // Adjusted color/opacity
           }
         `} />
       </div>
       <Button 
         variant="ghost" 
         onClick={toggleTheme}
-        onPointerDown={() => setIsPressed(true)}
-        onPointerUp={() => setIsPressed(false)}
-        onPointerLeave={() => setIsPressed(false)}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerLeave}
         className={`
           rounded-full p-0 overflow-hidden
           transition-all duration-300
@@ -92,8 +94,8 @@ export function ModeToggle({}: ModeToggleProps) {
           <img
             src="/assets/iskmj.jpg"
             alt="ISKM Logo"
-            width={48}
-            height={48}
+            width={56}
+            height={56}
             className="rounded-full object-cover w-14 h-14"
           />
           
@@ -133,4 +135,6 @@ export function ModeToggle({}: ModeToggleProps) {
       </Button>
     </motion.div>
   )
-} 
+}
+
+export const ModeToggle = React.memo(ModeToggleComponent)

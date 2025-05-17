@@ -18,6 +18,7 @@ import { Route as DonateIndexImport } from './routes/donate/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
 import { Route as ComingSoonIndexImport } from './routes/coming-soon/index'
 import { Route as CentersIndexImport } from './routes/centers/index'
+import { Route as CalenderIndexImport } from './routes/calender/index'
 import { Route as AboutIndexImport } from './routes/about/index'
 import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
 
@@ -62,6 +63,12 @@ const ComingSoonIndexRoute = ComingSoonIndexImport.update({
 const CentersIndexRoute = CentersIndexImport.update({
   id: '/centers/',
   path: '/centers/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CalenderIndexRoute = CalenderIndexImport.update({
+  id: '/calender/',
+  path: '/calender/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -116,6 +123,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutIndexImport
       parentRoute: typeof rootRoute
     }
+    '/calender/': {
+      id: '/calender/'
+      path: '/calender'
+      fullPath: '/calender'
+      preLoaderRoute: typeof CalenderIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/centers/': {
       id: '/centers/'
       path: '/centers'
@@ -167,6 +181,7 @@ export interface FileRoutesByFullPath {
   '/events': typeof EventsRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/about': typeof AboutIndexRoute
+  '/calender': typeof CalenderIndexRoute
   '/centers': typeof CentersIndexRoute
   '/coming-soon': typeof ComingSoonIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -178,6 +193,7 @@ export interface FileRoutesByTo {
   '/events': typeof EventsRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/about': typeof AboutIndexRoute
+  '/calender': typeof CalenderIndexRoute
   '/centers': typeof CentersIndexRoute
   '/coming-soon': typeof ComingSoonIndexRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -191,6 +207,7 @@ export interface FileRoutesById {
   '/events': typeof EventsRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/about/': typeof AboutIndexRoute
+  '/calender/': typeof CalenderIndexRoute
   '/centers/': typeof CentersIndexRoute
   '/coming-soon/': typeof ComingSoonIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -205,6 +222,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/demo/tanstack-query'
     | '/about'
+    | '/calender'
     | '/centers'
     | '/coming-soon'
     | '/dashboard/'
@@ -215,6 +233,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/demo/tanstack-query'
     | '/about'
+    | '/calender'
     | '/centers'
     | '/coming-soon'
     | '/dashboard'
@@ -226,6 +245,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/demo/tanstack-query'
     | '/about/'
+    | '/calender/'
     | '/centers/'
     | '/coming-soon/'
     | '/dashboard/'
@@ -239,6 +259,7 @@ export interface RootRouteChildren {
   EventsRoute: typeof EventsRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   AboutIndexRoute: typeof AboutIndexRoute
+  CalenderIndexRoute: typeof CalenderIndexRoute
   CentersIndexRoute: typeof CentersIndexRoute
   ComingSoonIndexRoute: typeof ComingSoonIndexRoute
   DonateIndexRoute: typeof DonateIndexRoute
@@ -250,6 +271,7 @@ const rootRouteChildren: RootRouteChildren = {
   EventsRoute: EventsRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   AboutIndexRoute: AboutIndexRoute,
+  CalenderIndexRoute: CalenderIndexRoute,
   CentersIndexRoute: CentersIndexRoute,
   ComingSoonIndexRoute: ComingSoonIndexRoute,
   DonateIndexRoute: DonateIndexRoute,
@@ -270,6 +292,7 @@ export const routeTree = rootRoute
         "/events",
         "/demo/tanstack-query",
         "/about/",
+        "/calender/",
         "/centers/",
         "/coming-soon/",
         "/donate/"
@@ -292,6 +315,9 @@ export const routeTree = rootRoute
     },
     "/about/": {
       "filePath": "about/index.tsx"
+    },
+    "/calender/": {
+      "filePath": "calender/index.tsx"
     },
     "/centers/": {
       "filePath": "centers/index.tsx"

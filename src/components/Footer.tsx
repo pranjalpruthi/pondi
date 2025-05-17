@@ -1,13 +1,30 @@
+import * as React from 'react'; // Added React import
 import { Link } from '@tanstack/react-router'
-import { Heart, MapPin, Phone, ExternalLink } from 'lucide-react'
-import { RainbowGlow } from "@/components/ui/rainbow-glow" // Added import
+import { Heart, MapPin, Phone, ExternalLink, Sparkles } from 'lucide-react' // Added Sparkles
+import { Badge } from "@/components/ui/badge" // Added Badge import
+import { useSound } from 'use-sound';
+import { useSoundSettings } from '@/components/context/sound-context';
+import { cn } from '@/lib/utils';
 
 export default function Footer() {
+  const { isSoundEnabled } = useSoundSettings();
+  const [playHaribolSound, { stop: stopHaribolSound }] = useSound('/sounds/haribol.mp3', {
+    volume: 0.75,
+    soundEnabled: isSoundEnabled,
+  });
+
+  const safePlayHaribol = React.useCallback(() => {
+    if (isSoundEnabled) {
+      stopHaribolSound(); // Stop if already playing, to allow retrigger
+      playHaribolSound();
+    }
+  }, [isSoundEnabled, playHaribolSound, stopHaribolSound]);
+
   return (
     <footer className="relative backdrop-blur-sm bg-white/70 dark:bg-gray-900/70 border-t border-gray-200 dark:border-gray-800">
       {/* Subtle gradient background */}
       <div className="absolute inset-0 bg-gradient-to-t from-white/90 to-transparent dark:from-gray-950/90 dark:to-transparent -z-10"></div>
-      <RainbowGlow className="opacity-80" /> {/* Added RainbowGlow component */}
+      {/* <RainbowGlow className="opacity-80" /> Removed RainbowGlow component */}
       
       <div className="container mx-auto px-4 py-12">
         {/* Main Footer Content */}
@@ -118,8 +135,22 @@ export default function Footer() {
             </span>
           </div>
           
-          {/* Social Links */}
+          {/* Social Links & Haribol Badge Group */}
           <div className="flex items-center gap-4">
+            {/* Haribol Badge - Placed before social icons but within the same flex group for right alignment */}
+            <Badge 
+              variant="outline" 
+              onClick={safePlayHaribol}
+              className={cn(
+                "cursor-pointer select-none px-3 py-1.5 text-sm font-medium rounded-full transition-all order-last md:order-first", // Order for mobile vs desktop
+                "border-yellow-400 bg-yellow-50 text-yellow-700 hover:bg-yellow-100 dark:border-yellow-600 dark:bg-yellow-900/50 dark:text-yellow-300 dark:hover:bg-yellow-800/50",
+                "shadow-sm hover:shadow-md active:scale-95"
+              )}
+            >
+              Haribol ! <Sparkles className="ml-1.5 h-4 w-4 text-yellow-500" />
+            </Badge>
+            
+            {/* Social Links */}
             <a 
               href="https://facebook.com/iskm.pondy" 
               target="_blank"
@@ -158,4 +189,4 @@ export default function Footer() {
       </div>
     </footer>
   )
-} 
+}

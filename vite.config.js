@@ -47,7 +47,28 @@ export default defineConfig({
         target: 'https://www.youtube.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/youtube-feed/, ''),
-        secure: false, // If the target is HTTPS, this might be needed
+        secure: false,
+      },
+      // Proxy requests to your calendar API
+      '/api/calendar': {
+        target: 'https://gcal.pranjal.work',
+        changeOrigin: true, // Important for virtual hosted sites
+        rewrite: (path) => path.replace(/^\/api\/calendar/, '/calendar'), // Rewrite /api/calendar to /calendar
+        secure: true, // Target is HTTPS
+      },
+      // Proxy requests for location search to your production backend API
+      '/api/search-locations': {
+        target: 'https://gcal.pranjal.work', // Your production backend API
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/search-locations/, '/search-locations'),
+        secure: true, // Target is HTTPS
+      },
+      // Proxy requests to the new calendar-by-coordinates API
+      '/api/calendar-by-coordinates': {
+        target: 'https://gcal.pranjal.work',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/calendar-by-coordinates/, '/calendar-by-coordinates'),
+        secure: true, // Target is HTTPS
       },
     },
   },

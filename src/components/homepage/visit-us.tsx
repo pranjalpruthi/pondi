@@ -4,9 +4,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { useState, useEffect, useRef } from "react" 
+import { useState, useEffect, useRef, useCallback } from "react" // Added useCallback
 import { cn } from "@/lib/utils"
 import { useQuery } from "@tanstack/react-query"
+import { useSound } from 'use-sound';
+import { useSoundSettings } from '@/components/context/sound-context';
 
 // Import animated components
 import { RippleButton } from "@/components/animate-ui/buttons/ripple"
@@ -465,8 +467,22 @@ export function VisitUs() {
   const { data: etiquette } = useQuery({
     queryKey: ['templeEtiquette'],
     queryFn: () => Promise.resolve(templeEtiquette),
-    initialData: templeEtiquette
-  });
+  initialData: templeEtiquette
+});
+
+  const { isSoundEnabled } = useSoundSettings();
+  const [playTabSelectSound] = useSound('/sounds/pop-on.wav', { volume: 0.3, soundEnabled: isSoundEnabled });
+  // Add other sounds if needed, e.g., for hover on tabs
+  const [playHoverSound] = useSound('/sounds/hover.mp3', { volume: 0.2, soundEnabled: isSoundEnabled });
+
+
+  const safePlayTabSelect = useCallback(() => {
+    if (isSoundEnabled) playTabSelectSound();
+  }, [isSoundEnabled, playTabSelectSound]);
+
+  const safePlayHover = useCallback(() => {
+    if (isSoundEnabled) playHoverSound();
+  }, [isSoundEnabled, playHoverSound]);
 
   return (
     <TooltipProvider>
@@ -554,7 +570,7 @@ export function VisitUs() {
                   />
                 </h3>
                 
-                <Tabs defaultValue="temple" className="w-full">
+                <Tabs defaultValue="temple" className="w-full" onValueChange={safePlayTabSelect}>
                   <TabsList 
                     className="w-full grid grid-cols-3 sm:grid-cols-6 mb-8 bg-gray-100/50 dark:bg-gray-800/50 p-3 rounded-xl h-auto gap-2"
                     activeClassName="bg-white/70 dark:bg-gray-700/70 backdrop-filter backdrop-blur-xl shadow-md"
@@ -562,6 +578,7 @@ export function VisitUs() {
                     <TabsTrigger 
                       value="temple" 
                       className="flex flex-col items-center justify-center gap-2 py-5 px-2 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="pink">
                         <Home className="h-7 w-7 text-[#e94a9c]" />
@@ -571,6 +588,7 @@ export function VisitUs() {
                     <TabsTrigger 
                       value="info" 
                       className="flex flex-col items-center justify-center gap-2 py-5 px-2 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="gold">
                         <Bookmark className="h-7 w-7 text-[#ffc547]" />
@@ -580,6 +598,7 @@ export function VisitUs() {
                     <TabsTrigger 
                       value="car" 
                       className="flex flex-col items-center justify-center gap-2 py-5 px-2 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="blue">
                         <Car className="h-7 w-7 text-[#0a84ff]" />
@@ -589,6 +608,7 @@ export function VisitUs() {
                     <TabsTrigger 
                       value="plane" 
                       className="flex flex-col items-center justify-center gap-2 py-5 px-2 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="pink">
                         <Plane className="h-7 w-7 text-[#e94a9c]" />
@@ -598,6 +618,7 @@ export function VisitUs() {
                     <TabsTrigger 
                       value="bus" 
                       className="flex flex-col items-center justify-center gap-2 py-5 px-2 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="gold">
                         <Bus className="h-7 w-7 text-[#ffc547]" />
@@ -607,6 +628,7 @@ export function VisitUs() {
                     <TabsTrigger 
                       value="train" 
                       className="flex flex-col items-center justify-center gap-2 py-5 px-2 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="blue">
                         <Train className="h-7 w-7 text-[#0a84ff]" />
