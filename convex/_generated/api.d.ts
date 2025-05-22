@@ -13,7 +13,8 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as cursors from "../cursors.js";
+import type * as editableContent from "../editableContent.js";
+import type * as puck from "../puck.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -24,7 +25,8 @@ import type * as cursors from "../cursors.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  cursors: typeof cursors;
+  editableContent: typeof editableContent;
+  puck: typeof puck;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

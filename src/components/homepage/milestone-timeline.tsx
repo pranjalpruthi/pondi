@@ -8,7 +8,7 @@ import {
   TimelineSeparator,
   TimelineTitle,
 } from "@/components/ui/timeline" // Corrected import path
-import { Building, Landmark, Users, Target, Handshake } from "lucide-react"
+import { Building, Landmark, Users, Handshake } from "lucide-react"
 import { useState, useEffect } from "react"
 import { motion } from "motion/react" // Corrected import path as per guidelines
 
@@ -16,49 +16,73 @@ import { motion } from "motion/react" // Corrected import path as per guidelines
 const iskmMilestones = [
   {
     id: 1,
-    date: "Est. 20XX", // Placeholder
-    title: "Founding",
+    date: "2009",
+    title: "Centre Established",
     description: "Establishment of ISKM Pondicherry center.",
     icon: Handshake,
     completed: true
   },
   {
     id: 2,
-    date: "20XX", // Placeholder
-    title: "Land Acquisition",
-    description: "Securing the land for the temple project.",
+    date: "2018",
+    title: "Land Acquired",
+    description: "Received land from the donor for the temple project.",
     icon: Landmark,
     completed: true
   },
   {
     id: 3,
-    date: "May 2025",
-    title: "Foundation Stone",
-    description: "Foundation stone laying ceremony.",
+    date: "Sep 8, 2019",
+    title: "Construction Began",
+    description: "Temple construction began on Radhashtami.",
     icon: Building,
     completed: true
   },
   {
     id: 4,
-    date: "Ongoing",
-    title: "Phase 1 Construction",
-    description: "Structural work in progress.",
-    icon: Users, // Represents community effort
-    completed: false // Assuming Phase 1 is ongoing based on previous context
+    date: "Jul 2, 2020",
+    title: "Temple Opened",
+    description: "The temple was officially opened.",
+    icon: Building, // Using Building, could be specific like DoorOpen if available & desired
+    completed: true
   },
   {
     id: 5,
-    date: "Future Goal",
-    title: "Temple Consecration",
-    description: "Grand opening and deity installation.",
-    icon: Target,
+    date: "July 2020",
+    title: "Goshala Started",
+    description: "The Goshala (cow shelter) was initiated.",
+    icon: Users, // Representing care/community aspect
+    completed: true
+  },
+  {
+    id: 6,
+    date: "2020",
+    title: "Annadanam Started",
+    description: "Commencement of Annadanam (food distribution).",
+    icon: Users, // Representing community service
+    completed: true
+  },
+  {
+    id: 7,
+    date: "Jul 7, 2021",
+    title: "Foundation Laid",
+    description: "Foundation stone laid for further development.",
+    icon: Building,
+    completed: true
+  },
+  {
+    id: 8,
+    date: "Present",
+    title: "Ongoing Construction",
+    description: "Construction work is currently in progress.",
+    icon: Users, // Represents community effort/ongoing work
     completed: false
   }
 ]
 
 export function MilestoneTimeline() {
   // Set the current active step (1-indexed) - Adjust as needed
-  const currentStep = 4 // Phase 1 Construction is the current focus
+  const currentStep = 8 // "Ongoing Construction" is the current focus
   const [isMobile, setIsMobile] = useState(false)
 
   // Check if we're on mobile
