@@ -26,6 +26,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { useTempleStatus } from '@/hooks/useTempleStatus'; // Added
 
 interface DeityDarshanProps {
   open: boolean
@@ -227,6 +228,7 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
   const [isAaratiPopoverOpen, setIsAaratiPopoverOpen] = useState(false)
   const carouselRef = useRef<HTMLDivElement>(null)
   const autoplayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const templeStatus = useTempleStatus(); // Added
   
   // Use React Query to fetch and cache the deities info
   const { data: deities } = useQuery({
@@ -430,25 +432,51 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
               {/* Aarati Timings Popover with Pulse Effect */}
               <Popover open={isAaratiPopoverOpen} onOpenChange={setIsAaratiPopoverOpen}>
                 <PopoverTrigger asChild>
-                  <button 
-                    className="relative rounded-full p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  <button
+                    className={cn(
+                      "relative rounded-full p-1.5 transition-colors",
+                      templeStatus.label === "Darshan" || templeStatus.label === "Aarati" 
+                        ? "hover:bg-green-100/50 dark:hover:bg-green-800/50" 
+                        : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                    )}
                     aria-label="Aarati Timings"
                   >
-                    <Clock className="h-5 w-5 text-[#e94a9c]" />
-                    {/* Pulse Effect */}
-                    <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#e94a9c] opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-3 w-3 bg-[#e94a9c]"></span>
-                    </span>
+                    <Clock className={cn(
+                      "h-5 w-5",
+                      templeStatus.label === "Darshan" ? "text-green-500 dark:text-green-400" :
+                      templeStatus.label === "Aarati" ? "text-pink-500 dark:text-pink-400" :
+                      templeStatus.label === "Closed" ? "text-red-500 dark:text-red-400" :
+                      "text-gray-500 dark:text-gray-400" // Default for Loading, N/A, Error
+                    )} />
+                    {/* Pulse Effect - show for Aarati or Darshan Open */}
+                    {(templeStatus.label === "Aarati" || templeStatus.label === "Darshan") && (
+                      <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+                        <span className={cn(
+                          "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75",
+                          templeStatus.label === "Aarati" ? "bg-pink-400 dark:bg-pink-500" : "bg-green-400 dark:bg-green-500"
+                        )}></span>
+                        <span className={cn(
+                          "relative inline-flex rounded-full h-3 w-3",
+                          templeStatus.label === "Aarati" ? "bg-pink-500 dark:bg-pink-600" : "bg-green-500 dark:bg-green-600"
+                        )}></span>
+                      </span>
+                    )}
                   </button>
                 </PopoverTrigger>
                 <PopoverContent 
                   className="w-64 p-0 rounded-xl border-0 shadow-lg"
                   sideOffset={5}
                 >
-                  <div className="bg-gradient-to-r from-[#e94a9c] to-[#ffc547] p-3 rounded-t-xl">
-                    <h3 className="font-semibold text-white flex items-center gap-2">
-                      <Clock className="h-4 w-4" /> Temple Aarati Timings
+                  <div className={cn(
+                    "p-3 rounded-t-xl flex items-center gap-2",
+                    templeStatus.label === "Darshan" ? "bg-gradient-to-r from-green-500 to-emerald-600" :
+                    templeStatus.label === "Aarati" ? "bg-gradient-to-r from-pink-500 to-rose-600" :
+                    templeStatus.label === "Closed" ? "bg-gradient-to-r from-red-500 to-orange-600" :
+                    "bg-gradient-to-r from-gray-500 to-slate-600" // Default
+                  )}>
+                    <Clock className="h-4 w-4 text-white" /> 
+                    <h3 className="font-semibold text-white">
+                       Temple Aarati Timings
                     </h3>
                   </div>
                   <div className="p-3 space-y-2">
@@ -495,7 +523,7 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
                   onTouchEnd={handleTouchEnd}
                 >
                   <AnimatePresence mode="wait">
-                    {selectedDeity && (
+                    {selectedDeity && (templeStatus.label === "Darshan" || templeStatus.label === "Aarati") ? (
                       <motion.div
                         key={`${selectedDeity.id}-${currentImageIndex}`}
                         initial={{ opacity: 0 }}
@@ -509,31 +537,58 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
                           alt={selectedDeity.name}
                         />
                       </motion.div>
+                    ) : (
+                      // Placeholder when Darshan is closed
+                      <motion.div
+                        key={`darshan-closed-${selectedDeity?.id}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center bg-gray-100/50 dark:bg-gray-800/50 rounded-xl"
+                      >
+                        <Clock className="w-12 h-12 text-gray-400 dark:text-gray-500 mb-3" />
+                        <p className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                          Darshan is Currently Closed
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                          {templeStatus.detailedText.includes("reopens") || templeStatus.detailedText.includes("at") 
+                            ? templeStatus.detailedText 
+                            : "Please check back during Darshan hours."}
+                        </p>
+                        {selectedDeity?.liveStream?.available && (
+                           <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                             Live stream is available during Darshan and Aarati times.
+                           </p>
+                        )}
+                      </motion.div>
                     )}
                   </AnimatePresence>
                   
-                  {/* Navigation Arrows */}
-                  <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 hover:opacity-100 transition-opacity">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-10 w-10 rounded-full bg-black/20 text-white hover:bg-black/40"
-                      onClick={prevImage}
-                    >
-                      <ChevronLeft className="h-6 w-6" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-10 w-10 rounded-full bg-black/20 text-white hover:bg-black/40"
-                      onClick={nextImage}
-                    >
-                      <ChevronRight className="h-6 w-6" />
-                    </Button>
-                  </div>
+                  {/* Navigation Arrows - Only show if images are displayed */}
+                  {(templeStatus.label === "Darshan" || templeStatus.label === "Aarati") && (
+                    <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 hover:opacity-100 transition-opacity">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-10 w-10 rounded-full bg-black/20 text-white hover:bg-black/40"
+                        onClick={prevImage}
+                      >
+                        <ChevronLeft className="h-6 w-6" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-10 w-10 rounded-full bg-black/20 text-white hover:bg-black/40"
+                        onClick={nextImage}
+                      >
+                        <ChevronRight className="h-6 w-6" />
+                      </Button>
+                    </div>
+                  )}
                   
-                  {/* Dots Indicator */}
-                  {selectedDeity && selectedDeity.images.length > 1 && (
+                  {/* Dots Indicator - Only show if images are displayed */}
+                  {selectedDeity && selectedDeity.images.length > 1 && (templeStatus.label === "Darshan" || templeStatus.label === "Aarati") && (
                     <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
                       {selectedDeity.images.map((_, index) => (
                         <button
@@ -550,8 +605,8 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
                     </div>
                   )}
                   
-                  {/* Live Stream Badge */}
-                  {selectedDeity && selectedDeity.liveStream?.available && (
+                  {/* Live Stream Badge - Conditional on temple status */}
+                  {selectedDeity && selectedDeity.liveStream?.available && (templeStatus.label === "Darshan" || templeStatus.label === "Aarati") && (
                     <div className="absolute top-4 right-4">
                       <Badge className="bg-red-600 hover:bg-red-700 text-white flex items-center gap-1 p-1 pl-1.5">
                         <span className="relative flex h-2 w-2">
@@ -575,8 +630,8 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
           {/* Footer with social media buttons */}
           <DrawerFooter className="px-4 sm:px-6 border-t flex-shrink-0">
             <div className="flex flex-col sm:flex-row gap-2 w-full">
-              {/* YouTube button - only if livestream available */}
-              {selectedDeity?.liveStream?.available && (
+              {/* YouTube button - conditional on livestream available AND temple status */}
+              {selectedDeity?.liveStream?.available && (templeStatus.label === "Darshan" || templeStatus.label === "Aarati") && (
                 <a 
                   href={selectedDeity.liveStream?.url} 
                   target="_blank" 
@@ -639,4 +694,4 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
       </DrawerContent>
     </Drawer>
   )
-} 
+}

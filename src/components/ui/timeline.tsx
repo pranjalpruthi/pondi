@@ -1,208 +1,309 @@
-import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
+import { motion, AnimatePresence } from "motion/react";
+import { Button } from "@/components/ui/button";
+import { Link } from "@tanstack/react-router";
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
-import { cn } from "@/lib/utils"
-
-// Types
-type TimelineContextValue = {
-  activeStep: number
-  setActiveStep: (step: number) => void
+interface TimelineItem {
+  date: string;
+  title: string;
+  description?: string;
+  href?: string;
+  icon?: React.ReactNode;
 }
 
-// Context
-const TimelineContext = React.createContext<TimelineContextValue | undefined>(
-  undefined
-)
-
-const useTimeline = () => {
-  const context = React.useContext(TimelineContext)
-  if (!context) {
-    throw new Error("useTimeline must be used within a Timeline")
-  }
-  return context
+interface TimelineProps {
+  items: TimelineItem[];
+  initialCount?: number;
+  dateFormat?: Intl.DateTimeFormatOptions;
+  className?: string;
+  showMoreText?: string;
+  showLessText?: string;
+  dotClassName?: string;
+  lineClassName?: string;
+  titleClassName?: string;
+  descriptionClassName?: string;
+  dateClassName?: string;
+  buttonVariant?: "default" | "outline" | "ghost" | "link";
+  buttonSize?: "default" | "sm" | "lg";
+  animationDuration?: number;
+  animationDelay?: number;
+  showAnimation?: boolean;
 }
 
-// Components
-interface TimelineProps extends React.HTMLAttributes<HTMLDivElement> {
-  defaultValue?: number
-  value?: number
-  onValueChange?: (value: number) => void
-  orientation?: "horizontal" | "vertical"
-}
-
-function Timeline({
-  defaultValue = 1,
-  value,
-  onValueChange,
-  orientation = "vertical",
-  className,
-  ...props
-}: TimelineProps) {
-  const [activeStep, setInternalStep] = React.useState(defaultValue)
-
-  const setActiveStep = React.useCallback(
-    (step: number) => {
-      if (value === undefined) {
-        setInternalStep(step)
-      }
-      onValueChange?.(step)
-    },
-    [value, onValueChange]
-  )
-
-  const currentStep = value ?? activeStep
-
+function DesktopTimelineEntry({
+  item,
+  dotClassName,
+  lineClassName,
+  titleClassName,
+  descriptionClassName,
+  dateClassName,
+}: {
+  item: TimelineItem;
+  dotClassName?: string;
+  lineClassName?: string;
+  titleClassName?: string;
+  descriptionClassName?: string;
+  dateClassName?: string;
+}) {
   return (
-    <TimelineContext.Provider
-      value={{ activeStep: currentStep, setActiveStep }}
+    <Link
+      to={item.href || "#"}
+      className={cn(
+        "group hidden grid-cols-9 items-center md:grid",
+        !item.href && "pointer-events-none"
+      )}
     >
-      <div
-        data-slot="timeline"
-        className={cn(
-          "group/timeline flex data-[orientation=horizontal]:w-full data-[orientation=horizontal]:flex-row data-[orientation=vertical]:flex-col",
-          className
+      <dl className="col-span-2">
+        <dt className="sr-only">Date</dt>
+        <dd
+          className={cn(
+            "text-base font-medium text-muted-foreground transition-colors group-hover:text-foreground",
+            dateClassName
+          )}
+        >
+          <time dateTime={item.date}>
+            {new Date(item.date).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </time>
+        </dd>
+      </dl>
+      <div className="col-span-7 flex items-center">
+        <div className="relative ml-4">
+          <div
+            className={cn("h-16 border-l border-border pr-8", lineClassName)}
+          />
+          <div
+            className={cn(
+              "absolute -left-1 top-[1.6875rem] flex h-5 w-5 items-center justify-center rounded-full bg-primary/60 transition-colors group-hover:bg-primary",
+              !item.icon && "h-2.5 w-2.5",
+              dotClassName
+            )}
+          >
+            {item.icon && (
+              <div className="h-3 w-3 text-primary-foreground">{item.icon}</div>
+            )}
+          </div>
+        </div>
+        <div className="flex flex-col gap-1">
+          <h3
+            className={cn(
+              "text-xl font-medium tracking-tight text-muted-foreground transition-colors group-hover:text-foreground",
+              titleClassName
+            )}
+          >
+            {item.title}
+          </h3>
+          {item.description && (
+            <p
+              className={cn(
+                "text-sm text-muted-foreground group-hover:text-muted-foreground/80",
+                descriptionClassName
+              )}
+            >
+              {item.description}
+            </p>
+          )}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function MobileTimelineEntry({
+  item,
+  dotClassName,
+  lineClassName,
+  titleClassName,
+  descriptionClassName,
+  dateClassName,
+}: {
+  item: TimelineItem;
+  dotClassName?: string;
+  lineClassName?: string;
+  titleClassName?: string;
+  descriptionClassName?: string;
+  dateClassName?: string;
+}) {
+  return (
+    <Link
+      to={item.href || "#"}
+      className={cn(
+        "flex items-center space-x-4 rounded-lg px-4 py-3 transition-colors hover:bg-muted active:bg-muted/80 md:hidden",
+        !item.href && "pointer-events-none"
+      )}
+    >
+      <div className="relative">
+        <div className={cn("h-16 border-l border-border", lineClassName)} />
+        <div
+          className={cn(
+            "absolute -left-1 top-5 flex h-5 w-5 items-center justify-center rounded-full bg-primary/60",
+            !item.icon && "h-2.5 w-2.5",
+            dotClassName
+          )}
+        >
+          {item.icon && (
+            <div className="h-3 w-3 text-primary-foreground">{item.icon}</div>
+          )}
+        </div>
+      </div>
+      <div>
+        <dl>
+          <dt className="sr-only">Date</dt>
+          <dd
+            className={cn(
+              "text-sm font-medium text-muted-foreground",
+              dateClassName
+            )}
+          >
+            <time dateTime={item.date}>
+              {new Date(item.date).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </time>
+          </dd>
+        </dl>
+        <h3
+          className={cn(
+            "text-lg font-medium tracking-tight text-foreground",
+            titleClassName
+          )}
+        >
+          {item.title}
+        </h3>
+        {item.description && (
+          <p
+            className={cn(
+              "text-sm text-muted-foreground",
+              descriptionClassName
+            )}
+          >
+            {item.description}
+          </p>
         )}
-        data-orientation={orientation}
-        {...props}
-      />
-    </TimelineContext.Provider>
-  )
+      </div>
+    </Link>
+  );
 }
 
-// TimelineContent
-function TimelineContent({
+export function Timeline({
+  items,
+  initialCount = 5,
   className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      data-slot="timeline-content"
-      className={cn("text-muted-foreground text-sm", className)}
-      {...props}
-    />
-  )
-}
-
-// TimelineDate
-interface TimelineDateProps extends React.HTMLAttributes<HTMLTimeElement> {
-  asChild?: boolean
-}
-
-function TimelineDate({
-  asChild = false,
-  className,
-  ...props
-}: TimelineDateProps) {
-  const Comp = asChild ? Slot : "time"
+  showMoreText = "Show More",
+  showLessText = "Show Less",
+  dotClassName,
+  lineClassName,
+  titleClassName,
+  descriptionClassName,
+  dateClassName,
+  buttonVariant = "ghost",
+  buttonSize = "sm",
+  animationDuration = 0.3,
+  animationDelay = 0.1,
+  showAnimation = true,
+}: TimelineProps) {
+  const [showAll, setShowAll] = useState(false);
+  const sortedItems = items.sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+  const initialItems = sortedItems.slice(0, initialCount);
+  const remainingItems = sortedItems.slice(initialCount);
 
   return (
-    <Comp
-      data-slot="timeline-date"
-      className={cn(
-        "text-muted-foreground mb-1 block text-xs font-medium group-data-[orientation=vertical]/timeline:max-sm:h-4",
-        className
+    <div className={cn("mx-5 max-w-2xl md:mx-auto", className)}>
+      <div className="md:translate-x-28">
+        <ul className="space-y-8">
+          {initialItems.map((item, index) => (
+            <motion.li
+              key={index}
+              initial={showAnimation ? { opacity: 0, y: 20 } : false}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: animationDuration,
+                delay: index * animationDelay,
+              }}
+            >
+              <DesktopTimelineEntry
+                item={item}
+                dotClassName={dotClassName}
+                lineClassName={lineClassName}
+                titleClassName={titleClassName}
+                descriptionClassName={descriptionClassName}
+                dateClassName={dateClassName}
+              />
+              <MobileTimelineEntry
+                item={item}
+                dotClassName={dotClassName}
+                lineClassName={lineClassName}
+                titleClassName={titleClassName}
+                descriptionClassName={descriptionClassName}
+                dateClassName={dateClassName}
+              />
+            </motion.li>
+          ))}
+          <AnimatePresence>
+            {showAll &&
+              remainingItems.map((item, index) => (
+                <motion.li
+                  key={index}
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{
+                    duration: animationDuration,
+                    delay: index * animationDelay,
+                  }}
+                >
+                  <DesktopTimelineEntry
+                    item={item}
+                    dotClassName={dotClassName}
+                    lineClassName={lineClassName}
+                    titleClassName={titleClassName}
+                    descriptionClassName={descriptionClassName}
+                    dateClassName={dateClassName}
+                  />
+                  <MobileTimelineEntry
+                    item={item}
+                    dotClassName={dotClassName}
+                    lineClassName={lineClassName}
+                    titleClassName={titleClassName}
+                    descriptionClassName={descriptionClassName}
+                    dateClassName={dateClassName}
+                  />
+                </motion.li>
+              ))}
+          </AnimatePresence>
+        </ul>
+      </div>
+      {remainingItems.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="mt-8 flex justify-center"
+        >
+          <Button
+            variant={buttonVariant}
+            size={buttonSize}
+            className="gap-2"
+            onClick={() => setShowAll(!showAll)}
+          >
+            {showAll ? showLessText : showMoreText}
+            <motion.div
+              animate={{ rotate: showAll ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ChevronDown className="h-4 w-4" />
+            </motion.div>
+          </Button>
+        </motion.div>
       )}
-      {...props}
-    />
-  )
-}
-
-// TimelineHeader
-function TimelineHeader({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div data-slot="timeline-header" className={cn(className)} {...props} />
-  )
-}
-
-// TimelineIndicator
-interface TimelineIndicatorProps extends React.HTMLAttributes<HTMLDivElement> {
-  asChild?: boolean
-}
-
-function TimelineIndicator({
-  asChild = false,
-  className,
-  children,
-  ...props
-}: TimelineIndicatorProps) {
-  return (
-    <div
-      data-slot="timeline-indicator"
-      className={cn(
-        "border-primary/20 group-data-completed/timeline-item:border-primary absolute size-4 rounded-full border-2 group-data-[orientation=horizontal]/timeline:-top-6 group-data-[orientation=horizontal]/timeline:left-0 group-data-[orientation=horizontal]/timeline:-translate-y-1/2 group-data-[orientation=vertical]/timeline:top-0 group-data-[orientation=vertical]/timeline:-left-6 group-data-[orientation=vertical]/timeline:-translate-x-1/2",
-        className
-      )}
-      aria-hidden="true"
-      {...props}
-    >
-      {children}
     </div>
-  )
-}
-
-// TimelineItem
-interface TimelineItemProps extends React.HTMLAttributes<HTMLDivElement> {
-  step: number
-}
-
-function TimelineItem({ step, className, ...props }: TimelineItemProps) {
-  const { activeStep } = useTimeline()
-
-  return (
-    <div
-      data-slot="timeline-item"
-      className={cn(
-        "group/timeline-item has-[+[data-completed]]:[&_[data-slot=timeline-separator]]:bg-primary relative flex flex-1 flex-col gap-0.5 group-data-[orientation=horizontal]/timeline:mt-8 group-data-[orientation=horizontal]/timeline:not-last:pe-8 group-data-[orientation=vertical]/timeline:ms-8 group-data-[orientation=vertical]/timeline:not-last:pb-12",
-        className
-      )}
-      data-completed={step <= activeStep || undefined}
-      {...props}
-    />
-  )
-}
-
-// TimelineSeparator
-function TimelineSeparator({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      data-slot="timeline-separator"
-      className={cn(
-        "bg-primary/10 absolute self-start group-last/timeline-item:hidden group-data-[orientation=horizontal]/timeline:-top-6 group-data-[orientation=horizontal]/timeline:h-0.5 group-data-[orientation=horizontal]/timeline:w-[calc(100%-1rem-0.25rem)] group-data-[orientation=horizontal]/timeline:translate-x-4.5 group-data-[orientation=horizontal]/timeline:-translate-y-1/2 group-data-[orientation=vertical]/timeline:-left-6 group-data-[orientation=vertical]/timeline:h-[calc(100%-1rem-0.25rem)] group-data-[orientation=vertical]/timeline:w-0.5 group-data-[orientation=vertical]/timeline:-translate-x-1/2 group-data-[orientation=vertical]/timeline:translate-y-4.5",
-        className
-      )}
-      aria-hidden="true"
-      {...props}
-    />
-  )
-}
-
-// TimelineTitle
-function TimelineTitle({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLHeadingElement>) {
-  return (
-    <h3
-      data-slot="timeline-title"
-      className={cn("text-sm font-medium", className)}
-      {...props}
-    />
-  )
-}
-
-export {
-  Timeline,
-  TimelineContent,
-  TimelineDate,
-  TimelineHeader,
-  TimelineIndicator,
-  TimelineItem,
-  TimelineSeparator,
-  TimelineTitle,
+  );
 }

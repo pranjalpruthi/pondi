@@ -5,7 +5,7 @@ import { HeroSection } from "@/components/homepage/hero-section";
 // Lazy load sections
 // Removed LazyConstructionUpdates
 const LazyMilestoneTimeline = React.lazy(() =>
-  import('@/components/homepage/milestone-timeline').then(module => ({ default: module.MilestoneTimeline }))
+  import('@/components/homepage/milestone-timeline').then(module => ({ default: module.default }))
 );
 const LazyYouTubeMarquee = React.lazy(() => 
   import('@/components/homepage/youtube-marquee').then(module => ({ default: module.YouTubeMarquee }))
@@ -24,6 +24,9 @@ const LazySlokaLearningSection = React.lazy(() =>
 );
 const LazyFeaturedBooksSection = React.lazy(() =>
   import('@/components/homepage/featured-books-section').then(module => ({ default: module.FeaturedBooksSection }))
+);
+const LazyDisciplicSuccessionSection = React.lazy(() =>
+  import('@/components/homepage/disciplic-succession-section').then(module => ({ default: module.default }))
 );
 // Removed LazyUpcomingEventBanner import from here
 
@@ -99,6 +102,10 @@ function HomePage() {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <LazyFeaturedBooksSection />
+        </Suspense>
+        {/* New Disciplic Succession Section */}
+        <Suspense fallback={<SectionLoader />}>
+          <LazyDisciplicSuccessionSection />
         </Suspense>
         {/* Added Milestone Timeline */}
         <Suspense fallback={<SectionLoader />}>

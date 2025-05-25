@@ -28,7 +28,12 @@ function PopoverContent({
         align={align}
         sideOffset={sideOffset}
         className={cn(
-          "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-72 origin-(--radix-popover-content-transform-origin) rounded-md border p-4 shadow-md outline-hidden",
+          "text-popover-foreground", // Keep text color
+          "bg-white/80 dark:bg-neutral-900/80", // Frosted glass background
+          "backdrop-blur-lg", // Frosted glass blur
+          "border border-white/20 dark:border-neutral-700/40", // Subtle border for glass effect
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2", // Animations
+          "z-50 w-72 origin-[var(--radix-popover-content-transform-origin)] rounded-lg p-4 shadow-md outline-none", // Changed rounded-md to rounded-lg, Base styles
           className
         )}
         {...props}

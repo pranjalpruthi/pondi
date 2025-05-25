@@ -333,24 +333,17 @@ function HeroGalleryModal({
 
 const HeroForeground = React.memo<HeroForegroundProps>((props) => {
   return (
-    <div className="container mx-auto px-6 z-10 relative">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+    <div className="z-10 relative"> {/* Removed container, mx-auto, px-6 */}
+      <div className="grid grid-cols-1 gap-12 items-center"> {/* Removed lg:grid-cols-2, lg:gap-20 */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: props.isInView ? 1 : 0, x: props.isInView ? 0 : -20 }}
           transition={{ duration: 0.8 }}
-          className="text-left max-w-xl mx-auto lg:ml-12 xl:ml-24"
+          className="text-left max-w-xl mx-auto lg:ml-6 xl:ml-12" // Reduced lg and xl left margins
         >
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: props.isInView ? 1 : 0, y: props.isInView ? 0 : 10 }}
-            transition={{ delay: 0.2 }}
-            className="mb-8 max-w-[100px]"
-          >
-            <img src="/assets/iskmj.jpg" alt="ISKM Logo" className="rounded-full w-full" />
-          </motion.div>
+          {/* Logo div removed */}
           <motion.h1
-            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-gray-900 dark:text-white leading-tight"
+            className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 text-gray-900 dark:text-white leading-tight tracking-tight"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: props.isInView ? 1 : 0, y: props.isInView ? 0 : 20 }}
             transition={{ delay: 0.3 }}
@@ -358,7 +351,7 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
             Reawakening Kṛṣṇa Consciousness Worldwide
           </motion.h1>
           <motion.p
-            className="text-lg mb-8 text-gray-700 dark:text-gray-300"
+            className="text-xl md:text-2xl mb-8 text-gray-600 dark:text-gray-400 leading-relaxed"
             initial={{ opacity: 0 }}
             animate={{ opacity: props.isInView ? 1 : 0 }}
             transition={{ delay: 0.4 }}
@@ -575,7 +568,7 @@ export function HeroSection() {
         preloadedImages={rightCarouselPreloaded}
         isInView={isInView}
       />
-      <div className="container mx-auto px-6 z-10 relative">
+      <div className="container mx-auto px-4 sm:px-6 z-10 relative"> {/* Changed px-6 to px-4 sm:px-6 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left: Text, CTAs, etc. */}
           <div>

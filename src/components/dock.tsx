@@ -23,6 +23,7 @@ import { useSound } from 'use-sound';
 import { useSoundSettings } from '@/components/context/sound-context';
 import { SoundProvider } from '@/components/context/sound-context';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useTempleStatus } from '@/hooks/useTempleStatus'; // Added
 import { TempleEvents } from '@/components/temple-events';
 import { DeityDarshan } from '@/components/deity-darshan';
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -55,6 +56,7 @@ function NavbarContent() {
   const { isSoundEnabled, toggleSound } = useSoundSettings();
   const queryClient = useQueryClient();
   const isMobile = useIsMobile();
+  const templeStatus = useTempleStatus(); // Added
 
   // State for the new expandable dock (from snippet)
   const [activeDockItem, setActiveDockItem] = React.useState<number | null>(null); // For the main Menu's content panel
@@ -202,6 +204,7 @@ function NavbarContent() {
       label: 'Deities',
       title: <IconTemple className='size-5' />,
       action: () => { setDeitiesOpen(true); playTempleBell(); }, // Direct action
+      // We will handle dynamic styling for this item in the rendering logic below
     },
     {
       id: 3,
@@ -257,7 +260,7 @@ function NavbarContent() {
         </div>
       ),
     },
-  ], [isMobile, isSoundEnabled, handleNavClick, handleSoundToggle, playTempleBell, safePlayClick, safePlayHover, setDeitiesOpen, setEventsOpen, setOpen, toggleSound, navItems]);
+  ], [isMobile, isSoundEnabled, handleNavClick, handleSoundToggle, playTempleBell, safePlayClick, safePlayHover, setDeitiesOpen, setEventsOpen, setOpen, toggleSound, navItems, templeStatus]); // Added templeStatus to dependencies
 
 
   return (
@@ -316,6 +319,45 @@ function NavbarContent() {
                     
                     const isMainMenuPanelActive = item.isExpandable && activeDockItem === item.id && isDockOpen;
 
+                    // Determine dynamic classes for the Deities button
+                    const isDeityButton = item.label === 'Deities';
+                    let deityButtonSpecificStyles = "";
+                    if (isDeityButton) {
+                        const statusColorClass = templeStatus.colorClass; // e.g., "bg-green-500"
+                        
+                        let subtleBg = "bg-gray-400/20 dark:bg-gray-600/20"; // Default for loading/unknown
+                        let subtleText = "text-gray-700 dark:text-gray-300";
+                        let subtleHoverBg = "hover:bg-gray-400/30 dark:hover:bg-gray-600/30";
+
+                        if (statusColorClass.includes('green')) { // Darshan Open
+                            subtleBg = "bg-green-400/20 dark:bg-green-500/20";
+                            subtleText = "text-green-700 dark:text-green-300";
+                            subtleHoverBg = "hover:bg-green-400/30 dark:hover:bg-green-500/30";
+                        } else if (statusColorClass.includes('pink')) { // Aarati
+                            subtleBg = "bg-pink-400/20 dark:bg-pink-500/20";
+                            subtleText = "text-pink-700 dark:text-pink-300";
+                            subtleHoverBg = "hover:bg-pink-400/30 dark:hover:bg-pink-500/30";
+                        } else if (statusColorClass.includes('red')) { // Darshan Closed (evening/afternoon)
+                            subtleBg = "bg-red-400/20 dark:bg-red-500/20";
+                            subtleText = "text-red-700 dark:text-red-300";
+                            subtleHoverBg = "hover:bg-red-400/30 dark:hover:bg-red-500/30";
+                        } else if (statusColorClass.includes('gray')) { // Temple Closed (e.g., night) or Loading
+                            subtleBg = "bg-gray-400/20 dark:bg-gray-600/20"; // Adjusted for better dark mode visibility
+                            subtleText = "text-gray-700 dark:text-gray-400"; // Darker gray text for light, lighter for dark
+                            subtleHoverBg = "hover:bg-gray-400/30 dark:hover:bg-gray-600/30";
+                        } else if (statusColorClass.includes('yellow')) { // N/A
+                            subtleBg = "bg-yellow-400/20 dark:bg-yellow-500/20";
+                            subtleText = "text-yellow-700 dark:text-yellow-300";
+                            subtleHoverBg = "hover:bg-yellow-400/30 dark:hover:bg-yellow-500/30";
+                        } else if (statusColorClass.includes('orange')) { // Error
+                            subtleBg = "bg-orange-400/20 dark:bg-orange-500/20";
+                            subtleText = "text-orange-700 dark:text-orange-300";
+                            subtleHoverBg = "hover:bg-orange-400/30 dark:hover:bg-orange-500/30";
+                        }
+                        deityButtonSpecificStyles = cn(subtleBg, subtleText, subtleHoverBg);
+                    }
+
+
                     const handleItemClick = () => {
                       if (item.label === 'Deities' && !item.isExpandable) playTempleBell(); else safePlayClick();
 
@@ -350,7 +392,7 @@ function NavbarContent() {
                         "flex items-center h-full w-full transition-all duration-200 ease-out",
                         isLabelVisible ? "justify-start pl-2 pr-1 sm:pl-3 sm:pr-2" : "justify-center"
                       )}>
-                        {item.title} {/* Icon */}
+                        <div>{item.title}</div> {/* Icon wrapped in a div */}
                         <AnimatePresence>
                           {isLabelVisible && (
                             <motion.span
@@ -368,20 +410,27 @@ function NavbarContent() {
                     );
                     
                     const baseItemClasses = "relative flex items-center rounded-xl cursor-pointer overflow-hidden h-10 sm:h-12 text-foreground/80 transition-colors focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]";
-                    const activeStateClasses = (isMainMenuPanelActive || isLabelVisible) // Highlight if main menu panel is active OR if label is visible (clicked or hovered)
-                      ? "bg-pink-100/70 dark:bg-pink-700/70 text-primary"
-                      : "hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary";
                     
                     const itemWidth = item.isExpandable 
                                       ? (isMobile ? 40 : 48) 
                                       : (isLabelVisible ? (isMobile ? 100 : 120) : (isMobile ? 40 : 48));
+
+                    // Apply dynamic styling
+                    const combinedItemClasses = cn(
+                        baseItemClasses,
+                        isDeityButton
+                            ? deityButtonSpecificStyles // Deity button gets its status color
+                            : (isMainMenuPanelActive || isLabelVisible) // Other buttons get pink highlight if active (label expanded or menu open)
+                                ? "bg-pink-100/70 dark:bg-pink-700/70 text-primary" 
+                                : "hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary" // Default hover for others
+                    );
 
                     if (item.isLink && item.to) { // Home item
                       return (
                         <motion.div
                           key={item.id}
                           layout
-                          className={cn(baseItemClasses, activeStateClasses)}
+                          className={combinedItemClasses}
                           animate={{ width: itemWidth }}
                           transition={dockSpringTransition}
                           onMouseEnter={handleItemMouseEnter}
@@ -403,7 +452,7 @@ function NavbarContent() {
                           type="button"
                           aria-label={item.label}
                           layout
-                          className={cn(baseItemClasses, activeStateClasses)}
+                          className={combinedItemClasses}
                           animate={{ width: itemWidth }}
                           transition={dockSpringTransition}
                           onClick={handleItemClick}
