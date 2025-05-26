@@ -333,20 +333,20 @@ function HeroGalleryModal({
 
 const HeroForeground = React.memo<HeroForegroundProps>((props) => {
   return (
-    <div className="z-10 relative"> {/* Removed container, mx-auto, px-6 */}
-      <div className="grid grid-cols-1 gap-12 items-center"> {/* Removed lg:grid-cols-2, lg:gap-20 */}
+    <div className="z-10 relative px-4 sm:px-6"> 
+      <div className="grid grid-cols-1 gap-12 items-center">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: props.isInView ? 1 : 0, x: props.isInView ? 0 : -20 }}
           transition={{ duration: 0.8 }}
-          className="text-left max-w-xl mx-auto lg:ml-6 xl:ml-12" // Reduced lg and xl left margins
+          className="max-w-3xl"
         >
           {/* Logo div removed */}
           <motion.h1
-            className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 text-gray-900 dark:text-white leading-tight tracking-tight"
+            className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 text-gray-900 dark:text-white leading-tight tracking-tight"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: props.isInView ? 1 : 0, y: props.isInView ? 0 : 20 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.2 }}
           >
             Reawakening Kṛṣṇa Consciousness Worldwide
           </motion.h1>

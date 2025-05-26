@@ -232,26 +232,30 @@ function NavBarComponent({ className }: NavBarProps) {
             <div className="w-full px-1 xs:px-2 sm:px-4">
                 <div className="flex justify-between items-center h-16">
                     {/* Left side with ModeToggle and Temple Name */}
-                    <div className="relative flex items-center space-x-0 xs:space-x-0.5 sm:space-x-3">
+                    <div className="relative flex items-center space-x-2 sm:space-x-3">
                         <ModeToggle />
                         {/* Temple Name Link - Popover and dot removed from here */}
                         <Link 
                             to="/" 
-                            className="flex flex-col hover:opacity-80 transition-opacity min-w-0 flex-grow flex-shrink"
+                            className="flex flex-col hover:opacity-80 transition-opacity min-w-0 flex-grow flex-shrink ml-1 sm:ml-0"
                             onClick={safePlayClick}
                             onMouseEnter={safePlayHover}
                         >
-                            <h1 className="text-sm md:text-base font-semibold text-foreground">
-                                ISKM Pudhuvai
+                            <h1 className="text-sm md:text-base font-semibold text-foreground flex flex-col sm:block">
+                                <span>ISKM</span>
+                                <span className="sm:ml-1">Pondicherry</span>
                             </h1>
+                            <p className="text-xs text-muted-foreground hidden 2xl:block truncate">
+                                Pudhuvai Vrindavanam, Radha Krishna Temple.
+                            </p>
                             <p className="text-xs text-muted-foreground hidden sm:block truncate">
-                                International Sri Krishna Mandir
+                                International Sri Krishna Mandir 
                             </p>
                         </Link>
                     </div>
 
                     {/* Desktop Navigation - Simplified */}
-                    <div className="hidden lg:flex items-center space-x-1">
+                    <div className="hidden xl:flex items-center space-x-1">
                         {Object.values(navItems).map((item) => (
                             item.title !== 'Donate' && (
                                 <Link
@@ -300,7 +304,7 @@ function NavBarComponent({ className }: NavBarProps) {
                         <Button 
                             size="icon" 
                             variant="ghost" 
-                            className="w-9 h-9 lg:hidden text-foreground"
+                            className="w-9 h-9 xl:hidden text-foreground"
                             onClick={toggleMobileMenu}
                             onMouseEnter={safePlayHover}
                             aria-label="Toggle mobile menu"
@@ -699,7 +703,7 @@ function NavBarComponent({ className }: NavBarProps) {
                         animate={{ height: mobileMenuHeight || 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={mobileMenuSpringTransition}
-                        className="overflow-hidden lg:hidden border-t border-border/60 bg-background/95 backdrop-blur-md"
+                        className="overflow-hidden xl:hidden border-t border-border/60 bg-background/95 backdrop-blur-md"
                         style={{ position: 'absolute', top: '100%', left: 0, right: 0 }} // Removed zIndex: -1
                     >
                         <div ref={mobileMenuContentRef} className="p-4 space-y-2">
