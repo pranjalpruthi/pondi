@@ -568,7 +568,7 @@ export function HeroSection() {
         preloadedImages={rightCarouselPreloaded}
         isInView={isInView}
       />
-      <div className="container mx-auto px-4 sm:px-6 z-10 relative"> {/* Changed px-6 to px-4 sm:px-6 */}
+      <div className="container mx-auto px-0 xs:px-2 sm:px-4 z-10 relative">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left: Text, CTAs, etc. */}
           <div>

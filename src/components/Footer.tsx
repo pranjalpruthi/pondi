@@ -26,7 +26,7 @@ export default function Footer() {
       <div className="absolute inset-0 bg-gradient-to-t from-white/90 to-transparent dark:from-gray-950/90 dark:to-transparent -z-10"></div>
       {/* <RainbowGlow className="opacity-80" /> Removed RainbowGlow component */}
       
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-0 xs:px-2 sm:px-4 py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* Temple Info */}

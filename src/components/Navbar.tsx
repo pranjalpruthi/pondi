@@ -229,22 +229,22 @@ function NavBarComponent({ className }: NavBarProps) {
             }}
             transition={springTransition} // Use spring transition here
         >
-            <div className="container mx-auto px-4">
+            <div className="w-full px-1 xs:px-2 sm:px-4">
                 <div className="flex justify-between items-center h-16">
                     {/* Left side with ModeToggle and Temple Name */}
-                    <div className="relative flex items-center space-x-3">
+                    <div className="relative flex items-center space-x-0 xs:space-x-0.5 sm:space-x-3">
                         <ModeToggle />
                         {/* Temple Name Link - Popover and dot removed from here */}
                         <Link 
                             to="/" 
-                            className="flex flex-col hover:opacity-80 transition-opacity"
+                            className="flex flex-col hover:opacity-80 transition-opacity min-w-0 flex-grow flex-shrink"
                             onClick={safePlayClick}
                             onMouseEnter={safePlayHover}
                         >
-                            <h1 className="text-base font-semibold text-foreground">
+                            <h1 className="text-sm md:text-base font-semibold text-foreground">
                                 ISKM Pudhuvai
                             </h1>
-                            <p className="text-xs text-muted-foreground hidden sm:block">
+                            <p className="text-xs text-muted-foreground hidden sm:block truncate">
                                 International Sri Krishna Mandir
                             </p>
                         </Link>
