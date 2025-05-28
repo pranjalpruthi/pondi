@@ -4,16 +4,15 @@ import React, { useState, useRef, useCallback, useEffect, type MouseEvent } from
 import { motion, useSpring, AnimatePresence } from 'motion/react';
 import { useMediaQuery } from '@uidotdev/usehooks';
 import { Badge } from '@/components/ui/badge';
+import { AuroraBackground } from '@/components/ui/aurora-background'; // Import AuroraBackground
+import { AuroraText } from '@/components/magicui/aurora-text'; // Import AuroraText
 
 interface SpiritualMaster {
   id: number;
   name: string;
   mainSummary: string;
   additionalNotes?: string[];
-  // No need to add imageSrc here, we'll use local images
 }
-
-// ImageData interface and images array are no longer needed as we use local images.
 
 interface Verse {
   title?: string;
@@ -26,51 +25,51 @@ const spiritualMasters: SpiritualMaster[] = [
   { id: 1, name: "Śrī Kṛṣṇa", mainSummary: "The Supreme Personality of Godhead, original speaker of the Bhagavad-gītā." },
   { id: 2, name: "Lord Brahmā", mainSummary: "Caturmukha Brahmā — the four-headed creator god, first recipient of Vedic knowledge from Kṛṣṇa." },
   { id: 3, name: "Devarṣi Nārada", mainSummary: "The divine sage, son of Brahmā, famed for spreading devotional service." },
-  { id: 4, name: "Śrī Vyāsa", mainSummary: "Kṛṣṇa Dvaipāyana Vyāsa — empowered compiler of the Vedas, Purāṇas, Mahābhārata, and Śrīmad-Bhāgavatam." },
-  { id: 5, name: "Śrī Madhvācārya", mainSummary: "Also known as Pūrṇaprajña Tīrtha — re-established pure dualist philosophy and founded the Brahma-Madhva Sampradāya." },
-  { id: 6, name: "Śrī Padmanābha Tīrtha", mainSummary: "Chief disciple and successor of Śrī Madhvācārya." },
-  { id: 7, name: "Śrī Nṛhari Tīrtha", mainSummary: "Prominent disciple in the line of Śrī Madhvācārya." },
-  { id: 8, name: "Śrī Mādhava Tīrtha", mainSummary: "Disciple of Śrī Nṛhari Tīrtha, notable successor in the Madhva line." },
-  { id: 9, name: "Śrī Akṣobhya Tīrtha", mainSummary: "A great paramahaṁsa, disciple of Śrī Mādhava Tīrtha." },
-  { id: 10, name: "Śrī Jaya Tīrtha", mainSummary: "Distinguished disciple of Śrī Akṣobhya Tīrtha, known for his commentaries on Madhva’s works." },
-  { id: 11, name: "Śrī Jñānasindhu Tīrtha", mainSummary: "Disciple of Śrī Jaya Tīrtha, known for deep knowledge of devotional service." },
-  { id: 12, name: "Śrī Dayānidhi Tīrtha", mainSummary: "Successor to Śrī Jñānasindhu Tīrtha, embodying compassion and wisdom." },
-  { id: 13, name: "Śrī Vidyānidhi", mainSummary: "Also known as Vidyādhirāja Tīrtha — profound scholar and disciple of Śrī Dayānidhi Tīrtha." },
-  { id: 14, name: "Śrī Rājendra Tīrtha", mainSummary: "Disciple of Śrī Vidyānidhi, upholding Vaiṣṇava philosophical traditions." },
-  { id: 15, name: "Śrī Jayadharma", mainSummary: "Also known as Vijayadhvaja Tīrtha — exemplified steadfast dharma and guru-sevā." },
-  { id: 16, name: "Śrī Puruṣottama Tīrtha", mainSummary: "Prominent sannyāsī disciple of Śrī Jayadharma." },
-  { id: 17, name: "Śrī Brahmaṇya Tīrtha", mainSummary: "Also known as Subrahmanya Tīrtha — chief disciple of Śrī Puruṣottama Tīrtha." },
-  { id: 18, name: "Śrī Vyāsa Tīrtha", mainSummary: "Also called Vyāsa Rāya — great scholar-saint, disciple of Śrī Brahmaṇya Tīrtha." },
-  { id: 19, name: "Śrī Lakṣmīpati Tīrtha", mainSummary: "Disciple of Śrī Vyāsa Tīrtha." },
-  { id: 20, name: "Śrī Mādhavendra Purī Gosvāmī", mainSummary: "Root of the Gauḍīya lineage, introduced rāgānuga-bhakti (spontaneous devotional love)." },
+  { id: 4, name: "Śrīla Vyāsa", mainSummary: "Kṛṣṇa Dvaipāyana Vyāsa — empowered compiler of the Vedas, Purāṇas, Mahābhārata, and Śrīmad-Bhāgavatam." },
+  { id: 5, name: "Śrīla Madhvācārya", mainSummary: "Also known as Pūrṇaprajña Tīrtha — re-established pure dualist philosophy and founded the Brahma-Madhva Sampradāya." },
+  { id: 6, name: "Śrīla Padmanābha Tīrtha", mainSummary: "Chief disciple and successor of Śrī Madhvācārya." },
+  { id: 7, name: "Śrīla Nṛhari Tīrtha", mainSummary: "Prominent disciple in the line of Śrī Madhvācārya." },
+  { id: 8, name: "Śrīla Mādhava Tīrtha", mainSummary: "Disciple of Śrī Nṛhari Tīrtha, notable successor in the Madhva line." },
+  { id: 9, name: "Śrīla Akṣobhya Tīrtha", mainSummary: "A great paramahaṁsa, disciple of Śrī Mādhava Tīrtha." },
+  { id: 10, name: "Śrīla Jaya Tīrtha", mainSummary: "Distinguished disciple of Śrī Akṣobhya Tīrtha, known for his commentaries on Madhva’s works." },
+  { id: 11, name: "Śrīla Jñānasindhu Tīrtha", mainSummary: "Disciple of Śrī Jaya Tīrtha, known for deep knowledge of devotional service." },
+  { id: 12, name: "Śrīla Dayānidhi Tīrtha", mainSummary: "Successor to Śrī Jñānasindhu Tīrtha, embodying compassion and wisdom." },
+  { id: 13, name: "Śrīla Vidyānidhi", mainSummary: "Also known as Vidyādhirāja Tīrtha — profound scholar and disciple of Śrī Dayānidhi Tīrtha." },
+  { id: 14, name: "Śrīla Rājendra Tīrtha", mainSummary: "Disciple of Śrī Vidyānidhi, upholding Vaiṣṇava philosophical traditions." },
+  { id: 15, name: "Śrīla Jayadharma", mainSummary: "Also known as Vijayadhvaja Tīrtha — exemplified steadfast dharma and guru-sevā." },
+  { id: 16, name: "Śrīla Puruṣottama Tīrtha", mainSummary: "Prominent sannyāsī disciple of Śrī Jayadharma." },
+  { id: 17, name: "Śrīla Brahmaṇya Tīrtha", mainSummary: "Also known as Subrahmanya Tīrtha — chief disciple of Śrī Puruṣottama Tīrtha." },
+  { id: 18, name: "Śrīla Vyāsa Tīrtha", mainSummary: "Also called Vyāsa Rāya — great scholar-saint, disciple of Śrī Brahmaṇya Tīrtha." },
+  { id: 19, name: "Śrīla Lakṣmīpati Tīrtha", mainSummary: "Disciple of Śrī Vyāsa Tīrtha." },
+  { id: 20, name: "Śrīla Mādhavendra Purī Gosvāmī", mainSummary: "Root of the Gauḍīya lineage, introduced rāgānuga-bhakti (spontaneous devotional love)." },
   {
     id: 21,
-    name: "Śrī Īśvara Purī (Nityānanda, Advaita)",
+    name: "Śrīla Īśvara Purī (Nityānanda, Advaita)",
     mainSummary: "Dīkṣā-guru of Śrī Caitanya Mahāprabhu, whose devotion opened the Lord’s heart to accept initiation.",
     additionalNotes: [
       "His humility and pure devotion deeply touched Śrī Caitanya, enabling Mahāprabhu's saṅkīrtana mission.",
-      "Śrī Nityānanda Prabhu and Śrī Advaita Ācārya, though not direct disciples, served together as empowered associates in the Lord’s pastimes.",
+      "Śrīla Nityānanda Prabhu and Śrī Advaita Ācārya, though not direct disciples, served together as empowered associates in the Lord’s pastimes.",
       "The Guru-paramparā song names Īśvara Purī directly and honors Nityānanda and Advaita in praise of Mahāprabhu’s advent and mission."
     ]
   },
   { id: 22, name: "Śrī Caitanya Mahāprabhu", mainSummary: "The Golden Avatāra who inaugurated saṅkīrtana and propagated prema-bhakti." },
   {
     id: 23,
-    name: "Śrī Rūpa Gosvāmī (Svarūpa, Sanātana)",
+    name: "Śrīla Rūpa Gosvāmī (Svarūpa, Sanātana)",
     mainSummary: "Foremost disciple of Śrī Caitanya and architect of Gauḍīya siddhānta.",
     additionalNotes: [
-      "Śrī Sanātana Gosvāmī, his elder brother, exemplified scholarship and renunciation alongside Rūpa.",
-      "Śrī Svarūpa Dāmodara, Mahāprabhu’s intimate companion, mentored Rūpa under the Lord’s direction.",
+      "Śrīla Sanātana Gosvāmī, his elder brother, exemplified scholarship and renunciation alongside Rūpa.",
+      "Śrīla Svarūpa Dāmodara, Mahāprabhu’s intimate companion, mentored Rūpa under the Lord’s direction.",
       "Together they form the inspirational core of Vṛndāvana’s devotional reawakening."
     ]
   },
-  { id: 24, name: "Śrī Jīva Gosvāmī", mainSummary: "Youngest Gosvāmī, philosopher of Gauḍīya siddhānta.", additionalNotes: ["Also close to Rūpa: Śrī Raghunātha Dāsa Gosvāmī — model renunciate of Rādhā-kuṇḍa."] },
-  { id: 25, name: "Śrī Kṛṣṇadāsa Kavirāja Gosvāmī", mainSummary: "Author of Śrī Caitanya-caritāmṛta." },
-  { id: 26, name: "Śrī Narottama Dāsa Ṭhākura", mainSummary: "Saint-poet of Bengali bhakti literature." },
-  { id: 27, name: "Śrī Viśvanātha Cakravartī Ṭhākura", mainSummary: "Master commentator on Bhāgavatam and Gītā." },
+  { id: 24, name: "Śrīla Jīva Gosvāmī", mainSummary: "Youngest Gosvāmī, philosopher of Gauḍīya siddhānta.", additionalNotes: ["Also close to Rūpa: Śrī Raghunātha Dāsa Gosvāmī — model renunciate of Rādhā-kuṇḍa."] },
+  { id: 25, name: "Śrīla Kṛṣṇadāsa Kavirāja Gosvāmī", mainSummary: "Author of Śrī Caitanya-caritāmṛta." },
+  { id: 26, name: "Śrīla Narottama Dāsa Ṭhākura", mainSummary: "Saint-poet of Bengali bhakti literature." },
+  { id: 27, name: "Śrīla Viśvanātha Cakravartī Ṭhākura", mainSummary: "Master commentator on Bhāgavatam and Gītā." },
   {
     id: 28,
-    name: "Śrī Baladeva Vidyābhūṣaṇa (Jagannātha Dāsa Bābājī)",
+    name: "Śrīla Baladeva Vidyābhūṣaṇa (Jagannātha Dāsa Bābājī)",
     mainSummary: "Defender of Gauḍīya doctrine through his Govinda-bhāṣya commentary.",
     additionalNotes: [
       "Śrī Jagannātha Dāsa Bābājī’s realization and guidance bridged to Bhaktivinoda Ṭhākura.",
@@ -86,7 +85,7 @@ const spiritualMasters: SpiritualMaster[] = [
 
 const verses: Verse[] = [
   {
-    title: "🕉️ Illuminating the Path: The Disciplic Succession",
+    title: "Illuminating the Path: Witness this Legacy of Krishna through Prabhupada", // Updated title
     reference: "Bhagavad-gītā 4.2",
     transliteration: [
       "evaṁ paramparā-prāptam",
@@ -202,15 +201,17 @@ const DisciplicSuccessionSection: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-x-12 gap-y-8 p-4 sm:p-6 md:p-8 bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-gray-100 min-h-[calc(100vh-var(--navbar-height,4rem))] relative">
-      {/* Overlay for expanded view */}
-      <AnimatePresence>
-        {activeMaster && (
+    <AuroraBackground showRadialGradient={true} className="min-h-[calc(100vh-var(--navbar-height,4rem))] !h-auto relative"> {/* Use AuroraBackground */}
+      <div className="flex flex-col lg:flex-row gap-x-12 gap-y-8 p-4 sm:p-6 md:p-8 text-gray-900 dark:text-gray-100 w-full"> {/* Removed background, adjusted min-h to AuroraBackground */}
+        {/* Overlay for expanded view */}
+        <AnimatePresence>
+          {activeMaster && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-20 bg-black/20 dark:bg-black/40 backdrop-blur-sm pointer-events-auto"
+            className="fixed inset-0 z-20 bg-black/20 dark:bg-black/40 backdrop-blur-sm pointer-events-auto" // Changed to fixed
+            onClick={() => setActiveMaster(null)} // Allow closing by clicking backdrop
           />
         )}
       </AnimatePresence>
@@ -218,9 +219,13 @@ const DisciplicSuccessionSection: React.FC = () => {
       {/* Expanded Master View */}
       <AnimatePresence>
         {activeMaster && (
-          <div className="absolute inset-0 z-30 grid place-items-center pointer-events-none">
+          <div 
+            className="fixed inset-0 z-30 grid place-items-center pointer-events-auto p-4 overflow-y-auto" // Changed to fixed, added padding and overflow
+            onClick={() => setActiveMaster(null)} // Allow closing by clicking area around card
+          >
             <motion.div
               ref={expandedCardRef}
+              onClick={(e) => e.stopPropagation()} // Prevent click on card from closing modal
               layoutId={`master-${activeMaster.id}`}
               className="bg-white dark:bg-neutral-900 rounded-xl shadow-lg border border-gray-200 dark:border-neutral-700 w-[90%] max-w-2xl p-6 pointer-events-auto"
               initial={{ opacity: 0, y: 20 }}
@@ -295,30 +300,34 @@ const DisciplicSuccessionSection: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Left Section: Verses */}
-      <div className="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-[calc(var(--navbar-height,4rem)+2rem)] lg:max-h-[calc(100vh-var(--navbar-height,4rem)-4rem)] lg:overflow-y-auto pr-4">
-        {verses.map((verse, index) => (
-          <div key={index} className="space-y-6 p-4 sm:p-5 bg-orange-50/50 dark:bg-neutral-800/40 rounded-xl shadow-md border border-orange-200 dark:border-neutral-700/80 hover:shadow-lg transition-shadow duration-300">
-            {verse.title && <h3 className="text-2xl sm:text-3xl font-bold mb-3 text-orange-900 dark:text-orange-100">{verse.title}</h3>}
-            <p className="text-lg text-gray-600 dark:text-gray-300 mb-6 leading-relaxed font-medium">{verse.reference}</p>
-            <div className="italic space-y-0.5 mb-3 text-gray-700 dark:text-gray-300">
-              {verse.transliteration.map((line, i) => <p key={i} className="text-sm">{line}</p>)}
+      {/* Left Section: Verses (Only BG verse here now) */}
+      <div className="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-[calc(var(--navbar-height,4rem)+2rem)] lg:max-h-[calc(100vh-var(--navbar-height,4rem)-4rem)] lg:overflow-y-auto pr-4 z-10"> {/* Added z-10 */}
+        {verses.filter(v => v.reference.includes("Bhagavad-gītā")).map((verse, index) => (
+          <div key={`verse-bg-${index}`} className="space-y-6 p-4 sm:p-5 bg-orange-50/50 dark:bg-neutral-800/60 rounded-xl shadow-md border border-orange-200 dark:border-neutral-700/80 hover:shadow-lg transition-shadow duration-300">
+            {verse.title && <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-orange-900 dark:text-orange-100"><AuroraText>{verse.title}</AuroraText></h3>}
+            <Badge variant="outline" className="mb-4 text-sm font-medium bg-orange-500/20 dark:bg-orange-400/20 border-orange-500/40 dark:border-orange-400/40 text-orange-700 dark:text-orange-300 backdrop-blur-sm py-1.5 px-3">
+              {verse.reference}
+            </Badge>
+            <div className="italic space-y-1 mb-4 text-gray-700 dark:text-gray-300 text-center font-semibold">
+              {verse.transliteration.map((line, i) => <p key={i} className="text-base">{line}</p>)}
             </div>
-            <p className="text-base italic text-orange-800 dark:text-orange-200 font-medium bg-orange-100/50 dark:bg-orange-950/30 p-4 rounded-lg border border-orange-200/50 dark:border-orange-900/30">{verse.translation}</p>
+            <p className="text-lg font-semibold text-center text-orange-800 dark:text-orange-200 bg-orange-100/50 dark:bg-orange-950/30 p-4 rounded-lg border border-orange-200/50 dark:border-orange-900/30">
+              {verse.translation}
+            </p>
           </div>
         ))}
       </div>
 
-      {/* Right Section: Spiritual Masters List */}
+      {/* Right Section: Spiritual Masters List & SB Verse */}
       <div
         ref={containerRef}
-        className="w-full lg:w-2/3 relative space-y-6"
+        className="w-full lg:w-2/3 relative space-y-6 z-10" // Added z-10
         onMouseMove={handleMove}
         onMouseLeave={handleMouseLeave}
       >
         <div className="mb-12">
             <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-gray-800 dark:text-white">
-            The Disciplic Succession
+              <AuroraText>The Disciplic Succession</AuroraText>
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-400">
             This sacred lineage, <em className="font-italic">Evaṁ Paramparā-prāptam</em>, illuminates the path of pure devotional service, handed down from the Supreme Lord Kṛṣṇa through an unbroken chain of spiritual masters. This list is beautifully enshrined in Śrīla Bhaktisiddhānta Saraswatī Ṭhākura's song "Kṛṣṇa Hoite Caturmukha."
@@ -360,6 +369,24 @@ const DisciplicSuccessionSection: React.FC = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* SB Verse - Moved here */}
+        <div className="mt-12">
+          {verses.filter(v => v.reference.includes("ŚB")).map((verse, index) => (
+            <div key={`verse-sb-${index}`} className="space-y-6 p-4 sm:p-5 bg-sky-50/50 dark:bg-neutral-800/40 rounded-xl shadow-md border border-sky-200 dark:border-neutral-700/80 hover:shadow-lg transition-shadow duration-300">
+              {verse.title && <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-sky-900 dark:text-sky-100">{verse.title}</h3>}
+            <Badge variant="outline" className="mb-4 text-sm font-medium bg-sky-500/20 dark:bg-sky-400/20 border-sky-500/40 dark:border-sky-400/40 text-sky-700 dark:text-sky-300 backdrop-blur-sm py-1.5 px-3">
+              {verse.reference}
+            </Badge>
+            <div className="italic space-y-1 mb-4 text-gray-700 dark:text-gray-300 text-center font-semibold"> 
+              {verse.transliteration.map((line, i) => <p key={i} className="text-base">{line}</p>)}
+            </div>
+            <p className="text-lg font-semibold text-center text-sky-800 dark:text-sky-200 bg-sky-100/50 dark:bg-sky-950/30 p-4 rounded-lg border border-sky-200/50 dark:border-sky-900/30">
+                {verse.translation}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Floating Image */}
@@ -379,7 +406,8 @@ const DisciplicSuccessionSection: React.FC = () => {
           transition={{ type: 'spring', stiffness: 300, damping: 30 }} // Smooth transition for opacity and scale
         />
       )}
-    </div>
+      </div> {/* Closing tag for the main content div that is child of AuroraBackground */}
+    </AuroraBackground>
   );
 };
 

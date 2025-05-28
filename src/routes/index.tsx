@@ -1,6 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 import React, { Suspense, useState, useEffect } from 'react';
 import { HeroSection } from "@/components/homepage/hero-section";
+import SideBySide from "@/components/homepage/side-by-side";
+// Removed ShlokaModal and Shloka type imports
 
 // Lazy load sections
 // Removed LazyConstructionUpdates
@@ -58,6 +60,7 @@ const InitialPageLoader = () => (
 
 function HomePage() {
   const [isPageLoading, setIsPageLoading] = useState(true);
+  // Removed selectedShloka state
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -72,50 +75,54 @@ function HomePage() {
   }
 
   return (
-    <main 
-      className="flex flex-col min-h-screen relative w-full pb-36" // Increased pb for fixed banner + dock
-      style={{ willChange: 'transform' }} // Hint for rendering performance
-    >
-      {/* Background element remains */}
-      <div className="fixed inset-0 bg-gray-50 dark:bg-neutral-950 z-0 pointer-events-none"></div>
-      
-      {/* Actual page content */}
-      <div className="relative z-10 w-full">
-        <HeroSection />
-        <Suspense fallback={<SectionLoader />}>
-          <LazyFeaturedSection />
-        </Suspense>
+    // Removed Fragment wrapper
+      <main 
+        className="flex flex-col min-h-screen relative w-full pb-36" // Increased pb for fixed banner + dock
+        // style={{ willChange: 'transform' }} // Hint for rendering performance - REMOVED
+      >
+        {/* Background element remains */}
+        <div className="fixed inset-0 bg-gray-50 dark:bg-neutral-950 z-0 pointer-events-none"></div>
+        
+        {/* Actual page content */}
+        <div className="relative z-10 w-full">
+          <div className="min-h-screen">
+            <HeroSection />
+            <Suspense fallback={<SectionLoader />}>
+              <LazyFeaturedSection />
+            </Suspense>
+
+            <Suspense fallback={<SectionLoader />}>
+              <LazyYouTubeMarquee />
+            </Suspense>
+          </div>
+
+          <Suspense fallback={<SectionLoader />}>
+            <LazyQnASection />
+          </Suspense>
 
 
-        <Suspense fallback={<SectionLoader />}>
-          <LazyYouTubeMarquee />
-        </Suspense>
 
-        <Suspense fallback={<SectionLoader />}>
-          <LazyQnASection />
-        </Suspense>
-
-
-
-        <Suspense fallback={<SectionLoader />}>
-          <LazySlokaLearningSection />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <LazyFeaturedBooksSection />
-        </Suspense>
-        {/* New Disciplic Succession Section */}
-        <Suspense fallback={<SectionLoader />}>
-          <LazyDisciplicSuccessionSection />
-        </Suspense>
-        {/* Added Milestone Timeline */}
-        <Suspense fallback={<SectionLoader />}>
-          <LazyMilestoneTimeline />
-        </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <LazyVisitUs />
-        </Suspense>
-      </div>
-      {/* LazyUpcomingEventBanner removed from here */}
-    </main>
+          <Suspense fallback={<SectionLoader />}>
+            <LazySlokaLearningSection />
+          </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            <LazyFeaturedBooksSection />
+          </Suspense>
+          {/* New Disciplic Succession Section */}
+          <Suspense fallback={<SectionLoader />}>
+            <LazyDisciplicSuccessionSection />
+          </Suspense>
+          {/* Added Milestone Timeline */}
+          <Suspense fallback={<SectionLoader />}>
+            <LazyMilestoneTimeline />
+          </Suspense>
+          <SideBySide /> {/* Render SideBySide without props */}
+          <Suspense fallback={<SectionLoader />}>
+            <LazyVisitUs />
+          </Suspense>
+        </div>
+        {/* LazyUpcomingEventBanner removed from here */}
+      </main>
+      // Removed ShlokaModal rendering from here
   )
 }

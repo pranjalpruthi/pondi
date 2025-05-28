@@ -9,7 +9,7 @@ export const dailySchedule: DailyScheduleItem[] = [
   { time: '7:15 AM', activity: 'Darshan Aarati', description: 'Morning darshan ceremony' },
   { time: '7:20 AM', activity: 'Guru Puja', description: 'Worship of Srila Prabhupada' },
   { time: '8:00 AM', activity: 'Bhagvatam Discourse', description: 'Morning scripture class' },
-  { time: '12:00 PM', activity: 'Darshan Closes', description: 'Darshan of the Deities concludes for the morning. Temple remains open; evening Darshan from 5:30 PM.' },
+  { time: '12:00 PM', activity: 'Darshan Closes', description: 'Darshan of the Deities concludes for the morning. oopen; evening Darshan from 5:30 PM.' },
   { time: '5:30 PM', activity: 'Gaura Arati', description: 'Evening worship ceremony' },
   { time: '6:30 PM', activity: 'Darshan Closes', description: 'Darshan of the Deities concludes; temple may remain open for other activities.' }
 ];
@@ -52,6 +52,6 @@ export const scheduleIntervals: Array<{ start: string; end: string; status: Temp
   {
     start: '6:30 PM',
     end: '11:59 PM', // Until just before midnight
-    status: { label: 'Closed', colorClass: 'bg-red-500', detailedText: 'Darshan is closed for the day.', nextEventTime: null, nextEventLabel: null },
+    status: { label: 'Darshan Closed', colorClass: 'bg-red-500', detailedText: 'Darshan is closed for the day.', nextEventTime: null, nextEventLabel: null },
   },
 ];
