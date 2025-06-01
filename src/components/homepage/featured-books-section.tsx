@@ -8,8 +8,8 @@ import { BookOpen, Languages, CheckCircle, Eye, ShoppingCart } from 'lucide-reac
 
 const springTransition = {
   type: "spring",
-  stiffness: 280,
-  damping: 30,
+  stiffness: 350,
+  damping: 25,
   mass: 0.8,
 };
 
@@ -33,6 +33,8 @@ interface BookDetailData {
   playlistLink?: string; // Added playlistLink
   whatsAppNumber: string;
   baseWhatsAppMessageTemplate: string;
+  price: string;
+  shippingNote?: string;
   quote?: {
     text: string;
     source: string;
@@ -74,6 +76,8 @@ All Glories to Śrīla Prabhupāda!
 
 I would like to order the book "Initiations After 1977".
 My Temple Site Order Number is: `,
+  price: "₹120",
+  shippingNote: "excluding shipping charges",
   quote: {
     text: "I have deputed the ritvik, the representative of the acharya, to act for me.",
     source: "(Letter to all G.B.C. members and Temple Presidents, July 9, 1977)"
@@ -110,6 +114,8 @@ All Glories to Śrīla Prabhupāda!
 
 I would like to order the book "Why Worship Only Krsna?".
 My Temple Site Order Number is: `,
+  price: "₹120",
+  shippingNote: "excluding shipping charges",
   quote: {
     text: "Abandon all varieties of religion and just surrender unto Me. I shall deliver you from all sinful reactions. Do not fear.",
     source: "(Bhagavad-gītā As It Is, 18.66)"
@@ -145,6 +151,7 @@ All Glories to Śrīla Prabhupāda!
 
 I would like to order the book "ISKM's Position on Usage of BBT Books after 1977".
 My Temple Site Order Number is: `,
+  price: "Free of Cost",
   quote: {
     text: "The book is the basis. Reading of the books must be going on. And whatever is in the books, that must be introduced in our life.",
     source: "(Lecture, April 13, 1975, Hyderabad)"
@@ -169,18 +176,18 @@ export function FeaturedBooksSection() {
   const whatsAppOrderUrl = `https://wa.me/${selectedBook.whatsAppNumber}?text=${encodeURIComponent(whatsAppMessageWithOrder)}`;
 
   return (
-    <section className="py-16 md:py-20 bg-background overflow-hidden">
+    <section className="pt-10 pb-6 md:pt-20 md:pb-20 bg-background overflow-hidden">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ ...springTransition, delay: 0.1 }}
+          transition={{ ...springTransition, delay: 0.05 }}
           className="text-center mb-10 md:mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500">
             Our Publications
           </h2>
-          <p className="mt-2 text-base md:text-lg text-muted-foreground max-w-lg mx-auto">
+          <p className="mt-2 text-lg md:text-xl text-muted-foreground max-w-lg mx-auto">
             Explore our collection of essential spiritual literature.
           </p>
         </motion.div>
@@ -192,7 +199,7 @@ export function FeaturedBooksSection() {
             key={`${selectedBook.id}-cover`}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ ...springTransition, delay: 0.05 }}
+            transition={{ ...springTransition, delay: 0.02 }}
             className="md:col-span-1 lg:col-span-4 flex justify-center items-center" // md:justify-start removed to keep cover centered on tablet 2-col
           >
             <ModernBookCover size={isMobile ? "md" : "lg"} color={selectedBook.id === 'wwok' ? 'yellow' : selectedBook.id === 'usuage' ? 'neutral' : 'zinc'} className="shadow-xl hover:shadow-zinc-400/30 dark:hover:shadow-black/50 transition-shadow duration-300">
@@ -209,7 +216,7 @@ export function FeaturedBooksSection() {
             key={selectedBook.id}
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={springTransition}
+            transition={{ ...springTransition, delay: 0.05 }}
             className="md:col-span-1 lg:col-span-6 space-y-4" // Adjusted col-span for tablet and large screens
           >
             <div className="flex flex-wrap gap-2">
@@ -220,14 +227,14 @@ export function FeaturedBooksSection() {
               ))}
             </div>
 
-            <h3 className="text-xl md:text-2xl font-semibold tracking-tight text-gray-800 dark:text-white">
+            <h3 className="text-2xl md:text-3xl font-semibold tracking-tight text-gray-800 dark:text-white">
               {selectedBook.title}
             </h3>
-            <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
               {selectedBook.subtitle}
             </p>
 
-            <p className="text-sm text-muted-foreground leading-relaxed pt-1 whitespace-pre-line">
+            <p className="text-base text-muted-foreground leading-relaxed pt-1 whitespace-pre-line">
               {selectedBook.description}
             </p>
 
@@ -236,12 +243,12 @@ export function FeaturedBooksSection() {
                 key={`${selectedBook.id}-quote`}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ ...springTransition, delay: 0.1 }}
-                className="border-l-4 border-purple-500 pl-4 text-sm text-muted-foreground mt-4"
+                transition={{ ...springTransition, delay: 0.07 }}
+                className="border-l-4 border-purple-500 pl-4 text-base text-muted-foreground mt-4"
               >
                 <p className="mb-2 italic">"{selectedBook.quote.text}"</p>
                 <div className="text-right">
-                  <Badge variant="secondary" className="text-xs font-normal">
+                  <Badge variant="secondary" className="text-xs font-normal whitespace-normal">
                     - {selectedBook.quote.source}
                   </Badge>
                 </div>
@@ -253,17 +260,35 @@ export function FeaturedBooksSection() {
                 key={`${selectedBook.id}-keypoints`}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ ...springTransition, delay: 0.15 }}
+                transition={{ ...springTransition, delay: 0.1 }}
                 className="mt-4 space-y-2 text-muted-foreground"
               >
                 {selectedBook.keyPoints.map((point, index) => (
-                  <li key={index} className="text-sm md:text-base flex items-center">
+                  <li key={index} className="text-base md:text-lg flex items-center">
                     {point.icon}
                     <span>{point.title}</span>
                   </li>
                 ))}
               </motion.ul>
             )}
+
+            {/* Price Display */}
+            <motion.div
+              key={`${selectedBook.id}-price-info`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...springTransition, delay: (selectedBook.keyPoints || selectedBook.quote) ? 0.12 : 0.07 }}
+              className="mt-4 mb-2"
+            >
+              <span className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+                {selectedBook.price}
+              </span>
+              {selectedBook.shippingNote && (
+                <span className="ml-1 text-xs md:text-sm text-muted-foreground">
+                  ({selectedBook.shippingNote})
+                </span>
+              )}
+            </motion.div>
 
             <div className="pt-2 flex flex-wrap gap-3 items-center"> {/* Changed to flex-wrap, removed flex-col sm:flex-row */}
               <a href={whatsAppOrderUrl} target="_blank" rel="noopener noreferrer" className="min-w-[200px] grow"> {/* Removed flex-1, added grow and min-width */}

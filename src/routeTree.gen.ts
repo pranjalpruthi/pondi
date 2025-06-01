@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as EventsImport } from './routes/events'
 import { Route as DashboardRouteImport } from './routes/dashboard/route'
 import { Route as IndexImport } from './routes/index'
+import { Route as ShopIndexImport } from './routes/shop/index'
 import { Route as DonateIndexImport } from './routes/donate/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
 import { Route as ComingSoonIndexImport } from './routes/coming-soon/index'
@@ -39,6 +40,12 @@ const DashboardRouteRoute = DashboardRouteImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ShopIndexRoute = ShopIndexImport.update({
+  id: '/shop/',
+  path: '/shop/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -158,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DonateIndexImport
       parentRoute: typeof rootRoute
     }
+    '/shop/': {
+      id: '/shop/'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -186,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/coming-soon': typeof ComingSoonIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/donate': typeof DonateIndexRoute
+  '/shop': typeof ShopIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -198,6 +213,7 @@ export interface FileRoutesByTo {
   '/coming-soon': typeof ComingSoonIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/donate': typeof DonateIndexRoute
+  '/shop': typeof ShopIndexRoute
 }
 
 export interface FileRoutesById {
@@ -212,6 +228,7 @@ export interface FileRoutesById {
   '/coming-soon/': typeof ComingSoonIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/donate/': typeof DonateIndexRoute
+  '/shop/': typeof ShopIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -227,6 +244,7 @@ export interface FileRouteTypes {
     | '/coming-soon'
     | '/dashboard/'
     | '/donate'
+    | '/shop'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -238,6 +256,7 @@ export interface FileRouteTypes {
     | '/coming-soon'
     | '/dashboard'
     | '/donate'
+    | '/shop'
   id:
     | '__root__'
     | '/'
@@ -250,6 +269,7 @@ export interface FileRouteTypes {
     | '/coming-soon/'
     | '/dashboard/'
     | '/donate/'
+    | '/shop/'
   fileRoutesById: FileRoutesById
 }
 
@@ -263,6 +283,7 @@ export interface RootRouteChildren {
   CentersIndexRoute: typeof CentersIndexRoute
   ComingSoonIndexRoute: typeof ComingSoonIndexRoute
   DonateIndexRoute: typeof DonateIndexRoute
+  ShopIndexRoute: typeof ShopIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -275,6 +296,7 @@ const rootRouteChildren: RootRouteChildren = {
   CentersIndexRoute: CentersIndexRoute,
   ComingSoonIndexRoute: ComingSoonIndexRoute,
   DonateIndexRoute: DonateIndexRoute,
+  ShopIndexRoute: ShopIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -295,7 +317,8 @@ export const routeTree = rootRoute
         "/calender/",
         "/centers/",
         "/coming-soon/",
-        "/donate/"
+        "/donate/",
+        "/shop/"
       ]
     },
     "/": {
@@ -331,6 +354,9 @@ export const routeTree = rootRoute
     },
     "/donate/": {
       "filePath": "donate/index.tsx"
+    },
+    "/shop/": {
+      "filePath": "shop/index.tsx"
     }
   }
 }

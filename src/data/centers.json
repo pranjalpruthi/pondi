@@ -23,6 +23,77 @@
       }
     }
   },
+  {
+    "name": "ISKM Amalapuram",
+    "country": "India",
+    "coordinates": [82.0064, 16.5787],
+    "flag": "🇮🇳",
+    "address": "1-26, First Floor, Brahman Street Above Irusumanda Post Office Ambajipet Mandal, Irusumanda, Andhra Pradesh 533239",
+    "mapLink": [
+      "https://maps.app.goo.gl/TQwjFKrJgT8YSQXN6",
+      "https://maps.app.goo.gl/9h7vr7K7PnCrh6pWA"
+    ],
+    "social": {
+      "facebook": "https://www.facebook.com/profile.php?id=100079902996569",
+      "instagram": "https://www.instagram.com/iskm_amlapuram/",
+      "youtube": "https://www.youtube.com/@iskmnallacheruvu"
+    },
+    "templePresident": {
+      "name": "HG Sundar Srinivas Prabhu",
+      "quote": "Hare Krishna",
+      "image": "/assets/tp/hgpb.jpg",
+      "quoteSource": "",
+      "contact": {
+        "whatsapp": "+917702010653",
+        "email": "amalapuramiskm@gmail.com"
+      }
+    }
+  },
+  {
+    "name": "ISKM Balasore",
+    "country": "India",
+    "coordinates": [86.9377, 21.4927],
+    "flag": "🇮🇳",
+    "address": "ISKM Balasore, Sri Jagannath temple, Uttareswar, soro, Balasore, Odisha, Pin- 756045",
+    "mapLink": "https://maps.app.goo.gl/ydAJzHoQCFatCVX98",
+    "social": {
+      "facebook": "https://www.facebook.com/iskm.bl/"
+    },
+    "templePresident": {
+      "name": "HG Murali Krishna Prabhu",
+      "quote": "Chant and be happy",
+      "image": "/assets/tp/hgmd.jpg",
+      "quoteSource": "",
+      "contact": {
+        "whatsapp": "+919438567165",
+        "email": "vdasa123@gmail.com"
+      }
+    }
+  },
+  {
+    "name": "ISKM Proddutur",
+    "country": "India",
+    "coordinates": [78.5481, 14.7502],
+    "flag": "🇮🇳",
+    "address": "15/398, Mydukur Rd, Nadimpalli, Proddatur, Andhra Pradesh 516360",
+    "mapLink": "https://maps.app.goo.gl/j8iUJkZY1WYRdduGA",
+    "social": {
+      "facebook": "https://www.facebook.com/p/International-Sri-Krishna-Mandir-Proddutur-61568420159770/",
+      "instagram": "https://www.instagram.com/iskm.proddatur/",
+      "youtube": "https://www.youtube.com/@ISKMProddatur"
+    },
+    "templePresident": {
+      "name": "HG Vinod Krishna Prabhu",
+      "quote": "Hare 🇰 🇷 🇮 🇸 🇭 🇳 🇦 ❣️",
+      "image": "/assets/tp/hgvkd.jpg",
+      "quoteSource": "",
+      "contact": {
+        "whatsapp": "chat.whatsapp.com/D6cQ4yiQ8iZ9RX4KNNzp7P",
+        "phone": "+91 6281469214 & +91 7893636462",
+        "email": "iskm.proddutur@gmail.com"
+      }
+    }
+  },
   { "name": "ISKM Mumbai", "country": "India", "coordinates": [72.8777, 19.0760], "flag": "🇮🇳", "address": "Dummy Address 1, Mumbai", "mapLink": "#", "social": {}, "templePresident": { "name": "Dummy President", "image": "/pp/pp1.webp", "quote": "Dummy quote.", "quoteSource": "Dummy Source", "contact": {} } },
   { "name": "ISKM Delhi", "country": "India", "coordinates": [77.2090, 28.6139], "flag": "🇮🇳", "address": "Dummy Address 2, Delhi", "mapLink": "#", "social": {}, "templePresident": { "name": "Dummy President", "image": "/pp/pp1.webp", "quote": "Dummy quote.", "quoteSource": "Dummy Source", "contact": {} } },
 

@@ -140,7 +140,7 @@ const DeityImage = memo(({ src, alt }: { src: string; alt: string }) => (
   <img 
     src={src} 
     alt={alt} 
-    className="w-full h-full object-contain" 
+    className="w-full h-full object-cover" 
     loading="lazy"
     fetchPriority="high"
   />

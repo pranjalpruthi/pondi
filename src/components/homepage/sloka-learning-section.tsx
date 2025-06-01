@@ -52,16 +52,16 @@ export function SlokaLearningSection() {
   const firstRow = episodes.slice(0, Math.ceil(episodes.length / 2));
   const secondRow = episodes.slice(Math.ceil(episodes.length / 2));
 
+
   return (
-    <div className="w-full py-20 lg:py-40 bg-background overflow-hidden rounded-lg">
+    <div className="w-full pt-5 pb-0 lg:pt-10 lg:pb-0 bg-background overflow-hidden rounded-lg">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 gap-8 items-center lg:grid-cols-2">
           <motion.div
-            className="flex gap-4 flex-col"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }} // Changed to whileInView for animation trigger
             viewport={{ once: true, amount: 0.3 }} // Added viewport settings
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.3 }}
           >
             <div>
               <Badge>🆕 New Course!</Badge>
@@ -72,7 +72,7 @@ export function SlokaLearningSection() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
               >
                 Śloka Learning Course 📚
               </motion.h1>
@@ -81,7 +81,7 @@ export function SlokaLearningSection() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
               >
                 Embark on a transformative journey through our Śloka Learning Course. Discover the profound wisdom and spiritual benefits of mastering these sacred verses. 🧘‍♂️✨
               </motion.p>
@@ -91,7 +91,7 @@ export function SlokaLearningSection() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
+              transition={{ duration: 0.3, delay: 0.3 }}
             >
               {/* Changed Link to a tag inside RainbowButton, removed asChild */}
               <RainbowButton className="gap-2 w-full sm:w-2/3 md:w-1/2 lg:w-2/5 mx-auto rounded-full">
@@ -120,7 +120,7 @@ export function SlokaLearningSection() {
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.5, delay: 0.8 }}
+            transition={{ duration: 0.3, delay: 0.4 }}
           >
             {/* Replaced ShineBorder with a standard div and border */}
             <div className="h-full w-full border rounded-lg p-2">

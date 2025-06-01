@@ -12,7 +12,7 @@ function SideBySide() {
   const todayShloka = SHLOKAS[0];
 
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-hidden select-none">
       <div className="relative h-96 w-full overflow-hidden [mask-image:radial-gradient(50%_50%,white,transparent)]">
         {/* Background Gradient - Updated for light/dark mode */}
         <div className="absolute inset-0 before:absolute before:inset-0 
@@ -111,10 +111,10 @@ function SideBySide() {
       </article>
 
       {/* Updated Shloka Cards Section */}
-      <div className="mt-20 pb-20">
+      <div className="mt-20 pb-0">
         <div className="relative w-full overflow-hidden">
           <div className="flex overflow-hidden [--duration:40s] [--gap:1rem]">
-            <div className="flex animate-marquee [gap:var(--gap)] items-center">
+            <div className="flex animate-marquee [animation-direction:reverse] [gap:var(--gap)] items-center">
               {SHLOKAS.map((shloka) => (
                 <ShlokaCard
                   key={shloka.id}
@@ -123,7 +123,7 @@ function SideBySide() {
                 />
               ))}
             </div>
-            <div className="flex animate-marquee [gap:var(--gap)] items-center" aria-hidden="true">
+            <div className="flex animate-marquee [animation-direction:reverse] [gap:var(--gap)] items-center" aria-hidden="true">
               {SHLOKAS.map((shloka) => (
                 <ShlokaCard
                   key={`${shloka.id}-clone`}

@@ -34,8 +34,9 @@ function TabsList({
   activeClassName,
   transition = {
     type: 'spring',
-    stiffness: 200,
-    damping: 25,
+    stiffness: 300,  // Increased stiffness for more responsive feel
+    damping: 22,     // Slightly reduced damping for more bounce
+    mass: 1.2,       // Added mass for a weightier feel
   },
   ...props
 }: TabsListProps) {
@@ -76,7 +77,7 @@ function TabsList({
   return (
     <MotionHighlight
       controlledItems
-      className={cn('rounded-sm bg-background shadow-sm', activeClassName)}
+      className={activeClassName} // Pass activeClassName directly to style the highlight
       value={activeValue}
       transition={transition}
     >
@@ -84,7 +85,7 @@ function TabsList({
         ref={localRef}
         data-slot="tabs-list"
         className={cn(
-          'bg-muted text-muted-foreground inline-flex h-10 w-fit items-center justify-center rounded-lg p-[4px]',
+          'bg-transparent shadow-none text-muted-foreground inline-flex h-14 sm:h-16 w-fit items-center justify-center rounded-xl p-[6px]', // Explicitly transparent and no shadow
           className,
         )}
         {...props}
@@ -103,7 +104,7 @@ function TabsTrigger({ className, value, ...props }: TabsTriggerProps) {
       <TabsPrimitive.Trigger
         data-slot="tabs-trigger"
         className={cn(
-          'inline-flex cursor-pointer items-center size-full justify-center whitespace-nowrap rounded-sm px-2 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground z-[1]',
+          'inline-flex cursor-pointer items-center size-full justify-center whitespace-nowrap rounded-lg px-5 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground z-[1] hover:scale-[1.02] active:scale-[0.98]',
           className,
         )}
         value={value}
@@ -122,8 +123,10 @@ function TabsContent({
   className,
   children,
   transition = {
-    duration: 0.5,
-    ease: 'easeInOut',
+    type: 'spring',
+    stiffness: 250,
+    damping: 24,
+    mass: 1,
   },
   ...props
 }: TabsContentProps) {

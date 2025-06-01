@@ -123,7 +123,7 @@ export function ShlokaModal({ shloka, onClose }: { shloka: Shloka | null; onClos
             transition={{ duration: 0.2, ease: "easeOut" }}
           />
           <motion.div
-            className="fixed inset-0 z-50 flex items-start justify-center p-2 sm:p-4 md:p-6 lg:p-8 overflow-y-auto"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -133,7 +133,7 @@ export function ShlokaModal({ shloka, onClose }: { shloka: Shloka | null; onClos
             <motion.div
               className="dark:bg-black/40 bg-white/95 backdrop-blur-md 
                 dark:border-amber-500/30 border-pink-200 border
-                p-8 max-w-2xl w-full rounded-[30px] relative shadow-xl"
+                p-4 sm:p-6 md:p-8 max-w-2xl w-full rounded-[30px] relative shadow-xl"
               layoutId={`card-${shloka.id}`}
               onClick={(e) => e.stopPropagation()}
               initial={{ scale: 0.9, opacity: 0, y: 30 }}
@@ -196,7 +196,7 @@ export function ShlokaModal({ shloka, onClose }: { shloka: Shloka | null; onClos
                 transition={{ duration: 0.2, ease: "easeOut" }}
               >
                 <Button 
-                  className="absolute top-8 right-8 
+                  className="absolute top-4 right-4 sm:top-6 sm:right-6 md:top-8 md:right-8 
                     dark:border-zinc-800 dark:hover:bg-zinc-800 dark:text-zinc-400 dark:hover:text-white
                     border-pink-200 hover:bg-pink-100 text-pink-700 hover:text-pink-900" 
                   onClick={onClose}

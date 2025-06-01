@@ -41,6 +41,10 @@ export default defineConfig({
     },
   },
   server: {
+        allowedHosts: [
+          'f78ad1885f15eccc6d1681e73d3d82f3.serveo.net',
+          '8ea27f368b4588.lhr.life'
+        ],
     proxy: {
       // Proxy /youtube-feed requests to the YouTube RSS feed
       '/youtube-feed': {

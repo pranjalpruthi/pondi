@@ -1,17 +1,20 @@
-'use client';
-
-import React, { useState, useRef, useCallback, useEffect, type MouseEvent } from 'react';
-import { motion, useSpring, AnimatePresence } from 'motion/react';
+import React, { useState, useRef, useEffect, type MouseEvent as ReactMouseEvent } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react'; // Changed from motion/react
 import { useMediaQuery } from '@uidotdev/usehooks';
 import { Badge } from '@/components/ui/badge';
-import { AuroraBackground } from '@/components/ui/aurora-background'; // Import AuroraBackground
-import { AuroraText } from '@/components/magicui/aurora-text'; // Import AuroraText
+import { Button } from '@/components/ui/button';
+import { ListTree, X } from 'lucide-react';
+import { AuroraBackground } from '@/components/ui/aurora-background';
+import { AuroraText } from '@/components/magicui/aurora-text';
+import { cn } from '@/lib/utils';
+import { Marquee } from '@/components/magicui/marquee'; // Import Marquee component
 
 interface SpiritualMaster {
   id: number;
   name: string;
   mainSummary: string;
   additionalNotes?: string[];
+  cardSummary?: string;
 }
 
 interface Verse {
@@ -85,7 +88,7 @@ const spiritualMasters: SpiritualMaster[] = [
 
 const verses: Verse[] = [
   {
-    title: "Illuminating the Path: Witness this Legacy of Krishna through Prabhupada", // Updated title
+    title: "Illuminating the Path: Witness this Legacy of Krishna through Prabhupada",
     reference: "Bhagavad-gītā 4.2",
     transliteration: [
       "evaṁ paramparā-prāptam",
@@ -107,306 +110,308 @@ const verses: Verse[] = [
   }
 ];
 
-// DUMMY_IMAGE_URL is no longer needed
-
 const DisciplicSuccessionSection: React.FC = () => {
   const isDesktop = useMediaQuery('(min-width: 768px)');
-
   const getMasterImagePath = (id: number): string => `/assets/extra/parampara/${id}.jpg`;
-  const [hoveredMasterId, setHoveredMasterId] = useState<number | null>(null); // For underline effect
-  const [activeMaster, setActiveMaster] = useState<SpiritualMaster | null>(null); // For expanded view
-  
-  const [img, setImg] = useState<{ src: string; alt: string; opacity: number; scale: number }>({
-    src: '',
-    alt: '',
-    opacity: 0,
-    scale: 0.5, // Initial scale for the hover image
-  });
 
-  const imageRef = useRef<HTMLImageElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [selectedMasterId, setSelectedMasterId] = useState<number | null>(null);
+  const [isFullListViewOpen, setIsFullListViewOpen] = useState(false);
+  // const [isSectionVisible, setIsSectionVisible] = useState(false); // Managed by Marquee visibility for play state implicitly
+  // const [widthOfOneSetOfCards, setWidthOfOneSetOfCards] = useState(0); // Not needed with Marquee component
+  // const [isHoverPaused, setIsHoverPaused] = useState(false); // Handled by Marquee's pauseOnHover prop
+
+  // Marquee settings for reference, props will be passed to Marquee component directly
+  // const marqueeRepeat = 4; // Default in Marquee component, can be overridden
+  // const pauseOnHover = true; // Passed as prop to Marquee
+  // const marqueeSpeed = "80s"; // Example, passed as --duration style
+  // const marqueeCardGap = "1.5rem"; // Example, passed as --gap style
+
   const expandedCardRef = useRef<HTMLDivElement>(null);
+  const fullListDrawerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const bgImageRef = useRef<HTMLDivElement>(null);
+  // firstSetOfCardsRef is not needed for width measurement with Marquee component
 
-  const spring = {
-    stiffness: 150,
-    damping: 15,
-    mass: 0.1,
-  };
+  const smoothEasing = [0.4, 0.0, 0.2, 1];
 
-  const imagePos = {
-    x: useSpring(0, spring),
-    y: useSpring(0, spring),
-  };
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
 
-  // Close expanded view when clicking outside or pressing Escape
+  // useEffect for IntersectionObserver and width calculation are no longer needed as Marquee component handles this.
+  // The Marquee component itself handles its animation play state based on visibility (implicitly via CSS animations starting when rendered)
+  // and its own pauseOnHover logic.
+
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
-        setActiveMaster(null);
+        if (isFullListViewOpen) {
+          setIsFullListViewOpen(false);
+        } else if (selectedMasterId !== null) {
+          setSelectedMasterId(null);
+        }
       }
     }
-
     function handleClickOutside(event: MouseEvent) {
-      if (expandedCardRef.current && !expandedCardRef.current.contains(event.target as Node)) {
-        setActiveMaster(null);
+      const mouseEvent = event as unknown as ReactMouseEvent<Element, MouseEvent>;
+      if (isFullListViewOpen && fullListDrawerRef.current && !fullListDrawerRef.current.contains(mouseEvent.target as Node)) {
+        setIsFullListViewOpen(false);
+      } else if (selectedMasterId !== null && expandedCardRef.current && !expandedCardRef.current.contains(mouseEvent.target as Node)) {
+        setSelectedMasterId(null);
       }
     }
-
     window.addEventListener('keydown', onKeyDown);
-    if (activeMaster) {
-      document.addEventListener('mousedown', handleClickOutside as unknown as EventListener);
+    if (selectedMasterId !== null || isFullListViewOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
     }
-    
     return () => {
       window.removeEventListener('keydown', onKeyDown);
-      document.removeEventListener('mousedown', handleClickOutside as unknown as EventListener);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [activeMaster]);
+  }, [selectedMasterId, isFullListViewOpen]);
 
-  const handleMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (!imageRef.current || !containerRef.current) return;
-
-    const containerRect = containerRef.current.getBoundingClientRect();
-    const { clientX, clientY } = e;
-    
-    // Position image directly at cursor position
-    imagePos.x.set(clientX - containerRect.left);
-    imagePos.y.set(clientY - containerRect.top);
+  const handleCardClick = (masterId: number) => {
+    if (selectedMasterId === masterId) {
+      setSelectedMasterId(null);
+    } else {
+      setSelectedMasterId(masterId);
+    }
   };
 
-  const handleMasterHover = useCallback(
-    (master: SpiritualMaster) => {
-      if (activeMaster) return; // Don't show hover image when expanded view is active
-      
-      setImg({
-        src: getMasterImagePath(master.id),
-        alt: master.name, // Use master's name for alt text
-        opacity: 1,
-        scale: 1, // Animate to full scale
-      });
-      setHoveredMasterId(master.id); // For the underline effect
-    },
-    [activeMaster, getMasterImagePath] // Added getMasterImagePath to dependencies
-  );
+  const activeMaster = spiritualMasters.find(m => m.id === selectedMasterId);
 
-  const handleMouseLeave = useCallback(() => {
-    if (activeMaster) return; // Don't hide image when expanded view is active
-    
-    setImg(prev => ({...prev, opacity: 0, scale: 0.5 })); // Animate back to initial scale and hide
-    setHoveredMasterId(null); // Clear underline effect
-  }, [activeMaster]);
-  
-  const handleMasterClick = useCallback((master: SpiritualMaster) => {
-    setActiveMaster(prev => prev?.id === master.id ? null : master);
-  }, []);
-
-  return (
-    <AuroraBackground showRadialGradient={true} className="min-h-[calc(100vh-var(--navbar-height,4rem))] !h-auto relative"> {/* Use AuroraBackground */}
-      <div className="flex flex-col lg:flex-row gap-x-12 gap-y-8 p-4 sm:p-6 md:p-8 text-gray-900 dark:text-gray-100 w-full"> {/* Removed background, adjusted min-h to AuroraBackground */}
-        {/* Overlay for expanded view */}
-        <AnimatePresence>
-          {activeMaster && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-20 bg-black/20 dark:bg-black/40 backdrop-blur-sm pointer-events-auto" // Changed to fixed
-            onClick={() => setActiveMaster(null)} // Allow closing by clicking backdrop
-          />
+  // Extracted card rendering logic into its own function for clarity
+  const renderSpiritualMasterCard = (master: SpiritualMaster) => {
+    const cardRenderWidth = isDesktop ? 300 : 280;
+    return (
+      <motion.div
+        key={master.id} // Key for each card in the map
+        layout={selectedMasterId === master.id} // Framer Motion layout animation
+        data-master-id={master.id}
+        className={cn(
+          "bg-blue-900/80 dark:bg-blue-950/80 backdrop-blur-lg relative h-[450px] flex-shrink-0 cursor-pointer overflow-hidden rounded-2xl shadow-2xl border border-blue-700/60 hover:border-blue-500"
+          // The Marquee component handles gap via its own CSS variable `var(--gap)`
+          // No explicit margin needed here unless overriding Marquee's behavior
         )}
-      </AnimatePresence>
-
-      {/* Expanded Master View */}
-      <AnimatePresence>
-        {activeMaster && (
-          <div 
-            className="fixed inset-0 z-30 grid place-items-center pointer-events-auto p-4 overflow-y-auto" // Changed to fixed, added padding and overflow
-            onClick={() => setActiveMaster(null)} // Allow closing by clicking area around card
-          >
+        style={{
+          width: `${cardRenderWidth}px`,
+          // flexShrink: 0 is handled by Marquee's internal structure
+        }}
+        animate={{
+          width: selectedMasterId === master.id ? (isDesktop ? "600px" : "90vw") : `${cardRenderWidth}px`,
+          zIndex: selectedMasterId === master.id ? 10 : 1, // Bring selected card to front
+        }}
+        transition={{ duration: 0.5, ease: smoothEasing }}
+        onClick={() => handleCardClick(master.id)}
+        ref={selectedMasterId === master.id ? expandedCardRef : null}
+      >
+        {/* Inner content of the card remains the same */}
+        <div className={`relative h-full ${isDesktop ? 'w-[300px]' : 'w-[280px]'} flex-shrink-0`}>
+          <img
+            src={getMasterImagePath(master.id)}
+            alt={master.name}
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
+          <div className="absolute inset-0 flex flex-col justify-between p-4 text-white">
+            <Badge variant="default" className="absolute top-3 right-3 bg-orange-600/90 text-white text-xs sm:text-sm px-2.5 py-1 shadow-md">
+              {master.id}
+            </Badge>
+            <div className="mt-auto">
+              <h2 className="text-2xl sm:text-3xl font-bold text-shadow-lg">{master.name}</h2>
+            </div>
+          </div>
+        </div>
+        <AnimatePresence mode="popLayout">
+          {selectedMasterId === master.id && activeMaster && (
             <motion.div
-              ref={expandedCardRef}
-              onClick={(e) => e.stopPropagation()} // Prevent click on card from closing modal
-              layoutId={`master-${activeMaster.id}`}
-              className="bg-white dark:bg-neutral-900 rounded-xl shadow-lg border border-gray-200 dark:border-neutral-700 w-[90%] max-w-2xl p-6 pointer-events-auto"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="absolute top-0 right-0 h-full bg-blue-900 dark:bg-blue-950 shadow-2xl"
+              initial={{ width: 0, opacity: 0 }}
+              animate={{
+                width: isDesktop ? "300px" : `calc(90vw - ${(isDesktop ? 300 : 280)}px)`,
+                opacity: 1
+              }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ duration: 0.5, ease: smoothEasing, opacity: { duration: 0.3, delay: 0.2 } }}
+              onClick={(e) => e.stopPropagation()} // Prevent card click when interacting with expanded details
             >
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center">
-                  <motion.div layoutId={`master-badge-${activeMaster.id}`} className="mr-3">
-                    <Badge
-                      variant="outline"
-                      className="h-8 w-8 flex items-center justify-center text-sm border-orange-400 text-orange-600 dark:text-orange-400 bg-transparent"
-                    >
-                      {activeMaster.id}
-                    </Badge>
-                  </motion.div>
-                  <motion.h2 layoutId={`master-name-${activeMaster.id}`} className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {activeMaster.name}
-                  </motion.h2>
-                </div>
-                <button
-                  onClick={() => setActiveMaster(null)}
-                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              
-              <div className="flex flex-col md:flex-row gap-6">
-                {/* Image */}
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="w-full md:w-1/2 h-[300px] rounded-lg overflow-hidden"
-                >
-                  <img
-                    src={getMasterImagePath(activeMaster.id)}
-                    alt={activeMaster.name}
-                    className="w-full h-full object-cover"
-                  />
-                </motion.div>
-                
-                {/* Content */}
-                <div className="w-full md:w-1/2 flex flex-col">
-                  <motion.p 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-gray-700 dark:text-gray-300 mb-4"
+              <motion.div
+                className="flex h-full flex-col p-5 md:p-6 text-white overflow-y-auto scrollbar-thin scrollbar-thumb-pink-500 scrollbar-track-blue-800"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ delay: 0.3, duration: 0.3 }}
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="text-xl sm:text-2xl font-bold">{activeMaster.name}</h3>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => { e.stopPropagation(); setSelectedMasterId(null); }}
+                    className="text-gray-300 hover:text-white hover:bg-white/10 rounded-full -mr-2 -mt-1 flex-shrink-0"
                   >
+                    <X className="h-5 w-5 sm:h-6 sm:w-6" />
+                  </Button>
+                </div>
+                <div className="flex-grow">
+                  <p className="text-sm sm:text-base text-gray-200 mb-3 leading-relaxed">
                     {activeMaster.mainSummary}
-                  </motion.p>
-                  
+                  </p>
                   {activeMaster.additionalNotes && activeMaster.additionalNotes.length > 0 && (
-                    <motion.div 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="mt-2 pt-4 border-t border-gray-200 dark:border-neutral-700"
-                    >
-                      <h5 className="text-sm font-semibold uppercase text-gray-500 dark:text-gray-400 mb-2">Additional Context:</h5>
-                      <ul className="list-disc list-inside space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="mt-3 pt-3 border-t border-blue-700/50">
+                      <h5 className="text-xs sm:text-sm font-semibold uppercase text-pink-400 mb-1.5">Additional Context:</h5>
+                      <ul className="list-disc list-inside space-y-1.5 text-xs sm:text-sm text-gray-300">
                         {activeMaster.additionalNotes.map((info, idx) => <li key={idx}>{info}</li>)}
                       </ul>
-                    </motion.div>
+                    </div>
                   )}
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    );
+  };
 
-      {/* Left Section: Verses (Only BG verse here now) */}
-      <div className="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-[calc(var(--navbar-height,4rem)+2rem)] lg:max-h-[calc(100vh-var(--navbar-height,4rem)-4rem)] lg:overflow-y-auto pr-4 z-10"> {/* Added z-10 */}
-        {verses.filter(v => v.reference.includes("Bhagavad-gītā")).map((verse, index) => (
-          <div key={`verse-bg-${index}`} className="space-y-6 p-4 sm:p-5 bg-orange-50/50 dark:bg-neutral-800/60 rounded-xl shadow-md border border-orange-200 dark:border-neutral-700/80 hover:shadow-lg transition-shadow duration-300">
-            {verse.title && <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-orange-900 dark:text-orange-100"><AuroraText>{verse.title}</AuroraText></h3>}
-            <Badge variant="outline" className="mb-4 text-sm font-medium bg-orange-500/20 dark:bg-orange-400/20 border-orange-500/40 dark:border-orange-400/40 text-orange-700 dark:text-orange-300 backdrop-blur-sm py-1.5 px-3">
-              {verse.reference}
-            </Badge>
-            <div className="italic space-y-1 mb-4 text-gray-700 dark:text-gray-300 text-center font-semibold">
-              {verse.transliteration.map((line, i) => <p key={i} className="text-base">{line}</p>)}
-            </div>
-            <p className="text-lg font-semibold text-center text-orange-800 dark:text-orange-200 bg-orange-100/50 dark:bg-orange-950/30 p-4 rounded-lg border border-orange-200/50 dark:border-orange-900/30">
-              {verse.translation}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* Right Section: Spiritual Masters List & SB Verse */}
-      <div
-        ref={containerRef}
-        className="w-full lg:w-2/3 relative space-y-6 z-10" // Added z-10
-        onMouseMove={handleMove}
-        onMouseLeave={handleMouseLeave}
-      >
-        <div className="mb-12">
-            <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-gray-800 dark:text-white">
-              <AuroraText>The Disciplic Succession</AuroraText>
-            </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-            This sacred lineage, <em className="font-italic">Evaṁ Paramparā-prāptam</em>, illuminates the path of pure devotional service, handed down from the Supreme Lord Kṛṣṇa through an unbroken chain of spiritual masters. This list is beautifully enshrined in Śrīla Bhaktisiddhānta Saraswatī Ṭhākura's song "Kṛṣṇa Hoite Caturmukha."
-            </p>
-        </div>
-        
-        <div className="grid md:grid-cols-2 gap-x-6 gap-y-1">
-          {spiritualMasters.map((master) => (
-            <motion.div
-              layoutId={`master-${master.id}`}
-              key={master.id}
-              className="relative p-4 hover:bg-orange-50/50 dark:hover:bg-neutral-800/60 rounded-lg cursor-pointer transition-colors duration-150 flex justify-between items-center group"
-              onMouseEnter={() => handleMasterHover(master)}
-              onClick={() => handleMasterClick(master)}
-            >
-              <div className="flex items-center flex-grow">
-                <motion.div layoutId={`master-badge-${master.id}`}>
-                  <Badge
-                    variant="outline"
-                    className="mr-4 h-7 w-7 sm:h-8 sm:w-8 flex items-center justify-center text-xs sm:text-sm border-gray-300 dark:border-neutral-700 text-orange-600 dark:text-orange-400 bg-transparent group-hover:border-orange-500 dark:group-hover:border-orange-400 transition-colors cursor-pointer"
-                  >
-                    {master.id}
-                  </Badge>
-                </motion.div>
-                <motion.span
-                  layoutId={`master-name-${master.id}`}
-                  className={`text-xl sm:text-2xl font-bold transition-colors tracking-tight ${isDesktop && hoveredMasterId === master.id && !activeMaster && img.opacity > 0 ? 'mix-blend-difference z-20 !text-gray-300 dark:!text-gray-300' : 'text-gray-700 dark:text-gray-200 group-hover:text-black dark:group-hover:text-white'}`}
-                >
-                  {master.name}
-                </motion.span>
+  return (
+    <AuroraBackground
+      ref={sectionRef}
+      showRadialGradient={false}
+      className="relative bg-transparent dark:bg-transparent min-h-[calc(100vh-var(--navbar-height,4rem))] !h-auto overflow-hidden select-none"
+    >
+      <motion.div
+        ref={bgImageRef}
+        className="absolute inset-x-0 z-0"
+        style={{
+          backgroundImage: "url('/assets/extra/parampara/full.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
+          height: '120%',
+          top: '-10%',
+          y: backgroundY,
+        }}
+      />
+      <div className="absolute inset-0 z-10 bg-black/50" />
+      <div className="relative z-20 flex flex-col lg:flex-row gap-x-12 gap-y-8 p-4 sm:p-6 md:p-8 text-gray-900 dark:text-gray-100 w-full max-w-screen-xl mx-auto py-12 md:py-20">
+        <div className="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-[calc(var(--navbar-height,4rem)+2rem)] lg:max-h-[calc(100vh-var(--navbar-height,4rem)-4rem)] lg:overflow-y-auto pr-4">
+          {verses.filter(v => v.reference.includes("Bhagavad-gītā")).map((verse, index) => (
+            <div key={`verse-bg-${index}`} className="space-y-6 p-4 sm:p-5 bg-orange-50/70 dark:bg-neutral-800/70 rounded-xl shadow-md border border-orange-200 dark:border-neutral-700 hover:shadow-lg transition-shadow duration-300">
+              {verse.title && <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-orange-900 dark:text-orange-50"><AuroraText>{verse.title}</AuroraText></h3>}
+              <Badge variant="outline" className="mb-4 text-sm font-medium bg-orange-500/30 dark:bg-orange-400/30 border-orange-500/50 dark:border-orange-400/50 text-orange-700 dark:text-orange-200 backdrop-blur-sm py-1.5 px-3">
+                {verse.reference}
+              </Badge>
+              <div className="italic space-y-1 mb-4 text-gray-600 dark:text-gray-300 text-center font-semibold">
+                {verse.transliteration.map((line, i) => <p key={i} className="text-base">{line}</p>)}
               </div>
-              
-              {/* Underline effect */}
-              <div
-                className={`absolute bottom-0 left-0 h-[1px] bg-orange-500 dark:bg-orange-400 transition-all duration-300 ease-out ${
-                  hoveredMasterId === master.id && !activeMaster && img.opacity > 0 ? 'w-full opacity-100' : 'w-0 opacity-0'
-                }`}
-              />
-            </motion.div>
-          ))}
-        </div>
-
-        {/* SB Verse - Moved here */}
-        <div className="mt-12">
-          {verses.filter(v => v.reference.includes("ŚB")).map((verse, index) => (
-            <div key={`verse-sb-${index}`} className="space-y-6 p-4 sm:p-5 bg-sky-50/50 dark:bg-neutral-800/40 rounded-xl shadow-md border border-sky-200 dark:border-neutral-700/80 hover:shadow-lg transition-shadow duration-300">
-              {verse.title && <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-sky-900 dark:text-sky-100">{verse.title}</h3>}
-            <Badge variant="outline" className="mb-4 text-sm font-medium bg-sky-500/20 dark:bg-sky-400/20 border-sky-500/40 dark:border-sky-400/40 text-sky-700 dark:text-sky-300 backdrop-blur-sm py-1.5 px-3">
-              {verse.reference}
-            </Badge>
-            <div className="italic space-y-1 mb-4 text-gray-700 dark:text-gray-300 text-center font-semibold"> 
-              {verse.transliteration.map((line, i) => <p key={i} className="text-base">{line}</p>)}
-            </div>
-            <p className="text-lg font-semibold text-center text-sky-800 dark:text-sky-200 bg-sky-100/50 dark:bg-sky-950/30 p-4 rounded-lg border border-sky-200/50 dark:border-sky-900/30">
+              <p className="text-lg font-semibold text-center text-orange-800 dark:text-orange-100 bg-orange-100/70 dark:bg-orange-950/50 p-4 rounded-lg border border-orange-200/60 dark:border-orange-900/40">
                 {verse.translation}
               </p>
             </div>
           ))}
         </div>
+
+        <div className="w-full lg:w-2/3 relative space-y-8">
+          <div className="p-0 md:p-0 space-y-8">
+            <div className="mb-8 text-center lg:text-left bg-blue-900/60 dark:bg-blue-950/60 backdrop-blur-lg rounded-xl p-6 shadow-xl border border-blue-700/50">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 text-white">
+                  <AuroraText>The Disciplic Succession</AuroraText>
+                </h1>
+                <Button
+                  variant="outline"
+                  className="mt-2 sm:mt-0 bg-white/20 hover:bg-white/30 dark:bg-black/20 dark:hover:bg-black/30 border-white/30 text-white backdrop-blur-sm"
+                  onClick={() => setIsFullListViewOpen(true)}
+                >
+                  <ListTree className="mr-2 h-5 w-5" />
+                  View Full List
+                </Button>
+              </div>
+              <p className="text-lg md:text-xl text-gray-100 dark:text-gray-200 max-w-3xl mx-auto lg:mx-0 mt-4">
+                This sacred lineage, <em className="font-italic">Evaṁ Paramparā-prāptam</em>, illuminates the path of pure devotional service, handed down from the Supreme Lord Kṛṣṇa through an unbroken chain of spiritual masters. This list is beautifully enshrined in Śrīla Bhaktisiddhānta Saraswatī Ṭhākura's song "Kṛṣṇa Hoite Caturmukha."
+              </p>
+            </div>
+
+            {/* Marquee Carousel using the Marquee component */}
+            {/* Added a wrapper div that can be styled (e.g., for relative positioning if cards expand outside bounds) */}
+            <div className="relative py-2">
+              <Marquee
+                pauseOnHover={false} // Prop from the Marquee component
+                className={cn(
+                  "[--duration:80s] [--gap:1.5rem]",
+                  { "marquee-has-active-selection": selectedMasterId !== null }
+                )} // Set duration and gap via className or style prop
+                repeat={2} // Reduce the number of repetitions
+                // The Marquee component internally handles repetition of children for smooth animation.
+                // It also has its own `pauseOnHover` logic.
+              >
+                {spiritualMasters.map((master) => renderSpiritualMasterCard(master))}
+              </Marquee>
+              <div className="pointer-events-none absolute inset-y-0 left-0 w-1/6 bg-gradient-to-r from-black/70 via-black/50 to-transparent z-10"></div>
+              <div className="pointer-events-none absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-black/70 via-black/50 to-transparent z-10"></div>
+            </div>
+                        
+            <div className="mt-12">
+              {verses.filter(v => v.reference.includes("ŚB")).map((verse, index) => (
+                <div key={`verse-sb-${index}`} className="space-y-6 p-4 sm:p-6 bg-sky-800/70 dark:bg-sky-950/80 backdrop-blur-md rounded-xl shadow-lg border border-sky-700/60 text-white">
+                  {verse.title && <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-sky-100 dark:text-sky-50">{verse.title}</h3>}
+                  <Badge variant="outline" className="mb-4 text-sm font-medium bg-sky-500/40 dark:bg-sky-400/40 border-sky-500/60 dark:border-sky-400/60 text-sky-200 dark:text-sky-100 backdrop-blur-sm py-1.5 px-3">
+                    {verse.reference}
+                  </Badge>
+                  <div className="italic space-y-1 mb-4 text-gray-200 dark:text-gray-300 text-center font-semibold">
+                    {verse.transliteration.map((line, i) => <p key={i} className="text-base">{line}</p>)}
+                  </div>
+                  <p className="text-lg font-semibold text-center text-sky-100 dark:text-sky-50 bg-sky-700/50 dark:bg-sky-900/60 p-4 rounded-lg border border-sky-600/60 dark:border-sky-800/60">
+                    {verse.translation}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Floating Image */}
-      {isDesktop && !activeMaster && (
-        <motion.img
-          ref={imageRef}
-          src={img.src}
-          alt={img.alt}
-          className="fixed dark:bg-gray-950 bg-white object-cover pointer-events-none z-25 w-[300px] h-[400px] rounded-lg shadow-xl" // Increased z-index to 25, enhanced shadow
-          style={{
-            x: imagePos.x,
-            y: imagePos.y,
-            opacity: img.opacity,
-            scale: img.scale, // Apply scale from state
-            transform: 'translate(-50%, -50%)'  // Center the image on the cursor
-          }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }} // Smooth transition for opacity and scale
-        />
-      )}
-      </div> {/* Closing tag for the main content div that is child of AuroraBackground */}
+      <AnimatePresence>
+        {isFullListViewOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-30 bg-black/70 backdrop-blur-sm"
+              onClick={() => setIsFullListViewOpen(false)}
+            />
+            <motion.div
+              ref={fullListDrawerRef}
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="fixed top-0 right-0 h-full w-full max-w-md md:max-w-lg bg-white dark:bg-neutral-900 shadow-2xl z-40 flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between p-4 md:p-6 border-b dark:border-neutral-700">
+                <h2 className="text-xl md:text-2xl font-semibold text-neutral-800 dark:text-neutral-100">Full Disciplic Succession</h2>
+                <Button variant="ghost" size="icon" onClick={() => setIsFullListViewOpen(false)} className="text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200">
+                  <X className="h-6 w-6" />
+                </Button>
+              </div>
+              <div className="flex-grow overflow-y-auto p-4 md:p-6 space-y-3 scrollbar-thin scrollbar-thumb-neutral-400 dark:scrollbar-thumb-neutral-600 scrollbar-track-transparent">
+                {spiritualMasters.map((master) => (
+                  <div key={`full-list-${master.id}`} className="flex items-center p-3 bg-neutral-50 dark:bg-neutral-800/50 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700/50 transition-colors">
+                    <Badge variant="outline" className="mr-3 h-7 w-7 flex-shrink-0 flex items-center justify-center text-xs border-orange-500 text-orange-600 dark:text-orange-400">
+                      {master.id}
+                    </Badge>
+                    <span className="text-sm md:text-base font-medium text-neutral-700 dark:text-neutral-200">{master.name}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </AuroraBackground>
   );
 };

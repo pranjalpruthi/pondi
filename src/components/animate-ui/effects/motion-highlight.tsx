@@ -246,7 +246,7 @@ function MotionHighlight<T extends string>({
                   }}
                   transition={transition}
                   className={cn(
-                    'absolute bg-muted z-0',
+                    'absolute z-0', // Removed bg-muted
                     className,
                     activeClassNameState,
                   )}
@@ -489,7 +489,7 @@ function MotionHighlightItem({
                 layoutId={`transition-background-${contextId}`}
                 data-slot="motion-highlight"
                 className={cn(
-                  'absolute inset-0 bg-muted z-0',
+                  'absolute inset-0 z-0', // Removed bg-muted
                   contextClassName,
                   activeClassName,
                 )}
@@ -544,15 +544,15 @@ function MotionHighlightItem({
       {mode === 'children' && (
         <AnimatePresence initial={false}>
           {isActive && !isDisabled && (
-            <motion.div
-              layoutId={`transition-background-${contextId}`}
-              data-slot="motion-highlight"
-              className={cn(
-                'absolute inset-0 bg-muted z-0',
-                contextClassName,
-                activeClassName,
-              )}
-              transition={itemTransition}
+              <motion.div
+                layoutId={`transition-background-${contextId}`}
+                data-slot="motion-highlight"
+                className={cn(
+                  'absolute inset-0 z-0', // Removed bg-muted
+                  contextClassName,
+                  activeClassName,
+                )}
+                transition={itemTransition}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{

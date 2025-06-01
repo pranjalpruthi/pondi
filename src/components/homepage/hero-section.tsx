@@ -368,8 +368,8 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
             <Popover onOpenChange={(open) => open && props.safePlayPopOn()}>
               <PopoverTrigger asChild>
                 <Button
-                  variant="outline"
-                  className="border-primary text-primary hover:bg-primary/10 rounded-full"
+                  variant="default"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full cursor-pointer"
                   onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}
                 >
                   Support Us
@@ -409,7 +409,7 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
                   <InputButtonAction className="text-white bg-transparent border-none hover:bg-white/10" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
                     Join the newsletter
                   </InputButtonAction>
-                  <InputButtonSubmit type="submit" disabled={props.isNewsletterPending} onClick={props.safePlayClick} onMouseEnter={props.safePlayHover} className={cn("bg-white/20 hover:bg-white/30 text-white", props.isNewsletterPending || props.isNewsletterSuccess ? 'aspect-square px-0' : '')}>
+                  <InputButtonSubmit type="submit" disabled={props.isNewsletterPending} onClick={props.safePlayClick} onMouseEnter={props.safePlayHover} className={cn("bg-slate-700 text-white hover:bg-slate-800 dark:bg-pink-600 dark:hover:bg-pink-700 dark:text-white", props.isNewsletterPending || props.isNewsletterSuccess ? 'aspect-square px-0' : '')}>
                     {props.isNewsletterSuccess ? <motion.span key="success" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}><Check className="h-4 w-4"/></motion.span> : props.isNewsletterPending ? <motion.span key="pending" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}><Loader2 className="animate-spin h-4 w-4" /></motion.span> : 'Subscribe'}
                   </InputButtonSubmit>
                 </InputButton>
@@ -418,7 +418,7 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
             </form>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: props.isInView ? 1 : 0 }} transition={{ delay: 0.7 }} className="mt-8 flex flex-wrap justify-start gap-4 items-center">
-            <a href="https://www.youtube.com/@ISKMPondy" target="_blank" rel="noopener noreferrer" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
+            <a href="https://www.youtube.com/@ISKMPondy" target="_blank" rel="noopener noreferrer" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover} className="cursor-pointer">
               <Button variant="destructive" className="bg-red-600 hover:bg-red-700 rounded-full"><IconPlayerPlayFilled className="mr-2 h-4 w-4" /> Watch Live</Button>
             </a>
             <Popover onOpenChange={(open) => open && props.safePlayPopOn()}>

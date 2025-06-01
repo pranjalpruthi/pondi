@@ -268,25 +268,46 @@ const MapWithSkeleton = ({
 };
 
 // Quote Slider component
-function QuoteSlider({ quotes = prabhupadaQuotes }) {
+function QuoteSlider({ quotes = prabhupadaQuotes, additionalWaitAfterTyping = 9000 }) { // Renamed prop and changed default
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
-  const [isTyping, setIsTyping] = useState(false);
-  
-  const prevQuote = () => {
-    setIsTyping(true);
-    setTimeout(() => {
-      setCurrentQuoteIndex((prev) => (prev === 0 ? quotes.length - 1 : prev - 1));
-      setIsTyping(false);
-    }, 500);
-  };
-  
-  const nextQuote = () => {
-    setIsTyping(true);
-    setTimeout(() => {
-      setCurrentQuoteIndex((prev) => (prev === quotes.length - 1 ? 0 : prev + 1));
-      setIsTyping(false);
-    }, 500);
-  };
+
+  // useCallback for stable functions to be used in useEffect
+  const prevQuote = useCallback(() => {
+    setCurrentQuoteIndex((prev) => (prev === 0 ? quotes.length - 1 : prev - 1));
+  }, [quotes.length]);
+
+  const nextQuote = useCallback(() => {
+    setCurrentQuoteIndex((prev) => (prev === quotes.length - 1 ? 0 : prev + 1));
+  }, [quotes.length]);
+
+  const goToQuote = useCallback((index: number) => {
+    setCurrentQuoteIndex(index);
+  }, []);
+
+  // Auto-advance effect
+  useEffect(() => {
+    if (quotes.length <= 1 || !quotes[currentQuoteIndex]) {
+      return; // Don't auto-advance if not enough quotes or current quote is undefined
+    }
+
+    const currentQuoteText = quotes[currentQuoteIndex].text;
+
+    const TYPING_TEXT_MOTION_DIV_DURATION = 400; // ms, from motion.div transition duration for entry
+    const TYPING_TEXT_INTERNAL_DELAY = 200;   // ms, from TypingText prop 'delay'
+    const TYPING_TEXT_CHAR_DURATION = 40;    // ms, from TypingText prop 'duration' per character
+
+    // Time for the TypingText component to complete its animation, including its internal delay
+    const typingAnimationDuration = TYPING_TEXT_INTERNAL_DELAY + (currentQuoteText.length * TYPING_TEXT_CHAR_DURATION);
+    
+    // Total time from when the new quote div starts animating in, until typing is complete, plus additional wait
+    const totalDelayForNextQuote = TYPING_TEXT_MOTION_DIV_DURATION + typingAnimationDuration + additionalWaitAfterTyping;
+
+    const timerId = setTimeout(() => {
+      nextQuote();
+    }, totalDelayForNextQuote);
+
+    return () => clearTimeout(timerId);
+  }, [currentQuoteIndex, quotes, nextQuote, additionalWaitAfterTyping]);
   
   return (
     <motion.div
@@ -314,16 +335,18 @@ function QuoteSlider({ quotes = prabhupadaQuotes }) {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.5 }}
-                  className="text-center"
+                  transition={{ duration: 0.4 }} // Duration for the slide/fade of the quote block
+                  className="text-center w-full"
                 >
-                  {!isTyping && (
-                    <blockquote className="text-lg md:text-xl text-gray-700 dark:text-gray-300 italic text-center leading-relaxed px-4 sm:px-10">
-                      <span className="whitespace-pre-line">
-                        {quotes[currentQuoteIndex].text}
-                      </span>
-                    </blockquote>
-                  )}
+                  <TypingText
+                    text={quotes[currentQuoteIndex].text}
+                    inView={true}
+                    duration={40} // Speed of typing per character
+                    delay={200}   // Delay before typing starts after block animates in
+                    cursor={true}
+                    loop={false}
+                    className="text-lg md:text-xl text-gray-700 dark:text-gray-300 italic text-center leading-relaxed px-4 sm:px-10 block whitespace-pre-line"
+                  />
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -367,13 +390,7 @@ function QuoteSlider({ quotes = prabhupadaQuotes }) {
                       : "bg-gray-300 dark:bg-gray-600"
                     }`}
                     whileHover={{ scale: 1.3 }}
-                    onClick={() => {
-                      setIsTyping(true);
-                      setTimeout(() => {
-                        setCurrentQuoteIndex(index);
-                        setIsTyping(false);
-                      }, 500);
-                    }}
+                    onClick={() => goToQuote(index)}
                     style={{ cursor: 'pointer' }}
                   />
                 ))}
@@ -487,7 +504,7 @@ export function VisitUs() {
   return (
     <TooltipProvider>
       <section 
-        className="py-12 md:py-24 relative overflow-visible" 
+        className="pb-12 md:pb-24 relative overflow-visible" 
         // Removed: bg-cover bg-center bg-fixed and style={{ backgroundImage: "url('/temple-building/4.webp')" }}
       >
         {/* Removed: Enhanced background effect with layered blur div */}
@@ -516,17 +533,7 @@ export function VisitUs() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-[#ffc547] via-[#0a84ff] to-[#e94a9c] text-transparent bg-clip-text" // Adjusted font sizes
             >
-              <WritingText
-                text="Visit ISKM Pudhuvai Vrindavan" // Changed title text
-                inView={true}
-                spacing={0}
-                transition={{
-                  type: "spring",
-                  stiffness: 200,
-                  damping: 20,
-                  delay: 0.05
-                }}
-              />
+              Visit ISKM Pudhuvai Vrindavan
             </motion.h2>
             
             <motion.p
@@ -572,12 +579,12 @@ export function VisitUs() {
                 
                 <Tabs defaultValue="temple" className="w-full" onValueChange={safePlayTabSelect}>
                   <TabsList 
-                    className="w-full grid grid-cols-3 sm:grid-cols-6 mb-8 bg-gray-100/50 dark:bg-gray-800/50 p-3 rounded-xl h-auto gap-2"
-                    activeClassName="bg-white/70 dark:bg-gray-700/70 backdrop-filter backdrop-blur-xl shadow-md"
+                    className="w-full grid grid-cols-3 sm:grid-cols-6 mb-12 p-3 rounded-xl h-auto gap-2"
+                    activeClassName="bg-white/70 dark:bg-gray-700/70 backdrop-filter backdrop-blur-xl shadow-md rounded-xl"
                   >
                     <TabsTrigger 
                       value="temple" 
-                      className="flex flex-col items-center justify-center gap-2 py-5 px-2 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      className="flex flex-col items-center justify-center gap-2 py-5 px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
                       onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="pink">
@@ -587,7 +594,7 @@ export function VisitUs() {
                     </TabsTrigger>
                     <TabsTrigger 
                       value="info" 
-                      className="flex flex-col items-center justify-center gap-2 py-5 px-2 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      className="flex flex-col items-center justify-center gap-2 py-5 px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
                       onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="gold">
@@ -597,7 +604,7 @@ export function VisitUs() {
                     </TabsTrigger>
                     <TabsTrigger 
                       value="car" 
-                      className="flex flex-col items-center justify-center gap-2 py-5 px-2 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      className="flex flex-col items-center justify-center gap-2 py-5 px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
                       onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="blue">
@@ -607,7 +614,7 @@ export function VisitUs() {
                     </TabsTrigger>
                     <TabsTrigger 
                       value="plane" 
-                      className="flex flex-col items-center justify-center gap-2 py-5 px-2 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      className="flex flex-col items-center justify-center gap-2 py-5 px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
                       onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="pink">
@@ -617,7 +624,7 @@ export function VisitUs() {
                     </TabsTrigger>
                     <TabsTrigger 
                       value="bus" 
-                      className="flex flex-col items-center justify-center gap-2 py-5 px-2 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      className="flex flex-col items-center justify-center gap-2 py-5 px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
                       onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="gold">
@@ -627,7 +634,7 @@ export function VisitUs() {
                     </TabsTrigger>
                     <TabsTrigger 
                       value="train" 
-                      className="flex flex-col items-center justify-center gap-2 py-5 px-2 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      className="flex flex-col items-center justify-center gap-2 py-5 px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
                       onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="blue">
@@ -980,7 +987,7 @@ export function VisitUs() {
                           </h4>
                           
                           {transportData.car.directions.map((direction, index) => (
-                            <div key={index} className="mb-4 bg-white/40 dark:bg-gray-800/40 backdrop-filter backdrop-blur-sm p-4 rounded-xl shadow-sm">
+                            <div key={index} className="mb-4 bg-[#ffc547]/[0.05] dark:bg-[#ffc547]/[0.1] p-4 rounded-xl shadow-sm">
                               <h5 className="text-sm font-medium text-gray-900 dark:text-white flex items-center">
                                 <MapPin className="h-3.5 w-3.5 mr-1.5 text-[#ffc547]" /> From {direction.from}
                               </h5>
@@ -996,7 +1003,7 @@ export function VisitUs() {
                             </div>
                           ))}
                         
-                          <div className="mt-6 bg-white/40 dark:bg-gray-800/40 backdrop-filter backdrop-blur-sm p-4 rounded-xl shadow-sm">
+                          <div className="mt-6 bg-[#ffc547]/[0.05] dark:bg-[#ffc547]/[0.1] p-4 rounded-xl shadow-sm">
                             <h5 className="text-sm font-medium text-gray-900 dark:text-white flex items-center">
                               <MapPin className="h-3.5 w-3.5 mr-1.5 text-[#e94a9c]" /> Key Landmarks
                             </h5>
@@ -1036,30 +1043,32 @@ export function VisitUs() {
                     <AnimatePresence mode="wait">
                       <Tabs defaultValue="puducherry" className="w-full">
                         <div className="flex justify-center mb-5">
-                          {/* Added flex flex-wrap justify-center gap-1 to TabsList for airport sub-tabs */}
-                          <TabsList className="flex flex-wrap justify-center gap-1 bg-gray-100/50 dark:bg-gray-800/50 p-1.5 rounded-xl w-full max-w-2xl">
+                          <TabsList 
+                            className="inline-flex justify-center items-center gap-1 p-1.5 rounded-xl max-w-full overflow-x-auto" // Horizontal, centered, allows scroll if needed
+                            activeClassName="bg-white dark:bg-gray-700 shadow-md rounded-lg"
+                          >
                             <TabsTrigger 
                               value="puducherry" 
-                              className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 rounded-lg px-3 py-2.5 text-sm touch-manipulation" // Removed flex-1
+                              className="rounded-lg px-4 py-2.5 text-sm touch-manipulation whitespace-nowrap" // Added px-4 for a bit more padding, whitespace-nowrap
                             >
                               Puducherry Airport
                             </TabsTrigger>
                             <TabsTrigger 
                               value="chennai" 
-                              className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 rounded-lg px-3 py-2.5 text-sm touch-manipulation" // Removed flex-1
+                              className="rounded-lg px-4 py-2.5 text-sm touch-manipulation whitespace-nowrap" // Added px-4, whitespace-nowrap
                             >
                               Chennai Airport
                             </TabsTrigger>
                             <TabsTrigger 
                               value="trichy" 
-                              className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 rounded-lg px-3 py-2.5 text-sm touch-manipulation" // Removed flex-1
+                              className="rounded-lg px-4 py-2.5 text-sm touch-manipulation whitespace-nowrap" // Added px-4, whitespace-nowrap
                             >
                               Trichy Airport
                             </TabsTrigger>
                           </TabsList>
                         </div>
                         
-                        <TabsContent value="puducherry">
+                        <TabsContent value="puducherry" className="mt-6">
                           <motion.div 
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -1158,7 +1167,7 @@ export function VisitUs() {
                           </motion.div>
                         </TabsContent>
 
-                        <TabsContent value="chennai">
+                        <TabsContent value="chennai" className="mt-6">
                           <motion.div 
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -1256,7 +1265,7 @@ export function VisitUs() {
                           </motion.div>
                         </TabsContent>
 
-                        <TabsContent value="trichy">
+                        <TabsContent value="trichy" className="mt-6">
                           <motion.div 
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}

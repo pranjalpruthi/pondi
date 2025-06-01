@@ -337,13 +337,13 @@ function NavBarComponent({ className }: NavBarProps) {
                             </DrawerTrigger>
                             <DrawerContent className="h-[80vh] flex flex-col">
                               <DrawerHeader className="text-left">
-                                <DrawerTitle>Temple Status & Weather</DrawerTitle>
+                                <DrawerTitle className="text-xl font-bold">Temple Status & Weather</DrawerTitle>
                               </DrawerHeader>
                               <div className="p-4 space-y-3 overflow-y-auto flex-1">
                                 {/* Tabs for Temple Status and Weather */}
                                 <div className="flex border-b border-border">
-                                  <div className="flex-1 px-3 py-1.5 text-center border-r border-border cursor-pointer hover:bg-accent/50 font-medium text-xs">Temple Timings</div>
-                                  <div className="flex-1 px-3 py-1.5 text-center cursor-pointer hover:bg-accent/50 font-medium text-xs">Weather</div>
+                                  <div className="flex-1 px-3 py-2 text-center border-r border-border cursor-pointer hover:bg-accent/50 font-medium text-base">Temple Timings</div>
+                                  <div className="flex-1 px-3 py-2 text-center cursor-pointer hover:bg-accent/50 font-medium text-base">Weather</div>
                                 </div>
                                 
                                 {/* Temple Status & Timings Section - Compact */}
@@ -354,48 +354,48 @@ function NavBarComponent({ className }: NavBarProps) {
                                         <BellIcon className="w-3.5 h-3.5" />
                                         <div className={cn("absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full", templeStatus.colorClass)} />
                                       </div>
-                                      <p className="font-semibold text-xs">{templeStatus.label}</p>
+                                      <p className="font-semibold text-base xs:text-lg">{templeStatus.label}</p>
                                     </div>
-                                    <span className="text-[10px] font-medium">Current Status</span>
+                                    <span className="text-sm font-medium">Current Status</span>
                                   </div>
-                                  <p className="mt-1 text-[10px] text-muted-foreground">{templeStatus.detailedText}</p>
+                                  <p className="mt-1 text-sm text-muted-foreground">{templeStatus.detailedText}</p>
                                   
                                   {/* Daily Schedule with 24h format option */}
                                   <div className="mt-2 pt-2 border-t border-border/50">
-                                    <p className="text-[10px] font-medium mb-1">Daily Schedule:</p>
-                                    <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-[10px]">
+                                    <p className="text-sm font-medium mb-1">Daily Schedule:</p>
+                                    <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-sm">
                                       <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Mangal Aarati:</span>
+                                        <span className="text-base xs:text-lg text-muted-foreground">Mangal Aarati:</span>
                                         <span>{is24HourFormat ? '04:30' : '4:30 AM'}</span>
                                       </div>
                                       <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Darshan Aarati:</span>
+                                        <span className="text-base xs:text-lg text-muted-foreground">Darshan Aarati:</span>
                                         <span>{is24HourFormat ? '07:15' : '7:15 AM'}</span>
                                       </div>
                                       <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Guru Puja:</span>
+                                        <span className="text-base xs:text-lg text-muted-foreground">Guru Puja:</span>
                                         <span>{is24HourFormat ? '07:20' : '7:20 AM'}</span>
                                       </div>
                                       <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Bhagvatam:</span>
+                                        <span className="text-base xs:text-lg text-muted-foreground">Bhagvatam:</span>
                                         <span>{is24HourFormat ? '08:00' : '8:00 AM'}</span>
                                       </div>
                                       <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Darshan Closes:</span>
+                                        <span className="text-base xs:text-lg text-muted-foreground">Darshan Closes:</span>
                                         <span>{is24HourFormat ? '12:00' : '12:00 PM'}</span>
                                       </div>
                                       <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Gaura Arati:</span>
+                                        <span className="text-base xs:text-lg text-muted-foreground">Gaura Arati:</span>
                                         <span>{is24HourFormat ? '17:30' : '5:30 PM'}</span>
                                       </div>
                                       <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Darshan Closes:</span>
+                                        <span className="text-base xs:text-lg text-muted-foreground">Darshan Closes:</span>
                                         <span>{is24HourFormat ? '18:30' : '6:30 PM'}</span>
                                       </div>
                                     </div>
                                   </div>
                                   
-                                  <div className="mt-2 pt-2 border-t border-border/50 grid grid-cols-2 gap-x-3 gap-y-1 text-[10px]">
+                                  <div className="mt-2 pt-2 border-t border-border/50 grid grid-cols-2 gap-x-3 gap-y-1 text-sm">
                                     <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></div><span>Darshan Open</span></div>
                                     <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-pink-500 flex-shrink-0"></div><span>Aarati Ongoing</span></div>
                                     <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-yellow-500 flex-shrink-0"></div><span>Temple Open</span></div>
@@ -414,7 +414,7 @@ function NavBarComponent({ className }: NavBarProps) {
                                         <p className="font-semibold text-sm">
                                           {formatTemperature(weather.currentTemperatureRaw, weather.currentTemperatureUnit, isFahrenheit)}
                                         </p>
-                                        <p className="text-[10px] text-muted-foreground capitalize">{weather.weatherDescription || 'Weather data'}</p>
+                                        <p className="text-sm text-muted-foreground capitalize">{weather.weatherDescription || 'Weather data'}</p>
                                       </div>
                                     </div>
                                     {/* Settings Toggles - More compact */}
@@ -427,7 +427,7 @@ function NavBarComponent({ className }: NavBarProps) {
                                           className="scale-75 data-[state=checked]:bg-blue-500"
                                           aria-label="Toggle Fahrenheit"
                                         />
-                                        <Label htmlFor="fahrenheit-toggle" className="text-[10px]">°F</Label>
+                                        <Label htmlFor="fahrenheit-toggle" className="text-sm">°F</Label>
                                       </div>
                                       <div className="flex items-center space-x-1.5">
                                         <Switch
@@ -437,22 +437,22 @@ function NavBarComponent({ className }: NavBarProps) {
                                           className="scale-75 data-[state=checked]:bg-blue-500"
                                           aria-label="Toggle 24-hour time format"
                                         />
-                                        <Label htmlFor="timeformat-toggle" className="text-[10px]">24h</Label>
+                                        <Label htmlFor="timeformat-toggle" className="text-sm">24h</Label>
                                       </div>
                                     </div>
                                   </div>
                                   
                                   <div className="mt-1.5 grid grid-cols-2 gap-1.5">
-                                    <div className="flex items-center gap-1 text-[10px]">
+                                    <div className="flex items-center gap-1 text-sm">
                                       <DropIcon className="w-3 h-3 text-blue-500" />
                                       <span>Humidity: {weather.currentHumidityRaw !== null ? `${Math.round(weather.currentHumidityRaw)}${weather.currentHumidityUnit}` : '--'}</span>
                                     </div>
-                                    <div className="flex items-center gap-1 text-[10px]">
+                                    <div className="flex items-center gap-1 text-sm">
                                       <ThermometerIcon className="w-3 h-3 text-red-500" />
                                       <span>Feels like: {weather.currentTemperatureRaw !== null ? `${Math.round(weather.currentTemperatureRaw - 2)}${weather.currentTemperatureUnit}` : '--'}</span>
                                     </div>
                                     
-                                    <div className="flex items-center gap-1 text-[10px]">
+                                    <div className="flex items-center gap-1 text-sm">
                                       <WindIcon className="w-3 h-3 text-teal-500" />
                                       <span>Wind: {weather.currentWindSpeedRaw !== null ? `${Math.round(weather.currentWindSpeedRaw)}${weather.currentWindSpeedUnit}` : '--'}</span>
                                     </div>
@@ -461,18 +461,18 @@ function NavBarComponent({ className }: NavBarProps) {
                                 
                                 {/* Weekly Forecast */}
                                 <div className="mt-3 pt-3 border-t border-border/50">
-                                  <h4 className="font-medium text-xs mb-2 text-muted-foreground">7-Day Forecast</h4>
+                                  <h4 className="font-medium text-sm mb-2 text-muted-foreground">7-Day Forecast</h4>
                                   <div className="grid grid-cols-7 gap-1">
                                     {weather.forecast.map((day, index) => (
                                       <div key={day.date} className="flex flex-col items-center">
-                                        <span className="text-xs font-medium">{index === 0 ? 'Today' : day.day}</span>
+                                        <span className="text-sm font-medium">{index === 0 ? 'Today' : day.day}</span>
                                         <WeatherIcon 
                                           weatherCode={day.weatherCode} 
                                           isDay={true} 
                                           className="w-5 h-5 my-1 text-blue-600 dark:text-blue-400" 
                                         />
-                                        <span className="text-xs font-medium">{formatTemperature(day.maxTempRaw, day.tempUnit, isFahrenheit)}</span>
-                                        <span className="text-xs text-muted-foreground">{formatTemperature(day.minTempRaw, day.tempUnit, isFahrenheit)}</span>
+                                        <span className="text-sm font-medium">{formatTemperature(day.maxTempRaw, day.tempUnit, isFahrenheit)}</span>
+                                        <span className="text-sm text-muted-foreground">{formatTemperature(day.minTempRaw, day.tempUnit, isFahrenheit)}</span>
                                       </div>
                                     ))}
                                   </div>
@@ -516,10 +516,10 @@ function NavBarComponent({ className }: NavBarProps) {
                                   templeStatus.colorClass
                                 )} />
                                 
-                                {/* Time and Next Event Label - Smaller for iPhone */}
+                                {/* Time and Next Event Label - Further increased font size */}
                                 <div className="flex items-center">
-                                  <ClockIcon className="w-2.5 h-2.5 xs:w-3 xs:h-3 text-muted-foreground" />
-                                  <span className="text-[8px] xs:text-[10px] text-muted-foreground ml-0.5">
+                                  <ClockIcon className="w-3.5 h-3.5 xs:w-4 xs:h-4 text-muted-foreground" />
+                                  <span className="text-xs xs:text-sm text-muted-foreground ml-0.5 font-medium">
                                     {formatTime(nextEventTimeDisplay, is24HourFormat)}
                                     {nextEventLabelDisplay && ` (${nextEventLabelDisplay})`}
                                   </span>
@@ -528,14 +528,14 @@ function NavBarComponent({ className }: NavBarProps) {
                                 {/* Divider - Smaller for iPhone */}
                                 <div className="h-2.5 w-px bg-gray-300 dark:bg-gray-600 mx-0.5 xs:h-3 xs:mx-1"></div>
                                 
-                                {/* Weather - Smaller for iPhone */}
+                                {/* Weather - Further increased font size */}
                                 <div className="flex items-center">
                                   {weather.isLoading ? (
-                                    <ThermometerIcon className="w-2.5 h-2.5 xs:w-3 xs:h-3 text-blue-500 dark:text-blue-400" />
+                                    <ThermometerIcon className="w-3.5 h-3.5 xs:w-4 xs:h-4 text-blue-500 dark:text-blue-400" />
                                   ) : (
-                                    <WeatherIcon weatherCode={weather.weatherCode} isDay={weather.isDay} className="w-2.5 h-2.5 xs:w-3 xs:h-3 text-blue-500 dark:text-blue-400" />
+                                    <WeatherIcon weatherCode={weather.weatherCode} isDay={weather.isDay} className="w-3.5 h-3.5 xs:w-4 xs:h-4 text-blue-500 dark:text-blue-400" />
                                   )}
-                                  <span className="text-[8px] xs:text-[10px] text-blue-700 dark:text-blue-300 ml-0.5">
+                                  <span className="text-xs xs:text-sm text-blue-700 dark:text-blue-300 ml-0.5 font-medium">
                                     {formatTemperature(weather.currentTemperatureRaw, weather.currentTemperatureUnit, isFahrenheit)}
                                   </span>
                                 </div>
@@ -558,48 +558,48 @@ function NavBarComponent({ className }: NavBarProps) {
                                         <BellIcon className="w-3.5 h-3.5" />
                                         <div className={cn("absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full", templeStatus.colorClass)} />
                                       </div>
-                                      <p className="font-semibold text-xs">{templeStatus.label}</p>
+                                      <p className="font-semibold text-base xs:text-lg">{templeStatus.label}</p>
                                     </div>
-                                    <span className="text-[10px] font-medium">Current Status</span>
+                                    <span className="text-sm font-medium">Current Status</span>
                                   </div>
-                                  <p className="mt-1 text-[10px] text-muted-foreground">{templeStatus.detailedText}</p>
+                                  <p className="mt-1 text-sm text-muted-foreground">{templeStatus.detailedText}</p>
                                   
                                   {/* Daily Schedule with 24h format option */}
                                   <div className="mt-2 pt-2 border-t border-border/50">
-                                    <p className="text-[10px] font-medium mb-1">Daily Schedule:</p>
-                                    <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-[10px]">
+                                    <p className="text-sm font-medium mb-1">Daily Schedule:</p>
+                                    <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-sm">
                                       <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Mangal Aarati:</span>
+                                        <span className="text-base xs:text-lg text-muted-foreground">Mangal Aarati:</span>
                                         <span>{is24HourFormat ? '04:30' : '4:30 AM'}</span>
                                       </div>
                                       <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Darshan Aarati:</span>
+                                        <span className="text-base xs:text-lg text-muted-foreground">Darshan Aarati:</span>
                                         <span>{is24HourFormat ? '07:15' : '7:15 AM'}</span>
                                       </div>
                                       <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Guru Puja:</span>
+                                        <span className="text-base xs:text-lg text-muted-foreground">Guru Puja:</span>
                                         <span>{is24HourFormat ? '07:20' : '7:20 AM'}</span>
                                       </div>
                                       <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Bhagvatam:</span>
+                                        <span className="text-base xs:text-lg text-muted-foreground">Bhagvatam:</span>
                                         <span>{is24HourFormat ? '08:00' : '8:00 AM'}</span>
                                       </div>
                                       <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Darshan Closes:</span>
+                                        <span className="text-base xs:text-lg text-muted-foreground">Darshan Closes:</span>
                                         <span>{is24HourFormat ? '12:00' : '12:00 PM'}</span>
                                       </div>
                                       <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Gaura Arati:</span>
+                                        <span className="text-base xs:text-lg text-muted-foreground">Gaura Arati:</span>
                                         <span>{is24HourFormat ? '17:30' : '5:30 PM'}</span>
                                       </div>
                                       <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Darshan Closes:</span>
+                                        <span className="text-base xs:text-lg text-muted-foreground">Darshan Closes:</span>
                                         <span>{is24HourFormat ? '18:30' : '6:30 PM'}</span>
                                       </div>
                                     </div>
                                   </div>
                                   
-                                  <div className="mt-2 pt-2 border-t border-border/50 grid grid-cols-2 gap-x-3 gap-y-1 text-[10px]">
+                                  <div className="mt-2 pt-2 border-t border-border/50 grid grid-cols-2 gap-x-3 gap-y-1 text-sm">
                                     <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></div><span>Darshan Open</span></div>
                                     <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-pink-500 flex-shrink-0"></div><span>Aarati Ongoing</span></div>
                                     <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-yellow-500 flex-shrink-0"></div><span>Temple Open</span></div>
@@ -618,7 +618,7 @@ function NavBarComponent({ className }: NavBarProps) {
                                         <p className="font-semibold text-sm">
                                           {formatTemperature(weather.currentTemperatureRaw, weather.currentTemperatureUnit, isFahrenheit)}
                                         </p>
-                                        <p className="text-[10px] text-muted-foreground capitalize">{weather.weatherDescription || 'Weather data'}</p>
+                                        <p className="text-sm text-muted-foreground capitalize">{weather.weatherDescription || 'Weather data'}</p>
                                       </div>
                                     </div>
                                     {/* Settings Toggles - More compact */}
@@ -631,7 +631,7 @@ function NavBarComponent({ className }: NavBarProps) {
                                           className="scale-75 data-[state=checked]:bg-blue-500"
                                           aria-label="Toggle Fahrenheit"
                                         />
-                                        <Label htmlFor="fahrenheit-toggle" className="text-[10px]">°F</Label>
+                                        <Label htmlFor="fahrenheit-toggle" className="text-sm">°F</Label>
                                       </div>
                                       <div className="flex items-center space-x-1.5">
                                         <Switch
@@ -641,22 +641,22 @@ function NavBarComponent({ className }: NavBarProps) {
                                           className="scale-75 data-[state=checked]:bg-blue-500"
                                           aria-label="Toggle 24-hour time format"
                                         />
-                                        <Label htmlFor="timeformat-toggle" className="text-[10px]">24h</Label>
+                                        <Label htmlFor="timeformat-toggle" className="text-sm">24h</Label>
                                       </div>
                                     </div>
                                   </div>
                                   
                                   <div className="mt-1.5 grid grid-cols-2 gap-1.5">
-                                    <div className="flex items-center gap-1 text-[10px]">
+                                    <div className="flex items-center gap-1 text-sm">
                                       <DropIcon className="w-3 h-3 text-blue-500" />
                                       <span>Humidity: {weather.currentHumidityRaw !== null ? `${Math.round(weather.currentHumidityRaw)}${weather.currentHumidityUnit}` : '--'}</span>
                                     </div>
-                                    <div className="flex items-center gap-1 text-[10px]">
+                                    <div className="flex items-center gap-1 text-sm">
                                       <ThermometerIcon className="w-3 h-3 text-red-500" />
                                       <span>Feels like: {weather.currentTemperatureRaw !== null ? `${Math.round(weather.currentTemperatureRaw - 2)}${weather.currentTemperatureUnit}` : '--'}</span>
                                     </div>
                                     
-                                    <div className="flex items-center gap-1 text-[10px]">
+                                    <div className="flex items-center gap-1 text-sm">
                                       <WindIcon className="w-3 h-3 text-teal-500" />
                                       <span>Wind: {weather.currentWindSpeedRaw !== null ? `${Math.round(weather.currentWindSpeedRaw)}${weather.currentWindSpeedUnit}` : '--'}</span>
                                     </div>
@@ -665,18 +665,18 @@ function NavBarComponent({ className }: NavBarProps) {
                                 
                                 {/* Weekly Forecast */}
                                 <div className="mt-3 pt-3 border-t border-border/50">
-                                  <h4 className="font-medium text-xs mb-2 text-muted-foreground">7-Day Forecast</h4>
+                                  <h4 className="font-medium text-sm mb-2 text-muted-foreground">7-Day Forecast</h4>
                                   <div className="grid grid-cols-7 gap-1">
                                     {weather.forecast.map((day, index) => (
                                       <div key={day.date} className="flex flex-col items-center">
-                                        <span className="text-xs font-medium">{index === 0 ? 'Today' : day.day}</span>
+                                        <span className="text-sm font-medium">{index === 0 ? 'Today' : day.day}</span>
                                         <WeatherIcon 
                                           weatherCode={day.weatherCode} 
                                           isDay={true} 
                                           className="w-5 h-5 my-1 text-blue-600 dark:text-blue-400" 
                                         />
-                                        <span className="text-xs font-medium">{formatTemperature(day.maxTempRaw, day.tempUnit, isFahrenheit)}</span>
-                                        <span className="text-xs text-muted-foreground">{formatTemperature(day.minTempRaw, day.tempUnit, isFahrenheit)}</span>
+                                        <span className="text-sm font-medium">{formatTemperature(day.maxTempRaw, day.tempUnit, isFahrenheit)}</span>
+                                        <span className="text-sm text-muted-foreground">{formatTemperature(day.minTempRaw, day.tempUnit, isFahrenheit)}</span>
                                       </div>
                                     ))}
                                   </div>
@@ -764,7 +764,7 @@ const navItems: Record<string, NavItemType> = {
   shop: {
     icon: <ShoppingBagIcon className="w-4 h-4" />,
     title: "Shop",
-    to: "/coming-soon" // Updated to /coming-soon
+    to: "/shop" // Updated to /coming-soon
   },
   about: {
     icon: <InfoIcon className="w-4 h-4" />,
