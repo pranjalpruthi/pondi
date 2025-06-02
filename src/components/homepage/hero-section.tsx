@@ -397,8 +397,30 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
                     </div>
                     <p>{props.bankDetails.bank}</p>
                   </div>
+                  {/* UPI QR Code Section */}
+                  <div className="border-t pt-3 mt-3 space-y-2">
+                    <h3 className="font-semibold flex items-center gap-2 text-sm">
+                      <img src="/assets/extra/miniqr.png" alt="UPI Icon" className="h-5 w-5 rounded" /> Scan to Pay with UPI
+                    </h3>
+                    <div className="flex justify-center items-center p-1 bg-gray-50 dark:bg-gray-800/50 rounded-md">
+                      <img 
+                        src="/assets/extra/miniqr.png" 
+                        alt="UPI QR Code" 
+                        className="w-28 h-auto object-contain rounded" 
+                      />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs text-muted-foreground mb-0.5">Or use UPI ID:</p>
+                      <div className="flex items-center justify-center gap-1 bg-gray-100 dark:bg-gray-700/60 px-2 py-1 rounded-md max-w-xs mx-auto">
+                        <span className="text-xs font-mono text-purple-600 dark:text-purple-400">ISKM.04@idfcbank</span>
+                        <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => { props.onCopyToClipboard("ISKM.04@idfcbank", 'UPI ID'); props.safePlayPopOn(); }} onMouseEnter={props.safePlayHover} aria-label="Copy UPI ID">
+                          {props.copiedValue === 'UPI ID' ? <IconCheck className="h-3 w-3 text-green-500" /> : <IconCopy className="h-3 w-3" />}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                   <Link to="/donate" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
-                    <Button className="w-full mt-2" size="sm">Donate Online / Other Methods</Button>
+                    <Button className="w-full mt-3" size="sm">More Donation Methods</Button>
                   </Link>
                 </div>
               </PopoverContent>

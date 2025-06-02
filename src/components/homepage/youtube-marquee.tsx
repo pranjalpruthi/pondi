@@ -109,7 +109,7 @@ const PulsingDotButton = ({ text }: { text: string }) => (
 const VideoCard = ({ id, title, thumbnail, link }: YouTubeVideo) => {
   return (
     <MagicCard 
-      className="w-72 mx-2 overflow-hidden h-56 flex flex-col border-none shadow-lg rounded-xl bg-neutral-800/90" 
+      className="w-72 mx-2 overflow-hidden h-64 flex flex-col border-none shadow-lg rounded-xl bg-neutral-800/90" 
       gradientColor="#f3b1ef"
       gradientOpacity={0.5}
     >
@@ -120,7 +120,7 @@ const VideoCard = ({ id, title, thumbnail, link }: YouTubeVideo) => {
         className="flex flex-col items-center h-full w-full no-underline"
       >
         <img src={thumbnail} alt={title} className="w-full h-40 object-cover rounded-t-xl" loading="lazy" />
-        <p className="p-3 text-sm font-semibold text-center line-clamp-2 text-gray-100 flex-grow flex items-center justify-center">
+        <p className="px-3 py-4 text-sm font-semibold text-center text-gray-100 flex-grow flex items-center justify-center">
           {title}
         </p>
       </a>
@@ -201,4 +201,4 @@ export function YouTubeMarquee() {
       </div>
     </section>
   );
-} 
+}

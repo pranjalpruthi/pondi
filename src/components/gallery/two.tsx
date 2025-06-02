@@ -77,7 +77,7 @@ const Two = ({ imageUrls }: TwoProps) => {
       <motion.div
         className={cn("flex flex-col gap-5")}
         layout
-        transition={{ duration: 0.5, ease: "easeInOut" }}
+        transition={{ type: "spring", stiffness: 260, damping: 20 }}
       >
         {itemsToDisplay.map((column) => (
           <motion.div
@@ -103,14 +103,14 @@ const Two = ({ imageUrls }: TwoProps) => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, willChange: "auto" }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
+          transition={{ type: "spring", stiffness: 260, damping: 20 }}
           className="absolute inset-0 w-full h-full  overflow-hidden"
         >
           <AnimatePresence mode="popLayout">
             <motion.div
               key={activeItem.id}
               className="w-full h-full flex items-center justify-center gap-10 overflow-hidden "
-              transition={{ duration: 0.5, ease: "easeInOut" }}
+              transition={{ type: "spring", stiffness: 260, damping: 20 }}
               layout
             >
               <motion.div
@@ -127,7 +127,7 @@ const Two = ({ imageUrls }: TwoProps) => {
               <motion.div
                 className="flex flex-col gap-4 justify-center items-center"
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 }}
+                transition={{ type: "spring", delay: 0.3, stiffness: 260, damping: 20 }}
               >
                 {allElements
                   .filter((ele) => ele.id !== activeItem.id)
@@ -170,9 +170,7 @@ const Gallery = (props: {
         alt=""
         className="w-full object-cover h-full"
         whileHover={{ scale: 1.05 }}
-        transition={{
-          duration: 0.3,
-        }}
+        transition={{ type: "spring", stiffness: 300, damping: 15 }}
       />
     </motion.div>
   );

@@ -220,7 +220,7 @@ function NavBarComponent({ className }: NavBarProps) {
         <motion.nav 
             ref={mobileMenuWrapperRef} // Ref for click outside
             className={cn(
-                "fixed w-full z-30 bg-background/80 dark:bg-background/60 backdrop-blur-lg transition-transform duration-300", // Increased z-index
+                "fixed w-full z-30 bg-background/80 dark:bg-background/60 backdrop-blur-lg transition-transform duration-300 select-none", // Increased z-index and added select-none
                 className
             )}
             initial={{ translateY: 0 }}

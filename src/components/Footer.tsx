@@ -126,7 +126,25 @@ export default function Footer() {
                       <p><strong>IFSC Code:</strong> {bankDetailsData.ifscCode}</p>
                       <p><strong>Bank:</strong> {bankDetailsData.bankName}</p>
                     </div>
-                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  </div>
+                  {/* UPI QR Code Section */}
+                  <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
+                    <h4 className="text-sm font-semibold text-green-600 dark:text-green-400 mb-2">Scan to Pay with UPI</h4>
+                    <div className="flex justify-center items-center p-2 bg-gray-50 dark:bg-gray-800 rounded-md">
+                      <img 
+                        src="/assets/extra/miniqr.png" 
+                        alt="UPI QR Code" 
+                        className="w-28 h-auto object-contain" 
+                      />
+                    </div>
+                    <div className="mt-2 text-center">
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Or use UPI ID:</p>
+                      <div className="flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-800/50 px-3 py-1.5 rounded-md max-w-xs mx-auto">
+                        <span className="text-sm font-mono text-purple-600 dark:text-purple-400">ISKM.04@idfcbank</span>
+                        <CopyButton size="sm" variant="ghost" content="ISKM.04@idfcbank" className="text-purple-600 dark:text-purple-400" />
+                      </div>
+                    </div>
+                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
                         Your contribution supports our mission.
                     </p>
                   </div>

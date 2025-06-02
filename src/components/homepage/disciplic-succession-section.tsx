@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import { useMediaQuery } from '@uidotdev/usehooks';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ListTree, X } from 'lucide-react';
+import { ListTree, X, Play, Pause } from 'lucide-react'; // Added Play and Pause icons
 import { AuroraBackground } from '@/components/ui/aurora-background';
 import { AuroraText } from '@/components/magicui/aurora-text';
 import { cn } from '@/lib/utils';
@@ -112,10 +112,11 @@ const verses: Verse[] = [
 
 const DisciplicSuccessionSection: React.FC = () => {
   const isDesktop = useMediaQuery('(min-width: 768px)');
-  const getMasterImagePath = (id: number): string => `/assets/extra/parampara/${id}.jpg`;
+  const getMasterImagePath = (id: number): string => `/assets/extra/parampara/${id}.jpg`; // Reverted to .jpg as files are in this format
 
   const [selectedMasterId, setSelectedMasterId] = useState<number | null>(null);
   const [isFullListViewOpen, setIsFullListViewOpen] = useState(false);
+  const [isMarqueeManuallyPaused, setIsMarqueeManuallyPaused] = useState(false); // State for manual pause
   // const [isSectionVisible, setIsSectionVisible] = useState(false); // Managed by Marquee visibility for play state implicitly
   // const [widthOfOneSetOfCards, setWidthOfOneSetOfCards] = useState(0); // Not needed with Marquee component
   // const [isHoverPaused, setIsHoverPaused] = useState(false); // Handled by Marquee's pauseOnHover prop
@@ -138,7 +139,7 @@ const DisciplicSuccessionSection: React.FC = () => {
     target: sectionRef,
     offset: ["start end", "end start"]
   });
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "-25%"]); // Increased parallax movement
 
   // useEffect for IntersectionObserver and width calculation are no longer needed as Marquee component handles this.
   // The Marquee component itself handles its animation play state based on visibility (implicitly via CSS animations starting when rendered)
@@ -208,11 +209,16 @@ const DisciplicSuccessionSection: React.FC = () => {
         ref={selectedMasterId === master.id ? expandedCardRef : null}
       >
         {/* Inner content of the card remains the same */}
-        <div className={`relative h-full ${isDesktop ? 'w-[300px]' : 'w-[280px]'} flex-shrink-0`}>
+        <div className={cn(
+          "relative h-full flex-shrink-0",
+          selectedMasterId === master.id && !isDesktop ? "w-[130px]" : 
+          isDesktop ? "w-[300px]" : "w-[280px]"
+        )}>
           <img
             src={getMasterImagePath(master.id)}
             alt={master.name}
             className="h-full w-full object-cover"
+            loading="lazy" // Added lazy loading
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
           <div className="absolute inset-0 flex flex-col justify-between p-4 text-white">
@@ -230,7 +236,7 @@ const DisciplicSuccessionSection: React.FC = () => {
               className="absolute top-0 right-0 h-full bg-blue-900 dark:bg-blue-950 shadow-2xl"
               initial={{ width: 0, opacity: 0 }}
               animate={{
-                width: isDesktop ? "300px" : `calc(90vw - ${(isDesktop ? 300 : 280)}px)`,
+                width: isDesktop ? "300px" : `calc(90vw - 130px)`,
                 opacity: 1
               }}
               exit={{ width: 0, opacity: 0 }}
@@ -338,21 +344,29 @@ const DisciplicSuccessionSection: React.FC = () => {
             {/* Added a wrapper div that can be styled (e.g., for relative positioning if cards expand outside bounds) */}
             <div className="relative py-2">
               <Marquee
-                pauseOnHover={false} // Prop from the Marquee component
+                pauseOnHover={false}
                 className={cn(
-                  "[--duration:80s] [--gap:1.5rem]",
+                  "[--duration:120s] [--gap:1.5rem]", // Increased duration to slow down marquee
+                  isMarqueeManuallyPaused && "[&_.animate-marquee]:![animation-play-state:paused]", // Apply pause if state is true
                   { "marquee-has-active-selection": selectedMasterId !== null }
-                )} // Set duration and gap via className or style prop
-                repeat={2} // Reduce the number of repetitions
-                // The Marquee component internally handles repetition of children for smooth animation.
-                // It also has its own `pauseOnHover` logic.
+                )}
+                repeat={2}
               >
                 {spiritualMasters.map((master) => renderSpiritualMasterCard(master))}
               </Marquee>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setIsMarqueeManuallyPaused(!isMarqueeManuallyPaused)}
+                className="absolute top-0 right-0 md:top-2 md:right-2 z-20 bg-white/20 hover:bg-white/30 dark:bg-black/20 dark:hover:bg-black/30 border-white/30 text-white backdrop-blur-sm rounded-full h-8 w-8 sm:h-9 sm:w-9"
+                aria-label={isMarqueeManuallyPaused ? "Play Marquee" : "Pause Marquee"}
+              >
+                {isMarqueeManuallyPaused ? <Play className="h-4 w-4 sm:h-5 sm:w-5" /> : <Pause className="h-4 w-4 sm:h-5 sm:w-5" />}
+              </Button>
               <div className="pointer-events-none absolute inset-y-0 left-0 w-1/6 bg-gradient-to-r from-black/70 via-black/50 to-transparent z-10"></div>
               <div className="pointer-events-none absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-black/70 via-black/50 to-transparent z-10"></div>
             </div>
-                        
+            
             <div className="mt-12">
               {verses.filter(v => v.reference.includes("ŚB")).map((verse, index) => (
                 <div key={`verse-sb-${index}`} className="space-y-6 p-4 sm:p-6 bg-sky-800/70 dark:bg-sky-950/80 backdrop-blur-md rounded-xl shadow-lg border border-sky-700/60 text-white">

@@ -28,7 +28,7 @@ function ComingSoonPage() { // Changed from 'export function'
 
   return (
     // <PageWrapper> removed
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-background to-background/80 pt-48">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-background to-background/80 pt-16 px-4">
       {/* Header Badge - Centered */}
         <div className="flex justify-center w-full mb-8">
           <motion.div 
