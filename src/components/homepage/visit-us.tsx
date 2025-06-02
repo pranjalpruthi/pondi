@@ -1044,24 +1044,24 @@ export function VisitUs() {
                       <Tabs defaultValue="puducherry" className="w-full">
                         <div className="flex justify-center mb-3 sm:mb-5">
                           <TabsList 
-                            className="flex flex-col sm:inline-flex justify-center items-center gap-2 sm:gap-1 p-1.5 rounded-xl max-w-full sm:overflow-x-auto" 
+                            className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-1 p-1.5 rounded-xl max-w-full sm:w-auto sm:overflow-x-auto transition-all duration-300" 
                             activeClassName="bg-white dark:bg-gray-700 shadow-md rounded-lg"
                           >
                             <TabsTrigger 
                               value="puducherry" 
-                              className="w-full rounded-lg py-2 px-3 sm:px-1.5 sm:py-2.5 md:px-4 text-xs sm:text-sm touch-manipulation"
+                              className="w-full sm:w-auto rounded-lg py-2 px-3 sm:px-4 md:px-6 text-xs sm:text-sm touch-manipulation transition-all duration-200"
                             >
                               Puducherry Airport
                             </TabsTrigger>
                             <TabsTrigger 
                               value="chennai" 
-                              className="w-full rounded-lg py-2 px-3 sm:px-1.5 sm:py-2.5 md:px-4 text-xs sm:text-sm touch-manipulation"
+                              className="w-full sm:w-auto rounded-lg py-2 px-3 sm:px-4 md:px-6 text-xs sm:text-sm touch-manipulation transition-all duration-200"
                             >
                               Chennai Airport
                             </TabsTrigger>
                             <TabsTrigger 
                               value="trichy" 
-                              className="w-full rounded-lg py-2 px-3 sm:px-1.5 sm:py-2.5 md:px-4 text-xs sm:text-sm touch-manipulation"
+                              className="w-full sm:w-auto rounded-lg py-2 px-3 sm:px-4 md:px-6 text-xs sm:text-sm touch-manipulation transition-all duration-200"
                             >
                               Trichy Airport
                             </TabsTrigger>
