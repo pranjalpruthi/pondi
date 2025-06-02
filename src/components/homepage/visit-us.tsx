@@ -504,7 +504,7 @@ export function VisitUs() {
   return (
     <TooltipProvider>
       <section 
-        className="pb-12 md:pb-24 relative overflow-visible" 
+        className="pb-6 md:pb-12 relative overflow-visible" /* Reduced bottom padding */ 
         // Removed: bg-cover bg-center bg-fixed and style={{ backgroundImage: "url('/temple-building/4.webp')" }}
       >
         {/* Removed: Enhanced background effect with layered blur div */}

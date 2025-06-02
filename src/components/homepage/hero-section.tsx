@@ -435,7 +435,7 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
                     {props.isNewsletterSuccess ? <motion.span key="success" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}><Check className="h-4 w-4"/></motion.span> : props.isNewsletterPending ? <motion.span key="pending" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}><Loader2 className="animate-spin h-4 w-4" /></motion.span> : 'Subscribe'}
                   </InputButtonSubmit>
                 </InputButton>
-                <InputButtonInput type="email" placeholder="your-email@example.com" value={props.newsletterEmail} onChange={(e) => props.setNewsletterEmail(e.target.value)} disabled={props.isNewsletterPending} required className="text-sm placeholder:text-gray-500" autoFocus />
+                <InputButtonInput type="email" placeholder="harekrsna@mail.com 💫" value={props.newsletterEmail} onChange={(e) => props.setNewsletterEmail(e.target.value)} disabled={props.isNewsletterPending} required className="text-sm placeholder:text-gray-500" autoFocus />
               </InputButtonProvider>
             </form>
           </motion.div>
