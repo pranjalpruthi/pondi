@@ -301,8 +301,8 @@ function VaishnavCalendar() {
   const [error, setError] = useState<string | null>(null)
   
   // Location State
-  const [locationCity, setLocationCity] = useState("Mayapur") // Default city for calendar
-  const [manualLocationInput, setManualLocationInput] = useState("Mayapur"); // User's text input for location
+  const [locationCity, setLocationCity] = useState("Pondicherry") // Default city for calendar
+  const [manualLocationInput, setManualLocationInput] = useState("Pondicherry"); // User's text input for location
   const [locationSearchResults, setLocationSearchResults] = useState<LocationDetail[]>([]);
   const [isLocationSearching, setIsLocationSearching] = useState(false);
   const [locationSearchError, setLocationSearchError] = useState<string | null>(null);

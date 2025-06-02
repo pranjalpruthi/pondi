@@ -195,6 +195,7 @@ function NavbarContent() {
       id: 1,
       label: 'Home',
       title: <IconHome className='size-5' />,
+      subtitle: 'Home',
       action: () => handleNavClick('/'), // Direct action
       isLink: true,
       to: '/',
@@ -203,6 +204,7 @@ function NavbarContent() {
       id: 2,
       label: 'Deities',
       title: <IconTemple className='size-5' />,
+      subtitle: 'Darshan',
       action: () => { setDeitiesOpen(true); playTempleBell(); }, // Direct action
       // We will handle dynamic styling for this item in the rendering logic below
     },
@@ -210,18 +212,21 @@ function NavbarContent() {
       id: 3,
       label: 'Events',
       title: <IconCalendar className='size-5' />,
+      subtitle: 'Calendar',
       action: () => { setEventsOpen(true); safePlayClick(); }, // Direct action
     },
     {
       id: 4,
       label: 'Search',
       title: <Search className='size-5' />,
+      subtitle: 'Find',
       action: () => { setOpen(true); safePlayClick(); }, // Direct action
     },
     {
       id: 5,
       label: 'Menu', // This one will be expandable
       title: <Menu className='size-5' />,
+      subtitle: 'More',
       isExpandable: true,
       content: ( // Content for the "Menu" item
         <div className='flex flex-col space-y-2 p-2 max-h-[calc(100vh-200px)] overflow-y-auto'>
@@ -293,7 +298,7 @@ function NavbarContent() {
             />
             {/* New Expandable Dock Implementation */}
             <MotionConfig transition={dockSpringTransition}>
-              <div className='h-full w-full p-1.5'>
+              <div className='h-full w-full p-2'> {/* Increased overall padding */}
                 <div className='overflow-hidden rounded-t-2xl'>
                   <AnimatePresence initial={false} mode='sync'>
                     {isDockOpen && activeDockItem === DOCK_ITEMS.find(i => i.isExpandable)?.id && (
@@ -311,7 +316,7 @@ function NavbarContent() {
                     )}
                   </AnimatePresence>
                 </div>
-                <div className='flex space-x-1 sm:space-x-2 p-1 sm:p-2 justify-center' ref={menuRef}>
+                <div className='flex space-x-2 sm:space-x-3 p-1.5 sm:p-2.5 justify-center' ref={menuRef}> {/* Further Increased spacing between tabs */}
                   {DOCK_ITEMS.map((item) => {
                     const isLabelClickedActive = activeLabelItemId === item.id && !item.isExpandable;
                     const isLabelHoveredActive = hoveredLabelItemId === item.id && !item.isExpandable;
@@ -390,9 +395,26 @@ function NavbarContent() {
                     const itemContent = (
                       <div className={cn(
                         "flex items-center h-full w-full transition-all duration-200 ease-out",
-                        isLabelVisible ? "justify-start pl-2 pr-1 sm:pl-3 sm:pr-2" : "justify-center"
+                        isLabelVisible ? "justify-start pl-2 pr-1 sm:pl-3 sm:pr-2" : "justify-center items-center"
                       )}>
-                        <div>{item.title}</div> {/* Icon wrapped in a div */}
+                        <div className={cn("flex flex-col items-center", isLabelVisible ? "" : "text-center")}>
+                          {item.title} {/* Icon */}
+                          {item.subtitle && (
+                            <span className={cn(
+                              "text-[0.65rem] sm:text-[0.7rem] mt-1 font-medium", /* Increased mt-0.5 to mt-1 for more gap */
+                              isLabelVisible ? "hidden" : "block", // Only show subtitle when label is hidden
+                              isDeityButton && templeStatus.colorClass.includes('gray') ? "text-gray-500 dark:text-gray-400" : 
+                              isDeityButton && templeStatus.colorClass.includes('red') ? "text-red-600 dark:text-red-400" :
+                              isDeityButton && templeStatus.colorClass.includes('pink') ? "text-pink-600 dark:text-pink-400" : 
+                              isDeityButton && templeStatus.colorClass.includes('green') ? "text-green-600 dark:text-green-400" : 
+                              isDeityButton && templeStatus.colorClass.includes('yellow') ? "text-yellow-600 dark:text-yellow-400" :
+                              isDeityButton && templeStatus.colorClass.includes('orange') ? "text-orange-600 dark:text-orange-400" :
+                              "text-foreground/70"
+                            )}>
+                              {item.subtitle}
+                            </span>
+                          )}
+                        </div>
                         <AnimatePresence>
                           {isLabelVisible && (
                             <motion.span
@@ -409,11 +431,11 @@ function NavbarContent() {
                       </div>
                     );
                     
-                    const baseItemClasses = "relative flex items-center rounded-xl cursor-pointer overflow-hidden h-10 sm:h-12 text-foreground/80 transition-colors focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]";
+                    const baseItemClasses = "relative flex items-center rounded-xl cursor-pointer overflow-hidden h-12 sm:h-14 text-foreground/80 transition-colors focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]"; /* Increased item height */
                     
                     const itemWidth = item.isExpandable 
-                                      ? (isMobile ? 40 : 48) 
-                                      : (isLabelVisible ? (isMobile ? 100 : 120) : (isMobile ? 40 : 48));
+                                      ? (isMobile ? 48 : 56) /* Increased base width */
+                                      : (isLabelVisible ? (isMobile ? 100 : 120) : (isMobile ? 48 : 56)); /* Increased base width */
 
                     // Apply dynamic styling
                     const combinedItemClasses = cn(

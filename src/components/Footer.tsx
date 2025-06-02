@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link } from '@tanstack/react-router';
-import { Heart, MapPin, Phone, ExternalLink, Sparkles, Info } from 'lucide-react'; // Added Clock, Landmark, Copy, Info
+import { Heart, MapPin, Phone, ExternalLink, Sparkles, Clock } from 'lucide-react'; // Removed Info, Added Clock
 import { Badge } from "@/components/ui/badge";
 import { useSound } from 'use-sound';
 import { useSoundSettings } from '@/components/context/sound-context';
@@ -90,31 +90,43 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Timings & Bank Details Popover Section */}
-          <div className="mt-4 md:mt-0 flex flex-col items-start md:items-center">
+          {/* Timings & Donation Popovers Section */}
+          <div className="mt-4 md:mt-0 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
+            {/* Temple Timings Popover */}
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full md:w-auto rounded-full border-purple-500/70 text-purple-600 hover:bg-purple-500/10 dark:border-purple-500/50 dark:text-purple-400 dark:hover:bg-purple-500/20 shadow-sm hover:shadow-md transition-all">
-                  <Info className="mr-2 h-4 w-4" /> View Temple Timings & Donation Details
+                <Button variant="outline" className="w-full md:w-auto rounded-full border-blue-500/70 text-blue-600 hover:bg-blue-500/10 dark:border-blue-500/50 dark:text-blue-400 dark:hover:bg-blue-500/20 shadow-sm hover:shadow-md transition-all">
+                  <Clock className="mr-2 h-4 w-4" /> View Temple Timings
                 </Button>
               </PopoverTrigger>
-              <PopoverContent side="top" align="end" className="w-full max-w-xs sm:max-w-sm md:max-w-md bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-gray-300 dark:border-gray-700 shadow-xl rounded-xl">
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <h4 className="text-sm font-semibold text-[#0a84ff]">Temple Timings</h4>
-                      <CopyButton size="sm" variant="ghost" content={formatTimingsForCopy()} className="text-[#0a84ff]" />
-                    </div>
-                    <ul className="space-y-1 text-xs text-gray-700 dark:text-gray-300">
-                      {templeTimingsData.map((timing, index) => (
-                        <li key={index} className="flex justify-between">
-                          <span>{timing.event}</span>
-                          <span className="font-medium text-[#e94a9c]">{timing.time}</span>
-                        </li>
-                      ))}
-                    </ul>
+              <PopoverContent side="top" align="center" className="w-full max-w-xs bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-gray-300 dark:border-gray-700 shadow-xl rounded-xl">
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="text-sm font-semibold text-[#0a84ff]">Temple Timings</h4>
+                    <CopyButton size="sm" variant="ghost" content={formatTimingsForCopy()} className="text-[#0a84ff]" />
                   </div>
-                  <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
+                  <ul className="space-y-1 text-xs text-gray-700 dark:text-gray-300">
+                    {templeTimingsData.map((timing, index) => (
+                      <li key={index} className="flex justify-between">
+                        <span>{timing.event}</span>
+                        <span className="font-medium text-[#e94a9c]">{timing.time}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            {/* Donation Details Popover */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full md:w-auto rounded-full border-yellow-500/70 text-yellow-600 hover:bg-yellow-500/10 dark:border-yellow-500/50 dark:text-yellow-400 dark:hover:bg-yellow-500/20 shadow-sm hover:shadow-md transition-all">
+                  <Heart className="mr-2 h-4 w-4" /> Donation Details
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent side="top" align="center" className="w-full max-w-xs sm:max-w-sm md:max-w-md bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-gray-300 dark:border-gray-700 shadow-xl rounded-xl">
+                <div className="space-y-4">
+                  <div className="pt-0">
                      <div className="flex justify-between items-center mb-2">
                         <h4 className="text-sm font-semibold text-[#ffc547]">Bank Transfer Details</h4>
                         <CopyButton size="sm" variant="ghost" content={formatBankDetailsForCopy()} className="text-[#ffc547]" />
