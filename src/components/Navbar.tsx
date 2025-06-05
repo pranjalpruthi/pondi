@@ -246,7 +246,7 @@ function NavBarComponent({ className }: NavBarProps) {
                                 <span className="sm:ml-1">Pondicherry</span>
                             </h1>
                             <p className="text-xs text-muted-foreground hidden 2xl:block truncate">
-                                Pudhuvai Vrindavanam, Radha Krishna Temple.
+                                Pudhuvai Vrindavanam, Radha Krishna Temple
                             </p>
                             <p className="text-xs text-muted-foreground hidden sm:block truncate">
                                 International Sri Krishna Mandir 

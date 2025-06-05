@@ -533,7 +533,7 @@ export function VisitUs() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-[#ffc547] via-[#0a84ff] to-[#e94a9c] text-transparent bg-clip-text" // Adjusted font sizes
             >
-              Visit ISKM Pudhuvai Vrindavan
+              Visit ISKM Pondicherry
             </motion.h2>
             
             <motion.p

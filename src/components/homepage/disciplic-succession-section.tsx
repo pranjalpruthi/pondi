@@ -367,24 +367,27 @@ const DisciplicSuccessionSection: React.FC = () => {
               <div className="pointer-events-none absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-black/70 via-black/50 to-transparent z-10"></div>
             </div>
             
-            <div className="mt-12">
-              {verses.filter(v => v.reference.includes("ŚB")).map((verse, index) => (
-                <div key={`verse-sb-${index}`} className="space-y-6 p-4 sm:p-6 bg-sky-800/70 dark:bg-sky-950/80 backdrop-blur-md rounded-xl shadow-lg border border-sky-700/60 text-white">
-                  {verse.title && <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-sky-100 dark:text-sky-50">{verse.title}</h3>}
-                  <Badge variant="outline" className="mb-4 text-sm font-medium bg-sky-500/40 dark:bg-sky-400/40 border-sky-500/60 dark:border-sky-400/60 text-sky-200 dark:text-sky-100 backdrop-blur-sm py-1.5 px-3">
-                    {verse.reference}
-                  </Badge>
-                  <div className="italic space-y-1 mb-4 text-gray-200 dark:text-gray-300 text-center font-semibold">
-                    {verse.transliteration.map((line, i) => <p key={i} className="text-base">{line}</p>)}
-                  </div>
-                  <p className="text-lg font-semibold text-center text-sky-100 dark:text-sky-50 bg-sky-700/50 dark:bg-sky-900/60 p-4 rounded-lg border border-sky-600/60 dark:border-sky-800/60">
-                    {verse.translation}
-                  </p>
-                </div>
-              ))}
-            </div>
+            {/* ŚB Verse section has been moved below */}
           </div>
         </div>
+      </div>
+
+      {/* NEW Full-width section for SB Verse */}
+      <div className="relative z-20 w-full max-w-screen-xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12">
+        {verses.filter(v => v.reference.includes("ŚB")).map((verse, index) => (
+          <div key={`verse-sb-${index}`} className="space-y-6 p-4 sm:p-6 bg-sky-800/70 dark:bg-sky-950/80 backdrop-blur-md rounded-xl shadow-lg border border-sky-700/60 text-white mb-8">
+            {verse.title && <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-sky-100 dark:text-sky-50">{verse.title}</h3>}
+            <Badge variant="outline" className="mb-4 text-sm font-medium bg-sky-500/40 dark:bg-sky-400/40 border-sky-500/60 dark:border-sky-400/60 text-sky-200 dark:text-sky-100 backdrop-blur-sm py-1.5 px-3">
+              {verse.reference}
+            </Badge>
+            <div className="italic space-y-1 mb-4 text-gray-200 dark:text-gray-300 text-center font-semibold">
+              {verse.transliteration.map((line, i) => <p key={i} className="text-base">{line}</p>)}
+            </div>
+            <p className="text-lg font-semibold text-center text-sky-100 dark:text-sky-50 bg-sky-700/50 dark:bg-sky-900/60 p-4 rounded-lg border border-sky-600/60 dark:border-sky-800/60">
+              {verse.translation}
+            </p>
+          </div>
+        ))}
       </div>
 
       <AnimatePresence>
