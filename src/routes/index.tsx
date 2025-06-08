@@ -32,6 +32,18 @@ const LazyDisciplicSuccessionSection = React.lazy(() =>
 );
 // Removed LazyUpcomingEventBanner import from here
 
+// Component for the section divider
+const SectionDivider = () => (
+  <div className="flex justify-center pt-12 pb-6 lg:pt-16 lg:pb-8"> {/* Adjusted padding: less bottom padding */}
+    <img 
+      src="/assets/extra/divider.svg" 
+      alt="Section Divider" 
+      className="h-4 sm:h-6 md:h-8 lg:h-10 text-gray-300 dark:text-gray-700" // Made smaller again
+      aria-hidden="true" // Decorative image
+    />
+  </div>
+);
+
 export const Route = createFileRoute('/')({
   component: HomePage
 })
@@ -77,7 +89,7 @@ function HomePage() {
   return (
     // Removed Fragment wrapper
       <main 
-        className="flex flex-col min-h-screen relative w-full pb-36" // Increased pb for fixed banner + dock
+        className="flex flex-col min-h-screen relative w-full pb-0" // Reduced pb from 12 to 0
         // style={{ willChange: 'transform' }} // Hint for rendering performance - REMOVED
       >
         {/* Background element remains */}
@@ -100,29 +112,41 @@ function HomePage() {
             <LazyQnASection />
           </Suspense>
 
-
+          <SectionDivider />
 
           <Suspense fallback={<SectionLoader />}>
             <LazySlokaLearningSection />
           </Suspense>
+
           <Suspense fallback={<SectionLoader />}>
             <LazyFeaturedBooksSection />
           </Suspense>
+
           {/* New Disciplic Succession Section */}
           <Suspense fallback={<SectionLoader />}>
             <LazyDisciplicSuccessionSection />
           </Suspense>
+
           {/* Added Milestone Timeline */}
           <Suspense fallback={<SectionLoader />}>
             <LazyMilestoneTimeline />
           </Suspense>
+
           <SideBySide /> {/* Render SideBySide without props */}
+
           <Suspense fallback={<SectionLoader />}>
             <LazyVisitUs />
           </Suspense>
+
+          <SectionDivider />
         </div>
-        {/* LazyUpcomingEventBanner removed from here */}
+        {/* Flower cutout SVG in the bottom right corner */}
+        <img
+          src="/assets/extra/side1.svg"
+          alt="Decorative flower cutout"
+          className="absolute bottom-0 right-0 w-48 h-48 pointer-events-none z-0" // Reverted to larger size and removed opacity
+          aria-hidden="true"
+        />
       </main>
-      // Removed ShlokaModal rendering from here
   )
 }

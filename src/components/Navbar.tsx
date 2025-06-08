@@ -545,138 +545,137 @@ function NavBarComponent({ className }: NavBarProps) {
                             <PopoverContent className="w-auto p-0 overflow-hidden" sideOffset={10} align="end">
                               {/* Tabs for Temple Status and Weather */}
                               <div className="flex border-b border-border">
-                                <div className="flex-1 px-3 py-1.5 text-center border-r border-border cursor-pointer hover:bg-accent/50 font-medium text-xs">Temple Timings</div>
-                                <div className="flex-1 px-3 py-1.5 text-center cursor-pointer hover:bg-accent/50 font-medium text-xs">Weather</div>
+                                <div className="flex-1 px-3 py-2 text-center border-r border-border cursor-pointer hover:bg-accent/50 font-medium text-base">Temple Timings</div>
+                                <div className="flex-1 px-3 py-2 text-center cursor-pointer hover:bg-accent/50 font-medium text-base">Weather</div>
                               </div>
                               
-                              <div className="p-3 space-y-3">
+                              <div className="p-4 space-y-4">
                                 {/* Temple Status & Timings Section - Compact */}
                                 <div className="mb-2">
                                   <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-1.5">
+                                    <div className="flex items-center gap-2">
                                       <div className="relative">
-                                        <BellIcon className="w-3.5 h-3.5" />
-                                        <div className={cn("absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full", templeStatus.colorClass)} />
+                                        <BellIcon className="w-4 h-4" />
+                                        <div className={cn("absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full", templeStatus.colorClass)} />
                                       </div>
-                                      <p className="font-semibold text-base xs:text-lg">{templeStatus.label}</p>
+                                      <p className="font-semibold text-lg">{templeStatus.label}</p>
                                     </div>
-                                    <span className="text-sm font-medium">Current Status</span>
                                   </div>
-                                  <p className="mt-1 text-sm text-muted-foreground">{templeStatus.detailedText}</p>
+                                  <p className="mt-1 text-base text-muted-foreground">{templeStatus.detailedText}</p>
                                   
                                   {/* Daily Schedule with 24h format option */}
-                                  <div className="mt-2 pt-2 border-t border-border/50">
-                                    <p className="text-sm font-medium mb-1">Daily Schedule:</p>
-                                    <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-sm">
-                                      <div className="flex justify-between">
-                                        <span className="text-base xs:text-lg text-muted-foreground">Mangal Aarati:</span>
-                                        <span>{is24HourFormat ? '04:30' : '4:30 AM'}</span>
+                                  <div className="mt-3 pt-3 border-t border-border/50">
+                                    <p className="text-base font-medium mb-2">Daily Schedule:</p>
+                                    <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-base">
+                                      <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1">
+                                        <span className="text-base text-muted-foreground">Mangal Aarati:</span>
+                                        <span className="font-medium">{is24HourFormat ? '04:30' : '4:30 AM'}</span>
                                       </div>
-                                      <div className="flex justify-between">
-                                        <span className="text-base xs:text-lg text-muted-foreground">Darshan Aarati:</span>
-                                        <span>{is24HourFormat ? '07:15' : '7:15 AM'}</span>
+                                      <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1">
+                                        <span className="text-base text-muted-foreground">Darshan Aarati:</span>
+                                        <span className="font-medium">{is24HourFormat ? '07:15' : '7:15 AM'}</span>
                                       </div>
-                                      <div className="flex justify-between">
-                                        <span className="text-base xs:text-lg text-muted-foreground">Guru Puja:</span>
-                                        <span>{is24HourFormat ? '07:20' : '7:20 AM'}</span>
+                                      <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1">
+                                        <span className="text-base text-muted-foreground">Guru Puja:</span>
+                                        <span className="font-medium">{is24HourFormat ? '07:20' : '7:20 AM'}</span>
                                       </div>
-                                      <div className="flex justify-between">
-                                        <span className="text-base xs:text-lg text-muted-foreground">Bhagvatam:</span>
-                                        <span>{is24HourFormat ? '08:00' : '8:00 AM'}</span>
+                                      <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1">
+                                        <span className="text-base text-muted-foreground">Bhagvatam:</span>
+                                        <span className="font-medium">{is24HourFormat ? '08:00' : '8:00 AM'}</span>
                                       </div>
-                                      <div className="flex justify-between">
-                                        <span className="text-base xs:text-lg text-muted-foreground">Darshan Closes:</span>
-                                        <span>{is24HourFormat ? '12:00' : '12:00 PM'}</span>
+                                      <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1">
+                                        <span className="text-base text-muted-foreground">Darshan Closes:</span>
+                                        <span className="font-medium">{is24HourFormat ? '12:00' : '12:00 PM'}</span>
                                       </div>
-                                      <div className="flex justify-between">
-                                        <span className="text-base xs:text-lg text-muted-foreground">Gaura Arati:</span>
-                                        <span>{is24HourFormat ? '17:30' : '5:30 PM'}</span>
+                                      <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1">
+                                        <span className="text-base text-muted-foreground">Gaura Arati:</span>
+                                        <span className="font-medium">{is24HourFormat ? '17:30' : '5:30 PM'}</span>
                                       </div>
-                                      <div className="flex justify-between">
-                                        <span className="text-base xs:text-lg text-muted-foreground">Darshan Closes:</span>
-                                        <span>{is24HourFormat ? '18:30' : '6:30 PM'}</span>
+                                      <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1">
+                                        <span className="text-base text-muted-foreground">Darshan Closes:</span>
+                                        <span className="font-medium">{is24HourFormat ? '18:30' : '6:30 PM'}</span>
                                       </div>
                                     </div>
                                   </div>
                                   
-                                  <div className="mt-2 pt-2 border-t border-border/50 grid grid-cols-2 gap-x-3 gap-y-1 text-sm">
-                                    <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></div><span>Darshan Open</span></div>
-                                    <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-pink-500 flex-shrink-0"></div><span>Aarati Ongoing</span></div>
-                                    <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-yellow-500 flex-shrink-0"></div><span>Temple Open</span></div>
-                                    <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0"></div><span>Closed (End of Day)</span></div>
+                                  <div className="mt-3 pt-3 border-t border-border/50 grid grid-cols-2 gap-x-2 gap-y-1.5 text-base">
+                                    <div className="flex items-center gap-1.5 bg-green-100/50 dark:bg-green-900/20 rounded-md px-2 py-1"><div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div><span className="font-medium text-green-800 dark:text-green-300">Darshan Open</span></div>
+                                    <div className="flex items-center gap-1.5 bg-pink-100/50 dark:bg-pink-900/20 rounded-md px-2 py-1"><div className="w-2 h-2 rounded-full bg-pink-500 flex-shrink-0"></div><span className="font-medium text-pink-800 dark:text-pink-300">Aarati Ongoing</span></div>
+                                    <div className="flex items-center gap-1.5 bg-yellow-100/50 dark:bg-yellow-900/20 rounded-md px-2 py-1"><div className="w-2 h-2 rounded-full bg-yellow-500 flex-shrink-0"></div><span className="font-medium text-yellow-800 dark:text-yellow-300">Temple Open</span></div>
+                                    <div className="flex items-center gap-1.5 bg-red-100/50 dark:bg-red-900/20 rounded-md px-2 py-1"><div className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></div><span className="font-medium text-red-800 dark:text-red-300">Closed (End of Day)</span></div>
                                   </div>
                                 </div>
                                 
                                 {/* Weather Section - Compact */}
-                                <div className="pt-2 border-t border-border/50">
-                                  <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-2">
-                                      <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-md">
-                                        <WeatherIcon weatherCode={weather.weatherCode} isDay={weather.isDay} className="w-6 h-6 text-blue-700 dark:text-blue-300" />
+                                <div className="pt-3 border-t border-border/50">
+                                  <div className="flex items-center justify-between mb-3">
+                                    <div className="flex items-center gap-3">
+                                      <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-md">
+                                        <WeatherIcon weatherCode={weather.weatherCode} isDay={weather.isDay} className="w-7 h-7 text-blue-700 dark:text-blue-300" />
                                       </div>
                                       <div>
-                                        <p className="font-semibold text-sm">
+                                        <p className="font-semibold text-base">
                                           {formatTemperature(weather.currentTemperatureRaw, weather.currentTemperatureUnit, isFahrenheit)}
                                         </p>
-                                        <p className="text-sm text-muted-foreground capitalize">{weather.weatherDescription || 'Weather data'}</p>
+                                        <p className="text-base text-muted-foreground capitalize">{weather.weatherDescription || 'Weather data'}</p>
                                       </div>
                                     </div>
                                     {/* Settings Toggles - More compact */}
-                                    <div className="space-y-1.5">
-                                      <div className="flex items-center space-x-1.5">
+                                    <div className="flex items-center space-x-4">
+                                      <div className="flex items-center space-x-2">
                                         <Switch
                                           id="fahrenheit-toggle"
                                           checked={isFahrenheit}
                                           onCheckedChange={setIsFahrenheit}
-                                          className="scale-75 data-[state=checked]:bg-blue-500"
+                                          className="data-[state=checked]:bg-blue-500"
                                           aria-label="Toggle Fahrenheit"
                                         />
-                                        <Label htmlFor="fahrenheit-toggle" className="text-sm">°F</Label>
+                                        <Label htmlFor="fahrenheit-toggle" className="text-base">°F</Label>
                                       </div>
-                                      <div className="flex items-center space-x-1.5">
+                                      <div className="flex items-center space-x-2">
                                         <Switch
                                           id="timeformat-toggle"
                                           checked={is24HourFormat}
                                           onCheckedChange={setIs24HourFormat}
-                                          className="scale-75 data-[state=checked]:bg-blue-500"
+                                          className="data-[state=checked]:bg-blue-500"
                                           aria-label="Toggle 24-hour time format"
                                         />
-                                        <Label htmlFor="timeformat-toggle" className="text-sm">24h</Label>
+                                        <Label htmlFor="timeformat-toggle" className="text-base">24h</Label>
                                       </div>
                                     </div>
                                   </div>
                                   
-                                  <div className="mt-1.5 grid grid-cols-2 gap-1.5">
-                                    <div className="flex items-center gap-1 text-sm">
-                                      <DropIcon className="w-3 h-3 text-blue-500" />
+                                  <div className="mt-2 grid grid-cols-2 gap-2">
+                                    <div className="flex items-center gap-1.5 text-base">
+                                      <DropIcon className="w-4 h-4 text-blue-500" />
                                       <span>Humidity: {weather.currentHumidityRaw !== null ? `${Math.round(weather.currentHumidityRaw)}${weather.currentHumidityUnit}` : '--'}</span>
                                     </div>
-                                    <div className="flex items-center gap-1 text-sm">
-                                      <ThermometerIcon className="w-3 h-3 text-red-500" />
+                                    <div className="flex items-center gap-1.5 text-base">
+                                      <ThermometerIcon className="w-4 h-4 text-red-500" />
                                       <span>Feels like: {weather.currentTemperatureRaw !== null ? `${Math.round(weather.currentTemperatureRaw - 2)}${weather.currentTemperatureUnit}` : '--'}</span>
                                     </div>
                                     
-                                    <div className="flex items-center gap-1 text-sm">
-                                      <WindIcon className="w-3 h-3 text-teal-500" />
+                                    <div className="flex items-center gap-1.5 text-base">
+                                      <WindIcon className="w-4 h-4 text-teal-500" />
                                       <span>Wind: {weather.currentWindSpeedRaw !== null ? `${Math.round(weather.currentWindSpeedRaw)}${weather.currentWindSpeedUnit}` : '--'}</span>
                                     </div>
                                   </div>
                                 </div>
                                 
                                 {/* Weekly Forecast */}
-                                <div className="mt-3 pt-3 border-t border-border/50">
-                                  <h4 className="font-medium text-sm mb-2 text-muted-foreground">7-Day Forecast</h4>
-                                  <div className="grid grid-cols-7 gap-1">
+                                <div className="mt-4 pt-4 border-t border-border/50">
+                                  <h4 className="font-medium text-base mb-3 text-muted-foreground">7-Day Forecast</h4>
+                                  <div className="grid grid-cols-7 gap-2">
                                     {weather.forecast.map((day, index) => (
                                       <div key={day.date} className="flex flex-col items-center">
-                                        <span className="text-sm font-medium">{index === 0 ? 'Today' : day.day}</span>
-                                        <WeatherIcon 
-                                          weatherCode={day.weatherCode} 
-                                          isDay={true} 
-                                          className="w-5 h-5 my-1 text-blue-600 dark:text-blue-400" 
+                                        <span className="text-base font-medium">{index === 0 ? 'Today' : day.day}</span>
+                                        <WeatherIcon
+                                          weatherCode={day.weatherCode}
+                                          isDay={true}
+                                          className="w-6 h-6 my-1.5 text-blue-600 dark:text-blue-400"
                                         />
-                                        <span className="text-sm font-medium">{formatTemperature(day.maxTempRaw, day.tempUnit, isFahrenheit)}</span>
-                                        <span className="text-sm text-muted-foreground">{formatTemperature(day.minTempRaw, day.tempUnit, isFahrenheit)}</span>
+                                        <span className="text-base font-medium">{formatTemperature(day.maxTempRaw, day.tempUnit, isFahrenheit)}</span>
+                                        <span className="text-base text-muted-foreground">{formatTemperature(day.minTempRaw, day.tempUnit, isFahrenheit)}</span>
                                       </div>
                                     ))}
                                   </div>

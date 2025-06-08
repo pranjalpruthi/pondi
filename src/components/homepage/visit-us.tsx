@@ -511,7 +511,7 @@ export function VisitUs() {
         
         <div className="container mx-auto z-10 relative px-4 md:px-6"> {/* Ensure content is still structured if needed, or adjust classes if section itself provides padding/margin */}
           {/* Section Header */}
-          <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-16 text-center"> {/* Adjusted margins */}
+          <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-16 text-center"> {/* Reverted margin to original */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -558,11 +558,9 @@ export function VisitUs() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="mb-8 px-4 sm:px-0"
-            whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            className="mt-[-60px] mb-8"
           >
-            <Card className="overflow-hidden border border-white/20 dark:border-gray-800/20 rounded-2xl bg-white/70 dark:bg-gray-900/70 backdrop-filter backdrop-blur-xl shadow-xl">
-              <CardContent className="p-5 md:p-8">
+            <div className="p-5 md:p-8">
                 <h3 className="text-xl font-semibold text-center mb-6 bg-gradient-to-r from-[#e94a9c] via-[#0a84ff] to-[#ffc547] text-transparent bg-clip-text">
                   <WritingText
                     text="Plan Your Visit"
@@ -1577,8 +1575,7 @@ export function VisitUs() {
                     </Popover>
                   </div>
                 </Tabs>
-              </CardContent>
-            </Card>
+            </div>
           </motion.div>
           
           {/* Prabhupada Quote Section - Make sure it uses the quotes data */}

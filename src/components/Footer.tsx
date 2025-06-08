@@ -91,7 +91,7 @@ export default function Footer() {
           </div>
 
           {/* Timings & Donation Popovers Section */}
-          <div className="mt-4 md:mt-0 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
+          <div className="mt-4 md:mt-0 flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4">
             {/* Temple Timings Popover */}
             <Popover>
               <PopoverTrigger asChild>
@@ -108,7 +108,7 @@ export default function Footer() {
                   <ul className="space-y-1 text-xs text-gray-700 dark:text-gray-300">
                     {templeTimingsData.map((timing, index) => (
                       <li key={index} className="flex justify-between">
-                        <span>{timing.event}</span>
+                        <span className="mr-4">{timing.event}</span>
                         <span className="font-medium text-[#e94a9c]">{timing.time}</span>
                       </li>
                     ))}

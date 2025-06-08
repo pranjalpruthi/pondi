@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import React from "react";
 
 const items = [
   {
@@ -42,6 +43,15 @@ const items = [
     title: "🔨 Ongoing Construction",
     description: "By Krishna’s grace and your support, construction and development continue—step by step toward a grand vision of devotional service.",
   },
+];
+
+const cardColors = [
+  { borderColor: "#3B82F6", gradient: "linear-gradient(145deg, #3B82F6, #000)" },
+  { borderColor: "#10B981", gradient: "linear-gradient(180deg, #10B981, #000)" },
+  { borderColor: "#F59E0B", gradient: "linear-gradient(165deg, #F59E0B, #000)" },
+  { borderColor: "#EF4444", gradient: "linear-gradient(195deg, #EF4444, #000)" },
+  { borderColor: "#8B5CF6", gradient: "linear-gradient(225deg, #8B5CF6, #000)" },
+  { borderColor: "#06B6D4", gradient: "linear-gradient(135deg, #06B6D4, #000)" },
 ];
 
 const sectionVariants = {
@@ -87,9 +97,16 @@ const cardItemVariants = {
 };
 
 export default function MilestoneTimeline() {
+  const handleCardMove: React.MouseEventHandler<HTMLElement> = (e) => {
+    const c = e.currentTarget as HTMLElement;
+    const rect = c.getBoundingClientRect();
+    c.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+    c.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+  };
+
   return (
     <motion.section
-      className="py-16 md:py-24 overflow-hidden" // Removed background classes to use global background
+      className="py-16 md:py-24 overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.1 }}
@@ -108,38 +125,51 @@ export default function MilestoneTimeline() {
           </p>
         </motion.div>
 
-        {/* This outer motion.div is for staggering the cards as a group */}
         <motion.div variants={cardContainerParentVariants}>
           <div
             className="flex overflow-x-auto space-x-4 md:space-x-6 lg:space-x-8 pb-8"
-            // Removed explicit scrollbar styling for a more native/subtle look
-            // Consider adding -mx-4 px-4 to the scroll container if edge padding is desired for cards within container
           >
-            {items.map((item, index) => (
-              <motion.div
-                key={index}
-                variants={cardItemVariants}
-                className="flex-shrink-0 w-72 md:w-80 lg:w-96 snap-start" // Added snap-start for better scroll feel
-              >
-                <Card className="h-full flex flex-col shadow-xl hover:shadow-2xl transition-shadow duration-300 ease-in-out bg-card/80 dark:bg-neutral-800/80 border border-border/30 rounded-3xl backdrop-blur-sm">
-                  <CardHeader className="pb-3">
-                    <p className="text-xs font-medium text-muted-foreground tracking-wider uppercase">
-                      {item.date}
-                    </p>
-                    <CardTitle className="text-base md:text-lg font-semibold leading-tight text-card-foreground">
-                      {item.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-grow pt-0">
-                    <CardDescription className="text-sm text-muted-foreground/90">
-                      {item.description}
-                    </CardDescription>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-            {/* Optional: Add a spacer at the end if you want padding after the last card */}
-            {/* <div className="flex-shrink-0 w-1"></div> */}
+            {items.map((item, index) => {
+              const color = cardColors[index % cardColors.length];
+              return (
+                <motion.div
+                  key={index}
+                  variants={cardItemVariants}
+                  className="flex-shrink-0 w-72 md:w-80 lg:w-96 snap-start group relative rounded-3xl overflow-hidden"
+                  onMouseMove={handleCardMove}
+                  style={
+                    {
+                      "--card-border": color.borderColor || "transparent",
+                      background: color.gradient,
+                      "--spotlight-color": "rgba(255,255,255,0.3)",
+                    } as React.CSSProperties
+                  }
+                >
+                  <div
+                    className="absolute inset-0 pointer-events-none transition-opacity duration-500 z-20 opacity-0 group-hover:opacity-100 rounded-3xl"
+                    style={{
+                      background:
+                        "radial-gradient(circle at var(--mouse-x) var(--mouse-y), var(--spotlight-color), transparent 70%)",
+                    }}
+                  />
+                  <Card className="h-full flex flex-col shadow-xl hover:shadow-2xl transition-shadow duration-300 ease-in-out bg-card/80 dark:bg-neutral-800/80 border border-border/30 rounded-3xl backdrop-blur-sm relative z-10">
+                    <CardHeader className="pb-3">
+                      <p className="text-xs font-medium text-muted-foreground tracking-wider uppercase">
+                        {item.date}
+                      </p>
+                      <CardTitle className="text-base md:text-lg font-semibold leading-tight text-card-foreground">
+                        {item.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex-grow pt-0">
+                      <CardDescription className="text-sm text-muted-foreground/90">
+                        {item.description}
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </div>
         </motion.div>
       </div>

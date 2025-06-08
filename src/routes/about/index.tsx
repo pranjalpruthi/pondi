@@ -16,7 +16,7 @@ import {
   ChevronRight, Calendar, Building, BookOpen, Heart, GraduationCap, Utensils, Award, ShieldHalf, 
   Target, Users, Leaf, Handshake, Banknote, Facebook, Instagram, Youtube// Added new icons
 } from "lucide-react"
-import { VisitUs } from "@/components/homepage/visit-us" // Import VisitUs component
+// Import VisitUs component
 import { CopyButton } from "@/components/animate-ui/buttons/copy" // Import CopyButton
 
 export const Route = createFileRoute('/about/')({
@@ -571,7 +571,7 @@ function AboutPage() {
          {/* The VisitUs component will be rendered here. It uses its own data internally. */}
          {/* We might need to pass props if the component is designed to accept them, */}
          {/* but based on its previous usage, it seems self-contained. */}
-         <VisitUs />
+         
       </motion.section>
 
        {/* Social Links Footer */}

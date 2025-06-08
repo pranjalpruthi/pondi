@@ -4,6 +4,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge'; // Assuming Badge component exists
+import { CopyButton } from '@/components/animate-ui/buttons/copy';
+import { MessageCircle } from 'lucide-react'; // Using MessageCircle as a placeholder for WhatsApp icon
 
 export const Route = createFileRoute('/donate/')({
   component: DonatePage,
@@ -132,7 +134,7 @@ function DonatePage() {
             <div className="flex flex-col items-center justify-center space-y-6">
               <motion.img
                 variants={itemVariants}
-                src="/extra/qr.png"
+                src="/assets/extra/miniqr.png"
                 alt="Donation QR Code"
                 className="w-48 h-48 md:w-64 md:h-64 object-contain border-4 border-primary/50 rounded-lg p-1 shadow-md"
               />
@@ -140,6 +142,26 @@ function DonatePage() {
                 Donate Now (via QR)
               </Button>
               <p className="text-center text-sm text-muted-foreground">Scan to contribute easily.</p>
+              <div className="mt-2 text-center">
+                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Or use UPI ID:</p>
+                <div className="flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-800/50 px-3 py-1.5 rounded-md max-w-xs mx-auto">
+                  <span className="text-sm font-mono text-purple-600 dark:text-purple-400">ISKM.04@idfcbank</span>
+                  <CopyButton size="sm" variant="ghost" content="ISKM.04@idfcbank" className="text-purple-600 dark:text-purple-400" />
+                </div>
+              </div>
+              <div className="mt-4 text-center">
+                <p className="text-sm text-muted-foreground mb-2">
+                  After payment, please share a screenshot with us on WhatsApp:
+                </p>
+                <Button 
+                  size="lg" 
+                  className="bg-green-500 hover:bg-green-600 text-white w-full md:w-auto"
+                  onClick={() => window.open('https://wa.me/919380395156', '_blank')}
+                >
+                  <MessageCircle className="mr-2 h-5 w-5" /> Share on WhatsApp
+                </Button>
+                <p className="text-xs text-muted-foreground mt-1">+91 93803 95156</p>
+              </div>
               <motion.img
                 variants={itemVariants}
                 src="/pp/pp1.webp"
@@ -221,7 +243,7 @@ function DonatePage() {
             <div className="flex flex-col items-center justify-center space-y-6">
               <motion.img
                 variants={itemVariants}
-                src="/extra/qr.png" // Using the same QR code as requested
+                src="/assets/extra/miniqr.png" // Using the same QR code as requested
                 alt="Donation QR Code"
                 className="w-48 h-48 md:w-64 md:h-64 object-contain border-4 border-green-600/50 rounded-lg p-1 shadow-md"
               />
@@ -229,10 +251,28 @@ function DonatePage() {
                 Donate for Go Seva (via QR)
               </Button>
               <p className="text-center text-sm text-muted-foreground">Scan to contribute easily.</p>
+              <div className="mt-2 text-center">
+                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Or use UPI ID:</p>
+                <div className="flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-800/50 px-3 py-1.5 rounded-md max-w-xs mx-auto">
+                  <span className="text-sm font-mono text-purple-600 dark:text-purple-400">ISKM.04@idfcbank</span>
+                  <CopyButton size="sm" variant="ghost" content="ISKM.04@idfcbank" className="text-purple-600 dark:text-purple-400" />
+                </div>
+              </div>
+              <div className="mt-4 text-center">
+                <p className="text-sm text-muted-foreground mb-2">
+                  After payment, please share a screenshot with us on WhatsApp:
+                </p>
+                <Button 
+                  size="lg" 
+                  className="bg-green-500 hover:bg-green-600 text-white w-full md:w-auto"
+                  onClick={() => window.open('https://wa.me/919380395156', '_blank')}
+                >
+                  <MessageCircle className="mr-2 h-5 w-5" /> Share on WhatsApp
+                </Button>
+                <p className="text-xs text-muted-foreground mt-1">+91 93803 95156</p>
+              </div>
                {/* Placeholder for another relevant image if needed */}
-               <div className="w-32 h-32 bg-gray-200 dark:bg-gray-700 rounded-md flex items-center justify-center text-muted-foreground text-sm mt-4">
-                 (Image Placeholder)
-               </div>
+               
             </div>
           </CardContent>
            <CardFooter className="bg-gradient-to-r from-green-50 to-lime-50 dark:from-green-900/20 dark:to-lime-900/20 p-6">

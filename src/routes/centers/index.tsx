@@ -309,7 +309,7 @@ function CentersRouteComponent() {
     initialPosition: { lat: iskmCenters[0]?.coordinates[1] || 0, lng: iskmCenters[0]?.coordinates[0] || 0 },
     autoRotate: true,
     autoRotateSpeed: 0.25,
-    cameraZ: isMobile ? 550 : 400, // Further camera on mobile = smaller globe
+    cameraZ: isMobile ? 550 : 480, // Further camera on mobile = smaller globe
     cameraFov: isMobile ? 35 : 30, // Adjust FOV for mobile if needed
     enableZoom: false,
     noBoundaries: true,
@@ -357,12 +357,12 @@ function CentersRouteComponent() {
   return (
     <div className="flex flex-col"> {/* Removed min-h-screen */}
       {/* Adjusted padding for wider feel on desktop, and reduced gap between columns */}
-      <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-8 lg:pt-12 flex-grow"> {/* Adjusted padding for wider feel on desktop */}
+      <div className="w-full max-w-none py-16 lg:pt-24 flex-grow"> {/* Adjusted padding for wider feel on desktop */}
         {/* Adjusted column widths and gap */}
         <div className="flex flex-col lg:flex-row items-stretch gap-8 lg:gap-12"> {/* Gap remains the same */}
           {/* Left side: Content - Made Even Wider */}
           <div className="w-full lg:w-1/2 xl:w-2/5"> {/* Further increased width */}
-            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg rounded-2xl p-6 lg:p-8 shadow-xl space-y-6 h-full flex flex-col">
+            <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg rounded-2xl pt-10 lg:pt-12 px-6 lg:px-8 pb-6 lg:pb-8 shadow-xl space-y-6 h-full flex flex-col">
               {/* Center List Card */}
               <Card className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-md shadow-lg rounded-xl p-4">
                 <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
@@ -412,13 +412,15 @@ function CentersRouteComponent() {
 
               {/* Static Content */}
               <div className="mt-auto">
-                <div className="flex items-center space-x-4 mb-4">
-                  <img src="/assets/iskm.webp" alt="ISKM Logo" className="h-12" width="48" height="48" loading="lazy" />
-                  <img src="/pp/pp1.webp" alt="Prabhupada" className="h-12 w-12 object-cover rounded-full" width="48" height="48" loading="lazy" />
+                <div className="flex justify-between items-center mb-4 mt-2">
+                  <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
+                    Our Global Outreach
+                  </h1>
+                  <div className="flex items-center space-x-4">
+                    <img src="/assets/iskm.webp" alt="ISKM Logo" className="h-12" width="48" height="48" loading="lazy" />
+                    <img src="/pp/pp1.webp" alt="Prabhupada" className="h-12 w-12 object-cover rounded-full" width="48" height="48" loading="lazy" />
+                  </div>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">
-                  Our Global Outreach
-                </h1>
                 <p className="text-lg text-gray-700 dark:text-gray-300 max-w-xl font-light mb-4">
                   ISKM connects devotees worldwide, spreading Krishna consciousness through our centers across continents.
                 </p>
@@ -435,8 +437,8 @@ function CentersRouteComponent() {
           </div>
 
           {/* Right side: Globe and Compact Details Card - Made Narrower */}
-          <div className="w-full lg:w-1/2 xl:w-3/5 relative flex flex-col items-center justify-center min-h-[60vh] lg:min-h-full p-0 md:p-4 lg:pr-4 xl:pr-6 lg:pt-4 xl:pt-6"> {/* Further decreased width */}
-            <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-full lg:w-1/2 xl:w-3/5 relative flex flex-col items-center justify-center min-h-[60vh] lg:min-h-full p-0 md:py-4 md:pl-4 lg:pt-4 xl:pt-6"> {/* Further decreased width, removed right padding */}
+            <div className="absolute inset-0 flex items-center justify-center aspect-square">
               {showGlobe ? ( // Globe is shown based on state
                 <Suspense fallback={
                   <div className="w-full h-full flex items-center justify-center">
@@ -460,7 +462,7 @@ function CentersRouteComponent() {
 
             {/* Desktop: Compact Details Card */}
             {!isMobile && selectedCenterDetails && (
-              <Card className="absolute top-0 right-0 md:top-0 md:right-0 z-20 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-md bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl shadow-2xl rounded-xl p-3 sm:p-4 border border-gray-300 dark:border-gray-700 max-h-[calc(100vh-5rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-500 scrollbar-track-transparent">
+              <Card className="absolute top-10 right-6 lg:top-12 lg:right-8 z-20 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-md bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl shadow-2xl rounded-xl p-3 sm:p-4 border border-gray-300 dark:border-gray-700 max-h-[calc(100vh-5rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-500 scrollbar-track-transparent">
                 <CenterDetailsContent center={selectedCenterDetails} />
               </Card>
             )}

@@ -350,15 +350,7 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
           >
             Reawakening Kṛṣṇa Consciousness Worldwide
           </motion.h1>
-          <motion.p
-            className="text-xl md:text-2xl mb-8 text-gray-600 dark:text-gray-400 leading-relaxed"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: props.isInView ? 1 : 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            Join us and help spread Śrīla Prabhupāda's teachings
-            to guide everyone back to home, back to Godhead!
-          </motion.p>
+          {/* The paragraph has been removed from here and will be placed below the two-column grid */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: props.isInView ? 1 : 0 }}
@@ -661,6 +653,17 @@ export function HeroSection() {
             </div>
           </div>
         </div>
+        {/* New section for the relocated and improved text */}
+        <motion.div
+          className="mt-12 text-center px-4" // Added margin-top, text-center, and horizontal padding
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 20 }}
+          transition={{ delay: 0.9 }} // Delayed to appear after main content
+        >
+          <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
+            Join our sacred calling: spread Śrīla Prabhupāda's wisdom and guide souls back home, back to Godhead.
+          </p>
+        </motion.div>
       </div>
       {/* Modal/Gallery using the same images and currentIndex */}
       <HeroGalleryModal
