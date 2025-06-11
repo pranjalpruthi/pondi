@@ -1,12 +1,14 @@
 import { createRootRoute, Outlet, useMatches } from '@tanstack/react-router'
 import { ThemeProvider } from '@/components/theme-provider'
 import { SoundProvider } from '@/components/context/sound-context' // Import SoundProvider
+import { InitialPageLoader } from '@/components/ui/initial-page-loader'; // Import InitialPageLoader
 import Navbar from '../components/dock'
 import { NavBar } from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Toaster } from 'sonner'; // Import Toaster from sonner
 
 export const Route = createRootRoute({
+  pendingComponent: InitialPageLoader,
   component: () => {
     const matches = useMatches()
     // Check if any of the matched routes starts with '/dashboard'

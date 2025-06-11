@@ -301,7 +301,7 @@ const DisciplicSuccessionSection: React.FC = () => {
         }}
       />
       <div className="absolute inset-0 z-10 bg-black/50" />
-      <div className="relative z-20 flex flex-col lg:flex-row gap-x-12 gap-y-8 p-4 sm:p-6 md:p-8 text-gray-900 dark:text-gray-100 w-full max-w-screen-xl mx-auto py-12 md:py-20">
+      <div className="relative z-20 flex flex-col lg:flex-row gap-x-12 gap-y-8 p-4 sm:p-6 md:p-8 text-gray-900 dark:text-gray-100 w-full max-w-screen-xl 2xl:max-w-screen-2xl mx-auto py-12 md:py-20"> {/* Added 2xl:max-w-screen-2xl */}
         <div className="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-[calc(var(--navbar-height,4rem)+2rem)] lg:max-h-[calc(100vh-var(--navbar-height,4rem)-4rem)] lg:overflow-y-auto pr-4">
           {verses.filter(v => v.reference.includes("Bhagavad-gītā")).map((verse, index) => (
             <div key={`verse-bg-${index}`} className="space-y-6 p-4 sm:p-5 bg-orange-50/70 dark:bg-neutral-800/70 rounded-xl shadow-md border border-orange-200 dark:border-neutral-700 hover:shadow-lg transition-shadow duration-300">
@@ -373,7 +373,7 @@ const DisciplicSuccessionSection: React.FC = () => {
       </div>
 
       {/* NEW Full-width section for SB Verse */}
-      <div className="relative z-20 w-full max-w-screen-xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12">
+      <div className="relative z-20 w-full max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12"> {/* Added 2xl:max-w-screen-2xl */}
         {verses.filter(v => v.reference.includes("ŚB")).map((verse, index) => (
           <div key={`verse-sb-${index}`} className="space-y-6 p-4 sm:p-6 bg-sky-800/70 dark:bg-sky-950/80 backdrop-blur-md rounded-xl shadow-lg border border-sky-700/60 text-white mb-8">
             {verse.title && <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-sky-100 dark:text-sky-50">{verse.title}</h3>}

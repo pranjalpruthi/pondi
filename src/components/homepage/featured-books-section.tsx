@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { motion } from 'motion/react'; // AnimatePresence might not be part of motion/react, using keyed motion.divs
-import { useIsMobile } from '@/hooks/use-mobile'; // Added for responsive book size
+import { motion } from 'motion/react';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { ModernBookCover } from '@/components/cuicui/modern-book-cover';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { BookOpen, Languages, CheckCircle, Eye, ShoppingCart } from 'lucide-react';
+import { FlipButton } from '@/components/animate-ui/buttons/flip';
+import { LiquidButton } from '@/components/animate-ui/buttons/liquid';
+import { BookOpen, Languages, CheckCircle, Eye, Download } from 'lucide-react';
+import { IconBrandWhatsapp } from '@tabler/icons-react';
 import {
   Sheet,
   SheetContent,
@@ -38,7 +40,7 @@ interface BookDetailData {
   ebookPreviewLink?: string;
   previewPdfPath?: string;
   productLink?: string;
-  playlistLink?: string; // Added playlistLink
+  playlistLink?: string;
   whatsAppNumber: string;
   baseWhatsAppMessageTemplate: string;
   price: string;
@@ -77,7 +79,7 @@ const ia77BookDetails: BookDetailData = {
   ],
   ebookPreviewLink: "https://heyzine.com/flip-book/7463036c24.html#page/18",
   previewPdfPath: "/assets/books/IA77.pdf",
-  playlistLink: "https://youtube.com/playlist?list=PLQGHF3mp1o78H-_CwnooAqyfYo8wznJjw&feature=shared", // Added playlist link
+  playlistLink: "https://youtube.com/playlist?list=PLQGHF3mp1o78H-_CwnooAqyfYo8wznJjw&feature=shared",
   whatsAppNumber: "+919380395156",
   baseWhatsAppMessageTemplate: `Hare Kṛṣṇa! prabhu
  Dandwat pranam, please accept my humble obesiances
@@ -173,7 +175,6 @@ My Temple Site Order Number is: `,
 const allBooksData: BookDetailData[] = [ia77BookDetails, wwokBookDetails, usuageBookDetails];
 
 const PDFPreview: React.FC<{ src: string }> = ({ src }) => {
-  // Use a direct iframe approach instead of embedpdf.js
   return (
     <iframe
       src={src}
@@ -187,7 +188,7 @@ const PDFPreview: React.FC<{ src: string }> = ({ src }) => {
 export function FeaturedBooksSection() {
   const [selectedBook, setSelectedBook] = React.useState<BookDetailData>(allBooksData[0]);
   const [orderNumber, setOrderNumber] = React.useState('');
-  const isMobile = useIsMobile(); // Added for responsive book size
+  const isMobile = useIsMobile();
   const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
   const [previewPdfUrl, setPreviewPdfUrl] = React.useState<string | undefined>(undefined);
   const [previewBookTitle, setPreviewBookTitle] = React.useState<string>('');
@@ -225,15 +226,13 @@ export function FeaturedBooksSection() {
           </p>
         </motion.div>
 
-        {/* Adjusted grid for better tablet layout: stacks on mobile, 2-col on tablet, 10-col (4/6 split) on large screens */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-10 gap-8 md:gap-10 items-start">
-          {/* Left Side: Book Cover */}
           <motion.div
             key={`${selectedBook.id}-cover`}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ ...springTransition, delay: 0.02 }}
-            className="md:col-span-1 lg:col-span-4 flex justify-center items-center" // md:justify-start removed to keep cover centered on tablet 2-col
+            className="md:col-span-1 lg:col-span-4 flex justify-center items-center"
           >
             <ModernBookCover size={isMobile ? "md" : "lg"} color={selectedBook.id === 'wwok' ? 'yellow' : selectedBook.id === 'usuage' ? 'neutral' : 'zinc'} className="shadow-xl hover:shadow-zinc-400/30 dark:hover:shadow-black/50 transition-shadow duration-300">
               <img
@@ -244,13 +243,12 @@ export function FeaturedBooksSection() {
             </ModernBookCover>
           </motion.div>
 
-          {/* Right Side: Context and Details */}
           <motion.div
             key={selectedBook.id}
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ ...springTransition, delay: 0.05 }}
-            className="md:col-span-1 lg:col-span-6 space-y-4" // Adjusted col-span for tablet and large screens
+            className="md:col-span-1 lg:col-span-6 space-y-4"
           >
             <div className="flex flex-wrap gap-2">
               {selectedBook.badges.map((badge, index) => (
@@ -288,83 +286,146 @@ export function FeaturedBooksSection() {
               </motion.div>
             )}
 
-            {selectedBook.keyPoints && (
-              <motion.ul
-                key={`${selectedBook.id}-keypoints`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ ...springTransition, delay: 0.1 }}
-                className="mt-4 space-y-2 text-muted-foreground"
-              >
-                {selectedBook.keyPoints.map((point, index) => (
-                  <li key={index} className="text-base md:text-lg flex items-center">
-                    {point.icon}
-                    <span>{point.title}</span>
-                  </li>
-                ))}
-              </motion.ul>
-            )}
+            <div className="mt-6 flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6">
+              <div className="space-y-4 flex-grow">
+                {selectedBook.keyPoints && (
+                  <motion.ul
+                    key={`${selectedBook.id}-keypoints`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ ...springTransition, delay: 0.1 }}
+                    className="space-y-2 text-muted-foreground"
+                  >
+                    {selectedBook.keyPoints.map((point, index) => (
+                      <li key={index} className="text-base md:text-lg flex items-center">
+                        {point.icon}
+                        <span>{point.title}</span>
+                      </li>
+                    ))}
+                  </motion.ul>
+                )}
 
-            {/* Price Display */}
-            <motion.div
-              key={`${selectedBook.id}-price-info`}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ ...springTransition, delay: (selectedBook.keyPoints || selectedBook.quote) ? 0.12 : 0.07 }}
-              className="mt-4 mb-2"
-            >
-              <span className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
-                {selectedBook.price}
-              </span>
-              {selectedBook.shippingNote && (
-                <span className="ml-1 text-xs md:text-sm text-muted-foreground">
-                  ({selectedBook.shippingNote})
-                </span>
-              )}
-            </motion.div>
-
-            <div className="pt-2 flex flex-wrap gap-3 items-center"> {/* Changed to flex-wrap, removed flex-col sm:flex-row */}
-              <a href={whatsAppOrderUrl} target="_blank" rel="noopener noreferrer" className="min-w-[200px] grow">
-                <Button size="lg" className="w-full rounded-[24px] py-6 text-lg bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
-                  <ShoppingCart className="mr-2 h-5 w-5" /> Order via WhatsApp
-                </Button>
-              </a>
-              {selectedBook.productLink && (
-                <a href={selectedBook.productLink} target="_blank" rel="noopener noreferrer" className="min-w-[200px] grow">
-                  <Button size="lg" variant="outline" className="w-full rounded-[24px] py-6 text-lg border-purple-500/80 text-purple-600 hover:bg-purple-500/10 dark:border-purple-500/60 dark:text-purple-400 dark:hover:bg-purple-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
-                    View Product Page <Eye className="ml-2 h-5 w-5" />
-                  </Button>
-                </a>
-              )}
-              {selectedBook.previewPdfPath && (
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full rounded-[24px] py-6 text-lg border-blue-500/80 text-blue-600 hover:bg-blue-500/10 dark:border-blue-500/60 dark:text-blue-400 dark:hover:bg-blue-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md min-w-[200px] grow"
-                  onClick={() => handlePreviewClick(selectedBook.previewPdfPath!, selectedBook.title)}
+                <motion.div
+                  key={`${selectedBook.id}-price-info`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ ...springTransition, delay: (selectedBook.keyPoints || selectedBook.quote) ? 0.12 : 0.07 }}
+                  className="mt-4 mb-2"
                 >
-                  Preview PDF <Eye className="ml-2 h-5 w-5" />
-                </Button>
-              )}
-              {!selectedBook.previewPdfPath && selectedBook.ebookPreviewLink && (
-                 <a href={selectedBook.ebookPreviewLink} target="_blank" rel="noopener noreferrer" className="min-w-[200px] grow">
-                  <Button size="lg" variant="outline" className="w-full rounded-[24px] py-6 text-lg border-purple-500/80 text-purple-600 hover:bg-purple-500/10 dark:border-purple-500/60 dark:text-purple-400 dark:hover:bg-purple-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
-                    Read eBook Preview <Eye className="ml-2 h-5 w-5" />
-                  </Button>
+                  <span className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+                    {selectedBook.price}
+                  </span>
+                  {selectedBook.shippingNote && (
+                    <span className="ml-1 text-xs md:text-sm text-muted-foreground">
+                      ({selectedBook.shippingNote})
+                    </span>
+                  )}
+                </motion.div>
+              </div>
+
+              <div className="pt-2 flex flex-wrap gap-4 items-center justify-start lg:justify-end shrink-0">
+                <a href={whatsAppOrderUrl} target="_blank" rel="noopener noreferrer">
+                  <LiquidButton
+                    variant="default"
+                    className="w-24 h-24 p-2 rounded-2xl flex flex-col items-center justify-center gap-1 shadow-lg"
+                    style={{ '--liquid-button-color': '#25D366' } as React.CSSProperties}
+                  >
+                    <IconBrandWhatsapp className="h-10 w-10" />
+                    <span className="text-xs font-semibold">Order</span>
+                  </LiquidButton>
                 </a>
-              )}
-               {selectedBook.playlistLink && (
-                 <a href={selectedBook.playlistLink} target="_blank" rel="noopener noreferrer" className="min-w-[200px] grow"> {/* Removed flex-1, added grow and min-width */}
-                  <Button size="lg" variant="outline" className="w-full rounded-[24px] py-6 text-lg border-red-500/80 text-red-600 hover:bg-red-500/10 dark:border-red-500/60 dark:text-red-400 dark:hover:bg-red-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
-                    Watch Playlist <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-youtube ml-2 h-5 w-5"><path d="M2.8 7.1a2.2 2.2 0 0 1 1.7-1.7C7.3 5 12 5 12 5s4.7 0 7.5.4a2.2 2.2 0 0 1 1.7 1.7c.3 2.1.3 4.9.3 4.9s0 2.8-.3 4.9a2.2 2.2 0 0 1-1.7 1.7c-2.8.4-7.5.4-7.5.4s-4.7 0-7.5-.4a2.2 2.2 0 0 1-1.7-1.7c-.3-2.1-.3-4.9-.3-4.9s0-2.8.3-4.9Z"/><path d="m10 9 5 3-5 3Z"/></svg>
-                  </Button>
-                </a>
-              )}
+
+                {selectedBook.productLink && (
+                  <a href={selectedBook.productLink} target="_blank" rel="noopener noreferrer">
+                    <FlipButton
+                      className="w-24 h-24 p-2 rounded-2xl text-white shadow-lg"
+                      frontClassName="bg-sky-500 hover:bg-sky-600"
+                      backClassName="bg-sky-700"
+                      frontContent={
+                        <div className="flex flex-col items-center justify-center gap-1">
+                          <Eye className="h-10 w-10" />
+                          <span className="text-xs font-semibold text-center">Product Page</span>
+                        </div>
+                      }
+                      backContent={<span className="text-sm font-bold">View Now</span>}
+                    />
+                  </a>
+                )}
+
+                {selectedBook.previewPdfPath &&
+                  (isMobile ? (
+                    <a href={selectedBook.previewPdfPath} download={`${selectedBook.title.replace(/\s+/g, '_')}-Preview.pdf`}>
+                      <LiquidButton
+                        variant="secondary"
+                        className="w-24 h-24 p-2 rounded-2xl flex flex-col items-center justify-center gap-1 shadow-lg"
+                      >
+                        <Download className="h-10 w-10" />
+                        <span className="text-xs font-semibold">Download</span>
+                      </LiquidButton>
+                    </a>
+                  ) : (
+                    <FlipButton
+                      className="w-24 h-24 p-2 rounded-2xl shadow-lg"
+                      frontClassName=""
+                      backClassName="bg-primary text-primary-foreground"
+                      onClick={() => handlePreviewClick(selectedBook.previewPdfPath!, selectedBook.title)}
+                      frontContent={
+                        <div className="flex flex-col items-center justify-center gap-1">
+                          <BookOpen className="h-10 w-10" />
+                          <span className="text-xs font-semibold">Preview</span>
+                        </div>
+                      }
+                      backContent={<span className="text-sm font-bold">Open</span>}
+                    />
+                  ))}
+
+                {!selectedBook.previewPdfPath && selectedBook.ebookPreviewLink && (
+                  <a href={selectedBook.ebookPreviewLink} target="_blank" rel="noopener noreferrer">
+                    <FlipButton
+                      className="w-24 h-24 p-2 rounded-2xl shadow-lg"
+                      frontClassName=""
+                      backClassName="bg-primary text-primary-foreground"
+                      frontContent={
+                        <div className="flex flex-col items-center justify-center gap-1">
+                          <Eye className="h-10 w-10" />
+                          <span className="text-xs font-semibold">eBook</span>
+                        </div>
+                      }
+                      backContent={<span className="text-sm font-bold">Read</span>}
+                    />
+                  </a>
+                )}
+
+                {selectedBook.playlistLink && (
+                  <a href={selectedBook.playlistLink} target="_blank" rel="noopener noreferrer">
+                    <LiquidButton
+                      variant="playlist"
+                      className="w-24 h-24 p-2 rounded-2xl flex flex-col items-center justify-center gap-1 shadow-lg"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-10 w-10"
+                      >
+                        <path d="M2.8 7.1a2.2 2.2 0 0 1 1.7-1.7C7.3 5 12 5 12 5s4.7 0 7.5.4a2.2 2.2 0 0 1 1.7 1.7c.3 2.1.3 4.9.3 4.9s0 2.8-.3 4.9a2.2 2.2 0 0 1-1.7 1.7c-2.8.4-7.5.4-7.5.4s-4.7 0-7.5-.4a2.2 2.2 0 0 1-1.7-1.7c-.3-2.1-.3-4.9-.3-4.9s0-2.8.3-4.9Z" />
+                        <path d="m10 9 5 3-5 3Z" />
+                      </svg>
+                      <span className="text-xs font-semibold">Playlist</span>
+                    </LiquidButton>
+                  </a>
+                )}
+              </div>
             </div>
           </motion.div>
         </div>
 
-        {/* Book Selector Section */}
         <div className="mt-16 md:mt-20">
           <InView
             variants={{
@@ -389,7 +450,6 @@ export function FeaturedBooksSection() {
               More Publications
             </h4>
           </InView>
-          {/* Removed sm:justify-center and sm:flex-wrap to ensure horizontal scroll on all sizes */}
           <div className="flex overflow-x-auto py-2 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent justify-start gap-3 sm:gap-4 md:gap-6">
             {allBooksData.map((book) => (
               <InView
@@ -413,17 +473,10 @@ export function FeaturedBooksSection() {
                 once={true}
               >
                 <motion.div
-                  onClick={() => {
-                    setSelectedBook(book);
-                    // If the book has a PDF preview path, open the preview
-                    if (book.previewPdfPath) {
-                      handlePreviewClick(book.previewPdfPath, book.title);
-                    }
-                  }}
-                  // Ensured flex-shrink-0 is always active for horizontal scrolling
-                  className={`cursor-pointer p-2 sm:p-3 rounded-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 flex-shrink-0 ${selectedBook.id === book.id ? 'ring-2 ring-purple-500 shadow-xl bg-purple-500/5 dark:bg-purple-500/10' : 'hover:shadow-lg bg-card'} ${isMobile ? 'scale-[0.85] origin-bottom' : ''}`}
-                  whileHover={{ scale: isMobile ? 0.88 : 1.03 }}
-                  whileTap={{ scale: isMobile ? 0.82 : 0.97 }}
+                  onClick={() => setSelectedBook(book)}
+                  className={`cursor-pointer p-1.5 sm:p-2 rounded-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1 flex-shrink-0 ${selectedBook.id === book.id ? 'ring-2 ring-purple-500 shadow-lg bg-purple-500/5 dark:bg-purple-500/10' : 'hover:shadow-md bg-card'} ${isMobile ? 'scale-[0.8] origin-bottom' : 'scale-[0.9]'}`}
+                  whileHover={{ scale: isMobile ? 0.82 : 0.93 }}
+                  whileTap={{ scale: isMobile ? 0.78 : 0.88 }}
                 >
                   <ModernBookCover 
                     size="sm" 

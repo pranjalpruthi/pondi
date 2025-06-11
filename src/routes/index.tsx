@@ -3,6 +3,7 @@ import React, { Suspense, useState, useEffect } from 'react';
 import { HeroSection } from "@/components/homepage/hero-section";
 import SideBySide from "@/components/homepage/side-by-side";
 import { InitialPageLoader } from '@/components/ui/initial-page-loader'; // Updated import
+import { CookieToast } from '@/components/cookie-toast';
 // Removed ShlokaModal and Shloka type imports
 
 // Lazy load sections
@@ -136,6 +137,7 @@ function HomePage() {
           className="absolute bottom-0 right-0 w-48 h-48 pointer-events-none z-0" // Reverted to larger size and removed opacity
           aria-hidden="true"
         />
+        <CookieToast />
       </main>
   )
 }

@@ -5,8 +5,8 @@ import { cn } from '@/lib/utils';
 type FlipDirection = 'top' | 'bottom' | 'left' | 'right';
 
 type FlipButtonProps = HTMLMotionProps<'button'> & {
-  frontText: string;
-  backText: string;
+  frontContent: React.ReactNode;
+  backContent: React.ReactNode;
   transition?: Transition;
   frontClassName?: string;
   backClassName?: string;
@@ -17,8 +17,8 @@ const DEFAULT_SPAN_CLASS_NAME =
   'absolute inset-0 flex items-center justify-center rounded-lg';
 
 function FlipButton({
-  frontText,
-  backText,
+  frontContent,
+  backContent,
   transition = { type: 'spring', stiffness: 280, damping: 20 },
   className,
   frontClassName,
@@ -75,7 +75,7 @@ function FlipButton({
           frontClassName,
         )}
       >
-        {frontText}
+        {frontContent}
       </motion.span>
       <motion.span
         data-slot="flip-button-back"
@@ -87,11 +87,14 @@ function FlipButton({
           backClassName,
         )}
       >
-        {backText}
+        {backContent}
       </motion.span>
-      <span className="invisible">{frontText}</span>
+      <div className="invisible absolute">
+        {frontContent}
+        {backContent}
+      </div>
     </motion.button>
   );
 }
 
-export { FlipButton, type FlipButtonProps, type FlipDirection };
+export { FlipButton, type FlipButtonProps };

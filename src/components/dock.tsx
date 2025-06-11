@@ -288,9 +288,9 @@ function NavbarContent() {
     <MotionConfig transition={{ layout: { duration: 0.35, type: 'spring', bounce: 0.1 } }}>
       {/* Main Dock Navigation */}
       <motion.nav 
-        className="fixed bottom-0 left-0 z-40 w-full pb-safe mb-6 pointer-events-none"
+        className="fixed bottom-[var(--banner-height,0px)] left-0 z-40 w-full pb-safe pointer-events-none"
         initial={{ y: 0 }}
-        animate={{ y: isDockVisible && !isFooterVisible ? 0 : 100 }}
+        animate={{ y: isDockVisible && !isFooterVisible ? 0 : 200 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
       >
         <div className="container relative mx-auto flex justify-center px-2 pb-2 sm:px-4">
@@ -300,7 +300,7 @@ function NavbarContent() {
             initial={{ opacity: 0 }} // Only initial opacity if mainDockAppearanceTransition handles y
             animate={{ opacity: 1 }}
             transition={mainDockAppearanceTransition} // This transition might primarily be for opacity now
-            className="relative w-full max-w-md rounded-3xl bg-pink-50/60 shadow-lg shadow-black/5 ring-1 ring-pink-100/60 backdrop-blur-md dark:bg-pink-900/40 dark:shadow-black/10 dark:ring-pink-900/40 sm:max-w-fit pointer-events-auto overflow-hidden"
+            className="relative w-full max-w-md rounded-3xl bg-pink-50/60 shadow-lg shadow-black/5 ring-1 ring-pink-100/60 backdrop-blur-md dark:bg-pink-900/40 dark:shadow-black/10 dark:ring-pink-900/40 sm:max-w-fit pointer-events-auto overflow-hidden mb-4"
             ref={dockWrapperRef}
             onMouseLeave={() => setHoveredLabelItemId(null)} // Clear hover when mouse leaves the entire dock
           >

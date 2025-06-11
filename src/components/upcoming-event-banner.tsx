@@ -210,7 +210,8 @@ export function UpcomingEventBanner() {
 
   return (
     <div 
-      className="fixed bottom-[env(safe-area-inset-bottom,0px)] left-0 right-0 w-full z-30" // Changed bottom positioning
+      className="fixed bottom-[env(safe-area-inset-bottom,0px)] left-0 right-0 w-full z-30 h-[var(--banner-height,44px)]"
+      style={{ '--banner-height': '44px' } as React.CSSProperties}
     >
       {/* Improved close button */}
       <button

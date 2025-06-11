@@ -88,7 +88,7 @@ export function QnASection() {
     <section className="py-16 px-4 relative overflow-visible">
       {/* Removed section-specific background */}
       
-      <div className="container mx-auto max-w-5xl relative z-10">
+      <div className="container mx-auto max-w-5xl xl:max-w-6xl 2xl:max-w-7xl relative z-10"> {/* Wider on large screens */}
         {/* Section header with styled design */}
         <div className="mb-12 text-center">
           <motion.div 
@@ -173,14 +173,15 @@ export function QnASection() {
                       </div>
                     </div>
 
-                    <div className="flex flex-row space-x-4 mt-8 items-center">
-                      <RippleButton className="flex-1 bg-gradient-to-r from-[#e94a9c] to-[#0a84ff] hover:from-[#d3428c] hover:to-[#0077ed] rounded-full border-0 h-12 font-medium text-white shadow-sm transition-all">
+                    {/* Responsive button group */}
+                    <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-3 sm:space-y-0 mt-8 items-center">
+                      <RippleButton className="w-full sm:flex-1 bg-gradient-to-r from-[#e94a9c] to-[#0a84ff] hover:from-[#d3428c] hover:to-[#0077ed] rounded-full border-0 h-14 sm:h-12 font-medium text-white shadow-sm transition-all">
                         <a href="https://www.youtube.com/@ISKM108/streams" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-full h-full">
                           <Youtube className="mr-2 h-5 w-5" /> Watch Live Stream
                         </a>
                       </RippleButton>
 
-                      <RippleButton variant="outline" className="flex-1 rounded-full h-12 border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 font-medium transition-all">
+                      <RippleButton variant="outline" className="w-full sm:flex-1 rounded-full h-14 sm:h-12 border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 font-medium transition-all">
                         <a href="https://t.me/ISKMVaishnavasanga" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-full h-full">
                           <ExternalLink className="mr-2 h-5 w-5" /> Join Telegram Group
                         </a>
@@ -242,14 +243,15 @@ export function QnASection() {
                       </div>
                     </div>
 
-                    <div className="flex flex-row space-x-4 mt-8 items-center">
-                      <RippleButton className="flex-1 bg-gradient-to-r from-[#e94a9c] to-[#0a84ff] hover:from-[#d3428c] hover:to-[#0077ed] rounded-full border-0 h-12 font-medium text-white shadow-sm transition-all">
+                    {/* Responsive button group */}
+                    <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-3 sm:space-y-0 mt-8 items-center">
+                      <RippleButton className="w-full sm:flex-1 bg-gradient-to-r from-[#e94a9c] to-[#0a84ff] hover:from-[#d3428c] hover:to-[#0077ed] rounded-full border-0 h-14 sm:h-12 font-medium text-white shadow-sm transition-all">
                         <a href="https://www.youtube.com/@harekrsnaleague2764" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-full h-full">
                           <Youtube className="mr-2 h-5 w-5" /> Watch Live Stream
                         </a>
                       </RippleButton>
 
-                      <RippleButton variant="outline" className="flex-1 rounded-full h-12 border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 font-medium transition-all">
+                      <RippleButton variant="outline" className="w-full sm:flex-1 rounded-full h-14 sm:h-12 border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 font-medium transition-all">
                         <a href="https://t.me/ISKMVaishnavasanga" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-full h-full">
                           <ExternalLink className="mr-2 h-5 w-5" /> Join Telegram Group
                         </a>
@@ -275,8 +277,8 @@ export function QnASection() {
           </h3>
 
           {isLoading && (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {[1, 2, 3].map((item) => (
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5"> {/* Changed grid-cols-1 to grid-cols-2 */}
+              {[...Array(5)].map((_, item) => (
                 <Card key={item} className="overflow-hidden border border-gray-200 dark:border-gray-800 rounded-2xl bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm shadow-sm">
                   <Skeleton className="aspect-video w-full" />
                   <div className="p-3 sm:p-4 space-y-2">
@@ -302,8 +304,8 @@ export function QnASection() {
           )}
 
           {!isLoading && !isError && previousSessions && previousSessions.length > 0 && (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {previousSessions.slice(0, 6).map((video) => (
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5"> {/* Changed grid-cols-1 to grid-cols-2 */}
+              {previousSessions.slice(0, 10).map((video) => (
                 <motion.a
                   key={video.id}
                   href={video.link}
@@ -342,10 +344,10 @@ export function QnASection() {
             </div>
           )}
           
-          <div className="mt-8 text-center">
-            <Button variant="ghost" className="text-[#0a84ff] dark:text-[#0a84ff] hover:text-[#0077ed] dark:hover:text-[#0077ed] hover:bg-[#0a84ff]/5 dark:hover:bg-[#0a84ff]/10 rounded-full h-11">
-              <a href={`https://www.youtube.com/channel/${currentChannelId}/videos`} target="_blank" rel="noopener noreferrer" className="flex items-center px-6">
-                View All Sessions <ExternalLink className="ml-2 h-4 w-4" />
+          <div className="mt-10 text-center">
+            <Button variant="ghost" className="text-[#0a84ff] dark:text-[#0a84ff] hover:text-[#0077ed] dark:hover:text-[#0077ed] hover:bg-[#0a84ff]/5 dark:hover:bg-[#0a84ff]/10 rounded-full h-12 text-base">
+              <a href={`https://www.youtube.com/channel/${currentChannelId}/videos`} target="_blank" rel="noopener noreferrer" className="flex items-center px-8">
+                View All Sessions <ExternalLink className="ml-2.5 h-4 w-4" />
               </a>
             </Button>
           </div>

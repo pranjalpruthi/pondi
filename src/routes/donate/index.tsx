@@ -3,9 +3,11 @@ import { motion } from 'motion/react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge'; // Assuming Badge component exists
+import { Badge } from '@/components/ui/badge';
 import { CopyButton } from '@/components/animate-ui/buttons/copy';
-import { MessageCircle } from 'lucide-react'; // Using MessageCircle as a placeholder for WhatsApp icon
+import { MessageCircle } from 'lucide-react';
+import { HighlightText } from '@/components/animate-ui/text/highlight';
+import { MorphingText } from '@/components/magicui/morphing-text';
 
 export const Route = createFileRoute('/donate/')({
   component: DonatePage,
@@ -13,12 +15,12 @@ export const Route = createFileRoute('/donate/')({
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
 
 const itemVariants = {
   hidden: { opacity: 0, scale: 0.95 },
-  visible: { opacity: 1, scale: 1, transition: { duration: 0.4 } },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.4, ease: "easeOut" } },
 };
 
 interface Quote {
@@ -41,6 +43,16 @@ const goSevaQuotes: Quote[] = [
   { text: "Farming, cow protection and business are the natural work for the vaisyas, and for the sudras there is labor and service to others.", source: "Bhagavad-gita As It Is 18.44", type: "Translation" },
 ];
 
+const sevaPhrases = [
+  "Support Our Seva",
+  "Serve with Love",
+  "Offer Your Heart",
+  "Krishna's Mercy Flows",
+  "Your Seva Matters",
+  "Join the Mission",
+  "Spread Bhakti",
+];
+
 function QuoteCard({ quote }: { quote: Quote }) {
   return (
     <motion.div variants={itemVariants}>
@@ -56,18 +68,30 @@ function QuoteCard({ quote }: { quote: Quote }) {
 
 function DonatePage() {
   return (
-    <div className="container mx-auto px-4 py-8 md:py-16">
+    <div className="container mx-auto px-4 py-8 md:py-16 pt-16 md:pt-24">
       <motion.header
         initial="hidden"
         animate="visible"
         variants={sectionVariants}
-        className="text-center mb-12"
+        className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 mb-12 md:mb-16 text-center md:text-left"
       >
-        <img src="/assets/iskm.webp" alt="ISKM Logo" className="h-16 w-auto mx-auto mb-4" />
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-primary mb-2">Support Our Seva</h1>
-        <p className="text-lg text-muted-foreground">
-          Your contribution, big or small, makes a divine difference.
-        </p>
+        <motion.img
+          src="/assets/pondi.webp"
+          alt="Pondi Logo"
+          className="h-20 w-20 md:h-24 md:w-24 rounded-full object-cover shadow-lg"
+          initial={{ opacity: 0, scale: 0.5, x: -50 }}
+          animate={{ opacity: 1, scale: 1, x: 0 }}
+          transition={{ type: "spring", stiffness: 120, damping: 15, delay: 0.2 }}
+        />
+        <div className="flex flex-col">
+          <MorphingText
+            texts={sevaPhrases}
+            className="text-4xl md:text-5xl font-bold tracking-tight text-primary !h-14 md:!h-20" 
+          />
+          <p className="text-xl md:text-2xl text-muted-foreground mt-4 md:mt-3">
+            Your contribution, <HighlightText text="big" className="!px-1 !py-0.5 from-pink-400 to-purple-400 dark:from-pink-500 dark:to-purple-500 text-white" /> or <HighlightText text="small" className="!px-1 !py-0.5 from-yellow-400 to-orange-400 dark:from-yellow-500 dark:to-orange-500 text-white" />, makes a <HighlightText text="divine difference" className="!px-1 !py-0.5 from-teal-400 to-cyan-400 dark:from-teal-500 dark:to-cyan-500 text-white" />. 🙏❤️✨
+          </p>
+        </div>
       </motion.header>
 
       {/* Prasadam Seva Section */}
@@ -84,7 +108,9 @@ function DonatePage() {
             <div className="flex flex-col md:flex-row items-center gap-4">
               <img src="/extra/dona.png" alt="Prasadam Dona" className="w-20 h-20 object-contain hidden md:block" />
               <div>
-                <CardTitle className="text-3xl font-bold text-amber-800 dark:text-amber-200">Prasadam Seva – A Daily Offering of Love</CardTitle>
+                <CardTitle className="text-3xl font-bold text-amber-800 dark:text-amber-200">
+                  <HighlightText text="Prasadam Seva – A Daily Offering of Love" className="!px-0 !py-0 bg-transparent dark:bg-transparent from-amber-500/70 to-orange-500/70 dark:from-amber-300/70 dark:to-orange-300/70" />
+                </CardTitle>
                 <CardDescription className="text-amber-700 dark:text-amber-300 mt-1">
                   Help us serve sanctified Krishna-conscious meals (prasadam) to those in need, every single day.
                 </CardDescription>
@@ -200,10 +226,11 @@ function DonatePage() {
         <Card className="overflow-hidden shadow-lg border-green-600/20">
           <CardHeader className="bg-gradient-to-r from-green-100 to-lime-100 dark:from-green-900/30 dark:to-lime-900/30 p-6">
              <div className="flex flex-col md:flex-row items-center gap-4">
-               {/* Placeholder for a cow image if available */}
                <div className="w-20 h-20 bg-green-200 dark:bg-green-800 rounded-full flex items-center justify-center text-4xl hidden md:block">🐄</div>
                <div>
-                  <CardTitle className="text-3xl font-bold text-green-800 dark:text-green-200">Go Seva – Serve and Protect Mother Cow</CardTitle>
+                  <CardTitle className="text-3xl font-bold text-green-800 dark:text-green-200">
+                    <HighlightText text="Go Seva – Serve and Protect Mother Cow" className="!px-0 !py-0 bg-transparent dark:bg-transparent from-green-500/70 to-lime-500/70 dark:from-green-300/70 dark:to-lime-300/70" />
+                  </CardTitle>
                   <CardDescription className="text-green-700 dark:text-green-300 mt-1">
                     Support the care of sacred cows at ISKM Pondicherry’s Gokulam Goshala.
                   </CardDescription>
@@ -272,7 +299,6 @@ function DonatePage() {
                 <p className="text-xs text-muted-foreground mt-1">+91 93803 95156</p>
               </div>
                {/* Placeholder for another relevant image if needed */}
-               
             </div>
           </CardContent>
            <CardFooter className="bg-gradient-to-r from-green-50 to-lime-50 dark:from-green-900/20 dark:to-lime-900/20 p-6">

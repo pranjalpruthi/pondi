@@ -230,7 +230,7 @@ function NavBarComponent({ className }: NavBarProps) {
             transition={springTransition} // Use spring transition here
         >
             <div className="w-full px-1 xs:px-2 sm:px-4">
-                <div className="flex justify-between items-center h-20"> {/* Increased height from h-16 to h-20 */}
+                <div className="flex justify-between items-center h-16 sm:h-20"> {/* Adjusted height for mobile: h-16, sm and up: h-20 */}
                     {/* Left side with ModeToggle and Temple Name */}
                     <div className="relative flex items-center space-x-2 sm:space-x-3">
                         <ModeToggle className="mt-8" />
