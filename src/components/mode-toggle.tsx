@@ -4,16 +4,18 @@ import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "motion/react"
 import { useSound } from 'use-sound';
 import { useSoundSettings } from '@/components/context/sound-context';
+import { cn } from "@/lib/utils";
 
 interface ModeToggleProps {
+  className?: string;
 }
 
-const ModeToggleComponent = ({}: ModeToggleProps) => {
+const ModeToggleComponent = ({ className }: ModeToggleProps) => {
   const { theme, setTheme } = useTheme()
   const { isSoundEnabled } = useSoundSettings();
-  const [playHaribol] = useSound('/sounds/haribol.mp3', { 
+  const [playHaribol] = useSound('/sounds/haribol.mp3', {
     volume: 0.75,
-    soundEnabled: isSoundEnabled 
+    soundEnabled: isSoundEnabled
   });
   const [mounted, setMounted] = React.useState(false)
   const [isPressed, setIsPressed] = React.useState(false)
@@ -44,31 +46,31 @@ const ModeToggleComponent = ({}: ModeToggleProps) => {
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-      className="relative z-50"
+      className={cn("relative z-50", className)}
     >
       <div className="absolute inset-0 pointer-events-none z-30">
         {/* Simplified Glow Effect (2 layers for performance) */}
         {/* Outer Glow Layer */}
         <div className={`
-          absolute -inset-5 rounded-full blur-xl
+          absolute -inset-5 rounded-full blur-lg
           [animation:_pulse_3.5s_ease-in-out_infinite]
-          ${theme === "dark" 
-            ? "bg-amber-400/50" // Adjusted color/opacity
-            : "bg-yellow-200/60" // Adjusted color/opacity
+          ${theme === "dark"
+            ? "bg-amber-400/20" // Adjusted color/opacity
+            : "bg-yellow-200/30" // Adjusted color/opacity
           }
         `} />
         {/* Inner Glow Layer */}
         <div className={`
           absolute -inset-3 rounded-full blur-lg
           [animation:_pulse_2.2s_ease-in-out_infinite]
-          ${theme === "dark" 
+          ${theme === "dark"
             ? "bg-amber-300/40" // Adjusted color/opacity
             : "bg-yellow-100/50" // Adjusted color/opacity
           }
         `} />
       </div>
-      <Button 
-        variant="ghost" 
+      <Button
+        variant="ghost"
         onClick={toggleTheme}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
@@ -76,29 +78,25 @@ const ModeToggleComponent = ({}: ModeToggleProps) => {
         className={`
           rounded-full p-0 overflow-hidden
           transition-all duration-300
-          w-14 h-14
-          hover:shadow-lg hover:shadow-amber-200/20
+          w-28 h-28
           active:scale-95 relative z-40
-          ${theme === "dark" 
-            ? "bg-zinc-900/90 border border-zinc-800" 
-            : "bg-white/90 border border-zinc-200"
-          }
+          bg-transparent border-0
         `}
       >
         <motion.div
-          whileHover={{ scale: 1.1, rotate: 12 }}
+          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
-          transition={{ type: "spring", stiffness: 300 }}
-          className="relative"
+          transition={{ type: "spring", stiffness: 80, damping: 8 }}
+          className="relative flex items-center justify-center w-full h-full"
         >
           <img
-            src="/assets/iskmj.jpg"
-            alt="ISKM Logo"
-            width={56}
-            height={56}
-            className="rounded-full object-cover w-14 h-14"
+            src="/assets/pondi.webp"
+            alt="Pondi Logo"
+            width={112}
+            height={112}
+            className="rounded-full object-cover max-w-[112px] max-h-[112px]"
           />
-          
+
           {/* Text Overlay on Press */}
           <AnimatePresence>
             {isPressed && (
@@ -110,20 +108,20 @@ const ModeToggleComponent = ({}: ModeToggleProps) => {
                 className={`
                   absolute inset-0 flex items-center justify-center
                   rounded-full backdrop-blur-sm
-                  ${theme === "dark" 
-                    ? "bg-zinc-900/80" 
+                  ${theme === "dark"
+                    ? "bg-zinc-900/80"
                     : "bg-white/80"
                   }
                 `}
               >
                 <span className={`
                   text-xs sm:text-sm font-medium
-                  ${theme === "dark" 
-                    ? "text-zinc-200" 
+                  ${theme === "dark"
+                    ? "text-zinc-200"
                     : "text-zinc-800"
                   }
                 `}>
-                  Switch to {theme === "dark" ? "Light" : "Dark"}
+                  Awaken the Soul
                 </span>
               </motion.div>
             )}

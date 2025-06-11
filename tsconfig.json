@@ -1,5 +1,5 @@
 {
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["src", "src/types/embedpdf.d.ts", "components/motion-primitives/useClickOutside.tsx"],
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",

@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import React, { Suspense, useState, useEffect } from 'react';
 import { HeroSection } from "@/components/homepage/hero-section";
 import SideBySide from "@/components/homepage/side-by-side";
+import { InitialPageLoader } from '@/components/ui/initial-page-loader'; // Updated import
 // Removed ShlokaModal and Shloka type imports
 
 // Lazy load sections
@@ -57,18 +58,6 @@ const SectionLoader = () => (
     <p className="text-lg font-medium">Rāma Rāma Hare Hare</p>
   </div>
 );
-
-// Component for the initial full-page loader
-const InitialPageLoader = () => (
-  <div className="fixed inset-0 flex flex-col justify-center items-center h-screen w-screen bg-background z-50 text-center">
-    <img src="/assets/iskmj.jpg" alt="ISKM Logo" className="w-24 h-24 rounded-full mb-6 animate-pulse" />
-    <p className="text-xl font-semibold text-primary">Hare Kṛṣṇa Hare Kṛṣṇa</p>
-    <p className="text-xl font-semibold text-primary">Kṛṣṇa Kṛṣṇa Hare Hare</p>
-    <p className="text-xl font-semibold text-primary">Hare Rāma Hare Rāma</p>
-    <p className="text-xl font-semibold text-primary">Rāma Rāma Hare Hare</p>
-  </div>
-);
-
 
 function HomePage() {
   const [isPageLoading, setIsPageLoading] = useState(true);

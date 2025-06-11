@@ -319,13 +319,13 @@ function QuoteSlider({ quotes = prabhupadaQuotes, additionalWaitAfterTyping = 90
       whileHover={{ y: -5, transition: { duration: 0.2 } }}
     >
       <Card className="overflow-hidden border border-white/20 dark:border-gray-800/20 rounded-2xl bg-white/70 dark:bg-gray-900/70 backdrop-filter backdrop-blur-xl shadow-xl">
-        <CardContent className="p-8 lg:p-10">
+        <CardContent className="p-6 lg:p-8">
           <div className="flex flex-col items-center">
-            <div className="mb-8 relative min-h-[180px] w-full flex items-center justify-center">
-              <div className="absolute -top-3 -left-3 text-[#e94a9c]/30 dark:text-[#e94a9c]/20">
+            <div className="mb-6 relative min-h-[160px] w-full flex items-center justify-center">
+              <div className="absolute -top-3 -left-3 text-[#e94a9c]/30 dark:text-[#e94a9c]/20 transform rotate-180">
                 <Quote className="h-10 w-10" />
               </div>
-              <div className="absolute -bottom-3 -right-3 text-[#e94a9c]/30 dark:text-[#e94a9c]/20 transform rotate-180">
+              <div className="absolute -bottom-3 -right-3 text-[#e94a9c]/30 dark:text-[#e94a9c]/20 ">
                 <Quote className="h-10 w-10" />
               </div>
               
@@ -345,7 +345,7 @@ function QuoteSlider({ quotes = prabhupadaQuotes, additionalWaitAfterTyping = 90
                     delay={200}   // Delay before typing starts after block animates in
                     cursor={true}
                     loop={false}
-                    className="text-lg md:text-xl text-gray-700 dark:text-gray-300 italic text-center leading-relaxed px-4 sm:px-10 block whitespace-pre-line"
+                    className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 italic text-center leading-relaxed px-2 sm:px-6 block whitespace-pre-line"
                   />
                 </motion.div>
               </AnimatePresence>

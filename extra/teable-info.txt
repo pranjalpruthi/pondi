@@ -1,0 +1,1749 @@
+
+
+This document infers the HTTP method (GET, POST, DELETE, etc.) and the likely endpoint path from the URL itself. Each entry includes a brief description of its function and a direct link to the official documentation for full details on parameters, request bodies, and response schemas.
+
+Here is the generated documentation based on all 399 links.
+
+***
+
+# Teable API Documentation
+
+This document provides a consolidated overview of the Teable API endpoints. It is structured by resource category for easy navigation.
+
+## Table of Contents
+
+1.  [Access Token](#access-token)
+2.  [Admin](#admin)
+3.  [Aggregation](#aggregation)
+4.  [AI](#ai)
+5.  [Attachments](#attachments)
+6.  [Auth](#auth)
+7.  [Authority Matrix](#authority-matrix)
+8.  [Automation](#automation)
+9.  [Base](#base)
+10. [Billing](#billing)
+11. [Chat](#chat)
+12. [Comment](#comment)
+13. [Dashboard](#dashboard)
+14. [DB Connection](#db-connection)
+15. [Enterprise](#enterprise)
+16. [Export](#export)
+17. [Field](#field)
+18. [Import](#import)
+19. [Integrity](#integrity)
+20. [Invitation](#invitation)
+21. [Notification](#notification)
+22. [OAuth](#oauth)
+23. [Organization](#organization)
+24. [Pin](#pin)
+25. [Plan](#plan)
+26. [Plugin](#plugin)
+27. [Plugin Context Menu](#plugin-context-menu)
+28. [Plugin Panel](#plugin-panel)
+29. [Record](#record)
+30. [Selection](#selection)
+31. [Share](#share)
+32. [Space](#space)
+33. [Space Management](#space-management)
+34. [Table](#table)
+35. [Template](#template)
+36. [Trash](#trash)
+37. [Usage](#usage)
+38. [User](#user)
+39. [View](#view)
+
+---
+
+## Access Token
+
+Endpoints for managing personal access tokens.
+
+#### `POST /access-token`
+Creates a new personal access token.
+*Doc Link:* `http://help.teable.io/en/api-reference/access-token/post-access-token`
+
+#### `GET /access-token`
+Retrieves a list of all personal access tokens.
+*Doc Link:* `https://help.teable.io/en/api-reference/access-token/get-access-token`
+
+#### `GET /access-token/{tokenId}`
+Retrieves a specific personal access token.
+*Doc Link:* `https://help.teable.io/en/api-reference/access-token/get-access-token-1`
+
+#### `PUT /access-token/{tokenId}`
+Updates a specific personal access token.
+*Doc Link:* `https://help.teable.io/en/api-reference/access-token/put-access-token`
+
+#### `DELETE /access-token/{tokenId}`
+Deletes/revokes a personal access token.
+*Doc Link:* `https://help.teable.io/en/api-reference/access-token/delete-access-token`
+
+#### `POST /access-token/refresh`
+Refreshes an access token.
+*Doc Link:* `https://help.teable.io/en/api-reference/access-token/post-access-token-refresh`
+
+## Admin
+
+Endpoints for instance administration.
+
+#### `GET /admin/audit-logs`
+Retrieves audit logs for the instance.
+*Doc Link:* `http://help.teable.io/en/api-reference/admin/get-adminaudit-logs`
+
+#### `GET /admin/setting`
+Retrieves current admin settings.
+*Doc Link:* `http://help.teable.io/en/api-reference/admin/get-adminsetting`
+
+#### `PATCH /admin/setting`
+Updates instance-level settings.
+*Doc Link:* `http://help.teable.io/en/api-reference/admin/patch-adminsetting`
+
+#### `GET /admin/setting/public`
+Gets public-facing admin settings.
+*Doc Link:* `https://help.teable.io/en/api-reference/admin/get-adminsettingpublic`
+
+#### `PATCH /admin/setting/logo`
+Updates the instance logo.
+*Doc Link:* `https://help.teable.io/en/api-reference/admin/patch-adminsettinglogo`
+
+#### `GET /admin/user`
+Retrieves a list of users in the instance.
+*Doc Link:* `http://help.teable.io/en/api-reference/admin/get-adminuser`
+
+#### `PATCH /admin/user/{userId}`
+Updates a user's details.
+*Doc Link:* `https://help.teable.io/en/api-reference/admin/patch-adminuser`
+
+#### `DELETE /admin/user/{userId}`
+Deletes a user from the instance.
+*Doc Link:* `https://help.teable.io/en/api-reference/admin/delete-adminuser`
+
+#### `GET /admin/space`
+Retrieves a list of spaces in the instance.
+*Doc Link:* `https://help.teable.io/en/api-reference/admin/get-adminspace`
+
+#### `PATCH /admin/space/{spaceId}`
+Updates a space's details.
+*Doc Link:* `http://help.teable.io/en/api-reference/admin/patch-adminspace`
+
+#### `DELETE /admin/space/{spaceId}`
+Deletes a space from the instance.
+*Doc Link:* `http://help.teable.io/en/api-reference/admin/delete-adminspace`
+
+#### `GET /admin/enterprise-license`
+Gets the current enterprise license details.
+*Doc Link:* `https://help.teable.io/en/api-reference/admin/get-adminenterprise-license`
+
+#### `POST /admin/enterprise-license`
+Uploads or updates the enterprise license.
+*Doc Link:* `https://help.teable.io/en/api-reference/admin/post-adminenterprise-license`
+
+#### `PATCH /admin/enterprise-license`
+Modifies the enterprise license.
+*Doc Link:* `http://help.teable.io/en/api-reference/admin/patch-adminenterprise-license`
+
+#### `PATCH /admin/plugin/publish`
+Publishes a plugin to the instance marketplace.
+*Doc Link:* `http://help.teable.io/en/api-reference/admin/patch-adminplugin-publish`
+
+#### `PATCH /admin/plugin/unpublish`
+Unpublishes a plugin from the instance marketplace.
+*Doc Link:* `http://help.teable.io/en/api-reference/admin/patch-adminplugin-unpublish`
+
+## Aggregation
+
+Endpoints for calculating aggregated data from records.
+
+#### `GET /table/{tableId}/view/{viewId}/aggregation/statistics`
+Gets aggregated statistics (like sum, average) for a view.
+*Doc Link:* `http://help.teable.io/en/api-reference/aggregation/get-aggregated-statistics`
+
+#### `GET /table/{tableId}/view/{viewId}/aggregation/row-count`
+Gets the total row count for a view.
+*Doc Link:* `http://help.teable.io/en/api-reference/aggregation/get-total-row-count`
+
+#### `GET /table/{tableId}/view/{viewId}/aggregation/group-points`
+Retrieves the grouping points for a grouped view.
+*Doc Link:* `https://help.teable.io/en/api-reference/aggregation/get-group-points`
+
+#### `GET /table/{tableId}/view/{viewId}/aggregation/task-status`
+Gets the status of an aggregation task.
+*Doc Link:* `https://help.teable.io/en/api-reference/aggregation/get-task-status-collection`
+
+#### `GET /table/{tableId}/view/{viewId}/aggregation/daily-calendar-data`
+Gets aggregated data formatted for a daily calendar view.
+*Doc Link:* `https://help.teable.io/en/api-reference/aggregation/get-daily-calendar-data`
+
+#### `GET /table/{tableId}/view/{viewId}/aggregation/search-count`
+Gets the total count of records matching a search query.
+*Doc Link:* `https://help.teable.io/en/api-reference/aggregation/get-total-count-of-search`
+
+#### `GET /table/{tableId}/view/{viewId}/aggregation/search-indices`
+Gets the indices of records matching a search query.
+*Doc Link:* `https://help.teable.io/en/api-reference/aggregation/get-record-indices-for-search`
+
+## AI
+
+Endpoints for interacting with AI features.
+
+#### `GET /ai/config`
+Retrieves the current AI provider configuration.
+*Doc Link:* `http://help.teable.io/en/api-reference/ai/get--aiconfig`
+
+#### `POST /ai/generate-stream`
+Generates a stream of data using AI, often for text completion.
+*Doc Link:* `https://help.teable.io/en/api-reference/ai/post-api-aigenerate-stream`
+
+## Attachments
+
+Endpoints for managing file attachments.
+
+#### `GET /attachments`
+Retrieves attachment metadata.
+*Doc Link:* `http://help.teable.io/en/api-reference/attachments/get-attachments`
+
+#### `POST /attachments/signature`
+Generates a signature required for uploading an attachment.
+*Doc Link:* `http://help.teable.io/en/api-reference/attachments/post-attachmentssignature`
+
+#### `POST /attachments/upload`
+Uploads a file.
+*Doc Link:* `http://help.teable.io/en/api-reference/attachments/post-attachmentsupload`
+
+#### `POST /attachments/notify`
+Notifies the system that an upload is complete.
+*Doc Link:* `http://help.teable.io/en/api-reference/attachments/post-attachmentsnotify`
+
+## Auth
+
+Endpoints for user authentication and session management.
+
+#### `POST /auth/signup`
+Registers a new user account.
+*Doc Link:* `http://help.teable.io/en/api-reference/auth/post-authsignup`
+
+#### `POST /auth/signin`
+Signs in a user and returns an access token.
+*Doc Link:* `https://help.teable.io/en/api-reference/auth/post-authsignin`
+
+#### `POST /auth/signout`
+Signs out the current user.
+*Doc Link:* `https://help.teable.io/en/api-reference/auth/post-authsignout`
+
+#### `GET /auth/user/me`
+Retrieves the profile of the currently authenticated user.
+*Doc Link:* `https://help.teable.io/en/api-reference/auth/get-authuserme`
+
+#### `GET /auth/user`
+Retrieves user information, possibly for a specific user ID.
+*Doc Link:* `https://help.teable.io/en/api-reference/auth/get-authuser`
+
+#### `PATCH /auth/change-password`
+Changes the password for the authenticated user.
+*Doc Link:* `http://help.teable.io/en/api-reference/auth/patch-authchange-password`
+
+#### `POST /auth/add-password`
+Adds a password to an account that was created via social login.
+*Doc Link:* `https://help.teable.io/en/api-reference/auth/post-authadd-password`
+
+#### `POST /auth/send-signup-verification-code`
+Sends a verification code to the user's email during signup.
+*Doc Link:* `https://help.teable.io/en/api-reference/auth/post-authsend-signup-verification-code`
+
+#### `PATCH /auth/change-email`
+Changes the authenticated user's email address.
+*Doc Link:* `http://help.teable.io/en/api-reference/auth/patch-authchange-email`
+
+#### `POST /auth/send-change-email-code`
+Sends a verification code to the new email address before changing it.
+*Doc Link:* `https://help.teable.io/en/api-reference/auth/post-authsend-change-email-code`
+
+#### `POST /auth/send-reset-password-email`
+Sends an email with a link to reset the password.
+*Doc Link:* `https://help.teable.io/en/api-reference/auth/post-authsend-reset-password-email`
+
+#### `POST /auth/reset-password`
+Resets the user's password using a token from the reset email.
+*Doc Link:* `https://help.teable.io/en/api-reference/auth/post-authreset-password`
+
+#### `GET /auth/temp-token`
+Generates a temporary token for specific actions.
+*Doc Link:* `https://help.teable.io/en/api-reference/auth/get-authtemp-token`
+
+## Authority Matrix
+
+Endpoints for managing fine-grained permissions within a base.
+
+#### `GET /base/{baseId}/authority-matrix`
+Retrieves the entire authority matrix for a base.
+*Doc Link:* `https://help.teable.io/en/api-reference/authority-matrix/get-base-authority-matrix`
+
+#### `PUT /base/{baseId}/authority-matrix`
+Updates the entire authority matrix for a base.
+*Doc Link:* `http://help.teable.io/en/api-reference/authority-matrix/put-base-authority-matrix`
+
+#### `PATCH /base/{baseId}/authority-matrix/status`
+Updates the status of the authority matrix (e.g., enabled/disabled).
+*Doc Link:* `http://help.teable.io/en/api-reference/authority-matrix/patch-base-authority-matrixstatus`
+
+#### `PATCH /base/{baseId}/authority-matrix/admin-user`
+Updates the admin user permissions in the authority matrix.
+*Doc Link:* `http://help.teable.io/en/api-reference/authority-matrix/patch-base-authority-matrixadmin-user`
+
+#### `GET /base/{baseId}/authority-matrix/role`
+Retrieves all roles defined in the base's authority matrix.
+*Doc Link:* `https://help.teable.io/en/api-reference/authority-matrix/get-base-authority-matrix-role`
+
+#### `POST /base/{baseId}/authority-matrix/role`
+Creates a new role in the authority matrix.
+*Doc Link:* `https://help.teable.io/en/api-reference/authority-matrix/post-base-authority-matrix-role`
+
+#### `GET /base/{baseId}/authority-matrix/role/{roleId}`
+Retrieves details for a specific role.
+*Doc Link:* `http://help.teable.io/en/api-reference/authority-matrix/get-base-authority-matrix-role-1`
+
+#### `PUT /base/{baseId}/authority-matrix/role/{roleId}`
+Updates a specific role.
+*Doc Link:* `https://help.teable.io/en/api-reference/authority-matrix/put-base-authority-matrix-role`
+
+#### `DELETE /base/{baseId}/authority-matrix/role/{roleId}`
+Deletes a role from the authority matrix.
+*Doc Link:* `http://help.teable.io/en/api-reference/authority-matrix/delete-base-authority-matrix-role`
+
+#### `POST /base/{baseId}/authority-matrix/role/duplicate`
+Duplicates an existing role.
+*Doc Link:* `https://help.teable.io/en/api-reference/authority-matrix/post-base-authority-matrix-role-duplicate`
+
+#### `PATCH /base/{baseId}/authority-matrix/role/{roleId}/name`
+Updates the name of a role.
+*Doc Link:* `http://help.teable.io/en/api-reference/authority-matrix/patch-base-authority-matrix-role-name`
+
+#### `PATCH /base/{baseId}/authority-matrix/role/{roleId}/status`
+Updates the status of a role.
+*Doc Link:* `http://help.teable.io/en/api-reference/authority-matrix/patch-base-authority-matrix-role-status`
+
+#### `PATCH /base/{baseId}/authority-matrix/role/{roleId}/table-status`
+Updates the table-level status for a role.
+*Doc Link:* `https://help.teable.io/en/api-reference/authority-matrix/patch-base-authority-matrix-role-table-status`
+
+#### `PATCH /base/{baseId}/authority-matrix/role/{roleId}/user`
+Assigns or updates users for a specific role.
+*Doc Link:* `http://help.teable.io/en/api-reference/authority-matrix/patch-base-authority-matrix-role-user`
+
+#### `GET /base/{baseId}/authority-matrix/role/{roleId}/table/{tableId}/filter/link-records`
+Retrieves linkable records for a filter within a role's permissions.
+*Doc Link:* `http://help.teable.io/en/api-reference/authority-matrix/get-base-authority-matrix-role-table-filter-link-records`
+
+## Automation
+
+Endpoints for creating and managing automations (workflows).
+
+#### `GET /base/{baseId}/workflow`
+Lists all automations (workflows) in a base.
+*Doc Link:* `http://help.teable.io/en/api-reference/automation/get-base-workflow`
+
+#### `POST /base/{baseId}/workflow`
+Creates a new automation.
+*Doc Link:* `https://help.teable.io/en/api-reference/automation/post-base-workflow`
+
+#### `GET /base/{baseId}/workflow/{workflowId}`
+Retrieves a specific automation.
+*Doc Link:* `http://help.teable.io/en/api-reference/automation/get-base-workflow-1`
+
+#### `PUT /base/{baseId}/workflow/{workflowId}`
+Updates a specific automation.
+*Doc Link:* `https://help.teable.io/en/api-reference/automation/put-base-workflow`
+
+#### `DELETE /base/{baseId}/workflow/{workflowId}`
+Deletes an automation.
+*Doc Link:* `http://help.teable.io/en/api-reference/automation/delete-base-workflow`
+
+#### `PUT /base/{baseId}/workflow/{workflowId}/active`
+Activates or deactivates an automation.
+*Doc Link:* `https://help.teable.io/en/api-reference/automation/put-base-workflow-active`
+
+#### `PUT /base/{baseId}/workflow/order`
+Updates the order of automations.
+*Doc Link:* `https://help.teable.io/en/api-reference/automation/put-base-workflow-order`
+
+#### `POST /base/{baseId}/workflow/duplicate`
+Duplicates an existing automation.
+*Doc Link:* `http://help.teable.io/en/api-reference/automation/post-base-workflow-duplicate`
+
+#### `GET /base/{baseId}/workflow/{workflowId}/run`
+Retrieves the run history of an automation.
+*Doc Link:* `http://help.teable.io/en/api-reference/automation/get-base-workflow-run`
+
+#### `GET /base/{baseId}/workflow/{workflowId}/run/{runId}`
+Retrieves details of a specific automation run.
+*Doc Link:* `https://help.teable.io/en/api-reference/automation/get-base-workflow-run-1`
+
+#### `GET /base/{baseId}/workflow/{workflowId}/trigger`
+Gets the trigger configuration for an automation.
+*Doc Link:* `https://help.teable.io/en/api-reference/automation/get-base-workflow-trigger`
+
+#### `POST /base/{baseId}/workflow/{workflowId}/trigger`
+Sets the trigger for an automation.
+*Doc Link:* `http://help.teable.io/en/api-reference/automation/post-base-workflow-trigger`
+
+#### `PUT /base/{baseId}/workflow/{workflowId}/trigger`
+Updates the trigger for an automation.
+*Doc Link:* `http://help.teable.io/en/api-reference/automation/put-base-workflow-trigger`
+
+#### `GET /base/{baseId}/workflow/{workflowId}/action`
+Gets the actions configured for an automation.
+*Doc Link:* `http://help.teable.io/en/api-reference/automation/get-base-workflow-action`
+
+#### `POST /base/{baseId}/workflow/{workflowId}/action`
+Adds an action to an automation.
+*Doc Link:* `http://help.teable.io/en/api-reference/automation/post-base-workflow-action`
+
+#### `PUT /base/{baseId}/workflow/{workflowId}/action/{actionId}`
+Updates an action in an automation.
+*Doc Link:* `http://help.teable.io/en/api-reference/automation/put-base-workflow-action`
+
+#### `DELETE /base/{baseId}/workflow/{workflowId}/action/{actionId}`
+Deletes an action from an automation.
+*Doc Link:* `http://help.teable.io/en/api-reference/automation/delete-base-workflow-action`
+
+#### `POST /base/{baseId}/workflow/{workflowId}/action/duplicate`
+Duplicates an action within an automation.
+*Doc Link:* `https://help.teable.io/en/api-reference/automation/post-base-workflow-action-duplicate`
+
+## Base
+
+Endpoints for managing bases (databases).
+
+#### `GET /space/{spaceId}/base`
+Lists all bases within a specific space.
+*Doc Link:* `http://help.teable.io/en/api-reference/base/get-space-base`
+
+#### `POST /base`
+Creates a new base.
+*Doc Link:* `https://help.teable.io/en/api-reference/base/post-base`
+
+#### `GET /base/{baseId}`
+Retrieves details of a specific base.
+*Doc Link:* `https://help.teable.io/en/api-reference/base/get-base`
+
+#### `PATCH /base/{baseId}`
+Updates a base's properties (e.g., name, icon).
+*Doc Link:* `https://help.teable.io/en/api-reference/base/patch-base`
+
+#### `DELETE /base/{baseId}`
+Moves a base to the trash.
+*Doc Link:* `https://help.teable.io/en/api-reference/base/delete-base`
+
+#### `DELETE /base/{baseId}/permanent`
+Permanently deletes a base.
+*Doc Link:* `https://help.teable.io/en/api-reference/base/delete-base-permanent`
+
+#### `POST /base/duplicate`
+Duplicates an existing base.
+*Doc Link:* `https://help.teable.io/en/api-reference/base/post-baseduplicate`
+
+#### `POST /base/import`
+Imports a base from a file (e.g., CSV, Excel).
+*Doc Link:* `https://help.teable.io/en/api-reference/base/import-a-base`
+
+#### `GET /base/{baseId}/export`
+Exports a base's data.
+*Doc Link:* `https://help.teable.io/en/api-reference/base/get-base-export`
+
+#### `POST /base/{baseId}/move`
+Moves a base to another space.
+*Doc Link:* `https://help.teable.io/en/api-reference/base/move-a-base-to-another-space`
+
+#### `PUT /base/order`
+Updates the order of bases in the sidebar.
+*Doc Link:* `https://help.teable.io/en/api-reference/base/put-base-order`
+
+#### `GET /base/access/all`
+Gets all accessible bases for the user.
+*Doc Link:* `http://help.teable.io/en/api-reference/base/get-baseaccessall`
+
+#### `GET /base/shared`
+Gets bases that are shared with the user.
+*Doc Link:* `http://help.teable.io/en/api-reference/base/get-baseshared-base`
+
+#### `GET /base/collaborators`
+Retrieves a list of collaborators for a base.
+*Doc Link:* `http://help.teable.io/en/api-reference/base/get-base-collaborators`
+
+#### `GET /base/collaborator-user-list`
+Retrieves a list of users who are collaborators on the base.
+*Doc Link:* `https://help.teable.io/en/api-reference/get-base-collaborator-user-list`
+
+#### `POST /base/{baseId}/collaborator`
+Adds a collaborator to a base.
+*Doc Link:* `http://help.teable.io/en/api-reference/base/post-base-collaborator`
+
+#### `PATCH /base/{baseId}/collaborators`
+Updates the role of a collaborator.
+*Doc Link:* `http://help.teable.io/en/api-reference/base/patch-base-collaborators`
+
+#### `DELETE /base/{baseId}/collaborators`
+Removes a collaborator from a base.
+*Doc Link:* `http://help.teable.io/en/api-reference/base/delete-base-collaborators`
+
+#### `GET /base/{baseId}/invitation-link`
+Gets invitation links for a base.
+*Doc Link:* `http://help.teable.io/en/api-reference/base/get-base-invitationlink`
+
+#### `POST /base/{baseId}/invitation-link`
+Creates an invitation link for a base.
+*Doc Link:* `https://help.teable.io/en/api-reference/base/post-base-invitationlink`
+
+#### `PATCH /base/{baseId}/invitation-link/{linkId}`
+Updates an invitation link.
+*Doc Link:* `https://help.teable.io/en/api-reference/base/patch-base-invitationlink`
+
+#### `DELETE /base/{baseId}/invitation-link/{linkId}`
+Deletes a base invitation link.
+*Doc Link:* `https://help.teable.io/en/api-reference/base/delete-base-invitationlink`
+
+#### `POST /base/{baseId}/invitation-email`
+Invites users to a base via email.
+*Doc Link:* `http://help.teable.io/en/api-reference/base/post-base-invitationemail`
+
+## Billing
+
+Endpoints for managing billing, subscriptions, and licenses.
+
+#### `GET /billing/all-products`
+Retrieves all available billing products.
+*Doc Link:* `https://help.teable.io/en/api-reference/billing/get-billingall-products`
+
+#### `GET /billing/base-products`
+Retrieves billing products related to bases.
+*Doc Link:* `http://help.teable.io/en/api-reference/billing/get-billingbase-products`
+
+#### `GET /billing/add-on-products`
+Retrieves available add-on products.
+*Doc Link:* `https://help.teable.io/en/api-reference/billing/get-billingadd-on-products`
+
+#### `GET /billing/subscription/summary`
+Gets a summary of the current subscription.
+*Doc Link:* `https://help.teable.io/en/api-reference/billing/get-billingsubscriptionsummary`
+
+#### `GET /billing/subscription/license`
+Gets details of the subscription license.
+*Doc Link:* `https://help.teable.io/en/api-reference/billing/get-billingsubscriptionlicense`
+
+#### `POST /billing/subscription/license/checkout`
+Initiates the checkout process for a license subscription.
+*Doc Link:* `https://help.teable.io/en/api-reference/billing/post-billingsubscriptionlicensecheckout`
+
+#### `POST /billing/subscription/license/manage-billing`
+Redirects to a portal to manage billing for a license.
+*Doc Link:* `https://help.teable.io/en/api-reference/billing/post-billingsubscriptionlicensemanage-billing`
+
+#### `GET /space/{spaceId}/billing`
+Gets billing information for a specific space.
+*Doc Link:* `http://help.teable.io/en/api-reference/billing/get-space-billing`
+
+#### `GET /space/{spaceId}/billing/subscription`
+Gets subscription details for a space.
+*Doc Link:* `http://help.teable.io/en/api-reference/billing/get-space-billingsubscription`
+
+#### `DELETE /space/{spaceId}/billing/subscription`
+Cancels the subscription for a space.
+*Doc Link:* `https://help.teable.io/en/api-reference/billing/delete-space-billingsubscription`
+
+#### `POST /space/{spaceId}/billing/subscription/checkout`
+Initiates the checkout process for a space subscription.
+*Doc Link:* `https://help.teable.io/en/api-reference/billing/post-space-billingsubscriptioncheckout`
+
+#### `GET /space/{spaceId}/billing/subscription/summary`
+Gets the subscription summary for a space.
+*Doc Link:* `https://help.teable.io/en/api-reference/billing/get-space-billingsubscriptionsummary`
+
+#### `GET /space/{spaceId}/billing/credit-usage/summary`
+Gets a summary of credit usage for a space.
+*Doc Link:* `https://help.teable.io/en/api-reference/billing/get-space-billingcredit-usage-summary`
+
+#### `GET /space/{spaceId}/billing/invoice/list`
+Lists invoices for a space.
+*Doc Link:* `https://help.teable.io/en/api-reference/billing/get-space-billinginvoicebase-list`
+
+## Chat
+
+Endpoints for the base-level chat feature.
+
+#### `GET /base/{baseId}/chat/history`
+Retrieves the chat history for a base.
+*Doc Link:* `https://help.teable.io/en/api-reference/chat/get-base-chathistory`
+
+#### `GET /base/{baseId}/chat/{chatId}/messages`
+Retrieves messages from a specific chat session.
+*Doc Link:* `http://help.teable.io/en/api-reference/chat/get-base-chat-messages`
+
+#### `PATCH /base/{baseId}/chat/{chatId}/rename`
+Renames a chat session.
+*Doc Link:* `http://help.teable.io/en/api-reference/patch-base-chat-rename`
+
+#### `DELETE /base/{baseId}/chat/{chatId}`
+Deletes a chat session.
+*Doc Link:* `http://help.teable.io/en/api-reference/delete-base-chat-delete`
+
+## Comment
+
+Endpoints for managing comments on records.
+
+#### `GET /record/{recordId}/comment`
+Lists all comments for a specific record.
+*Doc Link:* `https://help.teable.io/en/api-reference/comment/get-comment-list`
+
+#### `POST /record/{recordId}/comment`
+Creates a new comment on a record.
+*Doc Link:* `https://help.teable.io/en/api-reference/comment/post-comment-create`
+
+#### `GET /comment/{commentId}`
+Retrieves a specific comment.
+*Doc Link:* `http://help.teable.io/en/api-reference/comment/get-comment-`
+
+#### `PATCH /comment/{commentId}`
+Updates/edits a comment.
+*Doc Link:* `https://help.teable.io/en/api-reference/comment/patch-comment-`
+
+#### `DELETE /comment/{commentId}`
+Deletes a comment.
+*Doc Link:* `https://help.teable.io/en/api-reference/comment/delete-comment-`
+
+#### `GET /record/{recordId}/comment/count`
+Gets the total number of comments on a record.
+*Doc Link:* `https://help.teable.io/en/api-reference/comment/get-comment-count-1`
+
+#### `POST /comment/{commentId}/reaction`
+Adds a reaction (e.g., emoji) to a comment.
+*Doc Link:* `https://help.teable.io/en/api-reference/comment/post-comment--reaction`
+
+#### `DELETE /comment/{commentId}/reaction`
+Removes a reaction from a comment.
+*Doc Link:* `https://help.teable.io/en/api-reference/comment/delete-comment--reaction`
+
+#### `GET /record/{recordId}/comment/subscribe`
+Gets the subscription status for comments on a record.
+*Doc Link:* `https://help.teable.io/en/api-reference/comment/get-comment-subscribe`
+
+#### `POST /record/{recordId}/comment/subscribe`
+Subscribes the user to notifications for new comments on a record.
+*Doc Link:* `https://help.teable.io/en/api-reference/comment/post-comment-subscribe`
+
+#### `DELETE /record/{recordId}/comment/subscribe`
+Unsubscribes the user from comment notifications on a record.
+*Doc Link:* `https://help.teable.io/en/api-reference/comment/delete-comment-subscribe`
+
+## Dashboard
+
+Endpoints for managing dashboards within a base.
+
+#### `GET /base/{baseId}/dashboard`
+Lists all dashboards in a base.
+*Doc Link:* `http://help.teable.io/en/api-reference/dashboard/get-base-dashboard`
+
+#### `POST /base/{baseId}/dashboard`
+Creates a new dashboard.
+*Doc Link:* `http://help.teable.io/en/api-reference/dashboard/post-base-dashboard`
+
+#### `GET /base/{baseId}/dashboard/{dashboardId}`
+Retrieves a specific dashboard.
+*Doc Link:* `https://help.teable.io/en/api-reference/dashboard/get-base-dashboard-1`
+
+#### `DELETE /base/{baseId}/dashboard/{dashboardId}`
+Deletes a dashboard.
+*Doc Link:* `https://help.teable.io/en/api-reference/dashboard/delete-base-dashboard`
+
+#### `PATCH /base/{baseId}/dashboard/{dashboardId}/layout`
+Updates the layout of a dashboard.
+*Doc Link:* `https://help.teable.io/en/api-reference/dashboard/patch-base-dashboard-layout`
+
+#### `PATCH /base/{baseId}/dashboard/{dashboardId}/rename`
+Renames a dashboard.
+*Doc Link:* `http://help.teable.io/en/api-reference/dashboard/patch-base-dashboard-rename`
+
+#### `POST /base/{baseId}/dashboard/duplicate`
+Duplicates a dashboard.
+*Doc Link:* `http://help.teable.io/en/api-reference/dashboard/duplicate-a-dashboard`
+
+#### `POST /base/{baseId}/dashboard/{dashboardId}/plugin`
+Adds a plugin/widget to a dashboard.
+*Doc Link:* `http://help.teable.io/en/api-reference/dashboard/post-base-dashboard-plugin`
+
+#### `DELETE /base/{baseId}/dashboard/{dashboardId}/plugin/{pluginInstanceId}`
+Removes a plugin/widget from a dashboard.
+*Doc Link:* `http://help.teable.io/en/api-reference/dashboard/delete-base-dashboard-plugin`
+
+## DB Connection
+
+Endpoints for managing external database connections.
+
+#### `GET /base/{baseId}/connection`
+Lists all database connections for a base.
+*Doc Link:* `https://help.teable.io/en/api-reference/db-connection/get-base-connection`
+
+#### `POST /base/{baseId}/connection`
+Creates a new database connection.
+*Doc Link:* `http://help.teable.io/en/api-reference/db-connection/post-base-connection`
+
+#### `DELETE /base/{baseId}/connection/{connectionId}`
+Deletes a database connection.
+*Doc Link:* `https://help.teable.io/en/api-reference/db-connection/delete-base-connection`
+
+## Enterprise
+
+Endpoints for enterprise-specific features like SSO and domain verification.
+
+#### `GET /enterprise/authentication/providers`
+Lists available enterprise authentication providers (e.g., SAML, OIDC).
+*Doc Link:* `https://help.teable.io/en/api-reference/enterprise/get-enterprise-authenticationproviders`
+
+#### `GET /enterprise/authentication`
+Retrieves the configured enterprise authentication settings.
+*Doc Link:* `http://help.teable.io/en/api-reference/enterprise/get-enterprise-authentication`
+
+#### `POST /enterprise/authentication`
+Creates a new enterprise authentication configuration.
+*Doc Link:* `https://help.teable.io/en/api-reference/enterprise/post-enterprise-authentication`
+
+#### `PUT /enterprise/authentication/{authId}`
+Updates an enterprise authentication configuration.
+*Doc Link:* `http://help.teable.io/en/api-reference/enterprise/put-enterprise-authentication`
+
+#### `DELETE /enterprise/authentication/{authId}`
+Deletes an enterprise authentication configuration.
+*Doc Link:* `http://help.teable.io/en/api-reference/enterprise/delete-enterprise-authentication`
+
+#### `GET /enterprise/domain-verification`
+Retrieves the status of domain verification.
+*Doc Link:* `https://help.teable.io/en/api-reference/enterprise/get-enterprise-domain-verification`
+
+#### `POST /enterprise/domain-verification`
+Initiates the domain verification process.
+*Doc Link:* `http://help.teable.io/en/api-reference/enterprise/post-enterprise-domain-verification`
+
+#### `DELETE /enterprise/domain-verification/{verificationId}`
+Deletes a domain verification entry.
+*Doc Link:* `https://help.teable.io/en/api-reference/enterprise/delete-enterprise-domain-verification`
+
+#### `POST /enterprise/domain-verification/send-verification-email`
+Sends a verification email for domain ownership.
+*Doc Link:* `http://help.teable.io/en/api-reference/enterprise/post-enterprise-domain-verificationsend-verification-email`
+
+## Field
+
+Endpoints for managing fields (columns) in a table.
+
+#### `GET /table/{tableId}/field`
+Lists all fields in a table.
+*Doc Link:* `http://help.teable.io/en/api-reference/field/list-fields`
+
+#### `POST /table/{tableId}/field`
+Creates a new field in a table.
+*Doc Link:* `http://help.teable.io/en/api-reference/field/create-field`
+
+#### `GET /table/{tableId}/field/{fieldId}`
+Retrieves details for a specific field.
+*Doc Link:* `https://help.teable.io/en/api-reference/field/get-a-field`
+
+#### `PATCH /table/{tableId}/field/{fieldId}`
+Updates a field's properties (e.g., name, type, options).
+*Doc Link:* `http://help.teable.io/en/api-reference/field/update-field`
+
+#### `DELETE /table/{tableId}/field/{fieldId}`
+Deletes a field from a table.
+*Doc Link:* `https://help.teable.io/en/api-reference/field/delete-field`
+
+#### `POST /table/{tableId}/field/delete-multiple`
+Deletes multiple fields at once.
+*Doc Link:* `https://help.teable.io/en/api-reference/field/delete-multiple-fields`
+
+#### `POST /table/{tableId}/field/{fieldId}/duplicate`
+Duplicates an existing field.
+*Doc Link:* `http://help.teable.io/en/api-reference/field/duplicate-field`
+
+#### `POST /table/{tableId}/field/{fieldId}/convert`
+Converts a field from one type to another.
+*Doc Link:* `http://help.teable.io/en/api-reference/field/convert-field-type`
+
+#### `POST /table/{tableId}/field/{fieldId}/ai-fill`
+Fills a field's cells with AI-generated content.
+*Doc Link:* `http://help.teable.io/en/api-reference/field/auto-fill-a-field-by-ai`
+
+#### `POST /table/{tableId}/field/{fieldId}/ai-fill/stop`
+Stops an ongoing AI fill operation.
+*Doc Link:* `http://help.teable.io/en/api-reference/field/stop-auto-fill-a-field-by-ai`
+
+#### `GET /table/{tableId}/field/{fieldId}/filter-linked-records`
+Gets records from a linked table for use in a filter.
+*Doc Link:* `https://help.teable.io/en/api-reference/field/get-linked-records-for-filter`
+
+## Invitation
+
+Endpoints related to accepting invitations.
+
+#### `POST /invitation/link/accept`
+Accepts an invitation from a shared link.
+*Doc Link:* `https://help.teable.io/en/api-reference/invitation/post-invitationlinkaccept`
+
+## Notification
+
+Endpoints for managing user notifications.
+
+#### `GET /notifications`
+Retrieves the user's notifications.
+*Doc Link:* `http://help.teable.io/en/api-reference/notification/get-notifications`
+
+#### `GET /notifications/unread-count`
+Gets the count of unread notifications.
+*Doc Link:* `http://help.teable.io/en/api-reference/notification/get-notificationsunread-count`
+
+#### `PATCH /notifications/read-all`
+Marks all notifications as read.
+*Doc Link:* `http://help.teable.io/en/api-reference/notification/patch-notificationsread-all`
+
+#### `PATCH /notifications/{notificationId}/status`
+Updates the status of a specific notification (e.g., mark as read).
+*Doc Link:* `https://help.teable.io/en/api-reference/notification/patch-notifications-status`
+
+## OAuth
+
+Endpoints for managing OAuth applications and the authorization flow.
+
+#### `GET /oauth/client`
+Lists all OAuth clients created by the user.
+*Doc Link:* `https://help.teable.io/en/api-reference/oauth/get-oauthclient`
+
+#### `POST /oauth/client`
+Creates a new OAuth client.
+*Doc Link:* `http://help.teable.io/en/api-reference/oauth/post-oauthclient`
+
+#### `GET /oauth/client/{clientId}`
+Retrieves details of a specific OAuth client.
+*Doc Link:* `https://help.teable.io/en/api-reference/oauth/get-oauthclient-1`
+
+#### `PUT /oauth/client/{clientId}`
+Updates an OAuth client.
+*Doc Link:* `https://help.teable.io/en/api-reference/oauth/put-oauthclient`
+
+#### `DELETE /oauth/client/{clientId}`
+Deletes an OAuth client.
+*Doc Link:* `https://help.teable.io/en/api-reference/oauth/delete-oauthclient`
+
+#### `POST /oauth/client/{clientId}/secret`
+Generates a new client secret.
+*Doc Link:* `http://help.teable.io/en/api-reference/oauth/post-oauthclient-secret`
+
+#### `DELETE /oauth/client/{clientId}/secret`
+Deletes an OAuth client secret.
+*Doc Link:* `http://help.teable.io/en/api-reference/oauth/delete-oauthclient-secret`
+
+#### `GET /oauth/authorized-clients`
+Lists all applications the user has authorized.
+*Doc Link:* `https://help.teable.io/en/api-reference/oauth/get-oauthclientauthorizedlist`
+
+#### `POST /oauth/client/revoke-access`
+Revokes an application's access to the user's account.
+*Doc Link:* `http://help.teable.io/en/api-reference/oauth/post-oauthclient-revoke-access`
+
+#### `GET /oauth/decision`
+Part of the OAuth flow, for the user to approve or deny access.
+*Doc Link:* `http://help.teable.io/en/api-reference/oauth/get-oauthdecision`
+
+## Organization
+
+Endpoints for managing organizations, departments, and members.
+
+#### `GET /organization`
+Retrieves organization details.
+*Doc Link:* `https://help.teable.io/en/api-reference/organization/get-organization`
+
+#### `GET /organization/me`
+Retrieves the user's membership details within the organization.
+*Doc Link:* `https://help.teable.io/en/api-reference/organization/get-organization-me`
+
+#### `GET /organization/instance`
+Retrieves instance-level organization info.
+*Doc Link:* `https://help.teable.io/en/api-reference/organization/get-instanceorganization`
+
+#### `PUT /organization/rename`
+Renames the organization.
+*Doc Link:* `https://help.teable.io/en/api-reference/organization/put-organization-rename`
+
+#### `GET /organization/user`
+Lists all users in the organization.
+*Doc Link:* `https://help.teable.io/en/api-reference/organization/get-organization-users`
+
+#### `POST /organization/user`
+Invites a new user to the organization.
+*Doc Link:* `https://help.teable.io/en/api-reference/organization/post-organization-user`
+
+#### `POST /organization/users`
+Invites multiple users to the organization.
+*Doc Link:* `https://help.teable.io/en/api-reference/organization/post-organization-users`
+
+#### `GET /organization/user/{userId}`
+Gets details of a specific user in the organization.
+*Doc Link:* `https://help.teable.io/en/api-reference/organization/get-organization-user`
+
+#### `PATCH /organization/user/{userId}`
+Updates a user's details within the organization.
+*Doc Link:* `http://help.teable.io/en/api-reference/organization/patch-organization-user`
+
+#### `DELETE /organization/user/{userId}`
+Removes a user from the organization.
+*Doc Link:* `https://help.teable.io/en/api-reference/organization/delete-organization-user`
+
+#### `POST /organization/user/activate`
+Activates a deactivated user account.
+*Doc Link:* `https://help.teable.io/en/api-reference/organization/post-organization-user-activate`
+
+#### `POST /organization/user/deactivate`
+Deactivates a user account.
+*Doc Link:* `https://help.teable.io/en/api-reference/organization/post-organization-user-deactivate`
+
+#### `GET /organization/department`
+Lists all departments in the organization.
+*Doc Link:* `http://help.teable.io/en/api-reference/organization/get-organizationdepartment`
+
+#### `POST /organization/department`
+Creates a new department.
+*Doc Link:* `https://help.teable.io/en/api-reference/organization/post-organization-department`
+
+#### `DELETE /organization/department/{departmentId}`
+Deletes a department.
+*Doc Link:* `https://help.teable.io/en/api-reference/organization/delete-organization-department`
+
+#### `POST /organization/department/{departmentId}/user`
+Adds a user to a department.
+*Doc Link:* `https://help.teable.io/en/api-reference/organization/post-organization-department-user`
+
+## Pin
+
+Endpoints for pinning items (like bases) to the sidebar.
+
+#### `GET /pin/list`
+Lists all pinned items for the user.
+*Doc Link:* `https://help.teable.io/en/api-reference/pin/get-pinlist`
+
+#### `POST /pin`
+Pins an item.
+*Doc Link:* `https://help.teable.io/en/api-reference/pin/post-pin`
+
+#### `DELETE /pin/{pinnedItemId}`
+Unpins an item.
+*Doc Link:* `http://help.teable.io/en/api-reference/pin/delete-pin`
+
+#### `PUT /pin/order`
+Updates the order of pinned items.
+*Doc Link:* `https://help.teable.io/en/api-reference/pin/put-pinorder`
+
+## Plugin
+
+Endpoints for managing plugins.
+
+#### `GET /plugin/center/list`
+Lists all plugins available in the plugin center/marketplace.
+*Doc Link:* `https://help.teable.io/en/api-reference/plugin/get-plugincenterlist`
+
+#### `GET /plugin`
+Lists plugins developed by the user.
+*Doc Link:* `https://help.teable.io/en/api-reference/plugin/get-plugin`
+
+#### `POST /plugin`
+Creates a new plugin manifest.
+*Doc Link:* `http://help.teable.io/en/api-reference/plugin/post-plugin`
+
+#### `GET /plugin/{pluginId}`
+Retrieves details of a specific plugin.
+*Doc Link:* `http://help.teable.io/en/api-reference/plugin/get-plugin-1`
+
+#### `PUT /plugin/{pluginId}`
+Updates a plugin.
+*Doc Link:* `http://help.teable.io/en/api-reference/plugin/put-plugin`
+
+#### `DELETE /plugin/{pluginId}`
+Deletes a plugin.
+*Doc Link:* `https://help.teable.io/en/api-reference/plugin/delete-plugin`
+
+#### `PATCH /plugin/{pluginId}/submit`
+Submits a plugin for review.
+*Doc Link:* `https://help.teable.io/en/api-reference/plugin/patch-plugin-submit`
+
+#### `POST /plugin/{pluginId}/regenerate-secret`
+Regenerates the secret for a plugin.
+*Doc Link:* `http://help.teable.io/en/api-reference/plugin/post-plugin-regenerate-secret`
+
+## Record
+
+Endpoints for creating, reading, updating, and deleting records (rows).
+
+#### `GET /table/{tableId}/record`
+Lists records in a table, with support for filtering, sorting, and pagination.
+*Doc Link:* `http://help.teable.io/en/api-reference/record/list-records`
+
+#### `POST /table/{tableId}/record`
+Creates multiple new records in a table.
+*Doc Link:* `https://help.teable.io/en/api-reference/record/create-records`
+
+#### `GET /table/{tableId}/record/{recordId}`
+Retrieves a single record.
+*Doc Link:* `https://help.teable.io/en/api-reference/record/get-record`
+
+#### `PATCH /table/{tableId}/record/{recordId}`
+Updates a single record.
+*Doc Link:* `https://help.teable.io/en/api-reference/record/update-record`
+
+#### `DELETE /table/{tableId}/record/{recordId}`
+Deletes a single record.
+*Doc Link:* `https://help.teable.io/en/api-reference/record/delete-record`
+
+#### `PATCH /table/{tableId}/record`
+Updates multiple records in a single request.
+*Doc Link:* `http://help.teable.io/en/api-reference/record/update-multiple-records`
+
+#### `DELETE /table/{tableId}/record`
+Deletes multiple records in a single request.
+*Doc Link:* `http://help.teable.io/en/api-reference/record/delete-records`
+
+#### `POST /table/{tableId}/record/{recordId}/duplicate`
+Duplicates a record.
+*Doc Link:* `https://help.teable.io/en/api-reference/record/duplicate-record`
+
+#### `POST /record/upload-attachment`
+Uploads an attachment and links it to a record.
+*Doc Link:* `https://help.teable.io/en/api-reference/record/upload-attachment`
+
+#### `GET /record/{recordId}/history`
+Retrieves the revision history for a single record.
+*Doc Link:* `https://help.teable.io/en/api-reference/record/get-record-history`
+
+#### `GET /table/{tableId}/record/history`
+Retrieves the revision history for all records in a table.
+*Doc Link:* `http://help.teable.io/en/api-reference/record/get-table-records-history`
+
+#### `POST /table/{tableId}/undo`
+Performs an undo operation in the table.
+*Doc Link:* `https://help.teable.io/en/api-reference/record/post-table-undo-redoundo`
+
+#### `POST /table/{tableId}/redo`
+Performs a redo operation in the table.
+*Doc Link:* `https://help.teable.io/en/api-reference/record/post-table-undo-redoredo`
+
+#### `POST /record/ai-fill-cell`
+Uses AI to fill a single cell's value.
+*Doc Link:* `https://help.teable.io/en/api-reference/record/auto-fill-a-cell-by-ai`
+
+## Share
+
+Endpoints for managing shared views and forms.
+
+#### `GET /share/{shareId}/view`
+Retrieves the data of a shared view.
+*Doc Link:* `http://help.teable.io/en/api-reference/share/get-share-view`
+
+#### `POST /share/{shareId}/view/auth`
+Authenticates a user for a password-protected shared view.
+*Doc Link:* `https://help.teable.io/en/api-reference/share/post-share-viewauth`
+
+#### `POST /share/{shareId}/view/form-submit`
+Submits data through a shared form view.
+*Doc Link:* `https://help.teable.io/en/api-reference/share/post-share-viewform-submit`
+
+#### `GET /share/{shareId}/view/aggregations`
+Gets aggregation results for a shared view.
+*Doc Link:* `http://help.teable.io/en/api-reference/share/get-share-viewaggregations`
+
+#### `GET /share/{shareId}/view/collaborators`
+Gets collaborator information relevant to a shared view.
+*Doc Link:* `http://help.teable.io/en/api-reference/share/get-share-viewcollaborators`
+
+## Space
+
+Endpoints for managing spaces (workspaces).
+
+#### `GET /space/list`
+Lists all spaces the user has access to.
+*Doc Link:* `http://help.teable.io/en/api-reference/space/get-space-list`
+
+#### `POST /space`
+Creates a new space.
+*Doc Link:* `https://help.teable.io/en/api-reference/space/post-space`
+
+#### `GET /space/{spaceId}`
+Retrieves details of a specific space.
+*Doc Link:* `http://help.teable.io/en/api-reference/space/get-space`
+
+#### `PATCH /space/{spaceId}`
+Updates a space's properties (e.g., name, icon).
+*Doc Link:* `http://help.teable.io/en/api-reference/space/patch-space`
+
+#### `DELETE /space/{spaceId}`
+Moves a space to the trash.
+*Doc Link:* `https://help.teable.io/en/api-reference/space/delete-space`
+
+#### `DELETE /space/{spaceId}/permanent`
+Permanently deletes a space.
+*Doc Link:* `https://help.teable.io/en/api-reference/space/delete-space-permanent`
+
+#### `GET /space/{spaceId}/collaborators`
+Lists collaborators in a space.
+*Doc Link:* `https://help.teable.io/en/api-reference/space/get-space-collaborators`
+
+#### `POST /space/{spaceId}/collaborator`
+Adds a collaborator to a space.
+*Doc Link:* `http://help.teable.io/en/api-reference/space/post-space-collaborator`
+
+#### `PATCH /space/{spaceId}/collaborators`
+Updates the role of a space collaborator.
+*Doc Link:* `http://help.teable.io/en/api-reference/space/patch-space-collaborators`
+
+#### `DELETE /space/{spaceId}/collaborators`
+Removes a collaborator from a space.
+*Doc Link:* `http://help.teable.io/en/api-reference/space/delete-space-collaborators`
+
+#### `POST /space/trash/restore`
+Restores items (bases, spaces) from the trash.
+*Doc Link:* `https://help.teable.io/en/api-reference/space/post-trashrestore`
+
+## Space Management
+
+Endpoints for enterprise-level space management.
+
+#### `GET /enterprise/space-manage`
+Retrieves a list of spaces managed by the enterprise.
+*Doc Link:* `https://help.teable.io/en/api-reference/space-manage/get-enterprise-space-manage`
+
+#### `POST /enterprise/space-manage/add-organization`
+Adds an organization to a managed space.
+*Doc Link:* `https://help.teable.io/en/api-reference/post-enterprise-space-manage-add-organization`
+
+#### `DELETE /enterprise/space-manage/remove-organization`
+Removes an organization from a managed space.
+*Doc Link:* `https://help.teable.io/en/api-reference/space-manage/delete-enterprise-space-manage-remove-organization`
+
+## Table
+
+Endpoints for managing tables within a base.
+
+#### `GET /base/{baseId}/table`
+Lists all tables in a base.
+*Doc Link:* `https://help.teable.io/en/api-reference/table/list-tables`
+
+#### `POST /base/{baseId}/table`
+Creates a new table in a base.
+*Doc Link:* `http://help.teable.io/en/api-reference/table/create-table`
+
+#### `GET /table/{tableId}`
+Retrieves details of a specific table.
+*Doc Link:* `http://help.teable.io/en/api-reference/table/get-table-details`
+
+#### `DELETE /table/{tableId}`
+Moves a table to the trash.
+*Doc Link:* `http://help.teable.io/en/api-reference/table/delete-table`
+
+#### `DELETE /table/{tableId}/permanent`
+Permanently deletes a table from the trash.
+*Doc Link:* `http://help.teable.io/en/api-reference/table/permanently-delete-table`
+
+#### `PATCH /table/{tableId}/name`
+Updates the name of a table.
+*Doc Link:* `https://help.teable.io/en/api-reference/table/update-table-name`
+
+#### `PATCH /table/{tableId}/description`
+Updates the description of a table.
+*Doc Link:* `https://help.teable.io/en/api-reference/table/update-table-description`
+
+#### `PUT /table/order`
+Updates the order of tables in a base.
+*Doc Link:* `https://help.teable.io/en/api-reference/table/update-table-order`
+
+#### `POST /table/{tableId}/duplicate`
+Duplicates an existing table.
+*Doc Link:* `http://help.teable.io/en/api-reference/table/duplicate-a-table`
+
+## Template
+
+Endpoints for managing base templates.
+
+#### `GET /template`
+Retrieves a list of templates.
+*Doc Link:* `https://help.teable.io/en/api-reference/template/get-template`
+
+#### `POST /template`
+Creates a new template from a base.
+*Doc Link:* `http://help.teable.io/en/api-reference/template/post-templatecreate`
+
+#### `GET /template/{templateId}`
+Gets the details of a specific template.
+*Doc Link:* `http://help.teable.io/en/api-reference/template/get-template-detail-by-templateid`
+
+#### `PATCH /template/{templateId}`
+Updates a template.
+*Doc Link:* `http://help.teable.io/en/api-reference/template/patch-template`
+
+#### `DELETE /template/{templateId}`
+Deletes a template.
+*Doc Link:* `http://help.teable.io/en/api-reference/template/delete-template`
+
+#### `GET /template/category/list`
+Gets the list of all template categories.
+*Doc Link:* `http://help.teable.io/en/api-reference/template/get-templatecategorylist`
+
+#### `POST /template/category`
+Creates a new template category.
+*Doc Link:* `https://help.teable.io/en/api-reference/template/post-templatecategorycreate`
+
+## Trash
+
+Endpoints for managing trashed items.
+
+#### `GET /trash`
+Retrieves a list of all items currently in the trash.
+*Doc Link:* `http://help.teable.io/en/api-reference/trash/get-trash`
+
+#### `GET /trash/items`
+Retrieves items from the trash.
+*Doc Link:* `https://help.teable.io/en/api-reference/trash/get-trashitems`
+
+## Usage
+
+Endpoints for retrieving usage statistics.
+
+#### `GET /usage/instance`
+Retrieves usage statistics for the entire instance.
+*Doc Link:* `https://help.teable.io/en/api-reference/usage/get-instanceusage`
+
+#### `GET /usage/space/{spaceId}`
+Retrieves usage statistics for a specific space.
+*Doc Link:* `https://help.teable.io/en/api-reference/usage/get-space-usage`
+
+#### `GET /usage/base/{baseId}`
+Retrieves usage statistics for a specific base.
+*Doc Link:* `http://help.teable.io/en/api-reference/usage/get-base-usage`
+
+## User
+
+Endpoints for managing user profiles and settings.
+
+#### `PATCH /user/name`
+Updates the current user's name.
+*Doc Link:* `https://help.teable.io/en/api-reference/user/patch-username`
+
+#### `PATCH /user/avatar`
+Updates the current user's avatar.
+*Doc Link:* `https://help.teable.io/en/api-reference/user/patch-useravatar`
+
+#### `PATCH /user/notify-meta`
+Updates the user's notification metadata/settings.
+*Doc Link:* `https://help.teable.io/en/api-reference/user/patch-usernotify-meta`
+
+#### `GET /user/last-visit`
+Gets the last visited item for the user.
+*Doc Link:* `http://help.teable.io/en/api-reference/user/get-userlast-visit`
+
+#### `POST /user/last-visit`
+Sets the last visited item for the user.
+*Doc Link:* `http://help.teable.io/en/api-reference/user/post-userlast-visit`
+
+## View
+
+Endpoints for managing views within a table.
+
+#### `GET /table/{tableId}/view`
+Lists all views in a table.
+*Doc Link:* `http://help.teable.io/en/api-reference/view/get-view-list`
+
+#### `POST /table/{tableId}/view`
+Creates a new view.
+*Doc Link:* `https://help.teable.io/en/api-reference/view/post-table-view`
+
+#### `GET /table/{tableId}/view/{viewId}`
+Retrieves details of a specific view.
+*Doc Link:* `https://help.teable.io/en/api-reference/view/get-table-view`
+
+#### `DELETE /table/{tableId}/view/{viewId}`
+Deletes a view.
+*Doc Link:* `https://help.teable.io/en/api-reference/view/delete-table-view`
+
+#### `PUT /table/{tableId}/view/{viewId}/name`
+Updates the name of a view.
+*Doc Link:* `https://help.teable.io/en/api-reference/view/put-table-view-name`
+
+#### `PUT /table/{tableId}/view/order`
+Updates the order of views in a table.
+*Doc Link:* `https://help.teable.io/en/api-reference/view/put-table-view-order`
+
+#### `PUT /table/{tableId}/view/{viewId}/filter`
+Updates the filter configuration of a view.
+*Doc Link:* `https://help.teable.io/en/api-reference/view/put-table-view-filter`
+
+#### `PUT /table/{tableId}/view/{viewId}/sort`
+Updates the sorting configuration of a view.
+*Doc Link:* `https://help.teable.io/en/api-reference/view/put-table-view-sort`
+
+#### `PUT /table/{tableId}/view/{viewId}/group`
+Updates the grouping configuration of a view.
+*Doc Link:* `https://help.teable.io/en/api-reference/view/put-table-view-group`
+
+#### `PATCH /table/{tableId}/view/{viewId}/options`
+Updates various options of a view.
+*Doc Link:* `https://help.teable.io/en/api-reference/view/patch-table-view-options`
+
+#### `PUT /table/{tableId}/view/{viewId}/locked`
+Locks or unlocks a view to prevent changes.
+*Doc Link:* `https://help.teable.io/en/api-reference/view/put-table-view-locked`
+
+#### `POST /table/{tableId}/view/{viewId}/share/enable`
+Enables sharing for a view and generates a share link.
+*Doc Link:* `https://help.teable.io/en/api-reference/view/post-table-view-enable-share`
+
+#### `POST /table/{tableId}/view/{viewId}/share/disable`
+Disables sharing for a view.
+*Doc Link:* `https://help.teable.io/en/api-reference/view/post-table-view-disable-share`
+
+Of course. Generating a unique `curl` command for all 399 endpoints would be highly repetitive. Instead, I will provide you with a set of templates and a variety of representative examples.
+
+You can easily construct the command for any of the 399 API endpoints by following these patterns.
+
+### General `curl` Command Structure
+
+A typical `curl` command for the Teable API will look like this:
+
+```sh
+curl --request <HTTP_METHOD> \
+  --url <API_ENDPOINT_URL> \
+  --header 'Authorization: Bearer <your_personal_access_token>' \
+  --header 'Content-Type: application/json' \
+  --data '<JSON_BODY_IF_NEEDED>'
+```
+
+**Key Components:**
+
+*   **`<HTTP_METHOD>`**: `GET`, `POST`, `PATCH`, `PUT`, or `DELETE`.
+*   **`<API_ENDPOINT_URL>`**: The full URL for the API endpoint (e.g., `https://app.teable.io/api/table/{tableId}/record`).
+*   **`<your_personal_access_token>`**: Your Teable Personal Access Token.
+*   **`<JSON_BODY_IF_NEEDED>`**: The JSON data required for `POST`, `PATCH`, and `PUT` requests. `GET` and `DELETE` requests typically do not have a body.
+
+---
+
+### `GET` Requests (Reading Data)
+
+`GET` requests are used to retrieve information. They do not have a request body.
+
+**Template:**
+```sh
+curl --request GET \
+  --url <API_ENDPOINT_URL> \
+  --header 'Authorization: Bearer <token>'
+```
+
+**Examples:**
+
+1.  **List Records in a Table**
+    *Doc Link:* `http://help.teable.io/en/api-reference/record/list-records`
+    ```sh
+    curl --request GET \
+      --url https://app.teable.io/api/table/{tableId}/record \
+      --header 'Authorization: Bearer <token>'
+    ```
+
+2.  **Get a Specific Field**
+    *Doc Link:* `https://help.teable.io/en/api-reference/field/get-a-field`
+    ```sh
+    curl --request GET \
+      --url https://app.teable.io/api/table/{tableId}/field/{fieldId} \
+      --header 'Authorization: Bearer <token>'
+    ```
+
+3.  **List All Bases in a Space**
+    *Doc Link:* `http://help.teable.io/en/api-reference/base/get-space-base`
+    ```sh
+    curl --request GET \
+      --url https://app.teable.io/api/space/{spaceId}/base \
+      --header 'Authorization: Bearer <token>'
+    ```
+
+---
+
+### `POST` Requests (Creating Data)
+
+`POST` requests are used to create new resources. They almost always require a JSON body.
+
+**Template:**```sh
+curl --request POST \
+  --url <API_ENDPOINT_URL> \
+  --header 'Authorization: Bearer <token>' \
+  --header 'Content-Type: application/json' \
+  --data '<JSON_BODY>'
+```
+
+**Examples:**
+
+1.  **Create Records**
+    *Doc Link:* `https://help.teable.io/en/api-reference/record/create-records`
+    ```sh
+    curl --request POST \
+      --url https://app.teable.io/api/table/{tableId}/record \
+      --header 'Authorization: Bearer <token>' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "records": [
+          {
+            "fields": {
+              "YourFieldName": "Value 1",
+              "AnotherFieldName": "Value 2"
+            }
+          }
+        ]
+      }'
+    ```
+
+2.  **Create a New Table**
+    *Doc Link:* `http://help.teable.io/en/api-reference/table/create-table`
+    ```sh
+    curl --request POST \
+      --url https://app.teable.io/api/base/{baseId}/table \
+      --header 'Authorization: Bearer <token>' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "name": "My New Table",
+        "description": "A description of my new table."
+      }'
+    ```
+
+3.  **Duplicate a Table**
+    *Doc Link:* `http://help.teable.io/en/api-reference/table/duplicate-a-table`
+    ```sh
+    curl --request POST \
+      --url https://app.teable.io/api/table/{tableId}/duplicate \
+      --header 'Authorization: Bearer <token>'
+    ```
+
+---
+
+### `PATCH` and `PUT` Requests (Updating Data)
+
+`PATCH` is used for partial updates, while `PUT` is used for full replacement. Both require a JSON body.
+
+**Template:**
+```sh
+curl --request PATCH \
+  --url <API_ENDPOINT_URL> \
+  --header 'Authorization: Bearer <token>' \
+  --header 'Content-Type: application/json' \
+  --data '<JSON_BODY>'
+```
+
+**Examples:**
+
+1.  **Update a Record**
+    *Doc Link:* `https://help.teable.io/en/api-reference/record/update-record`
+    ```sh
+    curl --request PATCH \
+      --url https://app.teable.io/api/table/{tableId}/record/{recordId} \
+      --header 'Authorization: Bearer <token>' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "fields": {
+          "FieldName_to_Update": "New Value"
+        }
+      }'
+    ```
+
+2.  **Update a Field's Properties**
+    *Doc Link:* `http://help.teable.io/en/api-reference/field/update-field`
+    ```sh
+    curl --request PATCH \
+      --url https://app.teable.io/api/table/{tableId}/field/{fieldId} \
+      --header 'Authorization: Bearer <token>' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "name": "New Field Name"
+      }'
+    ```
+
+3.  **Update a View's Name (using `PUT`)**
+    *Doc Link:* `https://help.teable.io/en/api-reference/view/put-table-view-name`
+    ```sh
+    curl --request PUT \
+      --url https://app.teable.io/api/table/{tableId}/view/{viewId}/name \
+      --header 'Authorization: Bearer <token>' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "name": "My Renamed View"
+      }'
+    ```
+
+---
+
+### `DELETE` Requests (Removing Data)
+
+`DELETE` requests are used to remove a resource. They do not have a request body.
+
+**Template:**
+```sh
+curl --request DELETE \
+  --url <API_ENDPOINT_URL> \
+  --header 'Authorization: Bearer <token>'
+```
+
+**Examples:**
+
+1.  **Delete a Record**
+    *Doc Link:* `https://help.teable.io/en/api-reference/record/delete-record`
+    ```sh
+    curl --request DELETE \
+      --url https://app.teable.io/api/table/{tableId}/record/{recordId} \
+      --header 'Authorization: Bearer <token>'
+    ```
+
+2.  **Delete a Table**
+    *Doc Link:* `http://help.teable.io/en/api-reference/table/delete-table`
+    ```sh
+    curl --request DELETE \
+      --url https://app.teable.io/api/table/{tableId} \
+      --header 'Authorization: Bearer <token>'
+    ```
+
+3.  **Delete a Field**
+    *Doc Link:* `https://help.teable.io/en/api-reference/field/delete-field`
+    ```sh
+    curl --request DELETE \
+      --url https://app.teable.io/api/table/{tableId}/field/{fieldId} \
+      --header 'Authorization: Bearer <token>'
+    ```
+
+By combining these templates with the API documentation I provided earlier, you can construct the `curl` command for any of the 399 endpoints.
+
+
+https://help.teable.io/en/api-reference/view/patch-table-view-options
+https://help.teable.io/en/api-reference/billing/get-space-billinginvoicebase-list
+https://help.teable.io/en/api-reference/organization/delete-organization-department-user
+https://help.teable.io/en/api-reference/ai/post-api-aigenerate-stream
+https://help.teable.io/en/api-reference/automation/get-base-workflow-trigger
+https://help.teable.io/en/api-reference/comment/get-comment-count-1
+https://help.teable.io/en/api-reference/get-base-collaborator-user-list
+https://help.teable.io/en/api-reference/access-token/delete-access-token
+https://help.teable.io/en/api-reference/access-token/put-access-token
+https://help.teable.io/en/api-reference/enterprise/get-enterprise-domain-verification
+https://help.teable.io/en/api-reference/organization/patch-organization-department-userdepartment
+https://help.teable.io/en/api-reference/organization/get-organization-user-exists
+https://help.teable.io/en/api-reference/dashboard/get-base-dashboard-1
+https://help.teable.io/en/api-reference/automation/put-base-workflow-order
+https://help.teable.io/en/api-reference/view/put-table-view-name
+https://help.teable.io/en/api-reference/enterprise/delete-enterprise-domain-verification
+https://help.teable.io/en/api-reference/organization/patch-organization-department-move
+https://help.teable.io/en/api-reference/organization/post-organization-department-user
+https://help.teable.io/en/api-reference/comment/delete-comment--reaction
+https://help.teable.io/en/api-reference/post-enterprise-space-manage-add-organization
+https://help.teable.io/en/api-reference/view/post-table-view-disable-share
+https://help.teable.io/en/api-reference/view/put-table-view-manual-sort
+https://help.teable.io/en/api-reference/plugin-panel/duplicate-a-plugin-panel
+https://help.teable.io/en/api-reference/view/put-table-view-record-order
+https://help.teable.io/en/api-reference/access-token/get-access-token-1
+https://help.teable.io/en/api-reference/auth/post-authsend-change-email-code
+https://help.teable.io/en/api-reference/billing/get-space-billingcredit-usage-summary
+https://help.teable.io/en/api-reference/auth/post-authsend-signup-verification-code
+https://help.teable.io/en/api-reference/plugin-panel/delete-table-plugin-panel
+https://help.teable.io/en/api-reference/plugin-panel/post-table-plugin-panel
+https://help.teable.io/en/api-reference/plugin-panel/get-table-plugin-panel
+https://help.teable.io/en/api-reference/space-manage/get-enterprise-space-manage
+https://help.teable.io/en/api-reference/auth/post-authsend-reset-password-email
+https://help.teable.io/en/api-reference/view/post-table-view-enable-share
+https://help.teable.io/en/api-reference/automation/post-base-workflow-action-duplicate
+https://help.teable.io/en/api-reference/view/put-table-view-share-meta
+https://help.teable.io/en/api-reference/authority-matrix/get-base-authority-matrix
+https://help.teable.io/en/api-reference/template/get-published-template-category-list
+https://help.teable.io/en/api-reference/view/put-table-view-column-meta
+https://help.teable.io/en/api-reference/access-token/post-access-token-refresh
+https://help.teable.io/en/api-reference/plugin-panel/get-table-plugin-panel-1
+https://help.teable.io/en/api-reference/view/post-table-view-refresh-share-id
+https://help.teable.io/en/api-reference/authority-matrix/post-base-authority-matrix-role
+https://help.teable.io/en/api-reference/authority-matrix/get-base-authority-matrix-role
+https://help.teable.io/en/api-reference/authority-matrix/put-base-authority-matrix-role
+https://help.teable.io/en/api-reference/space-manage/get-enterprise-space-manage-1
+https://help.teable.io/en/api-reference/plugin-context-menu/post-table-plugin-context-menuinstall
+https://help.teable.io/en/api-reference/space-manage/delete-enterprise-space-manage-remove-organization
+https://help.teable.io/en/api-reference/authority-matrix/post-base-authority-matrix-role-duplicate
+https://help.teable.io/en/api-reference/plugin-context-menu/get-table-plugin-context-menu-storage
+https://help.teable.io/en/api-reference/plugin-context-menu/put-table-plugin-context-menu-update-storage
+http://help.teable.io/en/api-reference/access-token/post-access-token
+http://help.teable.io/en/api-reference/admin/get-adminaudit-logs
+http://help.teable.io/en/api-reference/admin/delete-adminspace
+http://help.teable.io/en/api-reference/admin/get-adminsetting
+http://help.teable.io/en/api-reference/admin/get-adminuser
+http://help.teable.io/en/api-reference/admin/patch-adminenterprise-license
+http://help.teable.io/en/api-reference/admin/patch-adminplugin-publish
+http://help.teable.io/en/api-reference/admin/patch-adminplugin-unpublish
+http://help.teable.io/en/api-reference/admin/patch-adminsetting
+http://help.teable.io/en/api-reference/admin/patch-adminspace
+http://help.teable.io/en/api-reference/aggregation/get-aggregated-statistics
+http://help.teable.io/en/api-reference/aggregation/get-total-row-count
+http://help.teable.io/en/api-reference/ai/get--aiconfig
+http://help.teable.io/en/api-reference/attachments/get-attachments
+http://help.teable.io/en/api-reference/attachments/post-attachmentsnotify
+http://help.teable.io/en/api-reference/attachments/post-attachmentssignature
+http://help.teable.io/en/api-reference/attachments/post-attachmentsupload
+http://help.teable.io/en/api-reference/auth/patch-authchange-email
+http://help.teable.io/en/api-reference/auth/patch-authchange-password
+http://help.teable.io/en/api-reference/auth/post-authsignup
+http://help.teable.io/en/api-reference/authority-matrix/delete-base-authority-matrix-role
+http://help.teable.io/en/api-reference/authority-matrix/get-base-authority-matrix-role-1
+http://help.teable.io/en/api-reference/authority-matrix/get-base-authority-matrix-role-table-filter-link-records
+http://help.teable.io/en/api-reference/authority-matrix/patch-base-authority-matrix-role-name
+http://help.teable.io/en/api-reference/authority-matrix/patch-base-authority-matrix-role-status
+http://help.teable.io/en/api-reference/authority-matrix/patch-base-authority-matrix-role-user
+http://help.teable.io/en/api-reference/authority-matrix/patch-base-authority-matrixadmin-user
+http://help.teable.io/en/api-reference/authority-matrix/patch-base-authority-matrixstatus
+http://help.teable.io/en/api-reference/authority-matrix/put-base-authority-matrix
+http://help.teable.io/en/api-reference/automation/delete-base-workflow
+http://help.teable.io/en/api-reference/automation/delete-base-workflow-action
+http://help.teable.io/en/api-reference/automation/get-base-workflow
+http://help.teable.io/en/api-reference/automation/get-base-workflow-1
+http://help.teable.io/en/api-reference/automation/get-base-workflow-action
+http://help.teable.io/en/api-reference/automation/get-base-workflow-logic
+http://help.teable.io/en/api-reference/automation/get-base-workflow-run
+http://help.teable.io/en/api-reference/automation/post-base-workflow-action
+http://help.teable.io/en/api-reference/automation/post-base-workflow-duplicate
+http://help.teable.io/en/api-reference/automation/post-base-workflow-filter-link-records
+http://help.teable.io/en/api-reference/automation/post-base-workflow-logic
+http://help.teable.io/en/api-reference/automation/post-base-workflow-trigger
+http://help.teable.io/en/api-reference/automation/put-base-workflow-action
+http://help.teable.io/en/api-reference/automation/put-base-workflow-logic
+http://help.teable.io/en/api-reference/automation/put-base-workflow-test
+http://help.teable.io/en/api-reference/automation/put-base-workflow-trigger
+http://help.teable.io/en/api-reference/base/delete-base-collaborators
+http://help.teable.io/en/api-reference/base/delete-trashreset-items
+http://help.teable.io/en/api-reference/base/get-base-collaborators
+http://help.teable.io/en/api-reference/base/get-base-invitationlink
+http://help.teable.io/en/api-reference/base/get-base-permission
+http://help.teable.io/en/api-reference/base/get-baseaccessall
+http://help.teable.io/en/api-reference/base/get-baseshared-base
+http://help.teable.io/en/api-reference/base/get-space-base
+http://help.teable.io/en/api-reference/base/patch-base-collaborators
+http://help.teable.io/en/api-reference/base/post-base-collaborator
+http://help.teable.io/en/api-reference/base/post-base-invitationemail
+http://help.teable.io/en/api-reference/base/post-basecreate-from-template
+http://help.teable.io/en/api-reference/billing/get-billingbase-products
+http://help.teable.io/en/api-reference/billing/get-space-billing
+http://help.teable.io/en/api-reference/billing/get-space-billingsubscription
+http://help.teable.io/en/api-reference/chat/get-base-chat-messages
+http://help.teable.io/en/api-reference/comment/get-comment-
+http://help.teable.io/en/api-reference/comment/get-comment-attachment
+http://help.teable.io/en/api-reference/comment/get-comment-count
+http://help.teable.io/en/api-reference/dashboard/delete-base-dashboard-plugin
+http://help.teable.io/en/api-reference/dashboard/duplicate-a-dashboard
+http://help.teable.io/en/api-reference/dashboard/duplicate-a-dashboard-installed-plugin
+http://help.teable.io/en/api-reference/dashboard/get-base-dashboard
+http://help.teable.io/en/api-reference/dashboard/get-base-dashboard-plugin
+http://help.teable.io/en/api-reference/dashboard/patch-base-dashboard-plugin-rename
+http://help.teable.io/en/api-reference/dashboard/patch-base-dashboard-plugin-update-storage
+http://help.teable.io/en/api-reference/dashboard/patch-base-dashboard-rename
+http://help.teable.io/en/api-reference/dashboard/post-base-dashboard
+http://help.teable.io/en/api-reference/dashboard/post-base-dashboard-plugin
+http://help.teable.io/en/api-reference/db-connection/post-base-connection
+http://help.teable.io/en/api-reference/delete-base-chat-delete
+http://help.teable.io/en/api-reference/enterprise/delete-enterprise-authentication
+http://help.teable.io/en/api-reference/enterprise/get-enterprise-authentication
+http://help.teable.io/en/api-reference/enterprise/get-enterprise-authentication-1
+http://help.teable.io/en/api-reference/enterprise/post-enterprise-domain-verification
+http://help.teable.io/en/api-reference/enterprise/post-enterprise-domain-verificationsend-verification-email
+http://help.teable.io/en/api-reference/enterprise/put-enterprise-authentication
+http://help.teable.io/en/api-reference/export/get-export
+http://help.teable.io/en/api-reference/field/auto-fill-a-field-by-ai
+http://help.teable.io/en/api-reference/field/convert-field-type
+http://help.teable.io/en/api-reference/field/create-field
+http://help.teable.io/en/api-reference/field/duplicate-field
+http://help.teable.io/en/api-reference/field/list-fields
+http://help.teable.io/en/api-reference/field/stop-auto-fill-a-field-by-ai
+http://help.teable.io/en/api-reference/field/update-field
+http://help.teable.io/en/api-reference/import/patch-import-
+http://help.teable.io/en/api-reference/import/post-import
+http://help.teable.io/en/api-reference/integrity/post-integritybase-link-fix
+http://help.teable.io/en/api-reference/notification/get-notifications
+http://help.teable.io/en/api-reference/notification/get-notificationsunread-count
+http://help.teable.io/en/api-reference/notification/patch-notificationsread-all
+http://help.teable.io/en/api-reference/oauth/delete-oauthclient-secret
+http://help.teable.io/en/api-reference/oauth/get-oauthdecision
+http://help.teable.io/en/api-reference/oauth/post-oauthclient
+http://help.teable.io/en/api-reference/oauth/post-oauthclient-revoke-access
+http://help.teable.io/en/api-reference/oauth/post-oauthclient-secret
+http://help.teable.io/en/api-reference/organization/get-organization-department
+http://help.teable.io/en/api-reference/organization/get-organization-department-1
+http://help.teable.io/en/api-reference/organization/get-organization-setting
+http://help.teable.io/en/api-reference/organization/get-organization-space
+http://help.teable.io/en/api-reference/organization/get-organizationdepartment
+http://help.teable.io/en/api-reference/organization/get-organizationdepartment-user
+http://help.teable.io/en/api-reference/organization/get-organizationme
+http://help.teable.io/en/api-reference/organization/patch-organization-department-rename
+http://help.teable.io/en/api-reference/organization/patch-organization-user
+http://help.teable.io/en/api-reference/organization/put-organization-department-scope
+http://help.teable.io/en/api-reference/organization/put-organization-update-auto-space
+http://help.teable.io/en/api-reference/patch-base-chat-rename
+http://help.teable.io/en/api-reference/pin/delete-pin
+http://help.teable.io/en/api-reference/plugin-context-menu/delete-table-plugin-context-menu
+http://help.teable.io/en/api-reference/plugin-context-menu/get-table-plugin-context-menu
+http://help.teable.io/en/api-reference/plugin-context-menu/get-table-plugin-context-menu-1
+http://help.teable.io/en/api-reference/plugin-context-menu/patch-table-plugin-context-menu-rename
+http://help.teable.io/en/api-reference/plugin-context-menu/put-table-plugin-context-menu-move
+http://help.teable.io/en/api-reference/plugin-panel/delete-table-plugin-panel-plugin
+http://help.teable.io/en/api-reference/plugin-panel/duplicate-a-dashboard-installed-plugin
+http://help.teable.io/en/api-reference/plugin-panel/patch-table-plugin-panel-plugin-update-storage
+http://help.teable.io/en/api-reference/plugin-panel/patch-table-plugin-panel-rename
+http://help.teable.io/en/api-reference/plugin/get-plugin-1
+http://help.teable.io/en/api-reference/plugin/get-plugin-token
+http://help.teable.io/en/api-reference/plugin/patch-plugin-unpublish
+http://help.teable.io/en/api-reference/plugin/post-plugin
+http://help.teable.io/en/api-reference/plugin/post-plugin-regenerate-secret
+http://help.teable.io/en/api-reference/plugin/put-plugin
+http://help.teable.io/en/api-reference/record/delete-records
+http://help.teable.io/en/api-reference/record/get-table-records-history
+http://help.teable.io/en/api-reference/record/list-records
+http://help.teable.io/en/api-reference/record/update-multiple-records
+http://help.teable.io/en/api-reference/selection/clear-selected-range-content
+http://help.teable.io/en/api-reference/selection/paste-content-into-selected-range
+http://help.teable.io/en/api-reference/selection/preview-paste-operation-results
+http://help.teable.io/en/api-reference/share/get-share-view
+http://help.teable.io/en/api-reference/share/get-share-viewaggregations
+http://help.teable.io/en/api-reference/share/get-share-viewcollaborators
+http://help.teable.io/en/api-reference/share/get-share-viewcopy
+http://help.teable.io/en/api-reference/share/get-share-viewgroup-points
+http://help.teable.io/en/api-reference/share/get-share-viewlink-records
+http://help.teable.io/en/api-reference/share/get-share-viewrow-count
+http://help.teable.io/en/api-reference/share/get-share-viewsearch-count
+http://help.teable.io/en/api-reference/share/get-share-viewsearch-index
+http://help.teable.io/en/api-reference/space-manage/get-enterprise-space-managecount
+http://help.teable.io/en/api-reference/space/delete-space-collaborators
+http://help.teable.io/en/api-reference/space/get-space
+http://help.teable.io/en/api-reference/space/get-space-invitationlink
+http://help.teable.io/en/api-reference/space/get-space-list
+http://help.teable.io/en/api-reference/space/patch-space
+http://help.teable.io/en/api-reference/space/patch-space-collaborators
+http://help.teable.io/en/api-reference/space/patch-space-invitationlink
+http://help.teable.io/en/api-reference/space/post-space-collaborator
+http://help.teable.io/en/api-reference/space/post-space-integration
+http://help.teable.io/en/api-reference/table/create-table
+http://help.teable.io/en/api-reference/table/delete-table
+http://help.teable.io/en/api-reference/table/duplicate-a-table
+http://help.teable.io/en/api-reference/table/get-default-view-id
+http://help.teable.io/en/api-reference/table/get-table-details
+http://help.teable.io/en/api-reference/table/get-table-permissions
+http://help.teable.io/en/api-reference/table/permanently-delete-table
+http://help.teable.io/en/api-reference/table/update-table-tcon
+http://help.teable.io/en/api-reference/template/delete-template
+http://help.teable.io/en/api-reference/template/get-template-detail-by-templateid
+http://help.teable.io/en/api-reference/template/get-templatecategorylist
+http://help.teable.io/en/api-reference/template/get-templatepublished
+http://help.teable.io/en/api-reference/template/patch-template
+http://help.teable.io/en/api-reference/template/patch-template-pin-top
+http://help.teable.io/en/api-reference/template/patch-templatecategory
+http://help.teable.io/en/api-reference/template/post-template-snapshot
+http://help.teable.io/en/api-reference/template/post-templatecreate
+http://help.teable.io/en/api-reference/trash/get-trash
+http://help.teable.io/en/api-reference/usage/get-base-usage
+http://help.teable.io/en/api-reference/user/get-userlast-visit
+http://help.teable.io/en/api-reference/user/get-userlast-visitlist-base
+http://help.teable.io/en/api-reference/user/post-userlast-visit
+http://help.teable.io/en/api-reference/view/get-view-list
+http://help.teable.io/en/api-reference/view/patch-table-view-plugin

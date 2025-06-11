@@ -3,7 +3,7 @@ import { motion, MotionConfig, AnimatePresence } from 'motion/react'; // Added A
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import useMeasure from 'react-use-measure'; // Added useMeasure
-import useClickOutside from '@/components/motion-primitives/useClickOutside'; // Added useClickOutside
+import useClickOutside from '@/hooks/useClickOutside'; // Added useClickOutside
 import IconHome from 'virtual:icons/line-md/home-md-alt-twotone'
 import IconTemple from 'virtual:icons/fluent-emoji-flat/hindu-temple'
 import IconCalendar from 'virtual:icons/uim/calender'
@@ -71,6 +71,7 @@ function NavbarContent() {
   // State for dock visibility on scroll
   const [isDockVisible, setIsDockVisible] = React.useState(true);
   const [lastScrollY, setLastScrollY] = React.useState(0);
+  const [isFooterVisible, setIsFooterVisible] = React.useState(false);
 
   // useClickOutside hook (from snippet, adapted path)
   useClickOutside(dockWrapperRef, () => {
@@ -88,28 +89,43 @@ function NavbarContent() {
     setMaxDockWidth(widthContainer);
   }, [widthContainer, maxDockWidth]);
 
-  // useEffect for dock visibility on scroll
+  // useEffect for dock visibility on scroll and footer intersection
   React.useEffect(() => {
     const controlDockVisibility = () => {
       const currentScrollY = window.scrollY;
-      // If dock content is open, keep it visible
       if (isDockOpen) {
         setIsDockVisible(true);
-        setLastScrollY(currentScrollY); // Update lastScrollY to prevent immediate hide on content close
+        setLastScrollY(currentScrollY);
         return;
       }
-
-      if (currentScrollY > lastScrollY && currentScrollY > 80) { // Scrolling down
+      if (currentScrollY > lastScrollY && currentScrollY > 80) {
         setIsDockVisible(false);
-      } else { // Scrolling up or at the top
+      } else {
         setIsDockVisible(true);
       }
       setLastScrollY(currentScrollY);
     };
 
+    const footerElement = document.querySelector('footer');
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Update state based on whether the footer is intersecting with the viewport
+        setIsFooterVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1 } // Trigger when 10% of the footer is visible
+    );
+
+    if (footerElement) {
+      observer.observe(footerElement);
+    }
+
     window.addEventListener('scroll', controlDockVisibility);
+
     return () => {
       window.removeEventListener('scroll', controlDockVisibility);
+      if (footerElement) {
+        observer.unobserve(footerElement);
+      }
     };
   }, [lastScrollY, isDockOpen]);
 
@@ -274,7 +290,7 @@ function NavbarContent() {
       <motion.nav 
         className="fixed bottom-0 left-0 z-40 w-full pb-safe mb-6 pointer-events-none"
         initial={{ y: 0 }}
-        animate={{ y: isDockVisible ? 0 : 100 }} // 100 is an example, adjust if dock height is different
+        animate={{ y: isDockVisible && !isFooterVisible ? 0 : 100 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
       >
         <div className="container relative mx-auto flex justify-center px-2 pb-2 sm:px-4">

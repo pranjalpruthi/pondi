@@ -14,7 +14,10 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as EventsImport } from './routes/events'
 import { Route as DashboardRouteImport } from './routes/dashboard/route'
 import { Route as IndexImport } from './routes/index'
+import { Route as TermsAndConditionsIndexImport } from './routes/terms-and-conditions/index'
 import { Route as ShopIndexImport } from './routes/shop/index'
+import { Route as RefundAndCancellationPolicyIndexImport } from './routes/refund-and-cancellation-policy/index'
+import { Route as PrivacyPolicyIndexImport } from './routes/privacy-policy/index'
 import { Route as DonateIndexImport } from './routes/donate/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
 import { Route as ComingSoonIndexImport } from './routes/coming-soon/index'
@@ -43,9 +46,28 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const TermsAndConditionsIndexRoute = TermsAndConditionsIndexImport.update({
+  id: '/terms-and-conditions/',
+  path: '/terms-and-conditions/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const ShopIndexRoute = ShopIndexImport.update({
   id: '/shop/',
   path: '/shop/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const RefundAndCancellationPolicyIndexRoute =
+  RefundAndCancellationPolicyIndexImport.update({
+    id: '/refund-and-cancellation-policy/',
+    path: '/refund-and-cancellation-policy/',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const PrivacyPolicyIndexRoute = PrivacyPolicyIndexImport.update({
+  id: '/privacy-policy/',
+  path: '/privacy-policy/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -165,11 +187,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DonateIndexImport
       parentRoute: typeof rootRoute
     }
+    '/privacy-policy/': {
+      id: '/privacy-policy/'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/refund-and-cancellation-policy/': {
+      id: '/refund-and-cancellation-policy/'
+      path: '/refund-and-cancellation-policy'
+      fullPath: '/refund-and-cancellation-policy'
+      preLoaderRoute: typeof RefundAndCancellationPolicyIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/shop/': {
       id: '/shop/'
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/terms-and-conditions/': {
+      id: '/terms-and-conditions/'
+      path: '/terms-and-conditions'
+      fullPath: '/terms-and-conditions'
+      preLoaderRoute: typeof TermsAndConditionsIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -200,7 +243,10 @@ export interface FileRoutesByFullPath {
   '/coming-soon': typeof ComingSoonIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/donate': typeof DonateIndexRoute
+  '/privacy-policy': typeof PrivacyPolicyIndexRoute
+  '/refund-and-cancellation-policy': typeof RefundAndCancellationPolicyIndexRoute
   '/shop': typeof ShopIndexRoute
+  '/terms-and-conditions': typeof TermsAndConditionsIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -213,7 +259,10 @@ export interface FileRoutesByTo {
   '/coming-soon': typeof ComingSoonIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/donate': typeof DonateIndexRoute
+  '/privacy-policy': typeof PrivacyPolicyIndexRoute
+  '/refund-and-cancellation-policy': typeof RefundAndCancellationPolicyIndexRoute
   '/shop': typeof ShopIndexRoute
+  '/terms-and-conditions': typeof TermsAndConditionsIndexRoute
 }
 
 export interface FileRoutesById {
@@ -228,7 +277,10 @@ export interface FileRoutesById {
   '/coming-soon/': typeof ComingSoonIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/donate/': typeof DonateIndexRoute
+  '/privacy-policy/': typeof PrivacyPolicyIndexRoute
+  '/refund-and-cancellation-policy/': typeof RefundAndCancellationPolicyIndexRoute
   '/shop/': typeof ShopIndexRoute
+  '/terms-and-conditions/': typeof TermsAndConditionsIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -244,7 +296,10 @@ export interface FileRouteTypes {
     | '/coming-soon'
     | '/dashboard/'
     | '/donate'
+    | '/privacy-policy'
+    | '/refund-and-cancellation-policy'
     | '/shop'
+    | '/terms-and-conditions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -256,7 +311,10 @@ export interface FileRouteTypes {
     | '/coming-soon'
     | '/dashboard'
     | '/donate'
+    | '/privacy-policy'
+    | '/refund-and-cancellation-policy'
     | '/shop'
+    | '/terms-and-conditions'
   id:
     | '__root__'
     | '/'
@@ -269,7 +327,10 @@ export interface FileRouteTypes {
     | '/coming-soon/'
     | '/dashboard/'
     | '/donate/'
+    | '/privacy-policy/'
+    | '/refund-and-cancellation-policy/'
     | '/shop/'
+    | '/terms-and-conditions/'
   fileRoutesById: FileRoutesById
 }
 
@@ -283,7 +344,10 @@ export interface RootRouteChildren {
   CentersIndexRoute: typeof CentersIndexRoute
   ComingSoonIndexRoute: typeof ComingSoonIndexRoute
   DonateIndexRoute: typeof DonateIndexRoute
+  PrivacyPolicyIndexRoute: typeof PrivacyPolicyIndexRoute
+  RefundAndCancellationPolicyIndexRoute: typeof RefundAndCancellationPolicyIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
+  TermsAndConditionsIndexRoute: typeof TermsAndConditionsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -296,7 +360,10 @@ const rootRouteChildren: RootRouteChildren = {
   CentersIndexRoute: CentersIndexRoute,
   ComingSoonIndexRoute: ComingSoonIndexRoute,
   DonateIndexRoute: DonateIndexRoute,
+  PrivacyPolicyIndexRoute: PrivacyPolicyIndexRoute,
+  RefundAndCancellationPolicyIndexRoute: RefundAndCancellationPolicyIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
+  TermsAndConditionsIndexRoute: TermsAndConditionsIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -318,7 +385,10 @@ export const routeTree = rootRoute
         "/centers/",
         "/coming-soon/",
         "/donate/",
-        "/shop/"
+        "/privacy-policy/",
+        "/refund-and-cancellation-policy/",
+        "/shop/",
+        "/terms-and-conditions/"
       ]
     },
     "/": {
@@ -355,8 +425,17 @@ export const routeTree = rootRoute
     "/donate/": {
       "filePath": "donate/index.tsx"
     },
+    "/privacy-policy/": {
+      "filePath": "privacy-policy/index.tsx"
+    },
+    "/refund-and-cancellation-policy/": {
+      "filePath": "refund-and-cancellation-policy/index.tsx"
+    },
     "/shop/": {
       "filePath": "shop/index.tsx"
+    },
+    "/terms-and-conditions/": {
+      "filePath": "terms-and-conditions/index.tsx"
     }
   }
 }

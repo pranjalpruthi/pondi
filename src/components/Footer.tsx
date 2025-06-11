@@ -166,30 +166,43 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Social Media & Copyright */}
-        <div className="pt-6 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4"> {/* Changed to sm:flex-row */}
-          {/* Brand and Copyright */}
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1 text-xs sm:text-sm text-gray-600 dark:text-gray-400"> {/* Adjusted for wrapping and smaller screens */}
-            <Link to="/" className="flex-shrink-0 order-1 sm:order-none">
-              <img
-                src="/assets/iskmj.jpg"
-                alt="ISKM Logo"
-                width={24} 
-                height={24}
-                className="rounded-full"
-              />
-            </Link>
-            <span className="order-2 sm:order-none">© {new Date().getFullYear()}</span>
-            <Link to="/" className="font-semibold bg-gradient-to-r from-[#e94a9c] via-[#ffc547] to-[#0a84ff] bg-clip-text text-transparent order-3 sm:order-none">
-              ISKM Pondicherry
-            </Link>
-            <span className="flex items-center gap-1 order-4 sm:order-none">
-              Built with <Heart className="h-3.5 w-3.5 text-[#e94a9c]" /> for Devotees
-            </span>
-          </div>
-          
-          {/* Social Links & Haribol Badge Group */}
-          <div className="flex items-center justify-center sm:justify-end gap-3 sm:gap-4"> {/* Adjusted gap */}
+          {/* Social Media & Copyright */}
+          <div className="pt-6 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* Brand and Copyright */}
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              <Link to="/" className="flex-shrink-0 order-1 sm:order-none">
+                <img
+                  src="/assets/iskmj.jpg"
+                  alt="ISKM Logo"
+                  width={24}
+                  height={24}
+                  className="rounded-full"
+                />
+              </Link>
+              <span className="order-2 sm:order-none">© {new Date().getFullYear()}</span>
+              <Link to="/" className="font-semibold bg-gradient-to-r from-[#e94a9c] via-[#ffc547] to-[#0a84ff] bg-clip-text text-transparent order-3 sm:order-none">
+                ISKM Pondicherry
+              </Link>
+              <span className="flex items-center gap-1 order-4 sm:order-none">
+                Built with <Heart className="h-3.5 w-3.5 text-[#e94a9c]" /> for Devotees
+              </span>
+            </div>
+            
+            {/* Legal Links */}
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+              <Link to="/terms-and-conditions" className="hover:text-[#0a84ff] transition-colors">
+                Terms
+              </Link>
+              <Link to="/privacy-policy" className="hover:text-[#0a84ff] transition-colors">
+                Privacy
+              </Link>
+              <Link to="/refund-and-cancellation-policy" className="hover:text-[#0a84ff] transition-colors">
+                Refunds
+              </Link>
+            </div>
+
+            {/* Social Links & Haribol Badge Group */}
+            <div className="flex items-center justify-center sm:justify-end gap-3 sm:gap-4">
             {/* Haribol Badge - Placed before social icons but within the same flex group for right alignment */}
             <Badge
               variant="outline"

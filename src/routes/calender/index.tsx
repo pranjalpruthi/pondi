@@ -1035,10 +1035,24 @@ function VaishnavCalendar() {
 
     return (
       <div className="my-4">
-        <div className="flex justify-between text-xs mb-1">
-          <span>Start: {window.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
-          <span>{status}</span>
-          <span>End: {window.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
+        <div className="flex flex-wrap justify-center gap-2 text-xs mb-2"> {/* Added flex-wrap and gap-2 */}
+          <Badge variant="outline" className={cn("px-2 py-0.5", theme === 'dark' ? 'border-zinc-700 text-zinc-300' : 'border-gray-300 text-gray-700')}>
+            Start: {window.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+          </Badge>
+          <Badge 
+            variant={status === 'Fasting completed' ? 'default' : (status === 'Fasting in progress' ? 'secondary' : 'outline')}
+            className={cn(
+              "px-2 py-0.5",
+              status === 'Fasting completed' ? 'bg-green-500/20 text-green-700 dark:bg-green-800/30 dark:text-green-300' :
+              (status === 'Fasting in progress' ? 'bg-blue-500/20 text-blue-700 dark:bg-blue-800/30 dark:text-blue-300' :
+              'bg-orange-500/20 text-orange-700 dark:bg-orange-800/30 dark:text-orange-300')
+            )}
+          >
+            {status}
+          </Badge>
+          <Badge variant="outline" className={cn("px-2 py-0.5", theme === 'dark' ? 'border-zinc-700 text-zinc-300' : 'border-gray-300 text-gray-700')}>
+            End: {window.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+          </Badge>
         </div>
         <Progress value={progress * 100} className="h-2" />
         {status === 'Fasting in progress' && (
@@ -1509,27 +1523,27 @@ function VaishnavCalendar() {
                       <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
                         <Card className={cn(theme === 'dark' ? 'bg-zinc-800/80 border-zinc-700/50' : 'bg-slate-100/80 border-slate-200/90')}>
                           <CardHeader className="py-2.5 px-3.5">
-                            <CardTitle className="text-base flex items-center">
-                              <Orbit className="mr-2 h-4 w-4 text-purple-500 dark:text-purple-400"/>Astronomical Panorama
+                            <CardTitle className="text-lg flex items-center"> {/* Increased font size to text-lg */}
+                              <Orbit className="mr-2 h-5 w-5 text-purple-500 dark:text-purple-400"/>Astronomical Panorama
                             </CardTitle>
                           </CardHeader>
-                          <CardContent className="text-xs px-3.5 pb-3 space-y-2.5">
+                          <CardContent className="text-sm px-3.5 pb-3 space-y-2.5"> {/* Increased font size to text-sm */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
                               <div className="flex items-center">
-                                <Disc3 className="h-3.5 w-3.5 mr-1.5 text-muted-foreground"/>
+                                <Disc3 className="h-4 w-4 mr-1.5 text-muted-foreground"/> {/* Increased icon size */}
                                 <span>Tithi: <strong>{selectedDay.astro_details.tithi_name}</strong></span>
-                                <Badge variant={selectedDay.astro_details.paksa_name === 'Gaura' ? 'default' : 'secondary'} className={cn("ml-1.5 text-[9px] px-1 py-0 leading-tight", selectedDay.astro_details.paksa_name === 'Gaura' ? 'bg-yellow-400/80 text-yellow-900 dark:bg-yellow-500/70 dark:text-yellow-100' : 'bg-sky-400/80 text-sky-900 dark:bg-sky-500/70 dark:text-sky-100')}>{selectedDay.astro_details.paksa_name}</Badge>
+                                <Badge variant={selectedDay.astro_details.paksa_name === 'Gaura' ? 'default' : 'secondary'} className={cn("ml-1.5 text-[10px] px-1.5 py-0.5 leading-tight", selectedDay.astro_details.paksa_name === 'Gaura' ? 'bg-yellow-400/80 text-yellow-900 dark:bg-yellow-500/70 dark:text-yellow-100' : 'bg-sky-400/80 text-sky-900 dark:bg-sky-500/70 dark:text-sky-100')}>{selectedDay.astro_details.paksa_name}</Badge> {/* Adjusted badge size */}
                               </div>
-                              <div className="flex items-center"><Percent className="h-3.5 w-3.5 mr-1.5 text-muted-foreground"/>Tithi Elapsed: {selectedDay.astro_details.tithi_elapse_percent.toFixed(1)}%</div>
+                              <div className="flex items-center"><Percent className="h-4 w-4 mr-1.5 text-muted-foreground"/>Tithi Elapsed: {selectedDay.astro_details.tithi_elapse_percent.toFixed(1)}%</div> {/* Increased icon size */}
                               
-                              <div className="flex items-center"><Star className="h-3.5 w-3.5 mr-1.5 text-muted-foreground"/>Nakshatra: <strong>{selectedDay.astro_details.naksatra_name}</strong></div>
-                              <div className="flex items-center"><Percent className="h-3.5 w-3.5 mr-1.5 text-muted-foreground"/>Nakshatra Elapsed: {selectedDay.astro_details.naksatra_elapse_percent.toFixed(1)}%</div>
+                              <div className="flex items-center"><Star className="h-4 w-4 mr-1.5 text-muted-foreground"/>Nakshatra: <strong>{selectedDay.astro_details.naksatra_name}</strong></div> {/* Increased icon size */}
+                              <div className="flex items-center"><Percent className="h-4 w-4 mr-1.5 text-muted-foreground"/>Nakshatra Elapsed: {selectedDay.astro_details.naksatra_elapse_percent.toFixed(1)}%</div> {/* Increased icon size */}
 
-                              <div className="flex items-center"><Link2 className="h-3.5 w-3.5 mr-1.5 text-muted-foreground"/>Yoga: <strong>{selectedDay.astro_details.yoga_name}</strong></div>
-                              <div className="flex items-center"><CalendarClock className="h-3.5 w-3.5 mr-1.5 text-muted-foreground"/>Masa: <strong>{selectedDay.astro_details.masa_name}</strong> ({selectedDay.astro_details.gaurabda_year})</div>
+                              <div className="flex items-center"><Link2 className="h-4 w-4 mr-1.5 text-muted-foreground"/>Yoga: <strong>{selectedDay.astro_details.yoga_name}</strong></div> {/* Increased icon size */}
+                              <div className="flex items-center"><CalendarClock className="h-4 w-4 mr-1.5 text-muted-foreground"/>Masa: <strong>{selectedDay.astro_details.masa_name}</strong> ({selectedDay.astro_details.gaurabda_year})</div> {/* Increased icon size */}
                               
-                              <div className="flex items-center"><Sun className="h-3.5 w-3.5 mr-1.5 text-yellow-500"/>Sun Rashi: {selectedDay.astro_details.rasi_name_sun}</div>
-                              <div className="flex items-center"><Moon className="h-3.5 w-3.5 mr-1.5 text-sky-400"/>Moon Rashi: {selectedDay.astro_details.rasi_name_moon}</div>
+                              <div className="flex items-center"><Sun className="h-4 w-4 mr-1.5 text-yellow-500"/>Sun Rashi: {selectedDay.astro_details.rasi_name_sun}</div> {/* Increased icon size */}
+                              <div className="flex items-center"><Moon className="h-4 w-4 mr-1.5 text-sky-400"/>Moon Rashi: {selectedDay.astro_details.rasi_name_moon}</div> {/* Increased icon size */}
                             </div>
                             <Separator className={cn("my-2", theme === 'dark' ? 'bg-zinc-700/80' : 'bg-slate-300/80')} />
                             {(() => {
@@ -1556,15 +1570,15 @@ function VaishnavCalendar() {
                               return null;
                             })()}
                             <div className="grid grid-cols-2 gap-x-3 gap-y-1">
-                              <p><SunriseIcon className="inline h-3.5 w-3.5 mr-1 opacity-70"/>Sunrise: {selectedDay.astro_details.sunrise_time}</p>
-                              <p><SunsetIcon className="inline h-3.5 w-3.5 mr-1 opacity-70"/>Sunset: {selectedDay.astro_details.sunset_time}</p>
-                              <p><Clock className="inline h-3.5 w-3.5 mr-1 opacity-70"/>Arunodaya: {selectedDay.astro_details.arunodaya_time}</p>
-                              <p><Clock className="inline h-3.5 w-3.5 mr-1 opacity-70"/>Noon: {selectedDay.astro_details.noon_time}</p>
+                              <p><SunriseIcon className="inline h-4 w-4 mr-1 opacity-70"/>Sunrise: {selectedDay.astro_details.sunrise_time} {/* Increased icon size */}</p>
+                              <p><SunsetIcon className="inline h-4 w-4 mr-1 opacity-70"/>Sunset: {selectedDay.astro_details.sunset_time} {/* Increased icon size */}</p>
+                              <p><Clock className="inline h-4 w-4 mr-1 opacity-70"/>Arunodaya: {selectedDay.astro_details.arunodaya_time} {/* Increased icon size */}</p>
+                              <p><Clock className="inline h-4 w-4 mr-1 opacity-70"/>Noon: {selectedDay.astro_details.noon_time} {/* Increased icon size */}</p>
                               {selectedDay.astro_details.moonrise_time && selectedDay.astro_details.moonrise_time !== "N/A" && (
-                                <p><ArrowUpFromDot className="inline h-3.5 w-3.5 mr-1 opacity-70"/>Moonrise: {selectedDay.astro_details.moonrise_time}</p>
+                                <p><ArrowUpFromDot className="inline h-4 w-4 mr-1 opacity-70"/>Moonrise: {selectedDay.astro_details.moonrise_time} {/* Increased icon size */}</p>
                               )}
                               {selectedDay.astro_details.moonset_time && selectedDay.astro_details.moonset_time !== "N/A" && (
-                                <p><ArrowDownToDot className="inline h-3.5 w-3.5 mr-1 opacity-70"/>Moonset: {selectedDay.astro_details.moonset_time}</p>
+                                <p><ArrowDownToDot className="inline h-4 w-4 mr-1 opacity-70"/>Moonset: {selectedDay.astro_details.moonset_time} {/* Increased icon size */}</p>
                               )}
                             </div>
                           </CardContent>
@@ -1576,12 +1590,12 @@ function VaishnavCalendar() {
                         <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.20 }}>
                           <Card className={cn(theme === 'dark' ? 'bg-zinc-800/80 border-zinc-700/50' : 'bg-slate-100/80 border-slate-200/90')}>
                             <CardHeader className="py-2.5 px-3.5">
-                              <CardTitle className="text-base flex items-center">
-                                <CalendarCheck2 className="mr-2 h-4 w-4 text-green-500 dark:text-green-400"/>Events & Observances
+                              <CardTitle className="text-lg flex items-center"> {/* Increased font size to text-lg */}
+                                <CalendarCheck2 className="mr-2 h-5 w-5 text-green-500 dark:text-green-400"/>Events & Observances
                               </CardTitle>
-                              <CardDescription className="text-xs mt-0.5">Times are for {locationCity}.</CardDescription>
+                              <CardDescription className="text-sm mt-0.5">Times are for {locationCity}.</CardDescription> {/* Increased font size to text-sm */}
                             </CardHeader>
-                            <CardContent className="text-xs px-3.5 pb-3">
+                            <CardContent className="text-sm px-3.5 pb-3"> {/* Increased font size to text-sm */}
                               {(() => {
                                 // Deduplicate by event text, prefer raw_events for style if available
                                 const allEventTexts = [
@@ -1598,10 +1612,10 @@ function VaishnavCalendar() {
                                       const textClass = rawEvent ? getEventStyle(rawEvent).text : undefined;
                                       return (
                                         <li key={idx} className="flex items-start gap-2">
-                                          <div className={cn("h-1.5 w-1.5 rounded-full mt-1 flex-shrink-0", dotClass)}></div>
+                                          <div className={cn("h-2 w-2 rounded-full mt-1 flex-shrink-0", dotClass)}></div> {/* Increased dot size */}
                                           <span className={textClass}>{eventText}</span>
                                           {rawEvent && rawEvent.fastsubject && (
-                                            <span className="ml-1 text-muted-foreground italic text-[10px]">({rawEvent.fastsubject})</span>
+                                            <span className="ml-1 text-muted-foreground italic text-xs">({rawEvent.fastsubject}) {/* Increased font size to text-xs */}</span>
                                           )}
                                         </li>
                                       );
@@ -1619,15 +1633,15 @@ function VaishnavCalendar() {
                         <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }}>
                           <Card className={cn(theme === 'dark' ? 'bg-zinc-800/80 border-zinc-700/50' : 'bg-slate-100/80 border-slate-200/90')}>
                             <CardHeader className="py-2.5 px-3.5">
-                              <CardTitle className="text-base flex items-center">
-                                <GitCompareArrows className="mr-2 h-4 w-4 text-blue-500 dark:text-blue-400"/>Daily Astro Events
+                              <CardTitle className="text-lg flex items-center"> {/* Increased font size to text-lg */}
+                                <GitCompareArrows className="mr-2 h-5 w-5 text-blue-500 dark:text-blue-400"/>Daily Astro Events
                               </CardTitle>
-                               <CardDescription className="text-xs mt-0.5">Timeline of tithi/nakshatra changes.</CardDescription>
+                               <CardDescription className="text-sm mt-0.5">Timeline of tithi/nakshatra changes.</CardDescription> {/* Increased font size to text-sm */}
                             </CardHeader>
-                            <CardContent className="text-xs px-3.5 pb-3 space-y-1.5">
+                            <CardContent className="text-sm px-3.5 pb-3 space-y-1.5"> {/* Increased font size to text-sm */}
                               {selectedDay.core_events_detailed.map((coreEvent, idx) => (
                                 <div key={`core-${idx}`} className="flex items-center">
-                                  <Clock className="h-3 w-3 mr-1.5 text-muted-foreground flex-shrink-0"/>
+                                  <Clock className="h-4 w-4 mr-1.5 text-muted-foreground flex-shrink-0"/> {/* Increased icon size */}
                                   <span className="font-medium w-16">{coreEvent.time}</span>
                                   <span className="text-muted-foreground/80">{coreEvent.type_name} {coreEvent.dst_applied ? '(DST)' : ''}</span>
                                 </div>
@@ -1642,37 +1656,37 @@ function VaishnavCalendar() {
                         <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
                           <Card className={cn(theme === 'dark' ? 'bg-zinc-800/80 border-zinc-700/50' : 'bg-slate-100/80 border-slate-200/90')}>
                             <CardHeader className="py-2.5 px-3.5">
-                              <CardTitle className="text-base flex items-center">
-                                <AlertOctagon className="mr-2 h-4 w-4 text-orange-500 dark:text-orange-400"/>Special Indicators
+                              <CardTitle className="text-lg flex items-center"> {/* Increased font size to text-lg */}
+                                <AlertOctagon className="mr-2 h-5 w-5 text-orange-500 dark:text-orange-400"/>Special Indicators
                               </CardTitle>
                             </CardHeader>
-                            <CardContent className="text-xs px-3.5 pb-3 space-y-2.5">
+                            <CardContent className="text-sm px-3.5 pb-3 space-y-2.5"> {/* Increased font size to text-sm */}
                               {selectedDay.sankranti_today_info && (
                                 <div className="flex items-start gap-2">
-                                  <SankrantiIcon className="h-3.5 w-3.5 mt-0.5 text-sky-500"/>
+                                  <SankrantiIcon className="h-4 w-4 mt-0.5 text-sky-500"/> {/* Increased icon size */}
                                   <Badge variant="outline" className={cn("border-sky-500/60 text-sky-600 dark:text-sky-400 dark:border-sky-500/70 dark:bg-sky-800/30")}>Sankranti</Badge>
-                                  <span className="text-xs text-muted-foreground block whitespace-normal break-words">{selectedDay.sankranti_today_info}</span>
+                                  <span className="text-sm text-muted-foreground block whitespace-normal break-words">{selectedDay.sankranti_today_info}</span> {/* Increased font size to text-sm */}
                                 </div>
                               )}
                               {selectedDay.mahadvadasi && (
                                 <div className="flex items-start gap-2">
-                                  <MahadvadasiIcon className="h-3.5 w-3.5 mt-0.5 text-rose-500"/>
+                                  <MahadvadasiIcon className="h-4 w-4 mt-0.5 text-rose-500"/> {/* Increased icon size */}
                                   <Badge variant="outline" className={cn("border-rose-500/60 text-rose-600 dark:text-rose-400 dark:border-rose-500/70 dark:bg-rose-800/30")}>Mahadvadasi</Badge>
-                                  <span className="text-xs text-muted-foreground block whitespace-normal break-words">{selectedDay.mahadvadasi}</span>
+                                  <span className="text-sm text-muted-foreground block whitespace-normal break-words">{selectedDay.mahadvadasi}</span> {/* Increased font size to text-sm */}
                                 </div>
                               )}
                               {selectedDay.ksaya_tithi && (
                                 <div className="flex items-start gap-2">
-                                  <KsayaTithiIcon className="h-3.5 w-3.5 mt-0.5 text-amber-500"/>
+                                  <KsayaTithiIcon className="h-4 w-4 mt-0.5 text-amber-500"/> {/* Increased icon size */}
                                   <Badge variant="outline" className={cn("border-amber-500/60 text-amber-600 dark:text-amber-400 dark:border-amber-500/70 dark:bg-amber-800/30")}>Kshaya Tithi</Badge>
-                                  <span className="text-xs text-muted-foreground block whitespace-normal break-words">{selectedDay.ksaya_tithi}</span>
+                                  <span className="text-sm text-muted-foreground block whitespace-normal break-words">{selectedDay.ksaya_tithi}</span> {/* Increased font size to text-sm */}
                                 </div>
                               )}
                               {selectedDay.vriddhi_day_no !== null && (
                                 <div className="flex items-start gap-2">
-                                  <VriddhiDayIcon className="h-3.5 w-3.5 mt-0.5 text-purple-500"/>
+                                  <VriddhiDayIcon className="h-4 w-4 mt-0.5 text-purple-500"/> {/* Increased icon size */}
                                   <Badge variant="outline" className={cn("border-purple-500/60 text-purple-600 dark:text-purple-400 dark:border-purple-500/70 dark:bg-purple-800/30")}>Vriddhi Day</Badge>
-                                  <span className="text-xs text-muted-foreground block whitespace-normal break-words">{selectedDay.vriddhi_day_no}</span>
+                                  <span className="text-sm text-muted-foreground block whitespace-normal break-words">{selectedDay.vriddhi_day_no}</span> {/* Increased font size to text-sm */}
                                 </div>
                               )}
                             </CardContent>
@@ -1721,7 +1735,7 @@ function VaishnavCalendar() {
                               <MapPin className="inline h-3.5 w-3.5 mr-1 opacity-80"/> Location: {locationCity}
                            </div>
                           <div className="overflow-x-auto styled-scrollbar rounded-lg"> {/* Added rounded-lg here */}
-                            <table className="w-full min-w-[800px] text-sm">
+                            <table className="w-full min-w-[800px] text-xs"> {/* Changed to text-xs */}
                               <thead 
                                 className={cn(
                                   "sticky top-0 z-10", // Sticky header
@@ -1764,10 +1778,16 @@ function VaishnavCalendar() {
                                       <motion.td layout="position" className="py-3 px-3 align-middle font-medium">
                                         <div className="flex items-center gap-2">
                                           <CalendarDays className={cn("h-4 w-4 flex-shrink-0", theme === 'dark' ? 'text-sky-400' : 'text-sky-600')} />
-                                          <div>
+                                          <Badge 
+                                            variant="outline" 
+                                            className={cn(
+                                              "text-xs font-semibold px-2 py-0.5 rounded-md",
+                                              theme === 'dark' ? 'border-sky-700 text-sky-300 bg-sky-900/30' : 'border-sky-300 text-sky-700 bg-sky-100/50'
+                                            )}
+                                          >
                                             {formatDateDisplay(day.date_str, { day: 'numeric', month: 'short'})}
-                                            <span className="ml-1.5 text-xs text-muted-foreground">{day.weekday_name.substring(0,3)}</span>
-                                          </div>
+                                          </Badge>
+                                          <span className="ml-1.5 text-xs text-muted-foreground">{day.weekday_name.substring(0,3)}</span>
                                         </div>
                                       </motion.td>
                                       <motion.td layout="position" className="py-3 px-3 align-middle">
@@ -1814,29 +1834,39 @@ function VaishnavCalendar() {
                                         <motion.td layout="position" colSpan={6} className="px-3 py-2.5 pb-3 text-xs">
                                           <div className="pl-6 md:pl-8 space-y-1.5">
                                             {day.fasting_info.is_fasting_day && (
-                                                <div className={cn("flex items-start gap-2 font-medium", theme === 'dark' ? 'text-pink-400' : 'text-pink-600')}>
-                                                  {day.fasting_info.description.toLowerCase().includes("ekadasi") ? 
-                                                    <Sparkles className="h-3.5 w-3.5 mt-0.5 flex-shrink-0"/> : 
-                                                    <UtensilsCrossed className="h-3.5 w-3.5 mt-0.5 flex-shrink-0"/> 
-                                                  }
-                                                  <div>
-                                                    {day.fasting_info.description}
-                                                    {day.fasting_info.subject ? ` (${day.fasting_info.subject})` : ""}
-                                                    {getFastBreakingTimeDetails(day) && <span className="ml-1 opacity-80 text-muted-foreground">({getFastBreakingTimeDetails(day)})</span>}
-                                                  </div>
-                                                </div>
+                                                <Alert variant="default" className={cn("p-2 text-xs mb-1", theme === 'dark' ? 'bg-pink-900/70 border-pink-700/60 text-pink-300' : 'bg-pink-50/90 border-pink-200/80 text-pink-700')}>
+                                                  <Sparkles className="h-3.5 w-3.5 text-pink-500" />
+                                                  <AlertTitle className="font-semibold">{day.fasting_info.description}</AlertTitle>
+                                                  {day.fasting_info.subject && <AlertDescription className="opacity-80">{day.fasting_info.subject}</AlertDescription>}
+                                                  {getFastBreakingTimeDetails(day) && <AlertDescription className="mt-0.5 opacity-90">{getFastBreakingTimeDetails(day)}</AlertDescription>}
+                                                </Alert>
                                             )}
                                             {day.ekadasi_parana_details && (
-                                              <div className={cn("flex items-start gap-2", theme === 'dark' ? 'text-green-400' : 'text-green-600')}>
-                                                <ListChecks className="h-3.5 w-3.5 mt-0.5 flex-shrink-0"/>
-                                                <div><strong>Ekadasi Parana:</strong> {day.ekadasi_parana_details}</div>
+                                              <Alert variant="default" className={cn("p-2 text-xs mb-1", theme === 'dark' ? 'bg-green-900/60 border-green-700/50 text-green-300' : 'bg-green-50/90 border-green-200/80 text-green-700')}>
+                                                <ListChecks className="h-3.5 w-3.5 text-green-500" />
+                                                <AlertTitle className="font-semibold">Ekadasi Parana</AlertTitle>
+                                                <AlertDescription>{day.ekadasi_parana_details}</AlertDescription>
+                                              </Alert>
+                                            )}
+                                            {day.raw_events.length > 0 && (
+                                              <div className="space-y-1">
+                                                {day.raw_events.map((event, idx) => (
+                                                  <div key={`re-${idx}`} className="flex items-start gap-1.5">
+                                                      <div className={cn("h-1.5 w-1.5 rounded-full mt-1 flex-shrink-0", getEventStyle(event).dot)}></div>
+                                                      <p className={cn(getEventStyle(event).text)}>{event.text}</p>
+                                                  </div>
+                                                ))}
                                               </div>
                                             )}
-                                            {day.events.map((event, idx) => (
-                                              <div key={`evt-${day.date_str}-${idx}`} className="flex items-start gap-2 text-muted-foreground">
-                                                <Tags className="h-3.5 w-3.5 mt-0.5 flex-shrink-0 opacity-70"/> {event}
+                                            {day.events.length > 0 && day.raw_events.length === 0 && ( // Fallback if raw_events are empty but events exist
+                                              <div className="space-y-1">
+                                                {day.events.map((event, idx) => (
+                                                  <div key={`evt-${day.date_str}-${idx}`} className="flex items-start gap-2 text-muted-foreground">
+                                                    <Tags className="h-3.5 w-3.5 mt-0.5 flex-shrink-0 opacity-70"/> {event}
+                                                  </div>
+                                                ))}
                                               </div>
-                                            ))}
+                                            )}
                                             
                                             {/* Special Indicators */}
                                             {day.sankranti_today_info && <div className="flex items-center gap-2"><SankrantiIcon className="h-3.5 w-3.5 text-sky-500 flex-shrink-0"/><strong>Sankranti:</strong> {day.sankranti_today_info}</div>}

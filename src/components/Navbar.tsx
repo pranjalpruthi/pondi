@@ -66,7 +66,7 @@ function WeatherIcon({ weatherCode, isDay = true, ...props }: { weatherCode: num
 
 import { motion, AnimatePresence } from "motion/react";
 import useMeasure from 'react-use-measure';
-import useClickOutside from '@/components/motion-primitives/useClickOutside';
+import useClickOutside from '@/hooks/useClickOutside';
 import { RainbowButton } from "./ui/rainbow-button";
 import { useTempleStatus } from "@/hooks/useTempleStatus"; // Added
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -230,14 +230,14 @@ function NavBarComponent({ className }: NavBarProps) {
             transition={springTransition} // Use spring transition here
         >
             <div className="w-full px-1 xs:px-2 sm:px-4">
-                <div className="flex justify-between items-center h-16">
+                <div className="flex justify-between items-center h-20"> {/* Increased height from h-16 to h-20 */}
                     {/* Left side with ModeToggle and Temple Name */}
                     <div className="relative flex items-center space-x-2 sm:space-x-3">
-                        <ModeToggle />
+                        <ModeToggle className="mt-8" />
                         {/* Temple Name Link - Popover and dot removed from here */}
                         <Link 
                             to="/" 
-                            className="flex flex-col hover:opacity-80 transition-opacity min-w-0 flex-grow flex-shrink ml-1 sm:ml-0"
+                            className="flex flex-col hover:opacity-80 transition-opacity min-w-0 flex-grow flex-shrink"
                             onClick={safePlayClick}
                             onMouseEnter={safePlayHover}
                         >
@@ -684,7 +684,7 @@ function NavBarComponent({ className }: NavBarProps) {
                             </PopoverContent>
                           </Popover>
                         )}
-                        <a href="/sign-in" className="hidden sm:inline-block" onClick={safePlayClick} onMouseEnter={safePlayHover}>
+                        <a href="/sign-in" className="hidden sm:inline-block" onClick={safePlayClick} onMouseEnter={safePlayHover} >
                             <Button size="icon" variant="outline" className="rounded-full w-9 h-9 text-foreground">
                                 <User className="w-4 h-4" />
                             </Button>

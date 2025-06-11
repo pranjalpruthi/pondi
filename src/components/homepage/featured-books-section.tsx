@@ -5,6 +5,13 @@ import { ModernBookCover } from '@/components/cuicui/modern-book-cover';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Languages, CheckCircle, Eye, ShoppingCart } from 'lucide-react';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
+import { InView } from '@/components/motion-primitives/in-view';
 
 const springTransition = {
   type: "spring",
@@ -29,6 +36,7 @@ interface BookDetailData {
   description: string;
   badges: string[];
   ebookPreviewLink?: string;
+  previewPdfPath?: string;
   productLink?: string;
   playlistLink?: string; // Added playlistLink
   whatsAppNumber: string;
@@ -68,6 +76,7 @@ const ia77BookDetails: BookDetailData = {
     }
   ],
   ebookPreviewLink: "https://heyzine.com/flip-book/7463036c24.html#page/18",
+  previewPdfPath: "/assets/books/IA77.pdf",
   playlistLink: "https://youtube.com/playlist?list=PLQGHF3mp1o78H-_CwnooAqyfYo8wznJjw&feature=shared", // Added playlist link
   whatsAppNumber: "+919380395156",
   baseWhatsAppMessageTemplate: `Hare Kṛṣṇa! prabhu
@@ -106,6 +115,7 @@ const wwokBookDetails: BookDetailData = {
       icon: <Languages className="h-5 w-5 mr-2 text-indigo-500" />
     }
   ],
+  previewPdfPath: "/assets/books/WWOK.pdf",
   productLink: "https://www.gaudiyabooks.com/product-page/why-worship-only-krsna-the-ultimate-vedic-conclusion",
   whatsAppNumber: "+919380395156",
   baseWhatsAppMessageTemplate: `Hare Kṛṣṇa! prabhu
@@ -144,6 +154,7 @@ const usuageBookDetails: BookDetailData = {
       icon: <Languages className="h-5 w-5 mr-2 text-blue-600" />
     }
   ],
+  previewPdfPath: "/assets/books/Usage of BBT Books – ISKM Position Paper.pdf",
   whatsAppNumber: "+919380395156",
   baseWhatsAppMessageTemplate: `Hare Kṛṣṇa! prabhu
  Dandwat pranam, please accept my humble obesiances
@@ -161,10 +172,31 @@ My Temple Site Order Number is: `,
 
 const allBooksData: BookDetailData[] = [ia77BookDetails, wwokBookDetails, usuageBookDetails];
 
+const PDFPreview: React.FC<{ src: string }> = ({ src }) => {
+  // Use a direct iframe approach instead of embedpdf.js
+  return (
+    <iframe
+      src={src}
+      style={{ height: '100%', width: '100%', border: 'none' }}
+      title="PDF Preview"
+      allowFullScreen
+    />
+  );
+};
+
 export function FeaturedBooksSection() {
   const [selectedBook, setSelectedBook] = React.useState<BookDetailData>(allBooksData[0]);
   const [orderNumber, setOrderNumber] = React.useState('');
   const isMobile = useIsMobile(); // Added for responsive book size
+  const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
+  const [previewPdfUrl, setPreviewPdfUrl] = React.useState<string | undefined>(undefined);
+  const [previewBookTitle, setPreviewBookTitle] = React.useState<string>('');
+
+  const handlePreviewClick = (pdfUrl: string, bookTitle: string) => {
+    setPreviewPdfUrl(pdfUrl);
+    setPreviewBookTitle(bookTitle);
+    setIsPreviewOpen(true);
+  };
 
   React.useEffect(() => {
     if (selectedBook) {
@@ -176,7 +208,8 @@ export function FeaturedBooksSection() {
   const whatsAppOrderUrl = `https://wa.me/${selectedBook.whatsAppNumber}?text=${encodeURIComponent(whatsAppMessageWithOrder)}`;
 
   return (
-    <section className="pt-10 pb-6 md:pt-20 md:pb-20 bg-background overflow-hidden">
+    <>
+      <section className="pt-10 pb-6 md:pt-20 md:pb-20 bg-background overflow-hidden">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -291,28 +324,39 @@ export function FeaturedBooksSection() {
             </motion.div>
 
             <div className="pt-2 flex flex-wrap gap-3 items-center"> {/* Changed to flex-wrap, removed flex-col sm:flex-row */}
-              <a href={whatsAppOrderUrl} target="_blank" rel="noopener noreferrer" className="min-w-[200px] grow"> {/* Removed flex-1, added grow and min-width */}
-                <Button size={isMobile ? "sm" : "lg"} className="w-full rounded-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
-                  <ShoppingCart className="mr-2 h-4 w-4" /> Order via WhatsApp
+              <a href={whatsAppOrderUrl} target="_blank" rel="noopener noreferrer" className="min-w-[200px] grow">
+                <Button size="lg" className="w-full rounded-[24px] py-6 text-lg bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
+                  <ShoppingCart className="mr-2 h-5 w-5" /> Order via WhatsApp
                 </Button>
               </a>
-              {selectedBook.productLink ? (
-                <a href={selectedBook.productLink} target="_blank" rel="noopener noreferrer" className="min-w-[200px] grow"> {/* Removed flex-1, added grow and min-width */}
-                  <Button size={isMobile ? "sm" : "lg"} variant="outline" className="w-full rounded-full border-purple-500/80 text-purple-600 hover:bg-purple-500/10 dark:border-purple-500/60 dark:text-purple-400 dark:hover:bg-purple-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
-                    View Product Page <Eye className="ml-2 h-4 w-4" />
+              {selectedBook.productLink && (
+                <a href={selectedBook.productLink} target="_blank" rel="noopener noreferrer" className="min-w-[200px] grow">
+                  <Button size="lg" variant="outline" className="w-full rounded-[24px] py-6 text-lg border-purple-500/80 text-purple-600 hover:bg-purple-500/10 dark:border-purple-500/60 dark:text-purple-400 dark:hover:bg-purple-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
+                    View Product Page <Eye className="ml-2 h-5 w-5" />
                   </Button>
                 </a>
-              ) : selectedBook.ebookPreviewLink && (
-                 <a href={selectedBook.ebookPreviewLink} target="_blank" rel="noopener noreferrer" className="min-w-[200px] grow"> {/* Removed flex-1, added grow and min-width */}
-                  <Button size={isMobile ? "sm" : "lg"} variant="outline" className="w-full rounded-full border-purple-500/80 text-purple-600 hover:bg-purple-500/10 dark:border-purple-500/60 dark:text-purple-400 dark:hover:bg-purple-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
-                    Read eBook Preview <Eye className="ml-2 h-4 w-4" />
+              )}
+              {selectedBook.previewPdfPath && (
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full rounded-[24px] py-6 text-lg border-blue-500/80 text-blue-600 hover:bg-blue-500/10 dark:border-blue-500/60 dark:text-blue-400 dark:hover:bg-blue-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md min-w-[200px] grow"
+                  onClick={() => handlePreviewClick(selectedBook.previewPdfPath!, selectedBook.title)}
+                >
+                  Preview PDF <Eye className="ml-2 h-5 w-5" />
+                </Button>
+              )}
+              {!selectedBook.previewPdfPath && selectedBook.ebookPreviewLink && (
+                 <a href={selectedBook.ebookPreviewLink} target="_blank" rel="noopener noreferrer" className="min-w-[200px] grow">
+                  <Button size="lg" variant="outline" className="w-full rounded-[24px] py-6 text-lg border-purple-500/80 text-purple-600 hover:bg-purple-500/10 dark:border-purple-500/60 dark:text-purple-400 dark:hover:bg-purple-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
+                    Read eBook Preview <Eye className="ml-2 h-5 w-5" />
                   </Button>
                 </a>
               )}
                {selectedBook.playlistLink && (
                  <a href={selectedBook.playlistLink} target="_blank" rel="noopener noreferrer" className="min-w-[200px] grow"> {/* Removed flex-1, added grow and min-width */}
-                  <Button size={isMobile ? "sm" : "lg"} variant="outline" className="w-full rounded-full border-blue-500/80 text-blue-600 hover:bg-blue-500/10 dark:border-blue-500/60 dark:text-blue-400 dark:hover:bg-blue-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
-                    Watch Playlist <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-youtube ml-2 h-4 w-4"><path d="M2.8 7.1a2.2 2.2 0 0 1 1.7-1.7C7.3 5 12 5 12 5s4.7 0 7.5.4a2.2 2.2 0 0 1 1.7 1.7c.3 2.1.3 4.9.3 4.9s0 2.8-.3 4.9a2.2 2.2 0 0 1-1.7 1.7c-2.8.4-7.5.4-7.5.4s-4.7 0-7.5-.4a2.2 2.2 0 0 1-1.7-1.7c-.3-2.1-.3-4.9-.3-4.9s0-2.8.3-4.9Z"/><path d="m10 9 5 3-5 3Z"/></svg>
+                  <Button size="lg" variant="outline" className="w-full rounded-[24px] py-6 text-lg border-red-500/80 text-red-600 hover:bg-red-500/10 dark:border-red-500/60 dark:text-red-400 dark:hover:bg-red-500/10 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-sm hover:shadow-md">
+                    Watch Playlist <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-youtube ml-2 h-5 w-5"><path d="M2.8 7.1a2.2 2.2 0 0 1 1.7-1.7C7.3 5 12 5 12 5s4.7 0 7.5.4a2.2 2.2 0 0 1 1.7 1.7c.3 2.1.3 4.9.3 4.9s0 2.8-.3 4.9a2.2 2.2 0 0 1-1.7 1.7c-2.8.4-7.5.4-7.5.4s-4.7 0-7.5-.4a2.2 2.2 0 0 1-1.7-1.7c-.3-2.1-.3-4.9-.3-4.9s0-2.8.3-4.9Z"/><path d="m10 9 5 3-5 3Z"/></svg>
                   </Button>
                 </a>
               )}
@@ -322,40 +366,97 @@ export function FeaturedBooksSection() {
 
         {/* Book Selector Section */}
         <div className="mt-16 md:mt-20">
-          <h4 className="text-xl md:text-2xl font-semibold tracking-tight text-center mb-6 md:mb-8 text-gray-700 dark:text-gray-300">
-            More Publications
-          </h4>
+          <InView
+            variants={{
+              hidden: {
+                opacity: 0,
+                y: 30,
+                scale: 0.95,
+                filter: 'blur(4px)',
+              },
+              visible: {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                filter: 'blur(0px)',
+              },
+            }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            viewOptions={{ margin: '0px 0px -150px 0px' }}
+            once={true}
+          >
+            <h4 className="text-xl md:text-2xl font-semibold tracking-tight text-center mb-6 md:mb-8 text-gray-700 dark:text-gray-300">
+              More Publications
+            </h4>
+          </InView>
           {/* Removed sm:justify-center and sm:flex-wrap to ensure horizontal scroll on all sizes */}
           <div className="flex overflow-x-auto py-2 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent justify-start gap-3 sm:gap-4 md:gap-6">
             {allBooksData.map((book) => (
-              <motion.div
+              <InView
                 key={`selector-${book.id}`}
-                onClick={() => setSelectedBook(book)}
-                // Ensured flex-shrink-0 is always active for horizontal scrolling
-                className={`cursor-pointer p-2 sm:p-3 rounded-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 flex-shrink-0 ${selectedBook.id === book.id ? 'ring-2 ring-purple-500 shadow-xl bg-purple-500/5 dark:bg-purple-500/10' : 'hover:shadow-lg bg-card'} ${isMobile ? 'scale-[0.85] origin-bottom' : ''}`}
-                whileHover={{ scale: isMobile ? 0.88 : 1.03 }}
-                whileTap={{ scale: isMobile ? 0.82 : 0.97 }}
+                variants={{
+                  hidden: {
+                    opacity: 0,
+                    y: 30,
+                    scale: 0.95,
+                    filter: 'blur(4px)',
+                  },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    filter: 'blur(0px)',
+                  },
+                }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                viewOptions={{ margin: '0px 0px -150px 0px' }}
+                once={true}
               >
-                <ModernBookCover 
-                  size="sm" 
-                  color={book.id === 'wwok' ? 'yellow' : book.id === 'usuage' ? 'neutral' : 'zinc'} 
-                  className="mx-auto"
-                  forceRotate={isMobile && selectedBook.id === book.id}
+                <motion.div
+                  onClick={() => {
+                    setSelectedBook(book);
+                    // If the book has a PDF preview path, open the preview
+                    if (book.previewPdfPath) {
+                      handlePreviewClick(book.previewPdfPath, book.title);
+                    }
+                  }}
+                  // Ensured flex-shrink-0 is always active for horizontal scrolling
+                  className={`cursor-pointer p-2 sm:p-3 rounded-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 flex-shrink-0 ${selectedBook.id === book.id ? 'ring-2 ring-purple-500 shadow-xl bg-purple-500/5 dark:bg-purple-500/10' : 'hover:shadow-lg bg-card'} ${isMobile ? 'scale-[0.85] origin-bottom' : ''}`}
+                  whileHover={{ scale: isMobile ? 0.88 : 1.03 }}
+                  whileTap={{ scale: isMobile ? 0.82 : 0.97 }}
                 >
-                  <img
-                    src={book.coverImage}
-                    alt={book.title}
-                    className="w-full h-full object-cover"
-                  />
-                </ModernBookCover>
-                <p className={`mt-2 text-center text-xs font-medium w-full truncate ${selectedBook.id === book.id ? 'text-purple-700 dark:text-purple-300' : 'text-muted-foreground'}`}>
-                  {book.title}
-                </p>
-              </motion.div>
+                  <ModernBookCover 
+                    size="sm" 
+                    color={book.id === 'wwok' ? 'yellow' : book.id === 'usuage' ? 'neutral' : 'zinc'} 
+                    className="mx-auto"
+                    forceRotate={isMobile && selectedBook.id === book.id}
+                  >
+                    <img
+                      src={book.coverImage}
+                      alt={book.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </ModernBookCover>
+                  <p className={`mt-2 text-center text-xs font-medium w-full truncate ${selectedBook.id === book.id ? 'text-purple-700 dark:text-purple-300' : 'text-muted-foreground'}`}>
+                    {book.title}
+                  </p>
+                </motion.div>
+              </InView>
             ))}
           </div>
         </div>
       </div>
     </section>
+    <Sheet open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+      <SheetContent side="bottom" className="h-[90vh] w-full max-w-full p-0 sm:max-w-full">
+        <SheetHeader className="p-4 border-b flex-shrink-0">
+          <SheetTitle>Book Preview: {previewBookTitle}</SheetTitle>
+        </SheetHeader>
+        <div className="flex-grow relative overflow-auto h-full">
+          {previewPdfUrl && <PDFPreview src={previewPdfUrl} />}
+        </div>
+      </SheetContent>
+    </Sheet>
+    </>
   );
 }
