@@ -175,7 +175,7 @@ function DashboardPage() {
               Seva Dashboard
             </h2>
             <p className="text-muted-foreground mt-1">
-              An overview of ISKCON Pondicherry's devotional activities.
+              An overview of ISKM Pondicherry's devotional activities.
             </p>
           </div>
           <div className="hidden md:block">
