@@ -18,7 +18,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"; // Assuming path
-import { Menu, Search, Volume2, VolumeX, Globe as GlobeIcon } from "lucide-react";
+import { Menu, Search, Volume2, VolumeX, Globe as GlobeIcon, ShoppingBag as ShoppingBagIcon } from "lucide-react"; // Added ShoppingBagIcon
 import { useSound } from 'use-sound';
 import { useSoundSettings } from '@/components/context/sound-context';
 import { SoundProvider } from '@/components/context/sound-context';
@@ -26,12 +26,18 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTempleStatus } from '@/hooks/useTempleStatus'; // Added
 import { TempleEvents } from '@/components/temple-events';
 import { DeityDarshan } from '@/components/deity-darshan';
+import { SignedIn, SignedOut, UserButton, SignInButton, SignOutButton } from '@clerk/tanstack-react-start';
+import { LayoutDashboard, LogIn, LogOut } from 'lucide-react';
 import { useIsMobile } from "@/hooks/use-mobile";
 import { RainbowGlow } from "@/components/ui/rainbow-glow"; // Added RainbowGlow import
 import { Suspense } from 'react'; // Added Suspense import
 const LazyUpcomingEventBanner = React.lazy(() => // Added import for the banner
   import('@/components/upcoming-event-banner').then(module => ({ default: module.UpcomingEventBanner }))
 );
+
+interface NavbarContentProps {
+  isDashboardPage?: boolean; // Prop to indicate if it's a dashboard page
+}
 
 const navItems = [
   { 
@@ -42,11 +48,12 @@ const navItems = [
   },
   { icon: IconTemple, label: 'Deities', to: '/deities', iconClassName: "text-primary/80" },
   { icon: IconCalendar, label: 'Events', to: '/events', iconClassName: "text-primary/80" },
+  { icon: ShoppingBagIcon, label: 'Shop', to: '/shop', iconClassName: "text-primary/80" }, // Added Shop item
   { icon: GlobeIcon, label: 'Centers', to: '/centers', iconClassName: "text-primary/80" },
   { icon: IconInfo, label: 'About', to: '/about', iconClassName: "text-primary/80" },
 ];
 
-function NavbarContent() {
+function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDashboardPage prop
   // --- State ---
   const [open, setOpen] = React.useState(false); // Command Dialog state
   const [eventsOpen, setEventsOpen] = React.useState(false); // Events Dialog state
@@ -232,7 +239,16 @@ function NavbarContent() {
       action: () => { setEventsOpen(true); safePlayClick(); }, // Direct action
     },
     {
-      id: 4,
+      id: 6, // New ID for Shop
+      label: 'Shop',
+      title: <ShoppingBagIcon className='size-5' />,
+      subtitle: 'Store',
+      action: () => handleNavClick('/shop'),
+      isLink: true,
+      to: '/shop',
+    },
+    {
+      id: 4, // Original ID for Search
       label: 'Search',
       title: <Search className='size-5' />,
       subtitle: 'Find',
@@ -245,7 +261,7 @@ function NavbarContent() {
       subtitle: 'More',
       isExpandable: true,
       content: ( // Content for the "Menu" item
-        <div className='flex flex-col space-y-2 p-2 max-h-[calc(100vh-200px)] overflow-y-auto'>
+        <div className='grid grid-cols-2 gap-2 p-2 max-h-[calc(100vh-200px)] overflow-y-auto'>
           <button
             onClick={() => { handleSoundToggle(); safePlayClick(); /* setIsDockOpen(false); setActiveDockItem(null); */ }} // Keep dock open for menu actions
             onMouseEnter={safePlayHover}
@@ -260,13 +276,13 @@ function NavbarContent() {
           <div className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent">
             <ModeToggle />
           </div>
-          <Separator />
+          <Separator className="col-span-2" />
           {isMobile && (
             <>
-              <Separator />
+              <Separator className="col-span-2" />
             </>
           )}
-          {navItems.filter(item => ['/centers', '/about'].includes(item.to) && !(isMobile && item.to === '/donate')).map(navItem => (
+          {navItems.filter(item => ['/centers', '/about', '/shop'].includes(item.to) && !(isMobile && item.to === '/donate')).map(navItem => ( // Added '/shop' to filter
             <Link
               key={`dock-menu-${navItem.to}`}
               to={navItem.to}
@@ -278,6 +294,45 @@ function NavbarContent() {
               <span>{navItem.label}</span>
             </Link>
           ))}
+          <SignedIn>
+            <Separator className="col-span-2" />
+            <Link
+              to="/dashboard"
+              onClick={() => { handleNavClick("/dashboard"); setIsDockOpen(false); setActiveDockItem(null); }}
+              onMouseEnter={safePlayHover}
+              className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent"
+            >
+              <LayoutDashboard className="size-5 text-primary/80" />
+              <span>Dashboard</span>
+            </Link>
+            <div className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent">
+               <UserButton afterSignOutUrl="/" />
+               {/* The UserButton component typically handles its own label or can be configured */}
+            </div>
+            <SignOutButton>
+              <button
+                onClick={() => { safePlayClick(); setIsDockOpen(false); setActiveDockItem(null); }}
+                onMouseEnter={safePlayHover}
+                className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent text-left"
+              >
+                <LogOut className="size-5 text-primary/80" />
+                <span>Sign Out</span>
+              </button>
+            </SignOutButton>
+          </SignedIn>
+          <SignedOut>
+            <Separator className="col-span-2" />
+            <SignInButton mode="modal">
+              <button
+                onClick={() => { safePlayClick(); setIsDockOpen(false); setActiveDockItem(null); }}
+                onMouseEnter={safePlayHover}
+                className="flex w-full items-center space-x-2 rounded-lg p-2 hover:bg-accent text-left"
+              >
+                <LogIn className="size-5 text-primary/80" />
+                <span>Sign In</span>
+              </button>
+            </SignInButton>
+          </SignedOut>
         </div>
       ),
     },
@@ -288,7 +343,7 @@ function NavbarContent() {
     <MotionConfig transition={{ layout: { duration: 0.35, type: 'spring', bounce: 0.1 } }}>
       {/* Main Dock Navigation */}
       <motion.nav 
-        className="fixed bottom-[var(--banner-height,0px)] left-0 z-40 w-full pb-safe pointer-events-none"
+        className="fixed bottom-[var(--banner-height,44px)] left-0 z-40 w-full pb-safe pointer-events-none"
         initial={{ y: 0 }}
         animate={{ y: isDockVisible && !isFooterVisible ? 0 : 200 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -300,10 +355,9 @@ function NavbarContent() {
             initial={{ opacity: 0 }} // Only initial opacity if mainDockAppearanceTransition handles y
             animate={{ opacity: 1 }}
             transition={mainDockAppearanceTransition} // This transition might primarily be for opacity now
-            className="relative w-full max-w-md rounded-3xl bg-pink-50/60 shadow-lg shadow-black/5 ring-1 ring-pink-100/60 backdrop-blur-md dark:bg-pink-900/40 dark:shadow-black/10 dark:ring-pink-900/40 sm:max-w-fit pointer-events-auto overflow-hidden mb-4"
+            className="relative w-full max-w-md rounded-3xl bg-pink-50/60 shadow-lg shadow-black/5 ring-1 ring-pink-100/60 backdrop-blur-md dark:bg-pink-900/40 dark:shadow-black/10 dark:ring-pink-900/40 sm:max-w-fit pointer-events-auto overflow-hidden mb-4 group glass"
             ref={dockWrapperRef}
-            onMouseLeave={() => setHoveredLabelItemId(null)} // Clear hover when mouse leaves the entire dock
-          >
+            onMouseLeave={() => setHoveredLabelItemId(null)} >
             <RainbowGlow 
               position="top" 
               className="opacity-50"
@@ -501,6 +555,8 @@ function NavbarContent() {
                       );
                     }
                   })}
+                  <div className="h-8 w-px bg-border mx-1" />
+                  {/* SignedIn and SignedOut components are now exclusively within the 'More' menu content */}
                 </div>
               </div>
             </MotionConfig>
@@ -566,18 +622,20 @@ function NavbarContent() {
         <div className="h-[env(safe-area-inset-bottom)]" />
       </motion.nav> {/* Corrected: Added closing tag for motion.nav */}
 
-      {/* Upcoming Event Banner - Placed here to be part of the fixed layout, but styled to be above the dock */}
-      <Suspense fallback={null}>
-        <LazyUpcomingEventBanner />
-      </Suspense>
+      {/* Upcoming Event Banner - Conditionally rendered based on isDashboardPage */}
+      {!isDashboardPage && (
+        <Suspense fallback={null}>
+          <LazyUpcomingEventBanner />
+        </Suspense>
+      )}
     </MotionConfig>
   )
 }
 
-export default function Navbar() {
+export default function Navbar({ isDashboardPage }: NavbarContentProps) { // Accept isDashboardPage prop
   return (
     <SoundProvider>
-      <NavbarContent />
+      <NavbarContent isDashboardPage={isDashboardPage} /> {/* Pass isDashboardPage to NavbarContent */}
     </SoundProvider>
   )
 }

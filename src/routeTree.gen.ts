@@ -24,7 +24,12 @@ import { Route as ComingSoonIndexImport } from './routes/coming-soon/index'
 import { Route as CentersIndexImport } from './routes/centers/index'
 import { Route as CalenderIndexImport } from './routes/calender/index'
 import { Route as AboutIndexImport } from './routes/about/index'
+import { Route as SignUpSplatImport } from './routes/sign-up/$'
+import { Route as SignInSplatImport } from './routes/sign-in/$'
 import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
+import { Route as DashboardUsersImport } from './routes/dashboard/users'
+import { Route as DashboardSettingsImport } from './routes/dashboard/settings'
+import { Route as DashboardAnalyticsImport } from './routes/dashboard/analytics'
 
 // Create/Update Routes
 
@@ -107,10 +112,40 @@ const AboutIndexRoute = AboutIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const SignUpSplatRoute = SignUpSplatImport.update({
+  id: '/sign-up/$',
+  path: '/sign-up/$',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SignInSplatRoute = SignInSplatImport.update({
+  id: '/sign-in/$',
+  path: '/sign-in/$',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const DemoTanstackQueryRoute = DemoTanstackQueryImport.update({
   id: '/demo/tanstack-query',
   path: '/demo/tanstack-query',
   getParentRoute: () => rootRoute,
+} as any)
+
+const DashboardUsersRoute = DashboardUsersImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+
+const DashboardSettingsRoute = DashboardSettingsImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+
+const DashboardAnalyticsRoute = DashboardAnalyticsImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -138,11 +173,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsImport
       parentRoute: typeof rootRoute
     }
+    '/dashboard/analytics': {
+      id: '/dashboard/analytics'
+      path: '/analytics'
+      fullPath: '/dashboard/analytics'
+      preLoaderRoute: typeof DashboardAnalyticsImport
+      parentRoute: typeof DashboardRouteImport
+    }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsImport
+      parentRoute: typeof DashboardRouteImport
+    }
+    '/dashboard/users': {
+      id: '/dashboard/users'
+      path: '/users'
+      fullPath: '/dashboard/users'
+      preLoaderRoute: typeof DashboardUsersImport
+      parentRoute: typeof DashboardRouteImport
+    }
     '/demo/tanstack-query': {
       id: '/demo/tanstack-query'
       path: '/demo/tanstack-query'
       fullPath: '/demo/tanstack-query'
       preLoaderRoute: typeof DemoTanstackQueryImport
+      parentRoute: typeof rootRoute
+    }
+    '/sign-in/$': {
+      id: '/sign-in/$'
+      path: '/sign-in/$'
+      fullPath: '/sign-in/$'
+      preLoaderRoute: typeof SignInSplatImport
+      parentRoute: typeof rootRoute
+    }
+    '/sign-up/$': {
+      id: '/sign-up/$'
+      path: '/sign-up/$'
+      fullPath: '/sign-up/$'
+      preLoaderRoute: typeof SignUpSplatImport
       parentRoute: typeof rootRoute
     }
     '/about/': {
@@ -221,10 +291,16 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface DashboardRouteRouteChildren {
+  DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardUsersRoute: typeof DashboardUsersRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardAnalyticsRoute: DashboardAnalyticsRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
+  DashboardUsersRoute: DashboardUsersRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
@@ -236,7 +312,12 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/events': typeof EventsRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/users': typeof DashboardUsersRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/sign-in/$': typeof SignInSplatRoute
+  '/sign-up/$': typeof SignUpSplatRoute
   '/about': typeof AboutIndexRoute
   '/calender': typeof CalenderIndexRoute
   '/centers': typeof CentersIndexRoute
@@ -252,7 +333,12 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/events': typeof EventsRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/users': typeof DashboardUsersRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/sign-in/$': typeof SignInSplatRoute
+  '/sign-up/$': typeof SignUpSplatRoute
   '/about': typeof AboutIndexRoute
   '/calender': typeof CalenderIndexRoute
   '/centers': typeof CentersIndexRoute
@@ -270,7 +356,12 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/events': typeof EventsRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/users': typeof DashboardUsersRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/sign-in/$': typeof SignInSplatRoute
+  '/sign-up/$': typeof SignUpSplatRoute
   '/about/': typeof AboutIndexRoute
   '/calender/': typeof CalenderIndexRoute
   '/centers/': typeof CentersIndexRoute
@@ -289,7 +380,12 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/events'
+    | '/dashboard/analytics'
+    | '/dashboard/settings'
+    | '/dashboard/users'
     | '/demo/tanstack-query'
+    | '/sign-in/$'
+    | '/sign-up/$'
     | '/about'
     | '/calender'
     | '/centers'
@@ -304,7 +400,12 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/events'
+    | '/dashboard/analytics'
+    | '/dashboard/settings'
+    | '/dashboard/users'
     | '/demo/tanstack-query'
+    | '/sign-in/$'
+    | '/sign-up/$'
     | '/about'
     | '/calender'
     | '/centers'
@@ -320,7 +421,12 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/events'
+    | '/dashboard/analytics'
+    | '/dashboard/settings'
+    | '/dashboard/users'
     | '/demo/tanstack-query'
+    | '/sign-in/$'
+    | '/sign-up/$'
     | '/about/'
     | '/calender/'
     | '/centers/'
@@ -339,6 +445,8 @@ export interface RootRouteChildren {
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   EventsRoute: typeof EventsRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
+  SignInSplatRoute: typeof SignInSplatRoute
+  SignUpSplatRoute: typeof SignUpSplatRoute
   AboutIndexRoute: typeof AboutIndexRoute
   CalenderIndexRoute: typeof CalenderIndexRoute
   CentersIndexRoute: typeof CentersIndexRoute
@@ -355,6 +463,8 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
   EventsRoute: EventsRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
+  SignInSplatRoute: SignInSplatRoute,
+  SignUpSplatRoute: SignUpSplatRoute,
   AboutIndexRoute: AboutIndexRoute,
   CalenderIndexRoute: CalenderIndexRoute,
   CentersIndexRoute: CentersIndexRoute,
@@ -380,6 +490,8 @@ export const routeTree = rootRoute
         "/dashboard",
         "/events",
         "/demo/tanstack-query",
+        "/sign-in/$",
+        "/sign-up/$",
         "/about/",
         "/calender/",
         "/centers/",
@@ -397,14 +509,35 @@ export const routeTree = rootRoute
     "/dashboard": {
       "filePath": "dashboard/route.tsx",
       "children": [
+        "/dashboard/analytics",
+        "/dashboard/settings",
+        "/dashboard/users",
         "/dashboard/"
       ]
     },
     "/events": {
       "filePath": "events.tsx"
     },
+    "/dashboard/analytics": {
+      "filePath": "dashboard/analytics.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/settings": {
+      "filePath": "dashboard/settings.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/users": {
+      "filePath": "dashboard/users.tsx",
+      "parent": "/dashboard"
+    },
     "/demo/tanstack-query": {
       "filePath": "demo.tanstack-query.tsx"
+    },
+    "/sign-in/$": {
+      "filePath": "sign-in/$.tsx"
+    },
+    "/sign-up/$": {
+      "filePath": "sign-up/$.tsx"
     },
     "/about/": {
       "filePath": "about/index.tsx"

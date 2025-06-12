@@ -10,6 +10,7 @@
     "test": "pnpm vitest run"
   },
   "dependencies": {
+    "@clerk/tanstack-react-start": "^0.16.0",
     "@gsap/react": "^2.1.2",
     "@headlessui/react": "^2.2.2",
     "@hookform/resolvers": "^5.0.1",

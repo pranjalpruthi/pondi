@@ -10,21 +10,14 @@ import {
   Check,
   Building2,
   LogOut,
-  Sparkles,
-  BadgeCheck,
-  CreditCard,
-  Bell,
-
+  ArrowLeft
 } from "lucide-react"
 
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuGroup,
+
 } from "@/components/ui/dropdown-menu"
 import {
   Avatar,
@@ -59,8 +52,8 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
 
-import { useNavigate } from "@tanstack/react-router"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger }  from "@/components/animate-ui/radix/dialog"
+import { SignOutButton, UserButton } from '@clerk/tanstack-react-start'
 
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { ModeToggle } from "@/components/mode-toggle"
@@ -74,27 +67,42 @@ const navigationLinks = [
 
 const organizations = [
   {
-    label: "Acme Inc",
-    value: "acme",
-    icon: "/acme-logo.png",
+    label: "ISKM Pondicherry",
+    value: "iskm-pondy",
+    icon: "/assets/iskm-d_vectorizednobg.png",
   },
   {
-    label: "Monsters Inc",
-    value: "monsters",
-    icon: "/monsters-logo.png",
+    label: "ISKM Australia",
+    value: "iskm-australia",
+    icon: "/assets/iskm-d_vectorizednobg.png",
   },
   {
-    label: "Stark Industries",
-    value: "stark",
-    icon: "/stark-logo.png",
-  }
-]
+    label: "ISKM Singapore",
+    value: "iskm-singapore",
+    icon: "/assets/iskm-d_vectorizednobg.png",
+  },
+  {
+    label: "ISKM Canada",
+    value: "iskm-canada",
+    icon: "/assets/iskm-d_vectorizednobg.png",
+  },
+  {
+    label: "ISKM France",
+    value: "iskm-france",
+    icon: "/assets/iskm-d_vectorizednobg.png",
+  },
+  {
+    label: "ISKM Ukraine",
+    value: "iskm-ukraine",
+    icon: "/assets/iskm-d_vectorizednobg.png",
+  },
+];
 
 const OrganizationSwitcher = () => {
-  const { state } = useSidebar()
-  const [open, setOpen] = useState(false)
-  const [selectedOrg, setSelectedOrg] = useState(organizations[0])
-  const isCollapsed = state === "collapsed"
+  const { state } = useSidebar();
+  const [open, setOpen] = useState(false);
+  const [selectedOrg, setSelectedOrg] = useState(organizations[0]);
+  const isCollapsed = state === "collapsed";
 
   return (
     <SidebarMenu>
@@ -114,7 +122,7 @@ const OrganizationSwitcher = () => {
               {!isCollapsed && (
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{selectedOrg.label}</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                  <span className="truncate text-xs">Branch</span>
                 </div>
               )}
               {!isCollapsed && <ChevronsUpDown className="ml-auto h-4 w-4" />}
@@ -135,8 +143,8 @@ const OrganizationSwitcher = () => {
                     <CommandItem
                       key={org.value}
                       onSelect={() => {
-                        setSelectedOrg(org)
-                        setOpen(false)
+                        setSelectedOrg(org);
+                        setOpen(false);
                       }}
                       className="flex items-center gap-2"
                     >
@@ -148,7 +156,7 @@ const OrganizationSwitcher = () => {
                       </Avatar>
                       <div className="grid flex-1">
                         <span className="font-medium">{org.label}</span>
-                        <span className="text-xs text-muted-foreground">Enterprise</span>
+                        <span className="text-xs text-muted-foreground">Branch</span>
                       </div>
                       <Check
                         className={cn(
@@ -167,8 +175,8 @@ const OrganizationSwitcher = () => {
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
-}
+  );
+};
 
 const AnnouncementCard = () => {
   return (
@@ -218,79 +226,24 @@ const AnnouncementCard = () => {
 }
 
 const UserSwitcher = () => {
-  const { state, isMobile } = useSidebar()
-  const navigate = useNavigate()
+  const { state } = useSidebar()
   const isCollapsed = state === "collapsed"
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                <AvatarFallback className="rounded-lg">SC</AvatarFallback>
-              </Avatar>
-              {!isCollapsed && (
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">shadcn</span>
-                  <span className="truncate text-xs">m@example.com</span>
-                </div>
-              )}
-              {!isCollapsed && <ChevronsUpDown className="ml-auto size-4" />}
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            side={isMobile || isCollapsed ? "right" : "bottom"}
-            align="end"
-            sideOffset={4}
-          >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                  <AvatarFallback className="rounded-lg">SC</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1">
-                  <span className="font-semibold">shadcn</span>
-                  <span className="text-xs text-muted-foreground">m@example.com</span>
-                </div>
+          <div className="flex items-center justify-center">
+            <UserButton />
+            {!isCollapsed && (
+              <div className="ml-2">
+                <SignOutButton>
+                  <button>
+                    <LogOut className="size-4" />
+                  </button>
+                </SignOutButton>
               </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles className="size-4 mr-2" />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck className="size-4 mr-2" />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard className="size-4 mr-2" />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell className="size-4 mr-2" />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate({ to: "/" })}>
-              <LogOut className="size-4 mr-2" />
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            )}
+          </div>
       </SidebarMenuItem>
     </SidebarMenu>
   )
@@ -349,6 +302,11 @@ export const DashNav = () => {
   return (
     <Sidebar variant="inset" collapsible="icon">
       <SidebarHeader>
+        <Link to="/" className={cn("flex items-center gap-2 font-semibold", isCollapsed ? "justify-center" : "px-3 py-2")}>
+          <ArrowLeft className="h-5 w-5" />
+          {!isCollapsed && <span>Back to Home</span>}
+        </Link>
+        <Separator />
         <OrganizationSwitcher />
         <Separator />
       </SidebarHeader>

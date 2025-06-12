@@ -3,7 +3,6 @@ import React, { Suspense, useState, useEffect } from 'react';
 import { HeroSection } from "@/components/homepage/hero-section";
 import SideBySide from "@/components/homepage/side-by-side";
 import { InitialPageLoader } from '@/components/ui/initial-page-loader'; // Updated import
-import { CookieToast } from '@/components/cookie-toast';
 // Removed ShlokaModal and Shloka type imports
 
 // Lazy load sections
@@ -78,7 +77,7 @@ function HomePage() {
 
   return (
     // Removed Fragment wrapper
-      <main 
+      <main
         className="flex flex-col min-h-screen relative w-full pb-0" // Reduced pb from 12 to 0
         // style={{ willChange: 'transform' }} // Hint for rendering performance - REMOVED
       >
@@ -137,7 +136,6 @@ function HomePage() {
           className="absolute bottom-0 right-0 w-48 h-48 pointer-events-none z-0" // Reverted to larger size and removed opacity
           aria-hidden="true"
         />
-        <CookieToast />
       </main>
   )
 }

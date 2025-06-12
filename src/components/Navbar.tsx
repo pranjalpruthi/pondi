@@ -9,6 +9,11 @@ import { Label } from "./ui/label";
 import { cn } from "@/lib/utils";
 import { useWeather } from "@/hooks/useWeather";
 import { User, Menu, X } from 'lucide-react';
+import {
+  SignedIn,
+  UserButton,
+  SignedOut,
+} from '@clerk/tanstack-react-start'
 // Import icons from iconify
 import HomeIcon from '~icons/lucide/home';
 import InfoIcon from '~icons/lucide/info';
@@ -29,6 +34,7 @@ import ThermometerIcon from '~icons/lucide/thermometer';
 import DropIcon from '~icons/lucide/droplet';
 import WindIcon from '~icons/lucide/wind';
 import BellIcon from '~icons/lucide/bell';
+import LayoutDashboardIcon from '~icons/lucide/layout-dashboard';
 
 // Weather icon component based on weather code from Open-Meteo API
 function WeatherIcon({ weatherCode, isDay = true, ...props }: { weatherCode: number; isDay?: boolean } & React.SVGProps<SVGSVGElement>) {
@@ -69,7 +75,7 @@ import useMeasure from 'react-use-measure';
 import useClickOutside from '@/hooks/useClickOutside';
 import { RainbowButton } from "./ui/rainbow-button";
 import { useTempleStatus } from "@/hooks/useTempleStatus"; // Added
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/animate-ui/radix/popover";
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -684,11 +690,26 @@ function NavBarComponent({ className }: NavBarProps) {
                             </PopoverContent>
                           </Popover>
                         )}
-                        <a href="/sign-in" className="hidden sm:inline-block" onClick={safePlayClick} onMouseEnter={safePlayHover} >
-                            <Button size="icon" variant="outline" className="rounded-full w-9 h-9 text-foreground">
-                                <User className="w-4 h-4" />
-                            </Button>
-                        </a>
+                        <div className="hidden sm:inline-block">
+                            <SignedIn>
+                                <div className="flex items-center gap-2">
+                                    <Link to="/dashboard">
+                                        <Button variant="ghost" className="rounded-full px-3 py-2 h-9 flex items-center gap-2">
+                                            <LayoutDashboardIcon className="w-4 h-4" />
+                                            <span className="text-sm font-medium">Admin</span>
+                                        </Button>
+                                    </Link>
+                                    <UserButton />
+                                </div>
+                            </SignedIn>
+                          <SignedOut>
+                            <Link to="/sign-in/$">
+                              <Button size="icon" variant="outline" className="rounded-full w-9 h-9 text-foreground" aria-label="Sign In">
+                                  <User className="w-4 h-4" />
+                              </Button>
+                            </Link>
+                          </SignedOut>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -722,10 +743,32 @@ function NavBarComponent({ className }: NavBarProps) {
                                     <span className="font-medium">{item.title}</span>
                                 </Link>
                             ))}
-                            <a href="/sign-in" className="sm:hidden w-full p-3 flex items-center gap-3 text-foreground hover:bg-accent rounded-md transition-colors text-base" onClick={() => { setIsMobileMenuOpen(false); safePlayClick(); safePlayMenuClose(); }} onMouseEnter={safePlayHover}>
+                            <SignedIn>
+                                <Link
+                                    to="/dashboard"
+                                    onClick={() => {
+                                      setIsMobileMenuOpen(false);
+                                      safePlayClick();
+                                      safePlayMenuClose();
+                                    }}
+                                    onMouseEnter={safePlayHover}
+                                    className="w-full p-3 flex items-center gap-3 text-foreground hover:bg-accent rounded-md transition-colors text-base"
+                                >
+                                    <div className="text-primary"><LayoutDashboardIcon className="w-5 h-5" /></div>
+                                    <span className="font-medium">Dashboard</span>
+                                </Link>
+                            </SignedIn>
+                            <div className="sm:hidden w-full p-3 flex items-center gap-3 text-foreground hover:bg-accent rounded-md transition-colors text-base" onClick={() => { setIsMobileMenuOpen(false); safePlayClick(); safePlayMenuClose(); }} onMouseEnter={safePlayHover}>
                                 <User className="text-primary w-5 h-5" />
-                                <span className="font-medium">Sign In / Sign Up</span>
-                            </a>
+                                <SignedOut>
+                                  <Link to="/sign-in/$" className="w-full">
+                                    <span className="font-medium">Sign In / Sign Up</span>
+                                  </Link>
+                                </SignedOut>
+                                <SignedIn>
+                                  <UserButton />
+                                </SignedIn>
+                            </div>
                         </div>
                     </motion.div>
                 )}

@@ -149,13 +149,14 @@ export function CookieToast() {
             <div className="space-y-1">
               <ToastTitle>Cookie Consent</ToastTitle>
               <ToastDescription>
-                We use cookies to enhance your experience.
+                We use cookies to enhance your experience. By continuing to browse, you agree to our <a href="/privacy-policy" className="underline">Privacy Policy</a>, which details our GDPR compliance.
               </ToastDescription>
             </div>
-            <div>
-              <ToastAction altText="Accept" asChild>
-                <Button size="sm" onClick={handleAccept}>Accept</Button>
+            <div className="flex gap-2">
+              <ToastAction altText="Haribol" asChild>
+                <Button size="sm" onClick={handleAccept}>Haribol!</Button>
               </ToastAction>
+              <Button size="sm" variant="outline" onClick={handleDecline}>Decline</Button>
             </div>
           </div>
           <ToastClose asChild>
