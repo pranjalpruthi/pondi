@@ -154,15 +154,15 @@ export default function MilestoneTimeline() {
                   />
                   <Card className="h-full flex flex-col shadow-xl hover:shadow-2xl transition-shadow duration-300 ease-in-out bg-card/80 dark:bg-neutral-800/80 border border-border/30 rounded-3xl backdrop-blur-sm relative z-10">
                     <CardHeader className="pb-3">
-                      <p className="text-xs font-medium text-muted-foreground tracking-wider uppercase">
+                      <p className="text-sm md:text-base font-medium text-muted-foreground tracking-wider uppercase">
                         {item.date}
                       </p>
-                      <CardTitle className="text-base md:text-lg font-semibold leading-tight text-card-foreground">
+                      <CardTitle className="text-lg md:text-xl font-semibold leading-tight text-card-foreground">
                         {item.title}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="flex-grow pt-0">
-                      <CardDescription className="text-sm text-muted-foreground/90">
+                      <CardDescription className="text-base md:text-lg text-muted-foreground/90">
                         {item.description}
                       </CardDescription>
                     </CardContent>

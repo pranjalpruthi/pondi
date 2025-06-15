@@ -222,10 +222,6 @@ const CenterDetailsContent = ({ center }: { center: CountryCenterData | null }) 
             />
             <div className="font-medium text-gray-800 dark:text-gray-100">{center.templePresident.name}</div>
           </div>
-          <blockquote className="text-xs italic text-gray-600 dark:text-gray-300 mb-2 bg-white/50 dark:bg-gray-800/40 p-2 rounded-md">
-            “{center.templePresident.quote}”
-            <cite className="block text-[10px] text-right mt-1">— {center.templePresident.quoteSource}</cite>
-          </blockquote>
           {center.templePresident.contact && (center.templePresident.contact.whatsapp || center.templePresident.contact.email) && (
             <div className="border-t border-gray-300 dark:border-gray-600 pt-1.5">
               <h6 className="text-[10px] font-medium mb-1 text-gray-600 dark:text-gray-300">Contact:</h6>
@@ -424,14 +420,10 @@ function CentersRouteComponent() {
                 <p className="text-lg text-gray-700 dark:text-gray-300 max-w-xl font-light mb-4">
                   ISKM connects devotees worldwide, spreading Krishna consciousness through our centers across continents.
                 </p>
-                {displayQuote && (
-                  <blockquote className="text-lg italic text-gray-700 dark:text-gray-300 max-w-xl bg-white/30 dark:bg-black/30 backdrop-blur-sm p-6 rounded-xl border border-gray-200 dark:border-gray-700/50">
-                    <span className="text-3xl text-pink-400 mr-1">“</span>
-                    {displayQuote.text}
-                    <span className="text-3xl text-pink-400 ml-1">”</span>
-                    <cite className="block text-sm text-right text-gray-500 dark:text-gray-400 mt-3 text-right">— {displayQuote.citation}</cite>
-                  </blockquote>
-                )}
+                <blockquote className="mt-4 text-md text-gray-600 dark:text-gray-400 italic border-l-4 border-pink-500 pl-4">
+                  {displayQuote.text}
+                  <cite className="block mt-1 text-sm text-gray-500 dark:text-gray-400">— {displayQuote.citation}</cite>
+                </blockquote>
               </div>
             </div>
           </div>
