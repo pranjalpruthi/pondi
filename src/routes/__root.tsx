@@ -29,8 +29,8 @@ export const Route = createRootRoute({
                 <main className={`flex-1 ${!isDashboardPage ? 'pt-16 sm:pt-20' : ''}`}> {/* Adjust padding based on NavBar visibility */}
                   <Outlet />
                 </main>
-                <Navbar isDashboardPage={isDashboardPage} /> {/* Pass isDashboardPage to Dock */}
-                {!isDashboardPage && <Footer/>} {/* Conditionally render Footer */}
+                {!isDashboardPage && <Navbar isDashboardPage={isDashboardPage} />} {/* Conditionally render Navbar/Dock */}
+                {!isDashboardPage && <Footer />} {/* Conditionally render Footer */}
                 {/* <TanstackQueryLayout /> */}
                 <Toaster richColors position="top-right" /> {/* Add Toaster component */}
                 {!isDashboardPage && <CookieToast />} {/* Conditionally render CookieToast */}

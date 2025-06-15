@@ -823,7 +823,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "OK",
             "content": {
               "application/json": {
@@ -1568,7 +1568,6 @@
           "type": {
             "description": "DB Type",
             "enum": [
-              "mssql",
               "mysql",
               "mysql2",
               "oracledb",
@@ -1743,7 +1742,6 @@
           "type": {
             "description": "DB Type",
             "enum": [
-              "mssql",
               "mysql",
               "mysql2",
               "oracledb",

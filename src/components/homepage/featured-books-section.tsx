@@ -185,6 +185,133 @@ const PDFPreview: React.FC<{ src: string }> = ({ src }) => {
   );
 };
 
+interface BookActionButtonsProps {
+  book: BookDetailData;
+  whatsAppOrderUrl: string;
+  onPreviewClick: (pdfUrl: string, bookTitle: string) => void;
+  isMobileDevice: boolean;
+  isMobileLayout: boolean;
+}
+
+const BookActionButtons: React.FC<BookActionButtonsProps> = ({
+  book,
+  whatsAppOrderUrl,
+  onPreviewClick,
+  isMobileDevice,
+  isMobileLayout,
+}) => {
+  const containerClasses = isMobileLayout
+    ? "pt-6 flex flex-wrap gap-4 items-center justify-center shrink-0 w-full"
+    : "pt-2 flex flex-wrap gap-4 items-center justify-start lg:justify-end shrink-0";
+
+  return (
+    <div className={containerClasses}>
+      <a href={whatsAppOrderUrl} target="_blank" rel="noopener noreferrer">
+        <LiquidButton
+          variant="default"
+          className="w-24 h-24 p-2 rounded-2xl flex flex-col items-center justify-center gap-1 shadow-lg"
+          style={{ '--liquid-button-color': '#25D366' } as React.CSSProperties}
+        >
+          <IconBrandWhatsapp className="h-10 w-10" />
+          <span className="text-xs font-semibold">Order</span>
+        </LiquidButton>
+      </a>
+
+      {book.productLink && (
+        <a href={book.productLink} target="_blank" rel="noopener noreferrer">
+          <FlipButton
+            className="w-24 h-24 p-2 rounded-2xl text-white shadow-lg"
+            frontClassName="bg-sky-500 hover:bg-sky-600"
+            backClassName="bg-sky-700"
+            frontContent={
+              <div className="flex flex-col items-center justify-center gap-1">
+                <Eye className="h-10 w-10" />
+                <span className="text-xs font-semibold text-center">Product Page</span>
+              </div>
+            }
+            backContent={<span className="text-sm font-bold">View Now</span>}
+          />
+        </a>
+      )}
+
+      {book.previewPdfPath &&
+        (isMobileDevice ? (
+          <a href={book.previewPdfPath} download={`${book.title.replace(/\s+/g, '_')}-Preview.pdf`}>
+            <FlipButton
+              className="w-24 h-24 p-2 rounded-2xl shadow-lg"
+              frontClassName="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700"
+              backClassName="bg-primary text-primary-foreground"
+              frontContent={
+                <div className="flex flex-col items-center justify-center gap-1 text-slate-700 dark:text-slate-300">
+                  <Download className="h-10 w-10" />
+                  <span className="text-xs font-semibold">Download</span>
+                </div>
+              }
+              backContent={<span className="text-sm font-bold">Get PDF</span>}
+            />
+          </a>
+        ) : (
+          <FlipButton
+            className="w-24 h-24 p-2 rounded-2xl shadow-lg"
+            frontClassName="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700"
+            backClassName="bg-primary text-primary-foreground"
+            onClick={() => onPreviewClick(book.previewPdfPath!, book.title)}
+            frontContent={
+              <div className="flex flex-col items-center justify-center gap-1 text-slate-700 dark:text-slate-300">
+                <BookOpen className="h-10 w-10" />
+                <span className="text-xs font-semibold">Preview</span>
+              </div>
+            }
+            backContent={<span className="text-sm font-bold">Open</span>}
+          />
+        ))}
+
+      {!book.previewPdfPath && book.ebookPreviewLink && (
+        <a href={book.ebookPreviewLink} target="_blank" rel="noopener noreferrer">
+          <FlipButton
+            className="w-24 h-24 p-2 rounded-2xl shadow-lg"
+            frontClassName="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700"
+            backClassName="bg-primary text-primary-foreground"
+            frontContent={
+              <div className="flex flex-col items-center justify-center gap-1 text-slate-700 dark:text-slate-300">
+                <Eye className="h-10 w-10" />
+                <span className="text-xs font-semibold">eBook</span>
+              </div>
+            }
+            backContent={<span className="text-sm font-bold">Read</span>}
+          />
+        </a>
+      )}
+
+      {book.playlistLink && (
+        <a href={book.playlistLink} target="_blank" rel="noopener noreferrer">
+          <LiquidButton
+            variant="playlist"
+            className="w-24 h-24 p-2 rounded-2xl flex flex-col items-center justify-center gap-1 shadow-lg"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-10 w-10"
+            >
+              <path d="M2.8 7.1a2.2 2.2 0 0 1 1.7-1.7C7.3 5 12 5 12 5s4.7 0 7.5.4a2.2 2.2 0 0 1 1.7 1.7c.3 2.1.3 4.9.3 4.9s0 2.8-.3 4.9a2.2 2.2 0 0 1-1.7 1.7c-2.8.4-7.5.4-7.5.4s-4.7 0-7.5-.4a2.2 2.2 0 0 1-1.7-1.7c-.3-2.1-.3-4.9-.3-4.9s0-2.8.3-4.9Z" />
+              <path d="m10 9 5 3-5 3Z" />
+            </svg>
+            <span className="text-xs font-semibold">Playlist</span>
+          </LiquidButton>
+        </a>
+      )}
+    </div>
+  );
+};
+
 export function FeaturedBooksSection() {
   const [selectedBook, setSelectedBook] = React.useState<BookDetailData>(allBooksData[0]);
   const [orderNumber, setOrderNumber] = React.useState('');
@@ -232,7 +359,7 @@ export function FeaturedBooksSection() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ ...springTransition, delay: 0.02 }}
-            className="md:col-span-1 lg:col-span-4 flex justify-center items-center"
+            className="md:col-span-1 lg:col-span-4 flex flex-col items-center"
           >
             <ModernBookCover size={isMobile ? "md" : "lg"} color={selectedBook.id === 'wwok' ? 'yellow' : selectedBook.id === 'usuage' ? 'neutral' : 'zinc'} className="shadow-xl hover:shadow-zinc-400/30 dark:hover:shadow-black/50 transition-shadow duration-300">
               <img
@@ -241,6 +368,13 @@ export function FeaturedBooksSection() {
                 className="w-full h-full object-cover"
               />
             </ModernBookCover>
+            <BookActionButtons
+              book={selectedBook}
+              whatsAppOrderUrl={whatsAppOrderUrl}
+              onPreviewClick={handlePreviewClick}
+              isMobileDevice={isMobile}
+              isMobileLayout={true}
+            />
           </motion.div>
 
           <motion.div
@@ -321,106 +455,6 @@ export function FeaturedBooksSection() {
                     </span>
                   )}
                 </motion.div>
-              </div>
-
-              <div className="pt-2 flex flex-wrap gap-4 items-center justify-start lg:justify-end shrink-0">
-                <a href={whatsAppOrderUrl} target="_blank" rel="noopener noreferrer">
-                  <LiquidButton
-                    variant="default"
-                    className="w-24 h-24 p-2 rounded-2xl flex flex-col items-center justify-center gap-1 shadow-lg"
-                    style={{ '--liquid-button-color': '#25D366' } as React.CSSProperties}
-                  >
-                    <IconBrandWhatsapp className="h-10 w-10" />
-                    <span className="text-xs font-semibold">Order</span>
-                  </LiquidButton>
-                </a>
-
-                {selectedBook.productLink && (
-                  <a href={selectedBook.productLink} target="_blank" rel="noopener noreferrer">
-                    <FlipButton
-                      className="w-24 h-24 p-2 rounded-2xl text-white shadow-lg"
-                      frontClassName="bg-sky-500 hover:bg-sky-600"
-                      backClassName="bg-sky-700"
-                      frontContent={
-                        <div className="flex flex-col items-center justify-center gap-1">
-                          <Eye className="h-10 w-10" />
-                          <span className="text-xs font-semibold text-center">Product Page</span>
-                        </div>
-                      }
-                      backContent={<span className="text-sm font-bold">View Now</span>}
-                    />
-                  </a>
-                )}
-
-                {selectedBook.previewPdfPath &&
-                  (isMobile ? (
-                    <a href={selectedBook.previewPdfPath} download={`${selectedBook.title.replace(/\s+/g, '_')}-Preview.pdf`}>
-                      <LiquidButton
-                        variant="secondary"
-                        className="w-24 h-24 p-2 rounded-2xl flex flex-col items-center justify-center gap-1 shadow-lg"
-                      >
-                        <Download className="h-10 w-10" />
-                        <span className="text-xs font-semibold">Download</span>
-                      </LiquidButton>
-                    </a>
-                  ) : (
-                    <FlipButton
-                      className="w-24 h-24 p-2 rounded-2xl shadow-lg"
-                      frontClassName=""
-                      backClassName="bg-primary text-primary-foreground"
-                      onClick={() => handlePreviewClick(selectedBook.previewPdfPath!, selectedBook.title)}
-                      frontContent={
-                        <div className="flex flex-col items-center justify-center gap-1">
-                          <BookOpen className="h-10 w-10" />
-                          <span className="text-xs font-semibold">Preview</span>
-                        </div>
-                      }
-                      backContent={<span className="text-sm font-bold">Open</span>}
-                    />
-                  ))}
-
-                {!selectedBook.previewPdfPath && selectedBook.ebookPreviewLink && (
-                  <a href={selectedBook.ebookPreviewLink} target="_blank" rel="noopener noreferrer">
-                    <FlipButton
-                      className="w-24 h-24 p-2 rounded-2xl shadow-lg"
-                      frontClassName=""
-                      backClassName="bg-primary text-primary-foreground"
-                      frontContent={
-                        <div className="flex flex-col items-center justify-center gap-1">
-                          <Eye className="h-10 w-10" />
-                          <span className="text-xs font-semibold">eBook</span>
-                        </div>
-                      }
-                      backContent={<span className="text-sm font-bold">Read</span>}
-                    />
-                  </a>
-                )}
-
-                {selectedBook.playlistLink && (
-                  <a href={selectedBook.playlistLink} target="_blank" rel="noopener noreferrer">
-                    <LiquidButton
-                      variant="playlist"
-                      className="w-24 h-24 p-2 rounded-2xl flex flex-col items-center justify-center gap-1 shadow-lg"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="h-10 w-10"
-                      >
-                        <path d="M2.8 7.1a2.2 2.2 0 0 1 1.7-1.7C7.3 5 12 5 12 5s4.7 0 7.5.4a2.2 2.2 0 0 1 1.7 1.7c.3 2.1.3 4.9.3 4.9s0 2.8-.3 4.9a2.2 2.2 0 0 1-1.7 1.7c-2.8.4-7.5.4-7.5.4s-4.7 0-7.5-.4a2.2 2.2 0 0 1-1.7-1.7c-.3-2.1-.3-4.9-.3-4.9s0-2.8.3-4.9Z" />
-                        <path d="m10 9 5 3-5 3Z" />
-                      </svg>
-                      <span className="text-xs font-semibold">Playlist</span>
-                    </LiquidButton>
-                  </a>
-                )}
               </div>
             </div>
           </motion.div>

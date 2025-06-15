@@ -139,7 +139,7 @@ const DisciplicSuccessionSection: React.FC = () => {
     target: sectionRef,
     offset: ["start end", "end start"]
   });
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "-25%"]); // Increased parallax movement
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "-14%"]);
 
   // useEffect for IntersectionObserver and width calculation are no longer needed as Marquee component handles this.
   // The Marquee component itself handles its animation play state based on visibility (implicitly via CSS animations starting when rendered)
@@ -295,14 +295,14 @@ const DisciplicSuccessionSection: React.FC = () => {
           backgroundImage: "url('/assets/extra/parampara/full.jpg')",
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
-          height: '120%',
-          top: '-10%',
+          height: '140%',
+          top: '-20%',
           y: backgroundY,
         }}
       />
       <div className="absolute inset-0 z-10 bg-black/50" />
-      <div className="relative z-20 flex flex-col lg:flex-row gap-x-12 gap-y-8 p-4 sm:p-6 md:p-8 text-gray-900 dark:text-gray-100 w-full max-w-screen-xl 2xl:max-w-screen-2xl mx-auto py-12 md:py-20"> {/* Added 2xl:max-w-screen-2xl */}
-        <div className="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-[calc(var(--navbar-height,4rem)+2rem)] lg:max-h-[calc(100vh-var(--navbar-height,4rem)-4rem)] lg:overflow-y-auto pr-4">
+      <div className="relative z-20 flex flex-col 2xl:flex-row gap-x-12 gap-y-8 p-4 sm:p-6 md:p-8 text-gray-900 dark:text-gray-100 w-full max-w-screen-xl 2xl:max-w-screen-2xl mx-auto py-12 md:py-20"> {/* Added 2xl:max-w-screen-2xl */}
+        <div className="w-full 2xl:w-1/3 space-y-6 2xl:sticky 2xl:top-[calc(var(--navbar-height,4rem)+2rem)] 2xl:max-h-[calc(100vh-var(--navbar-height,4rem)-4rem)] 2xl:overflow-y-auto pr-4">
           {verses.filter(v => v.reference.includes("Bhagavad-gītā")).map((verse, index) => (
             <div key={`verse-bg-${index}`} className="space-y-6 p-4 sm:p-5 bg-orange-50/70 dark:bg-neutral-800/70 rounded-xl shadow-md border border-orange-200 dark:border-neutral-700 hover:shadow-lg transition-shadow duration-300">
               {verse.title && <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-orange-900 dark:text-orange-50"><AuroraText>{verse.title}</AuroraText></h3>}
@@ -319,9 +319,9 @@ const DisciplicSuccessionSection: React.FC = () => {
           ))}
         </div>
 
-        <div className="w-full lg:w-2/3 relative space-y-8">
+        <div className="w-full 2xl:w-2/3 relative space-y-8">
           <div className="p-0 md:p-0 space-y-8">
-            <div className="mb-8 text-center lg:text-left bg-blue-900/60 dark:bg-blue-950/60 backdrop-blur-lg rounded-xl p-6 shadow-xl border border-blue-700/50">
+            <div className="mb-8 text-center 2xl:text-left bg-blue-900/60 dark:bg-blue-950/60 backdrop-blur-lg rounded-xl p-6 shadow-xl border border-blue-700/50">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 text-white">
                   <AuroraText>The Disciplic Succession</AuroraText>
@@ -335,7 +335,7 @@ const DisciplicSuccessionSection: React.FC = () => {
                   View Full List
                 </Button>
               </div>
-              <p className="text-lg md:text-xl text-gray-100 dark:text-gray-200 max-w-3xl mx-auto lg:mx-0 mt-4">
+              <p className="text-lg md:text-xl text-gray-100 dark:text-gray-200 max-w-3xl mx-auto 2xl:mx-0 mt-4">
                 This sacred lineage, <em className="font-italic">Evaṁ Paramparā-prāptam</em>, illuminates the path of pure devotional service, handed down from the Supreme Lord Kṛṣṇa through an unbroken chain of spiritual masters. This list is beautifully enshrined in Śrīla Bhaktisiddhānta Saraswatī Ṭhākura's song "Kṛṣṇa Hoite Caturmukha."
               </p>
             </div>
@@ -347,7 +347,9 @@ const DisciplicSuccessionSection: React.FC = () => {
                 pauseOnHover={false}
                 className={cn(
                   "[--duration:120s] [--gap:1.5rem]", // Increased duration to slow down marquee
-                  isMarqueeManuallyPaused && "[&_.animate-marquee]:![animation-play-state:paused]", // Apply pause if state is true
+                  isMarqueeManuallyPaused
+                    ? "[&_.animate-marquee]:[animation:none] overflow-x-auto scrollbar-thin scrollbar-thumb-pink-500 scrollbar-track-transparent"
+                    : "",
                   { "marquee-has-active-selection": selectedMasterId !== null }
                 )}
                 repeat={2}

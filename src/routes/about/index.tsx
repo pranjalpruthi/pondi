@@ -9,15 +9,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert" // Added Alert
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card" // Added HoverCard
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar" // Added Avatar
 import { useRef } from 'react'
 import { 
   ChevronRight, Calendar, Building, BookOpen, Heart, GraduationCap, Utensils, Award, ShieldHalf, 
-  Target, Users, Leaf, Handshake, Banknote, Facebook, Instagram, Youtube// Added new icons
+  Target, Users, Leaf, Handshake, Banknote,// Added new icons
 } from "lucide-react"
 // Import VisitUs component
 import { CopyButton } from "@/components/animate-ui/buttons/copy" // Import CopyButton
+import { MorphingPopover, MorphingPopoverTrigger, MorphingPopoverContent } from "@/components/motion-primitives/morphing-popover"
 
 export const Route = createFileRoute('/about/')({
   component: AboutPage,
@@ -133,18 +133,6 @@ const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   </h2>
 );
 
-const SocialLink = ({ href, icon: Icon, label }: { href: string, icon: React.ComponentType<{ className?: string; [key: string]: any; }>, label: string }) => (
-  <HoverCard openDelay={100} closeDelay={100}>
-    <HoverCardTrigger asChild>
-      <a href={href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-pink-600 transition-colors">
-        <Icon className="h-6 w-6" />
-      </a>
-    </HoverCardTrigger>
-    <HoverCardContent className="w-auto p-2 text-xs" side="top">
-      {label ? <p>{label}</p> : null} {/* Wrap label in a <p> tag */}
-    </HoverCardContent>
-  </HoverCard>
-);
 
 // --- Main Component ---
 function AboutPage() {
@@ -156,10 +144,10 @@ function AboutPage() {
 
   return (
     // Removed background image, overlay, and decorative SVG blobs for performance.
-    // Kept padding on this outer div for now.
+    // Further reduced bottom padding to minimize gap before footer.
     <div 
       ref={containerRef} 
-      className="relative px-4 py-16 md:py-24" 
+      className="relative px-4 py-16 md:py-16 pb-0 md:pb-0" 
     >
       {/* Content Wrapper */}
       <div className="relative z-10 max-w-7xl mx-auto"> {/* Added wrapper with max-width and centering */}
@@ -213,7 +201,7 @@ function AboutPage() {
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
         variants={fadeInUpVariants}
-        className="mb-24 md:mb-32"
+        className="mb-8 md:mb-12"
       >
         <Card className="border-0 bg-gradient-to-br from-pink-50 dark:from-pink-900/10 via-transparent to-transparent overflow-hidden rounded-2xl shadow-lg">
           <CardContent className="p-8 md:p-12">
@@ -258,7 +246,7 @@ function AboutPage() {
         </Card>
       </motion.section>
       
-      <Separator className="my-24 md:my-32 border-pink-200 dark:border-pink-800/30" />
+      <Separator className="my-8 md:my-12 border-pink-200 dark:border-pink-800/30 h-0.5 bg-gradient-to-r from-transparent via-pink-300 dark:via-pink-700 to-transparent" />
       
       {/* Mission & Vision Section (Combined with Tabs) */}
       <motion.section
@@ -267,9 +255,9 @@ function AboutPage() {
         whileInView="visible"
         viewport={{ once: true, amount: 0.1 }}
         variants={fadeInUpVariants}
-        className="mb-24 md:mb-32"
+        className="mb-8 md:mb-12"
       >
-        <Tabs defaultValue="mission" className="w-full">
+        <Tabs defaultValue="vision" className="w-full">
           <motion.div 
             className="text-center mb-12"
             initial={{ opacity: 0, y: 20 }}
@@ -334,12 +322,12 @@ function AboutPage() {
         </Tabs>
       </motion.section>
 
-      <Separator className="my-24 md:my-32 border-pink-200 dark:border-pink-800/30" />
+      <Separator className="my-12 md:my-16 border-pink-200 dark:border-pink-800/30 h-0.5 bg-gradient-to-r from-transparent via-pink-300 dark:via-pink-700 to-transparent" />
 
       {/* Construction Updates Section */}
       <motion.section 
         id="construction"
-        className="mb-24 md:mb-32 py-16 md:py-20 bg-gradient-to-b from-gray-50 dark:from-gray-900/30 to-transparent rounded-3xl"
+        className="mb-8 md:mb-12 py-16 md:py-20 bg-gradient-to-b from-gray-50 dark:from-gray-900/30 to-transparent rounded-3xl"
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeInUpVariants}
       >
         <div className="container mx-auto px-4 relative z-10">
@@ -381,14 +369,24 @@ function AboutPage() {
                 <CardContent className="p-4">
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                     {constructionData.latestUpdate.images.map((imageUrl, index) => (
-                      <motion.div key={imageUrl + index} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: index * 0.05 }} whileHover={{ y: -4, transition: { duration: 0.25 } }} className="group relative aspect-square">
-                        <Card className="overflow-hidden h-full border rounded-lg bg-background/50 shadow-sm transition-all duration-300 group-hover:shadow-md">
-                          <img src={imageUrl} alt={`Construction update ${index + 1}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" width="200" height="200" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start p-2">
-                            <span className="text-white text-[10px] font-medium line-clamp-1">{`Update ${index + 1}`}</span>
+                      <MorphingPopover key={imageUrl + index}>
+                        <MorphingPopoverTrigger asChild>
+                          <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: index * 0.05 }} whileHover={{ y: -4, transition: { duration: 0.25 } }} className="group relative aspect-square cursor-pointer">
+                            <Card className="overflow-hidden h-full border rounded-lg bg-background/50 shadow-sm transition-all duration-300 group-hover:shadow-md">
+                              <img src={imageUrl} alt={`Construction update ${index + 1}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" width="200" height="200" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start p-2">
+                                <span className="text-white text-[10px] font-medium line-clamp-1">{`Update ${index + 1}`}</span>
+                              </div>
+                            </Card>
+                          </motion.div>
+                        </MorphingPopoverTrigger>
+                        <MorphingPopoverContent className="p-0 border-0 shadow-lg max-w-[80vw] max-h-[80vh] overflow-auto">
+                          <img src={imageUrl} alt={`Enlarged construction update ${index + 1}`} className="w-full h-auto object-contain" />
+                          <div className="p-4 text-center bg-background/80">
+                            <p className="text-lg font-semibold">Construction Update {index + 1}</p>
                           </div>
-                        </Card>
-                      </motion.div>
+                        </MorphingPopoverContent>
+                      </MorphingPopover>
                     ))}
                   </div>
                 </CardContent>
@@ -460,12 +458,12 @@ function AboutPage() {
         </div>
       </motion.section>
       
-      <Separator className="my-24 md:my-32 border-pink-200 dark:border-pink-800/30" />
+      <Separator className="my-8 md:my-12 border-pink-200 dark:border-pink-800/30 h-0.5 bg-gradient-to-r from-transparent via-pink-300 dark:via-pink-700 to-transparent" />
 
       {/* Testimonial Quote Section */}
       <motion.section
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={fadeInUpVariants}
-        className="relative mb-24 md:mb-32 py-16 px-4 md:py-20 md:px-8 bg-pink-50 dark:bg-pink-900/10 rounded-3xl overflow-hidden border border-pink-100 dark:border-pink-900/20"
+        className="relative mb-8 md:mb-12 py-16 px-4 md:py-20 md:px-8 bg-pink-50 dark:bg-pink-900/10 rounded-3xl overflow-hidden border border-pink-100 dark:border-pink-900/20"
       >
         <div className="absolute -top-10 -left-10 text-pink-100 dark:text-pink-900/30 text-[12rem] font-serif leading-none pointer-events-none opacity-50">"</div>
         <div className="absolute -bottom-16 -right-10 text-pink-100 dark:text-pink-900/30 text-[12rem] font-serif leading-none pointer-events-none opacity-50">"</div>
@@ -486,13 +484,13 @@ function AboutPage() {
         </div>
       </motion.section>
       
-      <Separator className="my-24 md:my-32 border-pink-200 dark:border-pink-800/30" />
+      <Separator className="my-8 md:my-12 border-pink-200 dark:border-pink-800/30 h-0.5 bg-gradient-to-r from-transparent via-pink-300 dark:via-pink-700 to-transparent" />
       
       {/* FAQ Section */}
       <motion.section
         id="faq"
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeInUpVariants}
-        className="mb-24 md:mb-32"
+        className="mb-8 md:mb-12"
       >
         <SectionTitle>Frequently Asked Questions</SectionTitle>
         <motion.div
@@ -516,13 +514,13 @@ function AboutPage() {
         </motion.div>
       </motion.section>
       
-      <Separator className="my-24 md:my-32 border-pink-200 dark:border-pink-800/30" />
+      <Separator className="my-8 md:my-12 border-pink-200 dark:border-pink-800/30 h-0.5 bg-gradient-to-r from-transparent via-pink-300 dark:via-pink-700 to-transparent" />
 
       {/* Bank Details Section */}
        <motion.section
         id="support"
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeInUpVariants}
-        className="mb-24 md:mb-32 max-w-3xl mx-auto"
+        className="mb-0 md:mb-0 max-w-3xl mx-auto"
       >
         <SectionTitle>Support Our Seva</SectionTitle>
          <Alert className="bg-gradient-to-tr from-yellow-50 via-orange-50 to-pink-50 dark:from-yellow-900/10 dark:via-orange-900/10 dark:to-pink-900/10 border-orange-200 dark:border-orange-800/50 rounded-xl shadow-md">
@@ -560,32 +558,6 @@ function AboutPage() {
          </div>
       </motion.section>
 
-      <Separator className="my-24 md:my-32 border-pink-200 dark:border-pink-800/30" />
-      
-      {/* Visit Us Section (Using Imported Component) */}
-      <motion.section
-        id="visit"
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeInUpVariants}
-        className="mb-16"
-      >
-         {/* The VisitUs component will be rendered here. It uses its own data internally. */}
-         {/* We might need to pass props if the component is designed to accept them, */}
-         {/* but based on its previous usage, it seems self-contained. */}
-         
-      </motion.section>
-
-       {/* Social Links Footer */}
-       <motion.div 
-        initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.5 }}
-        className="text-center mt-16"
-       >
-         <p className="text-muted-foreground mb-4">Connect with us:</p>
-         <div className="flex justify-center items-center gap-6">
-           <SocialLink href={templeDetails.socialLinks.facebook} icon={Facebook} label="Facebook" />
-           <SocialLink href={templeDetails.socialLinks.instagram} icon={Instagram} label="Instagram" />
-           <SocialLink href={templeDetails.socialLinks.youtube} icon={Youtube} label="YouTube" />
-         </div>
-       </motion.div>
       </div> {/* End Content Wrapper */}
     </div>
   )

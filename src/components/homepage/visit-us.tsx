@@ -421,6 +421,9 @@ export function VisitUs() {
     car: true
   });
 
+  // Add a state to control the top padding, initially true to apply padding
+  const [addTopPadding] = useState(true);
+
   // Verify map URLs
   const verifyMapUrls = () => {
     console.log('Temple Map URL:', `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3903.4022259758287!2d79.818114!3d11.948861!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5365c6121ae3f1%3A0xc9c3539f6f16d311!2sHare%20Krishna%20Temple%2C%20ISKM%20Pudhuvai%20Vrindavan!5e0!3m2!1sen!2sin!4v1720116775794!5m2!1sen!2sin`);
@@ -504,35 +507,34 @@ export function VisitUs() {
   return (
     <TooltipProvider>
       <section 
-        className="pb-6 md:pb-12 relative overflow-visible" /* Reduced bottom padding */ 
-        // Removed: bg-cover bg-center bg-fixed and style={{ backgroundImage: "url('/temple-building/4.webp')" }}
+        className={cn(
+          "pb-6 md:pb-12 relative overflow-visible",
+          addTopPadding ? "pt-12 md:pt-16" : "" // Add top padding conditionally
+        )}
       >
-        {/* Removed: Enhanced background effect with layered blur div */}
-        
-        <div className="container mx-auto z-10 relative px-4 md:px-6"> {/* Ensure content is still structured if needed, or adjust classes if section itself provides padding/margin */}
+        <div className="container mx-auto z-10 relative px-4 md:px-6">
           {/* Section Header */}
-          <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-16 text-center"> {/* Reverted margin to original */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-              className="mx-auto w-fit mb-4 sm:mb-6"
-            >
-              <div className="bg-gradient-to-r from-[#e94a9c] via-[#ffc547] to-[#0a84ff] p-0.5 rounded-full shadow-lg">
-                <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-full p-3">
-                  <MapPin className="h-7 w-7 text-[#ffc547] dark:text-[#ffc547]" />
-                </div>
-              </div>
-            </motion.div>
-
+          <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-16 text-center">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-[#ffc547] via-[#0a84ff] to-[#e94a9c] text-transparent bg-clip-text" // Adjusted font sizes
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-[#ffc547] via-[#0a84ff] to-[#e94a9c] text-transparent bg-clip-text flex items-center justify-center" // Adjusted font sizes and added flex for icon
             >
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                viewport={{ once: true }}
+                className="mr-3" // Add margin-right for spacing
+              >
+                <div className="bg-gradient-to-r from-[#e94a9c] via-[#ffc547] to-[#0a84ff] p-0.5 rounded-full shadow-lg">
+                  <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-full p-3">
+                    <MapPin className="h-7 w-7 text-[#ffc547] dark:text-[#ffc547]" />
+                  </div>
+                </div>
+              </motion.div>
               Visit ISKM Pondicherry
             </motion.h2>
             
@@ -541,10 +543,10 @@ export function VisitUs() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto" // Adjusted font sizes
+              className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto"
             >
               <TypingText
-                text="We invite you to visit our temple and experience spiritual bliss." // Added period
+                text="We invite you to visit our temple and experience spiritual bliss."
                 delay={1200}
                 duration={50}
                 inView={true}

@@ -2,6 +2,7 @@ import * as React from "react"
 import { Drawer as DrawerPrimitive } from "vaul"
 
 import { cn } from "@/lib/utils"
+import { XIcon } from "lucide-react" // Import XIcon
 
 function Drawer({
   shouldScaleBackground = true,
@@ -95,6 +96,10 @@ function DrawerContent({
       >
         <div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted/50" />
         {children}
+        <DrawerPrimitive.Close className="absolute right-4 top-4 rounded-full p-2 bg-gray-200/50 dark:bg-gray-700/50 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+          <XIcon className="h-5 w-5" />
+          <span className="sr-only">Close</span>
+        </DrawerPrimitive.Close>
       </DrawerPrimitive.Content>
     </DrawerPortal>
   )

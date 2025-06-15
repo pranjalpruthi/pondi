@@ -1,11 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { motion, AnimatePresence } from 'motion/react'; // Added AnimatePresence
 import { useState, useCallback } from 'react'; // Added React imports
+import { X } from 'lucide-react';
 import BreathingText from '@/fancy/components/text/breathing-text';
 import AnimatedPathText from '@/fancy/components/text/text-along-path';
 import MinimalShop from '../../components/shop/minimal-shop';
 import { Button } from '@/components/ui/button'; // Added Button import
 import { Input } from '@/components/ui/input'; // Added Input import
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 
 export const Route = createFileRoute('/shop/')({
   component: ShopPageWithComingSoonOverlay,
@@ -13,6 +16,9 @@ export const Route = createFileRoute('/shop/')({
 
 function ShopPageWithComingSoonOverlay() {
   const [email, setEmail] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
+  const [message, setMessage] = useState("");
   const [buttonState, setButtonState] = useState<"idle" | "loading" | "success">("idle");
 
   const buttonCopy = {
@@ -21,18 +27,35 @@ function ShopPageWithComingSoonOverlay() {
     success: "Joined! ✓",
   } as const;
 
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      const newTag = tagInput.trim();
+      if (newTag && !tags.includes(newTag)) {
+        setTags([...tags, newTag]);
+      }
+      setTagInput("");
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter(tag => tag !== tagToRemove));
+  };
+
   const handleSubmit = useCallback(() => {
     if (buttonState === "success" || !email) return;
     setButtonState("loading");
     setTimeout(() => {
       setButtonState("success");
-      console.log("Waitlist joined with email:", email);
+      console.log("Waitlist joined with:", { email, tags, message });
     }, 1750);
     setTimeout(() => {
       setButtonState("idle");
       setEmail("");
+      setTags([]);
+      setMessage("");
     }, 3500);
-  }, [buttonState, email]);
+  }, [buttonState, email, tags, message]);
 
   // Paths and texts for the background animation, inspired by the new snippet
   const paths = [
@@ -61,7 +84,7 @@ function ShopPageWithComingSoonOverlay() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/60 backdrop-blur-lg" // Darker blur
+        className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/60 backdrop-blur-lg p-4" // Darker blur
       >
         {/* New animated background using multiple paths */}
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center overflow-hidden pointer-events-none">
@@ -110,12 +133,47 @@ function ShopPageWithComingSoonOverlay() {
           <div className="w-full max-w-sm space-y-3 sm:space-y-4 my-4">
             <Input
               type="email"
-              placeholder="Enter your email to get notified"
+              placeholder="Your email, Prabhu/Mataji? 🙏"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2.5 text-sm sm:text-base text-gray-800 dark:text-gray-200 bg-white/70 dark:bg-black/50 border-yellow-400/50 dark:border-yellow-500/50 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-yellow-500 focus:ring-yellow-500/50 rounded-lg"
+              className="w-full px-4 py-2.5 text-sm sm:text-base text-gray-800 dark:text-yellow-300 bg-white/70 dark:bg-black/50 border-yellow-400/50 dark:border-yellow-500/50 placeholder:text-gray-500 dark:placeholder:text-yellow-200/60 focus:border-yellow-500 focus:ring-yellow-500/50 rounded-lg"
               disabled={buttonState === "loading" || buttonState === "success"}
             />
+
+            <div>
+              <Input
+                type="text"
+                placeholder="What are you looking for? (e.g., Japa beads) 📿"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleTagKeyDown}
+                className="w-full px-4 py-2.5 text-sm sm:text-base text-gray-800 dark:text-yellow-300 bg-white/70 dark:bg-black/50 border-yellow-400/50 dark:border-yellow-500/50 placeholder:text-gray-500 dark:placeholder:text-yellow-200/60 focus:border-yellow-500 focus:ring-yellow-500/50 rounded-lg"
+                disabled={buttonState === "loading" || buttonState === "success"}
+              />
+              <div className="flex flex-wrap gap-2 mt-2 min-h-[24px]">
+                {tags.map(tag => (
+                  <Badge key={tag} variant="secondary" className="bg-yellow-200/20 text-yellow-100 border-none">
+                    {tag}
+                    <button 
+                      onClick={() => removeTag(tag)} 
+                      className="ml-2 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                      aria-label={`Remove ${tag} tag`}
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            <Textarea
+              placeholder="Any special requests or just want to say Hare Krishna? 🌸"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="w-full px-4 py-2.5 text-sm sm:text-base text-gray-800 dark:text-yellow-300 bg-white/70 dark:bg-black/50 border-yellow-400/50 dark:border-yellow-500/50 placeholder:text-gray-500 dark:placeholder:text-yellow-200/60 focus:border-yellow-500 focus:ring-yellow-500/50 rounded-lg"
+              disabled={buttonState === "loading" || buttonState === "success"}
+            />
+            
             <Button
               type="submit"
               onClick={handleSubmit}

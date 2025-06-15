@@ -14,7 +14,6 @@ import {
   Moon,
   Sparkles,
   AlertTriangle,
-  Eye,
   ListChecks,
   Orbit,
   CalendarCheck2,
@@ -67,17 +66,7 @@ import { useGeolocation } from '@/components/cuicui/hooks/use-geolocation'
 import { useTheme } from '@/components/theme-provider'
 import { cn } from '@/lib/utils' // Assuming you have a cn utility
 import { Progress } from '@/components/ui/progress';
-
-// Component for the initial full-page loader (similar to home page)
-const InitialPageLoader = () => (
-  <div className="fixed inset-0 flex flex-col justify-center items-center h-screen w-screen bg-background z-[9999] text-center">
-    <img src="/assets/iskmj.jpg" alt="ISKM Logo" className="w-24 h-24 rounded-full mb-6 animate-pulse" />
-    <p className="text-xl font-semibold text-primary">Hare Kṛṣṇa Hare Kṛṣṇa</p>
-    <p className="text-xl font-semibold text-primary">Kṛṣṇa Kṛṣṇa Hare Hare</p>
-    <p className="text-xl font-semibold text-primary">Hare Rāma Hare Rāma</p>
-    <p className="text-xl font-semibold text-primary">Rāma Rāma Hare Hare</p>
-  </div>
-);
+import { InitialPageLoader } from '@/components/ui/initial-page-loader'; // Import the shared InitialPageLoader
 
 // Helper function to determine fast breaking time details
 const getFastBreakingTimeDetails = (day: CalendarDay): string | null => {
@@ -833,20 +822,12 @@ function VaishnavCalendar() {
                 <p className="text-muted-foreground text-center py-2">No specific events.</p>
               )}
             </div>
-            <div className={cn("p-2 border-t text-center", theme === 'dark' ? 'border-zinc-700' : 'border-gray-200')}>
-              <Button variant="ghost" size="sm" className="w-full text-xs hover:bg-sky-500/10 text-sky-600 dark:text-sky-400 dark:hover:bg-sky-400/10" 
-                onClick={() => { setSelectedDay(dayData); popoverOpenStates.current[dayData.date_str] = false; safePlayClick(); }}
-                onMouseEnter={safePlayHover}
-              >
-                <Eye className="h-3 w-3 mr-1.5"/> View Full Details
-              </Button>
-            </div>
           </PopoverContent>
         </Popover>
       );
     }
     return (
-      <div className={cn(commonCellClasses, theme === 'dark' ? 'bg-zinc-900/70 border-zinc-800/60' : 'bg-gray-100/90 border-gray-200/70')}
+      <div className={cn(commonCellClasses, theme === 'dark' ? 'bg-zinc-800/70 border-zinc-700/60' : 'bg-gray-100/90 border-gray-200/70')}
         onMouseEnter={safePlayHover} // Add hover to empty cells too for consistency
       >
         <span className="text-xs md:text-sm text-gray-400 dark:text-gray-600">{gridCell.day}</span>
@@ -918,16 +899,63 @@ function VaishnavCalendar() {
             )}
             {todayInfo.raw_events.length > 0 ? (
                 <ul className="space-y-1.5 text-xs list-none pl-0">
-                    {todayInfo.raw_events.slice(0,3).map((event, idx) => (
-                        <li key={idx} className="flex items-center gap-2">
-                           <div className={cn("h-2 w-2 rounded-full flex-shrink-0", getEventStyle(event).dot)}></div>
-                           <span className={cn(getEventStyle(event).text, 'leading-snug')}>{event.text}</span>
-                        </li>
-                    ))}
+                    {todayInfo.raw_events
+                        .filter(event => {
+                            // Filter out events that are already covered under Special Indicators to avoid duplication
+                            if (todayInfo.sankranti_today_info && event.text.includes(todayInfo.sankranti_today_info.split(' ')[0])) return false;
+                            if (todayInfo.mahadvadasi && event.text.includes(todayInfo.mahadvadasi.split(' ')[0])) return false;
+                            if (todayInfo.ksaya_tithi && event.text.includes(todayInfo.ksaya_tithi.split(' ')[0])) return false;
+                            return true;
+                        })
+                        .slice(0,3)
+                        .map((event, idx) => (
+                            <li key={idx} className="flex items-center gap-2">
+                               <div className={cn("h-2 w-2 rounded-full flex-shrink-0", getEventStyle(event).dot)}></div>
+                               <span className={cn(getEventStyle(event).text, 'leading-snug')}>{event.text}</span>
+                            </li>
+                        ))}
                     {todayInfo.raw_events.length > 3 && <li className="text-muted-foreground text-[11px] pl-4">+ {todayInfo.raw_events.length - 3} more...</li>}
                 </ul>
             ) : (
                 <p className="text-sm text-muted-foreground text-center py-2">No special events or observances today.</p>
+            )}
+            {/* Special Indicators in Highlights */}
+            {(todayInfo.sankranti_today_info || todayInfo.mahadvadasi || todayInfo.ksaya_tithi || todayInfo.vriddhi_day_no !== null) && (
+                <div className="mt-3">
+                    <h3 className="text-sm font-semibold mb-1.5 flex items-center gap-2">
+                        <AlertOctagon className="h-4 w-4 text-orange-500 dark:text-orange-400"/>Special Indicators
+                    </h3>
+                    <div className="space-y-1.5 text-xs">
+                        {todayInfo.sankranti_today_info && (
+                            <div className="flex items-start gap-2">
+                                <SankrantiIcon className="h-3.5 w-3.5 mt-0.5 text-sky-500"/> 
+                                <Badge variant="outline" className={cn("border-sky-500/60 text-sky-600 dark:text-sky-400 dark:border-sky-500/70 dark:bg-sky-800/30")}>Sankranti</Badge>
+                                <span className="text-muted-foreground block whitespace-normal break-words">{todayInfo.sankranti_today_info}</span>
+                            </div>
+                        )}
+                        {todayInfo.mahadvadasi && (
+                            <div className="flex items-start gap-2">
+                                <MahadvadasiIcon className="h-3.5 w-3.5 mt-0.5 text-rose-500"/> 
+                                <Badge variant="outline" className={cn("border-rose-500/60 text-rose-600 dark:text-rose-400 dark:border-rose-500/70 dark:bg-rose-800/30")}>Mahadvadasi</Badge>
+                                <span className="text-muted-foreground block whitespace-normal break-words">{todayInfo.mahadvadasi}</span>
+                            </div>
+                        )}
+                        {todayInfo.ksaya_tithi && (
+                            <div className="flex items-start gap-2">
+                                <KsayaTithiIcon className="h-3.5 w-3.5 mt-0.5 text-amber-500"/> 
+                                <Badge variant="outline" className={cn("border-amber-500/60 text-amber-600 dark:text-amber-400 dark:border-amber-500/70 dark:bg-amber-800/30")}>Kshaya Tithi</Badge>
+                                <span className="text-muted-foreground block whitespace-normal break-words">{todayInfo.ksaya_tithi}</span>
+                            </div>
+                        )}
+                        {todayInfo.vriddhi_day_no !== null && (
+                            <div className="flex items-start gap-2">
+                                <VriddhiDayIcon className="h-3.5 w-3.5 mt-0.5 text-purple-500"/> 
+                                <Badge variant="outline" className={cn("border-purple-500/60 text-purple-600 dark:text-purple-400 dark:border-purple-500/70 dark:bg-purple-800/30")}>Vriddhi Day</Badge>
+                                <span className="text-muted-foreground block whitespace-normal break-words">{todayInfo.vriddhi_day_no}</span>
+                            </div>
+                        )}
+                    </div>
+                </div>
             )}
         </motion.div>
     );
@@ -1079,8 +1107,8 @@ function VaishnavCalendar() {
   }
 
   return (
-    <div className={cn("min-h-screen px-3 sm:px-4 md:px-6 lg:px-8 pt-20 md:pt-24 pb-8 transition-colors duration-300", theme === 'dark' ? 'bg-zinc-950 text-gray-100' : 'bg-gray-50 text-gray-900')}>
-      <div className="max-w-7xl mx-auto">
+    <div className={cn("min-h-screen px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 pt-20 md:pt-24 pb-8 transition-colors duration-300", theme === 'dark' ? 'bg-zinc-950 text-gray-100' : 'bg-gray-50 text-gray-900')}>
+      <div className="max-w-7xl mx-auto w-full">
         {/* Enhanced Header */}
         <motion.header 
           className={cn(
@@ -1394,9 +1422,9 @@ function VaishnavCalendar() {
         
         {/* Calendar Grid and Details View */}
         {!loading && !error && calendarData.length > 0 && (
-          <div className={cn("flex flex-col gap-6 md:gap-8", viewMode === 'calendar' && "lg:flex-row")}>
+          <div className={cn("flex flex-col gap-6 md:gap-8", viewMode === 'calendar' && "lg:flex-row justify-center")}>
             {viewMode === 'calendar' && (
-                <motion.div layout="position" className="w-full lg:w-[60%] xl:w-[65%] flex-shrink-0">
+                <motion.div layout="position" className="w-full lg:w-[60%] xl:w-[65%] flex-shrink-0 max-w-4xl">
                 <Card className={cn(
                   "shadow-xl",
                   getAppleTintBackground(theme),
@@ -1458,7 +1486,7 @@ function VaishnavCalendar() {
             )}
 
             {/* Selected Day Details or List View */}
-            <motion.div layout="position" className={cn("w-full", viewMode === 'calendar' ? "lg:w-[40%] xl:w-[35%]" : "mt-6 md:mt-8")}>
+            <motion.div layout="position" className={cn("w-full", viewMode === 'calendar' ? "lg:w-[40%] xl:w-[35%] max-w-2xl" : "mt-6 md:mt-8")}>
               {selectedDay && viewMode === 'calendar' ? (
                 <AnimatePresence mode="popLayout">
                   {/* ... existing selectedDay details rendering ... */}
@@ -1521,31 +1549,31 @@ function VaishnavCalendar() {
                     <div className="space-y-3.5 text-sm">
                       {/* Astronomical Panorama Card */}
                       <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
-                        <Card className={cn(theme === 'dark' ? 'bg-zinc-800/80 border-zinc-700/50' : 'bg-slate-100/80 border-slate-200/90')}>
-                          <CardHeader className="py-2.5 px-3.5">
-                            <CardTitle className="text-lg flex items-center"> {/* Increased font size to text-lg */}
+                        <Card className={cn(theme === 'dark' ? 'bg-gradient-to-br from-purple-900/80 via-violet-900/80 to-indigo-900/80 border-purple-700/50' : 'bg-gradient-to-br from-purple-100/80 via-violet-100/80 to-indigo-100/80 border-purple-200/90')}>
+                          <CardHeader className="py-3 px-4">
+                            <CardTitle className="text-lg flex items-center">
                               <Orbit className="mr-2 h-5 w-5 text-purple-500 dark:text-purple-400"/>Astronomical Panorama
                             </CardTitle>
                           </CardHeader>
-                          <CardContent className="text-sm px-3.5 pb-3 space-y-2.5"> {/* Increased font size to text-sm */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
+                          <CardContent className="text-sm px-4 pb-4 space-y-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3">
                               <div className="flex items-center">
-                                <Disc3 className="h-4 w-4 mr-1.5 text-muted-foreground"/> {/* Increased icon size */}
+                                <Disc3 className="h-4 w-4 mr-2 text-muted-foreground"/>
                                 <span>Tithi: <strong>{selectedDay.astro_details.tithi_name}</strong></span>
-                                <Badge variant={selectedDay.astro_details.paksa_name === 'Gaura' ? 'default' : 'secondary'} className={cn("ml-1.5 text-[10px] px-1.5 py-0.5 leading-tight", selectedDay.astro_details.paksa_name === 'Gaura' ? 'bg-yellow-400/80 text-yellow-900 dark:bg-yellow-500/70 dark:text-yellow-100' : 'bg-sky-400/80 text-sky-900 dark:bg-sky-500/70 dark:text-sky-100')}>{selectedDay.astro_details.paksa_name}</Badge> {/* Adjusted badge size */}
+                                <Badge variant={selectedDay.astro_details.paksa_name === 'Gaura' ? 'default' : 'secondary'} className={cn("ml-2 text-[10px] px-1.5 py-0.5 leading-tight", selectedDay.astro_details.paksa_name === 'Gaura' ? 'bg-yellow-400/80 text-yellow-900 dark:bg-yellow-500/70 dark:text-yellow-100' : 'bg-sky-400/80 text-sky-900 dark:bg-sky-500/70 dark:text-sky-100')}>{selectedDay.astro_details.paksa_name}</Badge>
                               </div>
-                              <div className="flex items-center"><Percent className="h-4 w-4 mr-1.5 text-muted-foreground"/>Tithi Elapsed: {selectedDay.astro_details.tithi_elapse_percent.toFixed(1)}%</div> {/* Increased icon size */}
+                              <div className="flex items-center"><Percent className="h-4 w-4 mr-2 text-muted-foreground"/>Tithi Elapsed: {selectedDay.astro_details.tithi_elapse_percent.toFixed(1)}%</div>
                               
-                              <div className="flex items-center"><Star className="h-4 w-4 mr-1.5 text-muted-foreground"/>Nakshatra: <strong>{selectedDay.astro_details.naksatra_name}</strong></div> {/* Increased icon size */}
-                              <div className="flex items-center"><Percent className="h-4 w-4 mr-1.5 text-muted-foreground"/>Nakshatra Elapsed: {selectedDay.astro_details.naksatra_elapse_percent.toFixed(1)}%</div> {/* Increased icon size */}
+                              <div className="flex items-center"><Star className="h-4 w-4 mr-2 text-muted-foreground"/>Nakshatra: <strong>{selectedDay.astro_details.naksatra_name}</strong></div>
+                              <div className="flex items-center"><Percent className="h-4 w-4 mr-2 text-muted-foreground"/>Nakshatra Elapsed: {selectedDay.astro_details.naksatra_elapse_percent.toFixed(1)}%</div>
 
-                              <div className="flex items-center"><Link2 className="h-4 w-4 mr-1.5 text-muted-foreground"/>Yoga: <strong>{selectedDay.astro_details.yoga_name}</strong></div> {/* Increased icon size */}
-                              <div className="flex items-center"><CalendarClock className="h-4 w-4 mr-1.5 text-muted-foreground"/>Masa: <strong>{selectedDay.astro_details.masa_name}</strong> ({selectedDay.astro_details.gaurabda_year})</div> {/* Increased icon size */}
+                              <div className="flex items-center"><Link2 className="h-4 w-4 mr-2 text-muted-foreground"/>Yoga: <strong>{selectedDay.astro_details.yoga_name}</strong></div>
+                              <div className="flex items-center"><CalendarClock className="h-4 w-4 mr-2 text-muted-foreground"/>Masa: <strong>{selectedDay.astro_details.masa_name}</strong> ({selectedDay.astro_details.gaurabda_year})</div>
                               
-                              <div className="flex items-center"><Sun className="h-4 w-4 mr-1.5 text-yellow-500"/>Sun Rashi: {selectedDay.astro_details.rasi_name_sun}</div> {/* Increased icon size */}
-                              <div className="flex items-center"><Moon className="h-4 w-4 mr-1.5 text-sky-400"/>Moon Rashi: {selectedDay.astro_details.rasi_name_moon}</div> {/* Increased icon size */}
+                              <div className="flex items-center"><Sun className="h-4 w-4 mr-2 text-yellow-500"/>Sun Rashi: {selectedDay.astro_details.rasi_name_sun}</div>
+                              <div className="flex items-center"><Moon className="h-4 w-4 mr-2 text-sky-400"/>Moon Rashi: {selectedDay.astro_details.rasi_name_moon}</div>
                             </div>
-                            <Separator className={cn("my-2", theme === 'dark' ? 'bg-zinc-700/80' : 'bg-slate-300/80')} />
+                            <Separator className={cn("my-2.5", theme === 'dark' ? 'bg-zinc-700/80' : 'bg-slate-300/80')} />
                             {(() => {
                               const { tithi_start_time, tithi_end_time, naksatra_start_time, naksatra_end_time } = selectedDay.astro_details;
                               const showTithiRange = tithi_start_time && tithi_end_time && tithi_start_time !== tithi_end_time && tithi_start_time !== "N/A" && tithi_end_time !== "N/A";
@@ -1554,7 +1582,7 @@ function VaishnavCalendar() {
                               const showNakshatraSingle = naksatra_start_time && naksatra_start_time !== "N/A" && (!naksatra_end_time || naksatra_end_time === "N/A" || naksatra_start_time === naksatra_end_time);
                               if (showTithiRange || showTithiSingle || showNakshatraRange || showNakshatraSingle) {
                                 return <>
-                                  <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-muted-foreground/90">
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-2 text-muted-foreground/90">
                                     <p>Tithi: {selectedDay.astro_details.tithi_name}</p>
                                     {getNextTithiTransition(selectedDay) && (
                                       <p>
@@ -1564,21 +1592,21 @@ function VaishnavCalendar() {
                                     {showNakshatraRange && <><p>Nak. Starts: {naksatra_start_time}</p><p>Nak. Ends: {naksatra_end_time}</p></>}
                                     {showNakshatraSingle && <p>Nakshatra: {naksatra_start_time}</p>}
                                   </div>
-                                  <Separator className={cn("my-2", theme === 'dark' ? 'bg-zinc-700/80' : 'bg-slate-300/80')} />
+                                  <Separator className={cn("my-2.5", theme === 'dark' ? 'bg-zinc-700/80' : 'bg-slate-300/80')} />
                                 </>;
                               }
                               return null;
                             })()}
-                            <div className="grid grid-cols-2 gap-x-3 gap-y-1">
-                              <p><SunriseIcon className="inline h-4 w-4 mr-1 opacity-70"/>Sunrise: {selectedDay.astro_details.sunrise_time} {/* Increased icon size */}</p>
-                              <p><SunsetIcon className="inline h-4 w-4 mr-1 opacity-70"/>Sunset: {selectedDay.astro_details.sunset_time} {/* Increased icon size */}</p>
-                              <p><Clock className="inline h-4 w-4 mr-1 opacity-70"/>Arunodaya: {selectedDay.astro_details.arunodaya_time} {/* Increased icon size */}</p>
-                              <p><Clock className="inline h-4 w-4 mr-1 opacity-70"/>Noon: {selectedDay.astro_details.noon_time} {/* Increased icon size */}</p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-2">
+                              <p><SunriseIcon className="inline h-4 w-4 mr-2 opacity-70"/>Sunrise: {selectedDay.astro_details.sunrise_time}</p>
+                              <p><SunsetIcon className="inline h-4 w-4 mr-2 opacity-70"/>Sunset: {selectedDay.astro_details.sunset_time}</p>
+                              <p><Clock className="inline h-4 w-4 mr-2 opacity-70"/>Arunodaya: {selectedDay.astro_details.arunodaya_time}</p>
+                              <p><Clock className="inline h-4 w-4 mr-2 opacity-70"/>Noon: {selectedDay.astro_details.noon_time}</p>
                               {selectedDay.astro_details.moonrise_time && selectedDay.astro_details.moonrise_time !== "N/A" && (
-                                <p><ArrowUpFromDot className="inline h-4 w-4 mr-1 opacity-70"/>Moonrise: {selectedDay.astro_details.moonrise_time} {/* Increased icon size */}</p>
+                                <p><ArrowUpFromDot className="inline h-4 w-4 mr-2 opacity-70"/>Moonrise: {selectedDay.astro_details.moonrise_time}</p>
                               )}
                               {selectedDay.astro_details.moonset_time && selectedDay.astro_details.moonset_time !== "N/A" && (
-                                <p><ArrowDownToDot className="inline h-4 w-4 mr-1 opacity-70"/>Moonset: {selectedDay.astro_details.moonset_time} {/* Increased icon size */}</p>
+                                <p><ArrowDownToDot className="inline h-4 w-4 mr-2 opacity-70"/>Moonset: {selectedDay.astro_details.moonset_time}</p>
                               )}
                             </div>
                           </CardContent>
@@ -1588,7 +1616,7 @@ function VaishnavCalendar() {
                       {/* Events & Observances Card */}
                       {(selectedDay.raw_events.length > 0 || selectedDay.events.length > 0) && (
                         <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.20 }}>
-                          <Card className={cn(theme === 'dark' ? 'bg-zinc-800/80 border-zinc-700/50' : 'bg-slate-100/80 border-slate-200/90')}>
+                          <Card className={cn(theme === 'dark' ? 'bg-gradient-to-br from-green-900/80 via-emerald-900/80 to-teal-900/80 border-green-700/50' : 'bg-gradient-to-br from-green-100/80 via-emerald-100/80 to-teal-100/80 border-green-200/90')}>
                             <CardHeader className="py-2.5 px-3.5">
                               <CardTitle className="text-lg flex items-center"> {/* Increased font size to text-lg */}
                                 <CalendarCheck2 className="mr-2 h-5 w-5 text-green-500 dark:text-green-400"/>Events & Observances
@@ -1631,19 +1659,21 @@ function VaishnavCalendar() {
                        {/* Core Astronomical Events Timeline */}
                       {selectedDay.core_events_detailed && selectedDay.core_events_detailed.length > 0 && (
                         <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }}>
-                          <Card className={cn(theme === 'dark' ? 'bg-zinc-800/80 border-zinc-700/50' : 'bg-slate-100/80 border-slate-200/90')}>
+                          <Card className={cn(theme === 'dark' ? 'bg-gradient-to-br from-blue-900/80 via-cyan-900/80 to-teal-900/80 border-blue-700/50' : 'bg-gradient-to-br from-blue-100/80 via-cyan-100/80 to-teal-100/80 border-blue-200/90')}>
                             <CardHeader className="py-2.5 px-3.5">
-                              <CardTitle className="text-lg flex items-center"> {/* Increased font size to text-lg */}
+                              <CardTitle className="text-lg flex items-center">
                                 <GitCompareArrows className="mr-2 h-5 w-5 text-blue-500 dark:text-blue-400"/>Daily Astro Events
                               </CardTitle>
-                               <CardDescription className="text-sm mt-0.5">Timeline of tithi/nakshatra changes.</CardDescription> {/* Increased font size to text-sm */}
+                              <CardDescription className="text-sm mt-0.5">Timeline of tithi/nakshatra changes.</CardDescription>
                             </CardHeader>
-                            <CardContent className="text-sm px-3.5 pb-3 space-y-1.5"> {/* Increased font size to text-sm */}
+                            <CardContent className="text-sm px-3.5 pb-3 space-y-1.5">
                               {selectedDay.core_events_detailed.map((coreEvent, idx) => (
                                 <div key={`core-${idx}`} className="flex items-center">
-                                  <Clock className="h-4 w-4 mr-1.5 text-muted-foreground flex-shrink-0"/> {/* Increased icon size */}
+                                  <Clock className="h-4 w-4 mr-1.5 text-muted-foreground flex-shrink-0"/>
                                   <span className="font-medium w-16">{coreEvent.time}</span>
-                                  <span className="text-muted-foreground/80">{coreEvent.type_name} {coreEvent.dst_applied ? '(DST)' : ''}</span>
+                                  <Badge variant="outline" className={cn("text-xs", theme === 'dark' ? 'border-blue-700 text-blue-300 bg-blue-900/30' : 'border-blue-300 text-blue-700 bg-blue-100/50')}>
+                                    {coreEvent.type_name} {coreEvent.dst_applied ? '(DST)' : ''}
+                                  </Badge>
                                 </div>
                               ))}
                             </CardContent>
@@ -1651,48 +1681,7 @@ function VaishnavCalendar() {
                         </motion.div>
                       )}
 
-                      {/* Special Indicators Card */}
-                      {(selectedDay.sankranti_today_info || selectedDay.mahadvadasi || selectedDay.ksaya_tithi || selectedDay.vriddhi_day_no !== null) && (
-                        <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
-                          <Card className={cn(theme === 'dark' ? 'bg-zinc-800/80 border-zinc-700/50' : 'bg-slate-100/80 border-slate-200/90')}>
-                            <CardHeader className="py-2.5 px-3.5">
-                              <CardTitle className="text-lg flex items-center"> {/* Increased font size to text-lg */}
-                                <AlertOctagon className="mr-2 h-5 w-5 text-orange-500 dark:text-orange-400"/>Special Indicators
-                              </CardTitle>
-                            </CardHeader>
-                            <CardContent className="text-sm px-3.5 pb-3 space-y-2.5"> {/* Increased font size to text-sm */}
-                              {selectedDay.sankranti_today_info && (
-                                <div className="flex items-start gap-2">
-                                  <SankrantiIcon className="h-4 w-4 mt-0.5 text-sky-500"/> {/* Increased icon size */}
-                                  <Badge variant="outline" className={cn("border-sky-500/60 text-sky-600 dark:text-sky-400 dark:border-sky-500/70 dark:bg-sky-800/30")}>Sankranti</Badge>
-                                  <span className="text-sm text-muted-foreground block whitespace-normal break-words">{selectedDay.sankranti_today_info}</span> {/* Increased font size to text-sm */}
-                                </div>
-                              )}
-                              {selectedDay.mahadvadasi && (
-                                <div className="flex items-start gap-2">
-                                  <MahadvadasiIcon className="h-4 w-4 mt-0.5 text-rose-500"/> {/* Increased icon size */}
-                                  <Badge variant="outline" className={cn("border-rose-500/60 text-rose-600 dark:text-rose-400 dark:border-rose-500/70 dark:bg-rose-800/30")}>Mahadvadasi</Badge>
-                                  <span className="text-sm text-muted-foreground block whitespace-normal break-words">{selectedDay.mahadvadasi}</span> {/* Increased font size to text-sm */}
-                                </div>
-                              )}
-                              {selectedDay.ksaya_tithi && (
-                                <div className="flex items-start gap-2">
-                                  <KsayaTithiIcon className="h-4 w-4 mt-0.5 text-amber-500"/> {/* Increased icon size */}
-                                  <Badge variant="outline" className={cn("border-amber-500/60 text-amber-600 dark:text-amber-400 dark:border-amber-500/70 dark:bg-amber-800/30")}>Kshaya Tithi</Badge>
-                                  <span className="text-sm text-muted-foreground block whitespace-normal break-words">{selectedDay.ksaya_tithi}</span> {/* Increased font size to text-sm */}
-                                </div>
-                              )}
-                              {selectedDay.vriddhi_day_no !== null && (
-                                <div className="flex items-start gap-2">
-                                  <VriddhiDayIcon className="h-4 w-4 mt-0.5 text-purple-500"/> {/* Increased icon size */}
-                                  <Badge variant="outline" className={cn("border-purple-500/60 text-purple-600 dark:text-purple-400 dark:border-purple-500/70 dark:bg-purple-800/30")}>Vriddhi Day</Badge>
-                                  <span className="text-sm text-muted-foreground block whitespace-normal break-words">{selectedDay.vriddhi_day_no}</span> {/* Increased font size to text-sm */}
-                                </div>
-                              )}
-                            </CardContent>
-                          </Card>
-                        </motion.div>
-                      )}
+                      {/* Special Indicators Card - Removed from this section as it's now in Highlights */}
                     </div>
                   </motion.div>
                 </AnimatePresence>

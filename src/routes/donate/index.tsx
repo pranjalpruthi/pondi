@@ -73,24 +73,19 @@ function DonatePage() {
         initial="hidden"
         animate="visible"
         variants={sectionVariants}
-        className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 mb-12 md:mb-16 text-center md:text-left"
+        className="flex flex-col items-start justify-start gap-4 md:gap-6 mb-12 md:mb-16 text-left"
       >
-        <motion.img
-          src="/assets/pondi.webp"
-          alt="Pondi Logo"
-          className="h-20 w-20 md:h-24 md:w-24 rounded-full object-cover shadow-lg"
-          initial={{ opacity: 0, scale: 0.5, x: -50 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          transition={{ type: "spring", stiffness: 120, damping: 15, delay: 0.2 }}
-        />
-        <div className="flex flex-col">
+        <div className="flex flex-row items-center justify-between w-full gap-4 md:gap-6">
           <MorphingText
             texts={sevaPhrases}
-            className="text-4xl md:text-5xl font-bold tracking-tight text-primary !h-14 md:!h-20" 
+            className="text-4xl md:text-5xl font-bold tracking-tight text-primary !h-8 md:!h-20 whitespace-nowrap" 
           />
-          <p className="text-xl md:text-2xl text-muted-foreground mt-4 md:mt-3">
-            Your contribution, <HighlightText text="big" className="!px-1 !py-0.5 from-pink-400 to-purple-400 dark:from-pink-500 dark:to-purple-500 text-white" /> or <HighlightText text="small" className="!px-1 !py-0.5 from-yellow-400 to-orange-400 dark:from-yellow-500 dark:to-orange-500 text-white" />, makes a <HighlightText text="divine difference" className="!px-1 !py-0.5 from-teal-400 to-cyan-400 dark:from-teal-500 dark:to-cyan-500 text-white" />. 🙏❤️✨
-          </p>
+          <motion.img
+            variants={itemVariants}
+            src="/pp/pp1.webp"
+            alt="Srila Prabhupada"
+            className="w-16 h-auto rounded-md shadow-sm md:w-24 hidden sm:block"
+          />
         </div>
       </motion.header>
 
@@ -121,6 +116,9 @@ function DonatePage() {
             <div className="md:col-span-2 space-y-6">
               <p className="text-muted-foreground leading-relaxed">
                 At ISKM Pondicherry, we believe that no one should go hungry, and everyone deserves the divine mercy of prasadam. Your humble offering becomes a divine gift in Krishna’s service, feeding hungry souls with not just food—but spiritual nourishment.
+              </p>
+              <p className="text-xl md:text-2xl text-muted-foreground mt-4">
+                Your contribution, <HighlightText text="big" className="!px-1 !py-0.5 from-pink-400 to-purple-400 dark:from-pink-500 dark:to-purple-500 text-white" /> or <HighlightText text="small" className="!px-1 !py-0.5 from-yellow-400 to-orange-400 dark:from-yellow-500 dark:to-orange-500 text-white" />, makes a <HighlightText text="divine difference" className="!px-1 !py-0.5 from-teal-400 to-cyan-400 dark:from-teal-500 dark:to-cyan-500 text-white" />. 🙏❤️✨
               </p>
 
               <div className="bg-secondary/20 p-4 rounded-lg border border-secondary/40">

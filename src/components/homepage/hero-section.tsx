@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "motion/react"; // Updated import, removed LayoutGroup
+import { motion, AnimatePresence, type PanInfo } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -12,6 +12,7 @@ import Carousel, {
   ThumsSlider,
 } from '@/components/gallery/carousel';
 import { createPortal } from "react-dom";
+import { HighlightText } from '@/components/animate-ui/text/highlight';
 
 import {
     IconBrandInstagram,
@@ -30,7 +31,7 @@ import {
     IconPigMoney,
 
 } from '@tabler/icons-react';
-import { Check, Loader2, X } from 'lucide-react';
+import { Check, Loader2, X, ChevronUp, ChevronDown } from 'lucide-react';
 import {
   InputButton,
   InputButtonAction,
@@ -101,12 +102,12 @@ const BackgroundImageCarousel: React.FC<BackgroundImageCarouselProps> = ({
   preloadedImages,
   isInView,
 }) => (
-  <div className="absolute inset-0 z-0 overflow-hidden">
+  <div className="absolute inset-0 z-0 overflow-hidden"> {/* Reverted fixed to absolute */}
     <AnimatePresence mode="wait">
       {isInView && (
         <motion.div
           key={`bg-${currentIndex}`}
-          className="absolute inset-0"
+          className="absolute inset-0 transform-gpu"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -115,16 +116,16 @@ const BackgroundImageCarousel: React.FC<BackgroundImageCarouselProps> = ({
           {/* Blurred background */}
           {blurredBackgrounds[currentIndex] && (
             <div
-              className="absolute inset-0 bg-cover bg-center scale-110 blur-xl"
-              style={{ backgroundImage: `url(${blurredBackgrounds[currentIndex]})` }}
+              className="absolute inset-0 bg-cover bg-center scale-110 transform-gpu" // Removed blur-xl, added transform-gpu
+              style={{ backgroundImage: `url(${blurredBackgrounds[currentIndex]})`, willChange: 'filter' }}
             />
           )}
           {/* Main image with blur */}
           <img
             src={images[currentIndex]}
             alt={`Temple Image ${currentIndex + 1}`}
-            className="w-full h-full object-cover filter blur-lg scale-110"
-            style={{ opacity: preloadedImages[currentIndex] ? 1 : 0 }}
+            className="w-full h-full object-cover filter blur-md scale-110 transform-gpu" // Changed blur-lg to blur-md, added transform-gpu
+            style={{ opacity: preloadedImages[currentIndex] ? 1 : 0, willChange: 'filter' }}
           />
         </motion.div>
       )}
@@ -164,6 +165,27 @@ interface HeroForegroundProps {
 }
 
 // --- New HeroGalleryModal (adapted from user's SliderModal example) ---
+
+const imageVariants = {
+  enter: (direction: number) => ({
+    y: direction > 0 ? '100%' : '-100%', // Changed x to y
+    opacity: 0,
+    scale: 0.8, // More pronounced scale effect
+  }),
+  center: {
+    zIndex: 1,
+    y: 0, // Changed x to y
+    opacity: 1,
+    scale: 1,
+  },
+  exit: (direction: number) => ({
+    zIndex: 0,
+    y: direction < 0 ? '100%' : '-100%', // Changed x to y
+    opacity: 0,
+    scale: 0.8, // More pronounced scale effect
+  }),
+};
+
 interface TransformedImage {
   id: string;
   src: string; // Changed url to src
@@ -183,16 +205,57 @@ function HeroGalleryModal({
   onClose,
   startIndex = 0,
 }: HeroGalleryModalProps) {
-  const [currentIndex, setCurrentIndex] = useState(startIndex);
+  const [_currentIndex, _setCurrentIndex] = useState(startIndex);
+  const [direction, setDirection] = useState(0); // 0: none, 1: next, -1: prev
   const thumbnailCarouselRef = useRef<HTMLDivElement>(null);
+
+  const setCurrentIndex = useCallback((newIndexOrUpdater: number | ((prevIndex: number) => number)) => {
+    _setCurrentIndex(prevCurrentIndex => {
+      let newIndexValue: number;
+      if (typeof newIndexOrUpdater === 'function') {
+        newIndexValue = newIndexOrUpdater(prevCurrentIndex);
+      } else {
+        newIndexValue = newIndexOrUpdater;
+      }
+
+      if (newIndexValue === prevCurrentIndex) {
+        setDirection(0);
+      } else if (
+        (newIndexValue > prevCurrentIndex && !(prevCurrentIndex === images.length -1 && newIndexValue === 0)) || // normal next
+        (newIndexValue === 0 && prevCurrentIndex === images.length - 1) // wrap around next
+      ) {
+        setDirection(1);
+      } else { // normal prev or wrap around prev
+        setDirection(-1);
+      }
+      return newIndexValue;
+    });
+  }, [images.length]);
+
 
   useEffect(() => {
     if (open) {
-      setCurrentIndex(startIndex);
+      _setCurrentIndex(startIndex);
+      setDirection(0); // Reset direction when modal opens or startIndex changes
     }
   }, [open, startIndex]);
 
-  const currentImageItem = images[currentIndex];
+  const currentImageItem = images[_currentIndex];
+
+  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const swipeThreshold = 50; // Minimum drag distance to trigger a swipe
+    const swipeVelocityThreshold = 200; // Minimum velocity to trigger a swipe (px/s)
+
+    // Check for swipe up (next image)
+    if (info.offset.y < -swipeThreshold || info.velocity.y < -swipeVelocityThreshold) {
+      setCurrentIndex(prev => (prev + 1) % images.length);
+    } 
+    // Check for swipe down (previous image)
+    else if (info.offset.y > swipeThreshold || info.velocity.y > swipeVelocityThreshold) {
+      setCurrentIndex(prev => (prev - 1 + images.length) % images.length);
+    }
+    // If not a clear swipe, the image will snap back due to dragConstraints/dragElastic.
+  };
 
   useEffect(() => {
     if (open) {
@@ -225,7 +288,8 @@ function HeroGalleryModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className='fixed inset-0 z-50 flex flex-col items-center w-full h-screen justify-center dark:bg-black/80 bg-gray-300/80 backdrop-blur-lg cursor-zoom-out'
+          className='fixed inset-0 z-50 flex flex-col items-center w-full h-screen justify-center dark:bg-black/80 bg-gray-300/80 backdrop-blur-lg cursor-zoom-out transform-gpu' // Restored backdrop-blur-lg, added transform-gpu
+          style={{ willChange: 'backdrop-filter, opacity' }}
           onClick={onClose}
         >
           <button
@@ -235,25 +299,66 @@ function HeroGalleryModal({
           >
             <X className="w-6 h-6" />
           </button>
+
+          {/* Up Arrow Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentIndex(prev => (prev - 1 + images.length) % images.length);
+            }}
+            className="absolute top-1/2 left-4 md:left-8 transform -translate-y-1/2 z-20 p-2 rounded-full bg-black/30 hover:bg-black/50 text-white transition-colors"
+            aria-label="Previous image"
+          >
+            <ChevronUp className="w-6 h-6 md:w-8 md:h-8" />
+          </button>
+
+          {/* Down Arrow Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentIndex(prev => (prev + 1) % images.length);
+            }}
+            className="absolute bottom-1/2 right-4 md:right-8 transform translate-y-1/2 z-20 p-2 rounded-full bg-black/30 hover:bg-black/50 text-white transition-colors"
+            aria-label="Next image"
+          >
+            <ChevronDown className="w-6 h-6 md:w-8 md:h-8" />
+          </button>
+
           <motion.div
             className='rounded-md w-full h-full md:h-[90%] md:w-[90%] max-w-6xl max-h-[90dvh] flex flex-col md:flex-row gap-2 md:gap-4 items-center justify-center p-2 md:p-4 cursor-auto'
             onClick={(e) => e.stopPropagation()}
           >
             {/* Main Image Display */}
-            <div
-              className='flex-1 flex items-center justify-center w-full md:h-auto overflow-hidden p-2 min-h-0'
+            <motion.div
+              className='flex-1 flex items-center justify-center w-full md:h-auto overflow-hidden p-2 min-h-0 relative cursor-grab active:cursor-grabbing'
+              drag="y" // Changed drag to "y"
+              dragConstraints={{ top: 0, bottom: 0 }} // Changed constraints to top/bottom
+              dragElastic={0.2} // Adjust for desired "stickiness" or resistance
+              onDragEnd={handleDragEnd}
             >
-              <motion.img
-                key={currentImageItem.id}
-                src={currentImageItem.src}
-                alt={currentImageItem.alt}
-                className='object-contain max-h-[60dvh] md:max-h-[75dvh] max-w-full rounded-md shadow-lg bg-white/10 dark:bg-black/10'
-                width={1200}
-                height={800}
-                loading="eager"
-                decoding="async"
-              />
-            </div>
+              <AnimatePresence initial={false} custom={direction} mode="wait">
+                <motion.img
+                  key={currentImageItem.id} // Important for AnimatePresence to detect changes
+                  src={currentImageItem.src}
+                  alt={currentImageItem.alt}
+                  className='object-contain max-h-[60dvh] md:max-h-[75dvh] max-w-full rounded-md shadow-lg bg-white/10 dark:bg-black/10 pointer-events-none' // pointer-events-none so drag is on parent
+                  width={1200}
+                  height={800}
+                  loading="eager"
+                  decoding="async"
+                  custom={direction}
+                  variants={imageVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{
+                    y: { type: "spring", stiffness: 400, damping: 40 }, // Changed x to y
+                    opacity: { duration: 0.2 }, // Faster fade
+                    scale: { type: "spring", stiffness: 400, damping: 40 }, // Snappier scale
+                  }}
+                />
+              </AnimatePresence>
+            </motion.div>
 
             {/* Thumbnails: horizontal below image on mobile, vertical on desktop */}
             {/* Mobile/Tablet: horizontal row below image */}
@@ -265,16 +370,16 @@ function HeroGalleryModal({
                 {images.map((imgData, index) => (
                   <button
                     key={imgData.id}
-                    className={`relative p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-all w-20 h-16 flex-shrink-0 ${imgData.id === currentImageItem.id ? 'ring-2 ring-primary border-primary' : 'border-transparent'}`}
-                    onClick={() => setCurrentIndex(index)}
+                    className={`relative p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-all w-24 h-20 flex-shrink-0 ${imgData.id === currentImageItem.id ? 'ring-2 ring-primary border-primary' : 'border-transparent'}`} // Increased size: w-20 h-16 to w-24 h-20
+                    onClick={() => setCurrentIndex(index)} // Uses the new setCurrentIndex wrapper
                     aria-label={`Show image ${index + 1}`}
                   >
                     <img
-                      src={imgData.src.replace('w=1200', 'w=200').replace('quality=80', 'quality=60')}
+                      src={imgData.src.replace('w=1200', 'w=250').replace('quality=80', 'quality=65')} // Slightly increased quality for larger thumbs
                       alt={`Thumbnail ${imgData.alt}`}
                       className='w-full h-full object-cover rounded pointer-events-none'
-                      width={100}
-                      height={66}
+                      width={125} // Adjusted to match new aspect ratio/size
+                      height={83}  // Adjusted to match new aspect ratio/size
                       loading="lazy"
                       decoding="async"
                     />
@@ -299,16 +404,16 @@ function HeroGalleryModal({
                 {images.map((imgData, index) => (
                   <button
                     key={imgData.id}
-                    className={`relative p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-all w-20 h-16 md:w-24 md:h-16 flex-shrink-0 ${imgData.id === currentImageItem.id ? 'ring-2 ring-primary border-primary' : 'border-transparent'}`}
-                    onClick={() => setCurrentIndex(index)}
+                    className={`relative p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-all w-24 h-20 md:w-28 md:h-20 flex-shrink-0 ${imgData.id === currentImageItem.id ? 'ring-2 ring-primary border-primary' : 'border-transparent'}`} // Increased size: md:w-24 md:h-16 to md:w-28 md:h-20
+                    onClick={() => setCurrentIndex(index)} // Uses the new setCurrentIndex wrapper
                     aria-label={`Show image ${index + 1}`}
                   >
                     <img
-                      src={imgData.src.replace('w=1200', 'w=200').replace('quality=80', 'quality=60')}
+                      src={imgData.src.replace('w=1200', 'w=250').replace('quality=80', 'quality=65')} // Slightly increased quality for larger thumbs
                       alt={`Thumbnail ${imgData.alt}`}
                       className='w-full h-full object-cover rounded pointer-events-none'
-                      width={100}
-                      height={66}
+                      width={125} // Adjusted to match new aspect ratio/size
+                      height={83}  // Adjusted to match new aspect ratio/size
                       loading="lazy"
                       decoding="async"
                     />
@@ -339,7 +444,7 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: props.isInView ? 1 : 0, x: props.isInView ? 0 : -20 }}
           transition={{ duration: 0.8 }}
-          className="max-w-3xl"
+          className="mt-8" // Removed max-w-3xl and added mt-8
         >
           {/* Logo div removed */}
           <motion.h1
@@ -573,7 +678,7 @@ export function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen flex items-center py-24 overflow-hidden"
+      className="relative min-h-screen flex items-center pb-24 overflow-hidden -mt-16 sm:-mt-20" // Added negative margin, removed py-24, added pb-24
     >
       <BackgroundImageCarousel
         currentIndex={currentIndex}
@@ -582,8 +687,8 @@ export function HeroSection() {
         preloadedImages={rightCarouselPreloaded}
         isInView={isInView}
       />
-      <div className="container mx-auto px-0 xs:px-2 sm:px-4 z-10 relative">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="container mx-auto px-0 xs:px-2 sm:px-4 z-10 relative pt-24 sm:pt-28 lg:pt-32"> {/* Increased top padding */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center"> {/* Changed to md breakpoint, adjusted gap */}
           {/* Left: Text, CTAs, etc. */}
           <div>
             <HeroForeground
@@ -622,7 +727,7 @@ export function HeroSection() {
               <Carousel
                 options={{ loop: true }}
                 className="relative"
-                isAutoPlay={true}
+                isAutoPlay={!isModalOpen}
                 currentIndex={currentIndex}
                 setCurrentIndex={setCurrentIndex}
                 thumbnailSlidesData={heroShowcaseImages.map((src, i) => ({ id: `hero-gallery-image-${i}`, src, alt: `Showcase image ${i + 1}` }))}
@@ -661,7 +766,7 @@ export function HeroSection() {
           transition={{ delay: 0.9 }} // Delayed to appear after main content
         >
           <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
-            Join our sacred calling: spread Śrīla Prabhupāda's wisdom and guide souls back home, back to Godhead.
+            Join our <HighlightText text="sacred calling" className="!px-1 !py-0.5 from-blue-400 to-indigo-400 dark:from-blue-500 dark:to-indigo-500 text-white" />: spread <HighlightText text="Śrīla Prabhupāda's wisdom" className="!px-1 !py-0.5 from-purple-400 to-pink-400 dark:from-purple-500 dark:to-pink-500 text-white" /> and guide 💫 souls back home 😇 , <HighlightText text=" back to Godhead 🩵 " className="!px-1 !py-0.5 from-green-400 to-teal-400 dark:from-green-500 dark:to-teal-500 text-white" />.
           </p>
         </motion.div>
       </div>

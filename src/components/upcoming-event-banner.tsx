@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback, Fragment } from "react"
 import { motion, AnimatePresence } from "motion/react" // Ensure motion is imported
-// import Image from "next/image" // Replace with standard img tag
 import { Button } from "@/components/ui/button" // Corrected import path
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover" // Corrected import path
 import { Link } from '@tanstack/react-router' // Use TanStack Router Link
@@ -112,8 +111,6 @@ export function UpcomingEventBanner() {
 
   // Refs for animation control
   const containerRef = useRef<HTMLDivElement>(null);
-  // const contentWidth = useRef(0); // Will use state now
-  // const viewportWidth = useRef(0); // Will use state now
 
   // Check which image sources to use (local vs fallback)
   useEffect(() => {
@@ -136,18 +133,13 @@ export function UpcomingEventBanner() {
       const motionWrapper = containerRef.current.querySelector(".news-item-strip") as HTMLElement;
       
       if (motionWrapper && motionWrapper.scrollWidth > 0) {
-        // The motionWrapper contains two sets of newsItems.
-        // Its scrollWidth is the total width of these two sets.
-        // So, the width of a single set is scrollWidth / 2.
         setDimensions({
           contentWidth: motionWrapper.scrollWidth / 2,
           viewportWidth: window.innerWidth,
         });
       } else if (motionWrapper) {
-        // Fallback if scrollWidth is 0 (e.g. not rendered yet or display:none)
-        // Attempt to sum children widths as a less reliable fallback
         let calculatedWidth = 0;
-        for(let i = 0; i < motionWrapper.children.length / 2; i++) { // Iterate only half, assuming duplicated content
+        for(let i = 0; i < motionWrapper.children.length / 2; i++) { 
             calculatedWidth += (motionWrapper.children[i] as HTMLElement).offsetWidth || 0;
         }
         if (calculatedWidth > 0) {
@@ -156,20 +148,19 @@ export function UpcomingEventBanner() {
                 viewportWidth: window.innerWidth,
             });
         } else {
-            // Absolute fallback if nothing can be measured
             setDimensions({
-                contentWidth: window.innerWidth * 2, // Default to a large sensible value
+                contentWidth: window.innerWidth * 2, 
                 viewportWidth: window.innerWidth,
             });
         }
       }
     };
     
-    measure(); // Initial measure
+    measure(); 
 
     const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) => {
       let timeout: ReturnType<typeof setTimeout> | null = null;
-      return (...args: Parameters<F>): void => { // Changed to void return for event listener
+      return (...args: Parameters<F>): void => { 
         if (timeout) {
           clearTimeout(timeout);
         }
@@ -186,17 +177,14 @@ export function UpcomingEventBanner() {
   // Handle banner dismissal (with 7-day expiration)
   const handleClose = useCallback(() => {
     setIsVisible(false);
-    
-    // Set expiration date to 7 days from now
-    const expiryDate = Date.now() + (7 * 24 * 60 * 60 * 1000); // 7 days
+    const expiryDate = Date.now() + (7 * 24 * 60 * 60 * 1000); 
     localStorage.setItem('bannerVisible', 'false');
     localStorage.setItem('bannerExpiry', expiryDate.toString());
   }, []);
 
   // Get the appropriate image sources based on availability
   const getImageSrc = useCallback((index: number, isThumb = false) => {
-    if (!imagesReady) return ''; // Don't attempt to load until we've checked
-    
+    if (!imagesReady) return ''; 
     if (useLocalImages) {
       return isThumb ? thumbImages[index] : optimizedImages[index];
     }
@@ -205,15 +193,13 @@ export function UpcomingEventBanner() {
 
   if (!isVisible) return null;
 
-  // Calculate the animation duration based on content length (faster for smaller content)
-  const animationDuration = Math.max(10, Math.min(40, dimensions.contentWidth > 0 ? dimensions.contentWidth / 50 : 20)); // Ensure contentWidth is positive
+  const animationDuration = Math.max(10, Math.min(40, dimensions.contentWidth > 0 ? dimensions.contentWidth / 50 : 20)); 
 
   return (
     <div 
       className="fixed bottom-[env(safe-area-inset-bottom,0px)] left-0 right-0 w-full z-30 h-[var(--banner-height,44px)]"
       style={{ '--banner-height': '44px' } as React.CSSProperties}
     >
-      {/* Improved close button */}
       <button
         onClick={handleClose}
         className="absolute right-4 top-1/2 transform -translate-y-1/2 
@@ -225,7 +211,6 @@ export function UpcomingEventBanner() {
         <X size={16} />
       </button>
       
-      {/* Play/Pause button */}
       <button
         onClick={() => setIsPaused(!isPaused)}
         className="absolute left-16 top-1/2 transform -translate-y-1/2 
@@ -237,13 +222,10 @@ export function UpcomingEventBanner() {
         {isPaused ? <Play size={16} /> : <Pause size={16} />}
       </button>
       
-      {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-white/80 to-transparent dark:from-black/80 dark:to-transparent pointer-events-none" />
 
-      {/* Banner container */}
       <div className="w-full bg-white/10 dark:bg-black/10 backdrop-blur-md border-t border-white/20 dark:border-black/20 relative">
-        <div className="py-1 px-4 overflow-hidden relative" ref={containerRef}> {/* Changed py-2 to py-1 */}
-          {/* News popover trigger */}
+        <div className="py-1 px-4 overflow-hidden relative" ref={containerRef}> 
           <Popover>
             <PopoverTrigger asChild>
               <button className="absolute left-4 top-1/2 transform -translate-y-1/2
@@ -280,23 +262,21 @@ export function UpcomingEventBanner() {
           
           {/* Scrolling content with improved animation performance */}
           <motion.div
-            className="flex whitespace-nowrap pl-24 news-item-strip" // Added a class for easier selection in measurement
             animate={{
               x: isPaused ? 0 : [0, -dimensions.contentWidth]
             }}
             transition={{
               repeat: Infinity,
-              duration: (isPaused || dimensions.contentWidth === 0) ? 0 : animationDuration, // Prevent animation if contentWidth is 0
+              duration: (isPaused || dimensions.contentWidth === 0) ? 0 : animationDuration, 
               ease: "linear",
               repeatType: "loop"
             }}
+            className="flex whitespace-nowrap pl-24 news-item-strip transform-gpu" 
             style={{
-              willChange: "transform", // Hardware acceleration hint
+              willChange: "transform", 
             }}
           >
-            {/* Render items twice for continuous loop */}
             {[...newsItems, ...newsItems].map((item, index) => (
-              // Use a unique key for React, can combine id and index for duplicated items
               <Fragment key={`${item.id}-${index}`}>
                 <button
                   className="text-sm sm:text-base inline-flex items-center space-x-2
@@ -310,7 +290,7 @@ export function UpcomingEventBanner() {
                     }
                   }}
                   onClick={() => {
-                    setIsPaused(true); // Pause animation when a news item is opened
+                    setIsPaused(true); 
                     setOpenDialog(item.id);
                   }}
                 >
@@ -319,13 +299,11 @@ export function UpcomingEventBanner() {
                   <span>{item.emoji2}</span>
                 </button>
                 
-                {/* Render separator only for the first set of items, or adjust logic if needed */}
                 {(index < newsItems.length - 1) && (
                   <span className="mx-4 text-gray-400 relative z-10">|</span>
                 )}
-                {/* Add a larger gap after the first set of items if it's the duplicated set */}
                 {(index === newsItems.length - 1) && (
-                   <span className="mx-4 text-transparent relative z-10">|</span> // Invisible separator or adjust spacing
+                   <span className="mx-4 text-transparent relative z-10">|</span> 
                 )}
               </Fragment>
             ))}
@@ -333,7 +311,6 @@ export function UpcomingEventBanner() {
         </div>
       </div>
       
-      {/* Modal - moved outside the scrolling area */}
       <AnimatePresence>
         {openDialog !== null && newsItems.map(item => (
           openDialog === item.id && (
@@ -344,13 +321,11 @@ export function UpcomingEventBanner() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              {/* Backdrop */}
               <motion.div
                 className="absolute inset-0 bg-background/80 backdrop-blur-sm"
                 onClick={() => setOpenDialog(null)}
               />
               
-              {/* Content */}
               <motion.div
                 variants={dialogVariants}
                 initial="hidden"
@@ -373,7 +348,6 @@ export function UpcomingEventBanner() {
                   {item.title}
                 </motion.h4>
 
-                {/* Lazy-loaded images that only load when dialog is opened */}
                 <motion.div
                   variants={contentVariants}
                   className="flex justify-center items-center mb-4"
@@ -383,7 +357,7 @@ export function UpcomingEventBanner() {
                     newsItems[(newsItems.findIndex(i => i.id === item.id) + 1) % newsItems.length].image,
                     newsItems[(newsItems.findIndex(i => i.id === item.id) + 2) % newsItems.length].image
                   ].map((imageIndex, idx) => (
-                    <motion.div
+                    <motion.div // This is the correct motion.div for the card hover effect
                       key={`image-${idx}`}
                       initial={{ rotate: Math.random() * 20 - 10 }}
                       whileHover={{

@@ -81,8 +81,7 @@ function HomePage() {
         className="flex flex-col min-h-screen relative w-full pb-0" // Reduced pb from 12 to 0
         // style={{ willChange: 'transform' }} // Hint for rendering performance - REMOVED
       >
-        {/* Background element remains */}
-        <div className="fixed inset-0 bg-gray-50 dark:bg-neutral-950 z-0 pointer-events-none"></div>
+        {/* Background element removed */}
         
         {/* Actual page content */}
         <div className="relative z-10 w-full">
@@ -127,15 +126,7 @@ function HomePage() {
             <LazyVisitUs />
           </Suspense>
 
-          <SectionDivider />
         </div>
-        {/* Flower cutout SVG in the bottom right corner */}
-        <img
-          src="/assets/extra/side1.svg"
-          alt="Decorative flower cutout"
-          className="absolute bottom-0 right-0 w-48 h-48 pointer-events-none z-0" // Reverted to larger size and removed opacity
-          aria-hidden="true"
-        />
       </main>
   )
 }

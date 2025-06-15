@@ -41,10 +41,10 @@ export default defineConfig({
     },
   },
   server: {
-        allowedHosts: [
-          'f78ad1885f15eccc6d1681e73d3d82f3.serveo.net',
-          '8ea27f368b4588.lhr.life'
-        ],
+    allowedHosts: [
+      'f78ad1885f15eccc6d1681e73d3d82f3.serveo.net',
+      '8ea27f368b4588.lhr.life'
+    ],
     proxy: {
       // Proxy /youtube-feed requests to the YouTube RSS feed
       '/youtube-feed': {
@@ -74,6 +74,13 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api\/calendar-by-coordinates/, '/calendar-by-coordinates'),
         secure: true, // Target is HTTPS
       },
+      // Proxy requests to NocoDB API to handle CORS or connectivity issues
+      '/api/nocodb': {
+        target: 'https://db.vrindavanam.org.in',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/nocodb/, ''),
+        secure: true, // Target is HTTPS
+      }
     },
   },
 });

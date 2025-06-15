@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link } from '@tanstack/react-router';
+import { Link, useLocation } from '@tanstack/react-router';
 import { Heart, MapPin, Phone, ExternalLink, Sparkles, Clock } from 'lucide-react'; // Removed Info, Added Clock
 import { Badge } from "@/components/ui/badge";
 import { useSound } from 'use-sound';
@@ -38,6 +38,8 @@ const formatBankDetailsForCopy = () => {
 
 
 export default function Footer() {
+  const location = useLocation();
+  const onCalendarPage = location.pathname === '/calender';
   const { isSoundEnabled } = useSoundSettings();
   const [playHaribolSound, { stop: stopHaribolSound }] = useSound('/sounds/haribol.mp3', {
     volume: 0.75,
@@ -91,12 +93,15 @@ export default function Footer() {
           </div>
 
           {/* Timings & Donation Popovers Section */}
-          <div className="mt-4 md:mt-0 flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4">
+            <div className="mt-6 md:mt-0 flex flex-wrap items-center justify-center sm:justify-end gap-1.5">
             {/* Temple Timings Popover */}
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full md:w-auto rounded-full border-blue-500/70 text-blue-600 hover:bg-blue-500/10 dark:border-blue-500/50 dark:text-blue-400 dark:hover:bg-blue-500/20 shadow-sm hover:shadow-md transition-all">
-                  <Clock className="mr-2 h-4 w-4" /> View Temple Timings
+                <Button variant="outline" className="w-full xs:w-auto rounded-full border-blue-500/70 text-blue-600 hover:bg-blue-500/10 dark:border-blue-500/50 dark:text-blue-400 dark:hover:bg-blue-500/20 shadow-sm hover:shadow-md transition-all text-[0.65rem] px-2 py-0.5 h-auto sm:text-sm sm:px-4 sm:py-2">
+                  <Clock className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="xs:hidden sm:inline">Timings</span>
+                  <span className="hidden xs:inline sm:hidden">View Timings</span>
+                  <span className="hidden md:inline">View Temple Timings</span>
                 </Button>
               </PopoverTrigger>
               <PopoverContent side="top" align="center" className="w-full max-w-xs bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-gray-300 dark:border-gray-700 shadow-xl rounded-xl">
@@ -120,8 +125,11 @@ export default function Footer() {
             {/* Donation Details Popover */}
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full md:w-auto rounded-full border-yellow-500/70 text-yellow-600 hover:bg-yellow-500/10 dark:border-yellow-500/50 dark:text-yellow-400 dark:hover:bg-yellow-500/20 shadow-sm hover:shadow-md transition-all">
-                  <Heart className="mr-2 h-4 w-4" /> Donation Details
+                <Button variant="outline" className="w-full xs:w-auto rounded-full border-yellow-500/70 text-yellow-600 hover:bg-yellow-500/10 dark:border-yellow-500/50 dark:text-yellow-400 dark:hover:bg-yellow-500/20 shadow-sm hover:shadow-md transition-all text-[0.65rem] px-2 py-0.5 h-auto sm:text-sm sm:px-4 sm:py-2">
+                  <Heart className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="xs:hidden sm:inline">Donate</span>
+                  <span className="hidden xs:inline sm:hidden">Details</span>
+                  <span className="hidden md:inline">Donation Details</span>
                 </Button>
               </PopoverTrigger>
               <PopoverContent side="top" align="center" className="w-full max-w-xs sm:max-w-sm md:max-w-md bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-gray-300 dark:border-gray-700 shadow-xl rounded-xl">
@@ -163,6 +171,28 @@ export default function Footer() {
                 </div>
               </PopoverContent>
             </Popover>
+
+            {/* Vaishnava Calendar Button */}
+            {onCalendarPage ? (
+              <Button
+                variant="outline"
+                disabled
+                className="w-full xs:w-auto rounded-full border-purple-500/70 text-purple-400 bg-purple-500/10 dark:border-purple-500/20 shadow-sm opacity-70 cursor-not-allowed text-[0.65rem] px-2 py-0.5 h-auto sm:text-sm sm:px-4 sm:py-2"
+              >
+                <span className="xs:hidden sm:inline">Here!</span>
+                <span className="hidden xs:inline sm:hidden">You're Here!</span>
+                <span className="hidden md:inline">Prabhu, you're already here! Haribol!</span>
+              </Button>
+            ) : (
+              <Link to="/calender" className="w-full xs:w-auto">
+                <Button variant="outline" className="w-full rounded-full border-purple-500/70 text-purple-600 hover:bg-purple-500/10 dark:border-purple-500/50 dark:text-purple-400 dark:hover:bg-purple-500/20 shadow-sm hover:shadow-md transition-all text-[0.65rem] px-2 py-0.5 h-auto sm:text-sm sm:px-4 sm:py-2">
+                  <Clock className="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="xs:hidden sm:inline">Calendar</span>
+                  <span className="hidden xs:inline sm:hidden">Vaishnava Calendar</span>
+                  <span className="hidden md:inline">Vaishnava Calendar</span>
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
 

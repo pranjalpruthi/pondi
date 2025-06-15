@@ -98,10 +98,24 @@ function useProgressTimer({
 export function CookieToast() {
   const [open, setOpen] = useState(false)
   const toastDuration = 5000
+
+  const handleAccept = useCallback(() => {
+    try {
+      localStorage.setItem('cookie-consent', 'true');
+    } catch (e) {
+      // Silently fail
+    }
+    setOpen(false);
+  }, []);
+
+  const handleDecline = useCallback(() => {
+    setOpen(false);
+  }, []);
+
   const { progress, start, pause, resume } = useProgressTimer({
     duration: toastDuration,
-    onComplete: () => {},
-  })
+    onComplete: handleAccept, // Auto-accept when timer completes
+  });
 
   useEffect(() => {
     try {
@@ -117,19 +131,6 @@ export function CookieToast() {
       // LocalStorage not available
     }
   }, [start]);
-
-  const handleAccept = () => {
-    try {
-      localStorage.setItem('cookie-consent', 'true');
-    } catch (e) {
-      // Silently fail
-    }
-    setOpen(false);
-  };
-
-  const handleDecline = () => {
-    setOpen(false);
-  };
 
   return (
     <ToastProvider swipeDirection="left">

@@ -136,13 +136,14 @@ const deitiesInfo: DeityInfo[] = [
   }
 ];
 
-const DeityImage = memo(({ src, alt }: { src: string; alt: string }) => (
+const DeityImage = memo(({ src, alt, onLoad }: { src: string; alt: string; onLoad: () => void; }) => (
   <img 
     src={src} 
     alt={alt} 
     className="w-full h-full object-cover" 
     loading="lazy"
     fetchPriority="high"
+    onLoad={onLoad}
   />
 ));
 DeityImage.displayName = 'DeityImage';
@@ -196,6 +197,7 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
   const [touchStart, setTouchStart] = useState(0)
   const [touchEnd, setTouchEnd] = useState(0)
   const [isAaratiPopoverOpen, setIsAaratiPopoverOpen] = useState(false)
+  const [isImageLoading, setIsImageLoading] = useState(true); // New state for image loading
   const carouselRef = useRef<HTMLDivElement>(null)
   // Autoplay timer ref removed
   const templeStatus = useTempleStatus();
@@ -207,8 +209,13 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
   })
 
   useEffect(() => {
-    setCurrentImageIndex(0)
+    setIsImageLoading(true); // Set loading to true when deity changes
+    setCurrentImageIndex(0);
   }, [selectedDeity])
+
+  useEffect(() => {
+    setIsImageLoading(true); // Set loading to true when image index changes
+  }, [currentImageIndex]);
 
   // Autoplay useEffect and startAutoplay function removed
 
@@ -387,24 +394,29 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
                     // onClick removed
                   >
                     <AnimatePresence mode="wait">
-                      {selectedDeity && (
+                      {selectedDeity && selectedDeity.images && selectedDeity.images.length > 0 && (
                         <motion.div
                           key={`${selectedDeity.id}-${currentImageIndex}`}
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.95 }}
-                          transition={{ duration: 0.4 }}
-                          className="absolute inset-0 flex items-center justify-center p-1 sm:p-2"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: isImageLoading ? 0 : 1 }}
+                          transition={{ duration: 0.3 }}
+                          className="absolute inset-0"
                         >
                           <DeityImage 
                             src={selectedDeity.images[currentImageIndex].replace("w=700&h=700", "w=800&h=800")} 
                             alt={selectedDeity.name}
+                            onLoad={() => setIsImageLoading(false)}
                           />
                         </motion.div>
                       )}
                     </AnimatePresence>
+                    {isImageLoading && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900">
+                        <Sparkles className="h-12 w-12 text-white/50 animate-pulse" />
+                      </div>
+                    )}
                     
-                    {selectedDeity && selectedDeity.images.length > 1 && (
+                    {selectedDeity && selectedDeity.images && selectedDeity.images.length > 1 && (
                       <>
                         <Button
                           variant="ghost"
