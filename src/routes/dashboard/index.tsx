@@ -357,12 +357,12 @@ function DashboardPage() {
             <DrawerHeader>
               <DrawerTitle>Books List</DrawerTitle>
             </DrawerHeader>
-            <div className="p-4">
+            <div className="p-4 overflow-auto max-h-[60vh]">
               {booksError ? (
                 <p className="text-red-500 text-sm">Error loading books: {booksError.message}</p>
               ) : booksLoading ? (
                 <p className="text-muted-foreground">Loading books data...</p>
-              ) : books ? (
+              ) : books && books.length > 0 ? (
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -405,8 +405,12 @@ function DashboardPage() {
             <DrawerHeader>
               <DrawerTitle>Distribution Log</DrawerTitle>
             </DrawerHeader>
-            <div className="p-4">
-              {distributionLog ? (
+            <div className="p-4 overflow-auto max-h-[60vh]">
+              {distributionError ? (
+                <p className="text-red-500 text-sm">Error loading distribution log: {distributionError.message}</p>
+              ) : distributionLoading ? (
+                <p className="text-muted-foreground">Loading distribution log...</p>
+              ) : distributionLog && distributionLog.length > 0 ? (
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -430,7 +434,7 @@ function DashboardPage() {
                   </TableBody>
                 </Table>
               ) : (
-                <p>Loading distribution log...</p>
+                <p className="text-muted-foreground">No distribution log entries found.</p>
               )}
             </div>
           </DrawerContent>
@@ -453,8 +457,12 @@ function DashboardPage() {
             <DrawerHeader>
               <DrawerTitle>Devotees List</DrawerTitle>
             </DrawerHeader>
-            <div className="p-4">
-              {devotees ? (
+            <div className="p-4 overflow-auto max-h-[60vh]">
+              {devoteesError ? (
+                <p className="text-red-500 text-sm">Error loading devotees: {devoteesError.message}</p>
+              ) : devoteesLoading ? (
+                <p className="text-muted-foreground">Loading devotees data...</p>
+              ) : devotees && devotees.length > 0 ? (
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -472,7 +480,7 @@ function DashboardPage() {
                   </TableBody>
                 </Table>
               ) : (
-                <p>Loading devotees data...</p>
+                <p className="text-muted-foreground">No devotees data found.</p>
               )}
             </div>
           </DrawerContent>
@@ -495,36 +503,28 @@ function DashboardPage() {
             <DrawerHeader>
               <DrawerTitle>Products List</DrawerTitle>
             </DrawerHeader>
-            <div className="p-4">
+            <div className="p-4 overflow-auto max-h-[60vh]">
               {productsError ? (
                 <p className="text-red-500 text-sm">Error loading products: {productsError.message}</p>
               ) : productsLoading ? (
                 <p className="text-muted-foreground">Loading products data...</p>
-              ) : products ? (
+              ) : products && products.length > 0 ? (
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>ID</TableHead>
-                      <TableHead>SKU</TableHead>
-                      <TableHead>Language</TableHead>
                       <TableHead>Book</TableHead>
-                      <TableHead>Cost Price</TableHead>
-                      <TableHead>Selling Price</TableHead>
+                      <TableHead>Language</TableHead>
                       <TableHead>Stock Quantity</TableHead>
-                      <TableHead>Min Stock</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {products.map((product: Product) => (
                       <TableRow key={product.Id}>
                         <TableCell>{product.Id}</TableCell>
-                        <TableCell>{product.SKU || 'N/A'}</TableCell>
-                        <TableCell>{product.Language || 'N/A'}</TableCell>
                         <TableCell>{product.Book || 'N/A'}</TableCell>
-                        <TableCell>{product['Cost Price'] !== undefined ? product['Cost Price'] : 'N/A'}</TableCell>
-                        <TableCell>{product['Selling Price'] !== undefined ? product['Selling Price'] : 'N/A'}</TableCell>
+                        <TableCell>{product.Language || 'N/A'}</TableCell>
                         <TableCell>{product['Stock Quantity'] !== undefined ? product['Stock Quantity'] : 'N/A'}</TableCell>
-                        <TableCell>{product['Min Stock'] !== undefined ? product['Min Stock'] : 'N/A'}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

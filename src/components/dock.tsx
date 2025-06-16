@@ -19,7 +19,6 @@ import { DeityDarshan } from '@/components/deity-darshan';
 import { SignedIn, SignedOut, UserButton, SignInButton, SignOutButton } from '@clerk/tanstack-react-start';
 import { LayoutDashboard, LogIn, LogOut } from 'lucide-react';
 import { useIsMobile } from "@/hooks/use-mobile";
-import { RainbowGlow } from "@/components/ui/rainbow-glow"; // Added RainbowGlow import
 import { Suspense } from 'react'; // Added Suspense import
 
 const LazyUpcomingEventBanner = React.lazy(() => // Added import for the banner
@@ -145,11 +144,11 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
     </div>
   );
   
-  const baseItemClasses = "relative flex items-center rounded-xl cursor-pointer overflow-hidden h-12 sm:h-14 text-foreground/80 transition-colors focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]";
+  const baseItemClasses = "relative flex items-center rounded-xl cursor-pointer overflow-hidden h-14 sm:h-16 text-foreground/80 transition-colors focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]";
   
   const itemWidth = item.isExpandable 
-                    ? (isMobile ? 48 : 56)
-                    : (isLabelVisible ? (isMobile ? 100 : 120) : (isMobile ? 48 : 56));
+                    ? (isMobile ? 56 : 64)
+                    : (isLabelVisible ? (isMobile ? 110 : 130) : (isMobile ? 56 : 64));
 
   const combinedItemClasses = cn(
       baseItemClasses,
@@ -157,7 +156,7 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
           ? deityButtonSpecificStyles
           : (isMainMenuPanelActive || isLabelVisible)
               ? "bg-pink-100/70 dark:bg-pink-700/70 text-primary" 
-              : "hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary"
+              : "hover:bg-pink-100/50 dark:hover:bg-amber-500/30 hover:text-amber-400"
   );
 
   if (item.isLink && item.to) {
@@ -290,7 +289,7 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
         lastScrollYRef.current = currentScrollY;
         return;
       }
-      // Hide dock if scrolling down or if past a certain scroll point
+      // Hide dock if scrolling down past a certain point
       if (currentScrollY > lastScrollYRef.current && currentScrollY > 80) {
         setIsDockVisible(false);
       } else {
@@ -307,8 +306,12 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
         ([entry]) => {
           // Set isFooterVisible to true if footer is intersecting, false otherwise
           setIsFooterVisible(entry.isIntersecting);
+          // Hide dock when footer is visible, regardless of scroll direction
+          if (entry.isIntersecting && !isDockOpen) {
+            setIsDockVisible(false);
+          }
         },
-        { threshold: 0.1 } // Increased threshold to hide dock earlier
+        { threshold: 0.2 } // Adjusted threshold for smoother detection
       );
       observer.observe(footerElement);
     }
@@ -437,7 +440,7 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
             <input
               type="text"
               placeholder={currentPlaceholder}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-9 w-full rounded-full border border-input bg-background px-3 py-2 pl-10 text-xs sm:text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-900/30 dark:border-indigo-700/50"
               readOnly // Make it read-only as it's a placeholder
               onFocus={(e) => e.target.blur()} // Prevent focus to reinforce it's non-interactive
             />
@@ -448,11 +451,10 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
             <button
               onClick={() => { handleSoundToggle(); safePlayClick(); }}
               onMouseEnter={safePlayHover}
-              className="flex flex-col items-center justify-center h-20 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
+              className="flex flex-col items-center justify-center h-14 w-14 sm:h-16 sm:w-16 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-indigo-700/50 hover:text-primary text-foreground/80 transition-colors"
               aria-label={isSoundEnabled ? "Disable Sound" : "Enable Sound"}
             >
-              {isSoundEnabled ? <Volume2 className="size-6 mb-1" /> : <VolumeX className="size-6 mb-1" />}
-              <span className="text-xs text-center">{isSoundEnabled ? "Sound Off" : "Sound On"}</span>
+              {isSoundEnabled ? <Volume2 className="size-6" /> : <VolumeX className="size-6" />}
             </button>
 
             {/* Navigation Items - Styled as square items */}
@@ -462,11 +464,11 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
               to={navItem.to}
               onClick={() => { handleNavClick(navItem.to); setIsDockOpen(false); setActiveDockItem(null); }}
               onMouseEnter={safePlayHover}
-              className="flex flex-col items-center justify-center h-20 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
+              className="flex flex-col items-center justify-center h-14 w-14 sm:h-16 sm:w-16 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
               aria-label={navItem.label}
             >
               <navItem.icon className={cn("size-6 mb-1", navItem.iconClassName)} />
-              <span className="text-xs text-center">{navItem.label}</span>
+              <span className="text-[0.7rem] sm:text-[0.75rem] text-center">{navItem.label}</span>
             </Link>
           ))}
 
@@ -476,17 +478,17 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
               to="/dashboard"
               onClick={() => { handleNavClick("/dashboard"); setIsDockOpen(false); setActiveDockItem(null); }}
               onMouseEnter={safePlayHover}
-              className="flex flex-col items-center justify-center h-20 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
+              className="flex flex-col items-center justify-center h-14 w-14 sm:h-16 sm:w-16 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
               aria-label="Dashboard"
             >
               <LayoutDashboard className="size-6 mb-1 text-primary/80" />
-              <span className="text-xs text-center">Dashboard</span>
+              <span className="text-[0.7rem] sm:text-[0.75rem] text-center">Dashboard</span>
             </Link>
             
             {/* UserButton - Attempt to style its container or provide a styled trigger if possible */}
             <div 
               onMouseEnter={safePlayHover}
-              className="flex flex-col items-center justify-center h-20 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 text-foreground/80 transition-colors cursor-pointer"
+              className="flex flex-col items-center justify-center h-14 w-14 sm:h-16 sm:w-16 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 text-foreground/80 transition-colors cursor-pointer"
               onClick={safePlayClick} // Play click sound, Clerk handles modal
             >
               <UserButton afterSignOutUrl="/">
@@ -500,11 +502,11 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
               <button
                 onClick={() => { safePlayClick(); setIsDockOpen(false); setActiveDockItem(null); }}
                 onMouseEnter={safePlayHover}
-                className="flex flex-col items-center justify-center h-20 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
+                className="flex flex-col items-center justify-center h-14 w-14 sm:h-16 sm:w-16 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
                 aria-label="Sign Out"
               >
                 <LogOut className="size-6 mb-1 text-primary/80" />
-                <span className="text-xs text-center">Sign Out</span>
+                <span className="text-[0.7rem] sm:text-[0.75rem] text-center">Sign Out</span>
               </button>
             </SignOutButton>
           </SignedIn>
@@ -515,11 +517,11 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
               <button
                 onClick={() => { safePlayClick(); setIsDockOpen(false); setActiveDockItem(null); }}
                 onMouseEnter={safePlayHover}
-                className="flex flex-col items-center justify-center h-20 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
+                className="flex flex-col items-center justify-center h-14 w-14 sm:h-16 sm:w-16 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
                 aria-label="Sign In"
               >
                 <LogIn className="size-6 mb-1 text-primary/80" />
-                <span className="text-xs text-center">Sign In</span>
+                <span className="text-[0.7rem] sm:text-[0.75rem] text-center">Sign In</span>
               </button>
             </SignInButton>
           </SignedOut>
@@ -594,7 +596,7 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
         initial={{ y: 0 }}
         // Adjust z-index based on visibility to ensure it's below footer when hidden
         animate={{ 
-          y: isDockVisible && !isFooterVisible ? 0 : 150, // Increased y to move further down
+          y: isDockVisible && !isFooterVisible ? 10 : 160, // Adjusted to position lower and increase hidden offset
           zIndex: isDockVisible && !isFooterVisible ? 40 : 10 // Lower z-index when hidden
         }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -604,17 +606,9 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={mainDockAppearanceTransition}
-            className="relative w-full max-w-md rounded-3xl bg-pink-50/60 shadow-lg shadow-black/5 ring-1 ring-pink-100/60 backdrop-blur-md dark:bg-pink-900/40 dark:shadow-black/10 dark:ring-pink-900/40 sm:max-w-fit pointer-events-auto overflow-hidden mb-4 group glass transform-gpu"
+            className="relative w-full max-w-md rounded-3xl bg-pink-50/60 backdrop-blur-sm dark:bg-pink-900/50 sm:max-w-fit pointer-events-auto overflow-hidden mb-2 transform-gpu border border-pink-200/30 dark:border-pink-700/30 shadow-[0_0_10px_rgba(255,182,193,0.3)] dark:shadow-[0_0_10px_rgba(255,105,180,0.3)]"
             ref={dockWrapperRef}
             onMouseLeave={() => setHoveredLabelItemId(null)} >
-            <RainbowGlow 
-              position="top" 
-              className="opacity-50"
-              containerClassName="h-16"
-              glowHeight="h-10"
-              glowOpacity={0.3}
-              blurAmount="blur-xl"
-            />
             <MotionConfig transition={dockSpringTransition}>
               <div className='h-full w-full p-2'>
                 <div className='overflow-hidden rounded-t-2xl'>
