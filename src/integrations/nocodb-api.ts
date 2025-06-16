@@ -39,44 +39,60 @@ async function getTableId(tableName: string): Promise<string> {
   }
 }
 
-export async function getDevotees() {
+export async function getDevotees(limit?: number, offset = 0) {
   try {
     const tableId = await getTableId('Devotees');
-    const response = await apiClient.get(`/tables/${tableId}/records`);
-    return response.data.list;
+    const query = limit !== undefined ? `limit=${limit}&` : '';
+    const response = await apiClient.get(`/tables/${tableId}/records?${query}offset=${offset}`);
+    return {
+      list: response.data.list,
+      pageInfo: response.data.pageInfo
+    };
   } catch (error) {
     console.error('Error fetching devotees:', error);
     throw error;
   }
 }
 
-export async function getBooks() {
+export async function getBooks(limit?: number, offset = 0) {
   try {
     const tableId = await getTableId('Books');
-    const response = await apiClient.get(`/tables/${tableId}/records`);
-    return response.data.list;
+    const query = limit !== undefined ? `limit=${limit}&` : '';
+    const response = await apiClient.get(`/tables/${tableId}/records?${query}offset=${offset}`);
+    return {
+      list: response.data.list,
+      pageInfo: response.data.pageInfo
+    };
   } catch (error) {
     console.error('Error fetching books:', error);
     throw error;
   }
 }
 
-export async function getProducts() {
+export async function getProducts(limit?: number, offset = 0) {
   try {
     const tableId = await getTableId('Products');
-    const response = await apiClient.get(`/tables/${tableId}/records`);
-    return response.data.list;
+    const query = limit !== undefined ? `limit=${limit}&` : '';
+    const response = await apiClient.get(`/tables/${tableId}/records?${query}offset=${offset}`);
+    return {
+      list: response.data.list,
+      pageInfo: response.data.pageInfo
+    };
   } catch (error) {
     console.error('Error fetching products:', error);
     throw error;
   }
 }
 
-export async function getDistributionLog() {
+export async function getDistributionLog(limit?: number, offset = 0) {
   try {
     const tableId = await getTableId('DistributionLog');
-    const response = await apiClient.get(`/tables/${tableId}/records`);
-    return response.data.list;
+    const query = limit !== undefined ? `limit=${limit}&` : '';
+    const response = await apiClient.get(`/tables/${tableId}/records?${query}offset=${offset}`);
+    return {
+      list: response.data.list,
+      pageInfo: response.data.pageInfo
+    };
   } catch (error) {
     console.error('Error fetching distribution log:', error);
     throw error;
