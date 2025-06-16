@@ -365,10 +365,10 @@ export function TempleEvents({ open, onOpenChange }: TempleEventsProps) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }} // Corrected: Only one exit prop here
             >
-              <motion.div
-                className="absolute inset-0 bg-white/80 dark:bg-gray-950/80" // Removed backdrop-blur-lg
-                onClick={() => onOpenChange(false)}
-              />
+                <motion.div
+                  className="absolute inset-0 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-sm"
+                  onClick={() => onOpenChange(false)}
+                />
 
               <motion.div
                 initial={{ opacity: 0, y: 30, scale: 0.98 }}
@@ -376,9 +376,9 @@ export function TempleEvents({ open, onOpenChange }: TempleEventsProps) {
                 exit={{ opacity: 0, y: 30, scale: 0.98 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 className={cn(
-                  "relative z-50 w-full max-w-4xl rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border", // Removed min-h-[60vh] sm:min-h-0
-                  theme === 'dark' ? 'bg-zinc-900/80 border-zinc-700/70' : 'bg-white/80 border-gray-200/70',
-                  "backdrop-blur-xl" 
+                  "relative z-50 w-full max-w-4xl rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border",
+                  theme === 'dark' ? 'bg-zinc-900/90 border-zinc-700/80' : 'bg-white/90 border-gray-200/70',
+                  "backdrop-blur-xl"
                 )}
               >
                 {/* Modal Header */}
@@ -437,9 +437,9 @@ export function TempleEvents({ open, onOpenChange }: TempleEventsProps) {
                                   className={cn(
                                     "h-9 sm:h-10 md:h-11 text-sm rounded-md flex items-center justify-center relative transition-all duration-150 ease-out",
                                     selectedDayOfMonth === dayNumber 
-                                      ? "bg-gradient-to-r from-sky-500 to-blue-500 text-white font-semibold shadow-md ring-2 ring-offset-1 ring-blue-500 dark:ring-offset-zinc-800"
-                                      : (theme === 'dark' ? "bg-zinc-700/50 hover:bg-zinc-600/70" : "bg-gray-100/70 hover:bg-gray-200/90"),
-                                    dayData?.fasting_info.is_fasting_day && selectedDayOfMonth !== dayNumber && (theme === 'dark' ? "ring-1 ring-pink-600/70" : "ring-1 ring-pink-400/70"),
+                                      ? "bg-gradient-to-r from-sky-500 to-blue-500 text-white font-semibold shadow-md ring-2 ring-offset-1 ring-blue-500 dark:ring-offset-zinc-900"
+                                      : (theme === 'dark' ? "bg-zinc-800/60 hover:bg-zinc-700/80" : "bg-gray-100/70 hover:bg-gray-200/90"),
+                                    dayData?.fasting_info.is_fasting_day && selectedDayOfMonth !== dayNumber && (theme === 'dark' ? "ring-1 ring-pink-700/70" : "ring-1 ring-pink-400/70"),
                                     new Date().getFullYear() === activeMonthDate.getFullYear() && new Date().getMonth() === activeMonthDate.getMonth() && dayNumber === new Date().getDate() && "font-bold ring-2 ring-amber-500"
                                   )}
                                 >
@@ -453,7 +453,7 @@ export function TempleEvents({ open, onOpenChange }: TempleEventsProps) {
                                 <PopoverContent
                                   side="bottom"
                                   align="center"
-                                  className={cn( "w-64 md:w-72 p-0 shadow-xl z-[110] rounded-lg", "bg-white/80 dark:bg-neutral-900/80", "backdrop-blur-lg", "border border-white/20 dark:border-neutral-700/40" )}
+                                  className={cn( "w-64 md:w-72 p-0 shadow-xl z-[110] rounded-lg", "bg-white/90 dark:bg-zinc-900/90", "backdrop-blur-lg", "border border-white/20 dark:border-zinc-700/50" )}
                                 >
                                   <div className={cn("p-3 border-b", theme === 'dark' ? 'border-zinc-700' : 'border-gray-200')}>
                                     <h4 className="font-semibold text-sm">{formatDateDisplay(selectedDayForPopover.date_str)}</h4>

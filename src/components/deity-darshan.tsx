@@ -140,7 +140,7 @@ const DeityImage = memo(({ src, alt, onLoad }: { src: string; alt: string; onLoa
   <img 
     src={src} 
     alt={alt} 
-    className="w-full h-full object-cover" 
+    className="w-full h-full object-contain" 
     loading="lazy"
     fetchPriority="high"
     onLoad={onLoad}
@@ -194,8 +194,11 @@ AaratiTimingItem.displayName = 'AaratiTimingItem';
 export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
   const [selectedDeity, setSelectedDeity] = useState<DeityInfo>(deitiesInfo[0])
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [touchStart, setTouchStart] = useState(0)
-  const [touchEnd, setTouchEnd] = useState(0)
+  const [touchStart, setTouchStart] = useState({ x: 0, y: 0 })
+  const [touchEnd, setTouchEnd] = useState({ x: 0, y: 0 })
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
+  const [dragEnd, setDragEnd] = useState({ x: 0, y: 0 })
+  const [isDragging, setIsDragging] = useState(false)
   const [isAaratiPopoverOpen, setIsAaratiPopoverOpen] = useState(false)
   const [isImageLoading, setIsImageLoading] = useState(true); // New state for image loading
   const carouselRef = useRef<HTMLDivElement>(null)
@@ -219,20 +222,63 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
 
   // Autoplay useEffect and startAutoplay function removed
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => setTouchStart(e.targetTouches[0].clientX), []);
-  const handleTouchMove = useCallback((e: React.TouchEvent) => setTouchEnd(e.targetTouches[0].clientX), []);
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    setTouchStart({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY });
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    setTouchEnd({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY });
+  }, []);
 
   const handleTouchEnd = useCallback(() => {
     if (!selectedDeity) return;
-    if (touchStart - touchEnd > 50) { // Swipe left
-      setCurrentImageIndex((prev) => (prev === selectedDeity.images.length - 1 ? 0 : prev + 1));
+    const dx = touchStart.x - touchEnd.x;
+    const dy = touchStart.y - touchEnd.y;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      if (dx > 0) { // Swipe left
+        setCurrentImageIndex((prev) => (prev === selectedDeity.images.length - 1 ? 0 : prev + 1));
+      } else { // Swipe right
+        setCurrentImageIndex((prev) => (prev === 0 ? selectedDeity.images.length - 1 : prev - 1));
+      }
     }
-    if (touchStart - touchEnd < -50) { // Swipe right
-      setCurrentImageIndex((prev) => (prev === 0 ? selectedDeity.images.length - 1 : prev - 1));
-    }
-    setTouchStart(0);
-    setTouchEnd(0);
+    setTouchStart({ x: 0, y: 0 });
+    setTouchEnd({ x: 0, y: 0 });
   }, [selectedDeity, touchStart, touchEnd]);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    setDragStart({ x: e.clientX, y: e.clientY });
+    setIsDragging(true);
+  }, []);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (isDragging) {
+      setDragEnd({ x: e.clientX, y: e.clientY });
+    }
+  }, [isDragging]);
+
+  const handleMouseUp = useCallback(() => {
+    if (!selectedDeity) return;
+    const dx = dragStart.x - dragEnd.x;
+    const dy = dragStart.y - dragEnd.y;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      if (dx > 0) { // Drag left
+        setCurrentImageIndex((prev) => (prev === selectedDeity.images.length - 1 ? 0 : prev + 1));
+      } else { // Drag right
+        setCurrentImageIndex((prev) => (prev === 0 ? selectedDeity.images.length - 1 : prev - 1));
+      }
+    }
+    setDragStart({ x: 0, y: 0 });
+    setDragEnd({ x: 0, y: 0 });
+    setIsDragging(false);
+  }, [selectedDeity, dragStart, dragEnd, isDragging]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (isDragging) {
+      setIsDragging(false);
+      setDragStart({ x: 0, y: 0 });
+      setDragEnd({ x: 0, y: 0 });
+    }
+  }, [isDragging]);
 
   const navigateImage = useCallback((direction: 'next' | 'prev') => {
     if (!selectedDeity) return;
@@ -293,82 +339,96 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
   return (
     <>
       <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent className="h-[90vh] md:h-[95vh] max-h-[95vh] overflow-hidden">
+        <DrawerContent className={cn(
+          "h-[90vh] md:h-[95vh] max-h-[95vh] overflow-hidden backdrop-blur-sm",
+          "bg-gradient-to-b",
+          templeStatus.label === "Darshan" ? "from-green-100/70 to-blue-50/70 dark:from-green-900/20 dark:to-blue-900/10" : "",
+          templeStatus.label === "Aarati" ? "from-pink-100/70 to-blue-50/70 dark:from-pink-900/20 dark:to-blue-900/10" : "",
+          templeStatus.label === "Temple Open" ? "from-yellow-100/70 to-blue-50/70 dark:from-yellow-900/20 dark:to-blue-900/10" : "",
+          templeStatus.label === "Closed" ? "from-red-100/70 to-blue-50/70 dark:from-red-900/20 dark:to-blue-900/10" : "",
+          templeStatus.label === "End of Day" ? "from-gray-100/70 to-blue-50/70 dark:from-gray-800/30 dark:to-blue-900/10" : "",
+          templeStatus.label === "Special Event" ? "from-orange-100/70 to-blue-50/70 dark:from-orange-900/20 dark:to-blue-900/10" : ""
+        )}>
           <div className="mx-auto w-full max-w-6xl flex flex-col h-full p-2 sm:p-4">
             <DrawerHeader className="px-2 pt-2 pb-1 sm:px-4 sm:pt-3 sm:pb-2 flex-shrink-0">
-              <div className="flex items-center justify-between mb-1 sm:mb-2">
-                <DrawerTitle className="flex items-center gap-1.5 sm:gap-2">
-                  <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-0.5 sm:p-1 rounded-md sm:rounded-lg shadow-md">
-                    <Sparkles className="h-4 w-4 sm:h-5 md:h-6 lg:h-7 text-white" />
-                  </div>
-                  <span className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 text-transparent bg-clip-text">
-                    Divine Visions
-                  </span>
-                </DrawerTitle>
-
-                <Popover open={isAaratiPopoverOpen} onOpenChange={setIsAaratiPopoverOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className={cn(
-                        "relative rounded-full p-1.5 sm:p-2 transition-colors h-8 w-8 sm:h-9 md:h-10", 
-                        templeStatus.label === "Darshan" || templeStatus.label === "Aarati" 
-                          ? "hover:bg-green-100/50 dark:hover:bg-green-800/50" 
-                          : "hover:bg-gray-200 dark:hover:bg-gray-700"
-                      )}
-                      aria-label="Aarati Timings"
-                    >
+                <div className="flex items-center justify-between mb-1 sm:mb-2">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-0.5 sm:p-1 rounded-md sm:rounded-lg shadow-md">
                       <Clock className={cn(
-                        "h-4 w-4 sm:h-5 md:h-6", 
+                        "h-4 w-4 sm:h-5 md:h-6 lg:h-7 text-white",
                         templeStatus.label === "Darshan" ? "text-green-500 dark:text-green-400" :
                         templeStatus.label === "Aarati" ? "text-pink-500 dark:text-pink-400" :
                         templeStatus.label === "Closed" ? "text-red-500 dark:text-red-400" :
-                        "text-amber-500 dark:text-amber-400" // Default color changed to amber/saffron
+                        "text-amber-500 dark:text-amber-400"
                       )} />
-                      {(templeStatus.label === "Aarati" || templeStatus.label === "Darshan") && (
-                        <span className="absolute top-0 right-0 flex h-2.5 w-2.5 sm:h-3"> 
-                          <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full opacity-75", templeStatus.label === "Aarati" ? "bg-pink-400" : "bg-green-400")}></span>
-                          <span className={cn("relative inline-flex rounded-full h-full w-full", templeStatus.label === "Aarati" ? "bg-pink-500" : "bg-green-500")}></span>
-                        </span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent 
-                    className="w-60 sm:w-72 p-0 rounded-xl border-gray-200 dark:border-gray-700 shadow-xl bg-white dark:bg-gray-800" 
-                    sideOffset={10}
-                  >
-                    <div className={cn(
-                      "p-2.5 sm:p-4 rounded-t-xl flex items-center gap-2 sm:gap-3",
-                      templeStatus.label === "Darshan" ? "bg-gradient-to-r from-green-500 to-emerald-600" :
-                      templeStatus.label === "Aarati" ? "bg-gradient-to-r from-pink-500 to-rose-600" :
-                      templeStatus.label === "Closed" ? "bg-gradient-to-r from-red-500 to-orange-600" :
-                      "bg-gradient-to-r from-gray-500 to-slate-600"
-                    )}>
-                      <Clock className="h-4 sm:h-5 w-4 sm:w-5 text-white" /> 
-                      <h3 className="text-sm sm:text-lg font-semibold text-white">Temple Aarati Timings</h3>
                     </div>
-                    <div className="p-2.5 sm:p-4 space-y-1.5 sm:space-y-3">
-                      {AARATI_TIMINGS.map((aarati, index) => (
-                        <AaratiTimingItem key={index} name={aarati.name} time={aarati.time} />
-                      ))}
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </div>
-              
-              <DrawerDescription className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-0.5 mb-1.5 sm:mb-2">
-                Immerse yourself in the sacred presence of the Deities.
-              </DrawerDescription>
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-[10px] leading-tight sm:text-xs text-center italic text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-1.5 mt-1.5 sm:pt-2 sm:mt-2"
-              >
-                "By chanting the Hare Krishna mantra, one cleanses the dust from the mirror of the mind and becomes eligible to understand his spiritual identity."
-                <br />- Srila Prabhupada (Teachings of Queen Kunti, Ch. 18)
-              </motion.div>
+                    <DrawerTitle className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 text-transparent bg-clip-text">
+                      Divine Visions
+                    </DrawerTitle>
+                    <Popover open={isAaratiPopoverOpen} onOpenChange={setIsAaratiPopoverOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className={cn(
+                            "relative rounded-full p-1.5 sm:p-2 transition-colors h-8 w-8 sm:h-9 md:h-10", 
+                            templeStatus.label === "Darshan" || templeStatus.label === "Aarati" 
+                              ? "hover:bg-green-100/50 dark:hover:bg-green-800/50" 
+                              : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                          )}
+                          aria-label="Aarati Timings"
+                        >
+                          <Clock className={cn(
+                            "h-4 w-4 sm:h-5 md:h-6", 
+                            templeStatus.label === "Darshan" ? "text-green-500 dark:text-green-400" :
+                            templeStatus.label === "Aarati" ? "text-pink-500 dark:text-pink-400" :
+                            templeStatus.label === "Closed" ? "text-red-500 dark:text-red-400" :
+                            "text-amber-500 dark:text-amber-400" // Default color changed to amber/saffron
+                          )} />
+                          {(templeStatus.label === "Aarati" || templeStatus.label === "Darshan") && (
+                            <span className="absolute top-0 right-0 flex h-2.5 w-2.5 sm:h-3"> 
+                              <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full opacity-75", templeStatus.label === "Aarati" ? "bg-pink-400" : "bg-green-400")}></span>
+                              <span className={cn("relative inline-flex rounded-full h-full w-full", templeStatus.label === "Aarati" ? "bg-pink-500" : "bg-green-500")}></span>
+                            </span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent 
+                        className="w-60 sm:w-72 p-0 rounded-xl border-gray-200 dark:border-gray-700 shadow-xl bg-white dark:bg-gray-800" 
+                        sideOffset={10}
+                      >
+                        <div className={cn(
+                          "p-2.5 sm:p-4 rounded-t-xl flex items-center gap-2 sm:gap-3",
+                          templeStatus.label === "Darshan" ? "bg-gradient-to-r from-green-500 to-emerald-600" :
+                          templeStatus.label === "Aarati" ? "bg-gradient-to-r from-pink-500 to-rose-600" :
+                          templeStatus.label === "Closed" ? "bg-gradient-to-r from-red-500 to-orange-600" :
+                          "bg-gradient-to-r from-gray-500 to-slate-600"
+                        )}>
+                          <Clock className="h-4 sm:h-5 w-4 sm:w-5 text-white" /> 
+                          <h3 className="text-sm sm:text-lg font-semibold text-white">Temple Aarati Timings</h3>
+                        </div>
+                        <div className="p-2.5 sm:p-4 space-y-1.5 sm:space-y-3">
+                          {AARATI_TIMINGS.map((aarati, index) => (
+                            <AaratiTimingItem key={index} name={aarati.name} time={aarati.time} />
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+                
+                <DrawerDescription className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-0.5 mb-1.5 sm:mb-2 hidden sm:block">
+                  Immerse yourself in the sacred presence of the Deities.
+                </DrawerDescription>
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-[10px] leading-tight sm:text-xs text-center italic text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-1.5 mt-1.5 sm:pt-2 sm:mt-2 hidden sm:block"
+                >
+                  "By chanting the Hare Krishna mantra, one cleanses the dust from the mirror of the mind and becomes eligible to understand his spiritual identity."
+                  <br />- Srila Prabhupada (Teachings of Queen Kunti, Ch. 18)
+                </motion.div>
             </DrawerHeader>
 
             <div className="flex overflow-x-auto gap-3 px-2 sm:px-4 pb-4 pt-2 flex-shrink-0">
@@ -387,10 +447,14 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
                 <div className="md:flex md:flex-col md:h-full">
                   <div 
                     ref={carouselRef}
-                    className="relative rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 shadow-lg w-full aspect-square md:aspect-auto md:flex-1" // Removed cursor-pointer
+                    className="relative rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 shadow-lg w-full aspect-square h-[40vh] sm:h-[50vh] md:h-full md:aspect-auto md:flex-1 cursor-grab" // Added cursor-grab for drag indication
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseLeave}
                     // onClick removed
                   >
                     <AnimatePresence mode="wait">
@@ -504,10 +568,11 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
                 </div>
                 
                 <DrawerClose asChild className="flex-1 sm:flex-none sm:w-auto">
-                  <Button variant="outline" size="lg" className="w-full sm:w-auto h-12 text-base border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto h-12 text-base border-red-300 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-700 dark:text-red-300">
                     Close
                   </Button>
                 </DrawerClose>
+
               </div>
             </DrawerFooter>
           </div>

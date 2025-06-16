@@ -93,7 +93,7 @@ export default function Footer() {
           </div>
 
           {/* Timings & Donation Popovers Section */}
-            <div className="mt-6 md:mt-0 flex flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-3">
+            <div className="mt-6 md:mt-0 flex flex-wrap items-center justify-center sm:justify-end gap-4 sm:gap-6 md:gap-8">
             {/* Temple Timings Popover */}
             <Popover>
               <PopoverTrigger asChild>
