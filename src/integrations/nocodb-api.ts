@@ -3,8 +3,16 @@ import axios from 'axios';
 const CONFIG = {
   BASE_URL: import.meta.env.VITE_NOCODB_BASE_URL || "https://db.vrindavanam.org.in",
   API_TOKEN: import.meta.env.VITE_NOCODB_API_TOKEN || "",
-  PROJECT_NAME: "ISKMP",
-  BASE_ID: "plb5ivo4io22uv8"
+  PROJECTS: {
+    ISKMP: {
+      NAME: "ISKMP",
+      BASE_ID: "plb5ivo4io22uv8"
+    },
+    ISKMGlobal: {
+      NAME: "ISKMGlobal",
+      BASE_ID: "poa6cyjf7bwcokm"
+    }
+  }
 };
 
 const apiClient = axios.create({
@@ -15,33 +23,37 @@ const apiClient = axios.create({
   }
 });
 
-// Cache for table IDs
-const tableIdCache: { [key: string]: string } = {};
+// Cache for table IDs per base
+const tableIdCache: { [baseId: string]: { [key: string]: string } } = {};
 
-// Function to fetch table ID by name
-async function getTableId(tableName: string): Promise<string> {
-  if (tableIdCache[tableName]) {
-    return tableIdCache[tableName];
+// Function to fetch table ID by name for a specific base
+async function getTableId(tableName: string, baseId: string): Promise<string> {
+  if (!tableIdCache[baseId]) {
+    tableIdCache[baseId] = {};
+  }
+  
+  if (tableIdCache[baseId][tableName]) {
+    return tableIdCache[baseId][tableName];
   }
 
   try {
-    const response = await apiClient.get(`/meta/bases/${CONFIG.BASE_ID}/tables`);
+    const response = await apiClient.get(`/meta/bases/${baseId}/tables`);
     const tables = response.data.list;
     const table = tables.find((t: any) => t.title === tableName);
     if (!table) {
-      throw new Error(`Table ${tableName} not found`);
+      throw new Error(`Table ${tableName} not found in base ${baseId}`);
     }
-    tableIdCache[tableName] = table.id;
+    tableIdCache[baseId][tableName] = table.id;
     return table.id;
   } catch (error) {
-    console.error(`Error fetching table ID for ${tableName}:`, error);
+    console.error(`Error fetching table ID for ${tableName} in base ${baseId}:`, error);
     throw error;
   }
 }
 
 export async function getDevotees(limit?: number, offset = 0) {
   try {
-    const tableId = await getTableId('Devotees');
+    const tableId = await getTableId('Devotees', CONFIG.PROJECTS.ISKMP.BASE_ID);
     const query = limit !== undefined ? `limit=${limit}&` : '';
     const response = await apiClient.get(`/tables/${tableId}/records?${query}offset=${offset}`);
     return {
@@ -56,7 +68,7 @@ export async function getDevotees(limit?: number, offset = 0) {
 
 export async function getBooks(limit?: number, offset = 0) {
   try {
-    const tableId = await getTableId('Books');
+    const tableId = await getTableId('Books', CONFIG.PROJECTS.ISKMP.BASE_ID);
     const query = limit !== undefined ? `limit=${limit}&` : '';
     const response = await apiClient.get(`/tables/${tableId}/records?${query}offset=${offset}`);
     return {
@@ -71,7 +83,7 @@ export async function getBooks(limit?: number, offset = 0) {
 
 export async function getProducts(limit?: number, offset = 0) {
   try {
-    const tableId = await getTableId('Products');
+    const tableId = await getTableId('Products', CONFIG.PROJECTS.ISKMP.BASE_ID);
     const query = limit !== undefined ? `limit=${limit}&` : '';
     const response = await apiClient.get(`/tables/${tableId}/records?${query}offset=${offset}`);
     return {
@@ -86,7 +98,7 @@ export async function getProducts(limit?: number, offset = 0) {
 
 export async function getDistributionLog(limit?: number, offset = 0) {
   try {
-    const tableId = await getTableId('DistributionLog');
+    const tableId = await getTableId('DistributionLog', CONFIG.PROJECTS.ISKMP.BASE_ID);
     const query = limit !== undefined ? `limit=${limit}&` : '';
     const response = await apiClient.get(`/tables/${tableId}/records?${query}offset=${offset}`);
     return {
@@ -101,7 +113,7 @@ export async function getDistributionLog(limit?: number, offset = 0) {
 
 export async function submitDistributionLog(data: { devoteeName: string, bookEntries: Array<{ book: string, quantity: number }> }) {
   try {
-    const tableId = await getTableId('DistributionLog');
+    const tableId = await getTableId('DistributionLog', CONFIG.PROJECTS.ISKMP.BASE_ID);
     const entries = data.bookEntries.map(entry => ({
       devotee: data.devoteeName,
       product: entry.book,
@@ -121,7 +133,7 @@ export async function submitDistributionLog(data: { devoteeName: string, bookEnt
 
 export async function updateBookInventory(bookTitle: string, quantity: number) {
   try {
-    const tableId = await getTableId('Products');
+    const tableId = await getTableId('Products', CONFIG.PROJECTS.ISKMP.BASE_ID);
     // First, get the current stock for the book
     const getResponse = await apiClient.get(`/tables/${tableId}/records`, {
       params: {
@@ -141,6 +153,27 @@ export async function updateBookInventory(bookTitle: string, quantity: number) {
     return updateResponse.data;
   } catch (error) {
     console.error('Error updating book inventory:', error);
+    throw error;
+  }
+}
+
+/**
+ * Fetches centers data from ISKMGlobal base.
+ * @param limit - Maximum number of records to return.
+ * @param offset - Number of records to skip from the beginning.
+ * @returns An object containing the list of centers and pagination information.
+ */
+export async function getCenters(limit?: number, offset = 0) {
+  try {
+    const tableId = await getTableId('Centers', CONFIG.PROJECTS.ISKMGlobal.BASE_ID);
+    const query = limit !== undefined ? `limit=${limit}&` : '';
+    const response = await apiClient.get(`/tables/${tableId}/records?${query}offset=${offset}`);
+    return {
+      list: response.data.list,
+      pageInfo: response.data.pageInfo
+    };
+  } catch (error) {
+    console.error('Error fetching centers:', error);
     throw error;
   }
 }

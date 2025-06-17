@@ -29,7 +29,7 @@ import { Route as SignInSplatImport } from './routes/sign-in/$'
 import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
 import { Route as DashboardUsersImport } from './routes/dashboard/users'
 import { Route as DashboardSettingsImport } from './routes/dashboard/settings'
-import { Route as DashboardAnalyticsImport } from './routes/dashboard/analytics'
+import { Route as DashboardCentersImport } from './routes/dashboard/Centers'
 
 // Create/Update Routes
 
@@ -142,9 +142,9 @@ const DashboardSettingsRoute = DashboardSettingsImport.update({
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 
-const DashboardAnalyticsRoute = DashboardAnalyticsImport.update({
-  id: '/analytics',
-  path: '/analytics',
+const DashboardCentersRoute = DashboardCentersImport.update({
+  id: '/Centers',
+  path: '/Centers',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 
@@ -173,11 +173,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsImport
       parentRoute: typeof rootRoute
     }
-    '/dashboard/analytics': {
-      id: '/dashboard/analytics'
-      path: '/analytics'
-      fullPath: '/dashboard/analytics'
-      preLoaderRoute: typeof DashboardAnalyticsImport
+    '/dashboard/Centers': {
+      id: '/dashboard/Centers'
+      path: '/Centers'
+      fullPath: '/dashboard/Centers'
+      preLoaderRoute: typeof DashboardCentersImport
       parentRoute: typeof DashboardRouteImport
     }
     '/dashboard/settings': {
@@ -291,14 +291,14 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface DashboardRouteRouteChildren {
-  DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
+  DashboardCentersRoute: typeof DashboardCentersRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
   DashboardUsersRoute: typeof DashboardUsersRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
-  DashboardAnalyticsRoute: DashboardAnalyticsRoute,
+  DashboardCentersRoute: DashboardCentersRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardUsersRoute: DashboardUsersRoute,
   DashboardIndexRoute: DashboardIndexRoute,
@@ -312,7 +312,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/events': typeof EventsRoute
-  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/Centers': typeof DashboardCentersRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/users': typeof DashboardUsersRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -333,7 +333,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/events': typeof EventsRoute
-  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/Centers': typeof DashboardCentersRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/users': typeof DashboardUsersRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -356,7 +356,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/events': typeof EventsRoute
-  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/Centers': typeof DashboardCentersRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/users': typeof DashboardUsersRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -380,7 +380,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/events'
-    | '/dashboard/analytics'
+    | '/dashboard/Centers'
     | '/dashboard/settings'
     | '/dashboard/users'
     | '/demo/tanstack-query'
@@ -400,7 +400,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/events'
-    | '/dashboard/analytics'
+    | '/dashboard/Centers'
     | '/dashboard/settings'
     | '/dashboard/users'
     | '/demo/tanstack-query'
@@ -421,7 +421,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/events'
-    | '/dashboard/analytics'
+    | '/dashboard/Centers'
     | '/dashboard/settings'
     | '/dashboard/users'
     | '/demo/tanstack-query'
@@ -509,7 +509,7 @@ export const routeTree = rootRoute
     "/dashboard": {
       "filePath": "dashboard/route.tsx",
       "children": [
-        "/dashboard/analytics",
+        "/dashboard/Centers",
         "/dashboard/settings",
         "/dashboard/users",
         "/dashboard/"
@@ -518,8 +518,8 @@ export const routeTree = rootRoute
     "/events": {
       "filePath": "events.tsx"
     },
-    "/dashboard/analytics": {
-      "filePath": "dashboard/analytics.tsx",
+    "/dashboard/Centers": {
+      "filePath": "dashboard/Centers.tsx",
       "parent": "/dashboard"
     },
     "/dashboard/settings": {

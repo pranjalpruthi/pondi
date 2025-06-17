@@ -5,7 +5,6 @@ import {
   Home,
   Users,
   Settings,
-  BarChart,
   ChevronsUpDown,
   Check,
   Building2,
@@ -60,7 +59,7 @@ import { ModeToggle } from "@/components/mode-toggle"
 
 const navigationLinks = [
   { label: "Dashboard", to: "/dashboard", icon: <Home className="h-4 w-4" /> },
-  { label: "Analytics", to: "/dashboard/analytics", icon: <BarChart className="h-4 w-4" /> },
+  { label: "Centers", to: "/dashboard/Centers", icon: <Building2 className="h-4 w-4" /> },
   { label: "Users", to: "/dashboard/users", icon: <Users className="h-4 w-4" /> },
   { label: "Settings", to: "/dashboard/settings", icon: <Settings className="h-4 w-4" /> },
 ]

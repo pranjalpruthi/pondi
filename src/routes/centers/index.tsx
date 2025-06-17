@@ -1,22 +1,22 @@
 import { createFileRoute } from '@tanstack/react-router';
-import React, { useState, useMemo, Suspense, lazy, useRef } from 'react'; // Added React, useRef
+import React, { useState, useMemo, Suspense, lazy, useRef, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from "motion/react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { RippleButton as Button } from "@/components/animate-ui/buttons/ripple";
-import { type CountryCenterData } from '@/components/country-display'; // CountryButton no longer used directly here
+import { Button } from "@/components/ui/button";
+import { type CountryCenterData } from '@/components/country-display';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"; // Using Collapsible
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"; // Added Drawer components
+} from "@/components/ui/collapsible";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import {
   MapPin,
-  ExternalLink,
-  ChevronDown, // For popover trigger
-  List // For popover list items
+  ChevronDown,
+  List
 } from "lucide-react";
 import {
   IconBrandFacebook,
@@ -24,17 +24,59 @@ import {
   IconBrandYoutube,
   IconBrandWhatsapp,
   IconMail,
-  
 } from '@tabler/icons-react';
 import type { GlobeConfig } from "@/components/ui/globe";
-import iskmCentersData from "@/data/centers.json"; // Import data from JSON
-import { useIsMobile } from "@/hooks/use-mobile"; // Assuming this hook exists
+import { getCenters } from '@/integrations/nocodb-api';
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Dynamically import World component
 const LazyWorld = lazy(() => import("@/components/ui/globe").then((module) => ({ default: module.World })));
 
-// Type assertion for imported JSON data
-const iskmCenters: CountryCenterData[] = iskmCentersData as CountryCenterData[];
+// Function to transform NocoDB data to CountryCenterData format
+const transformToCountryCenterData = (centers: any[]): CountryCenterData[] => {
+  return centers.map(center => {
+    const coordinates = center.geo ? center.geo.split(';').map((coord: string) => parseFloat(coord)) : [0, 0];
+    return {
+      name: center['Temple Name'] || 'Unknown Center',
+      country: center.country || 'Unknown Country',
+      coordinates: [coordinates[1], coordinates[0]], // Assuming format is lat;lng
+      flag: getFlagForCountry(center.country),
+      isLocal: center['Temple Name'].includes('Pondicherry'),
+      address: center.Address || '',
+      mapLink: center.map || '#',
+      social: {
+        facebook: center.fb || '',
+        instagram: center.ig || '',
+        youtube: center.yt || ''
+      },
+      templePresident: {
+        name: center['Temple President'] || 'N/A',
+        image: center['President DP']?.[0]?.thumbnails?.card_cover?.signedPath ? (() => {
+          const imageUrl = "https://db.vrindavanam.org.in/" + center['President DP'][0].thumbnails.card_cover.signedPath;
+          console.log(`Attempting to load image for ${center['Temple Name']}: ${imageUrl}`);
+          return imageUrl;
+        })() : '/pp/pp1.webp',
+        contact: {
+          whatsapp: center.wa || center.Phone || '',
+          email: center.Email || ''
+        },
+        quote: '',
+        quoteSource: ''
+      }
+    };
+  });
+};
+
+// Helper function to get flag based on country name
+const getFlagForCountry = (country: string): string => {
+  switch (country.toLowerCase()) {
+    case 'india': return '🇮🇳';
+    case 'singapore': return '🇸🇬';
+    case 'philippines': return '🇵🇭';
+    case 'australia': return '🇦🇺';
+    default: return '🌍';
+  }
+};
 
 // Adjusted SocialButton for compactness
 const BaseCompactSocialButton = ({
@@ -189,9 +231,9 @@ const CenterDetailsContent = ({ center }: { center: CountryCenterData | null }) 
           <div>
             <p className="text-gray-700 dark:text-gray-300 leading-snug">{center.address}</p>
             <a href={center.mapLink} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block">
-              <Badge variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-100/50 dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-900/40 text-xs px-2 py-1">
-                Visit Us <ExternalLink size={12} className="ml-1" />
-              </Badge>
+              <Button variant="outline" className="bg-white text-blue-600 border-blue-500 hover:bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-600 dark:hover:bg-blue-700/30 text-xs px-3 py-1 rounded-md shadow-sm">
+                Visit Us on Maps <MapPin size={12} className="ml-1" />
+              </Button>
             </a>
           </div>
         </div>
@@ -211,30 +253,35 @@ const CenterDetailsContent = ({ center }: { center: CountryCenterData | null }) 
       {center.templePresident && (
         <div className="bg-gray-100/60 dark:bg-gray-700/50 p-2.5 rounded-lg border border-gray-300 dark:border-gray-600/70 text-xs mt-2">
           <h5 className="text-xs font-semibold mb-1.5 text-gray-800 dark:text-white">Temple President</h5>
-          <div className="flex items-center mb-2">
-            <img 
-              src={center.templePresident.image} 
-              alt={center.templePresident.name} 
-              className="w-9 h-9 rounded-full object-cover mr-2 border-2 border-white dark:border-gray-400" 
-              width="36" 
-              height="36" 
-              loading="lazy" 
-            />
-            <div className="font-medium text-gray-800 dark:text-gray-100">{center.templePresident.name}</div>
-          </div>
+            <div className="flex items-center mb-2">
+              <motion.img 
+                src={center.templePresident.image} 
+                alt={center.templePresident.name} 
+                className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover mr-3 border-2 border-white dark:border-gray-400 shadow-md" 
+                width="56" 
+                height="56" 
+                loading="lazy"
+                whileHover={{ scale: 1.15 }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
+              />
+              <div className="font-medium text-gray-800 dark:text-gray-100 text-sm sm:text-base">{center.templePresident.name}</div>
+            </div>
           {center.templePresident.contact && (center.templePresident.contact.whatsapp || center.templePresident.contact.email) && (
             <div className="border-t border-gray-300 dark:border-gray-600 pt-1.5">
               <h6 className="text-[10px] font-medium mb-1 text-gray-600 dark:text-gray-300">Contact:</h6>
               <div className="flex flex-col space-y-1">
                 {center.templePresident.contact.whatsapp && (
-                  <a href={`https://wa.me/${center.templePresident.contact.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-1.5 p-1 rounded-md hover:bg-green-100/70 dark:hover:bg-green-700/40">
-                    <IconBrandWhatsapp size={13} className="text-green-600 dark:text-green-400" />
-                    <span className="text-xs text-gray-700 dark:text-gray-300">WhatsApp</span>
+                  <a href={`https://wa.me/${center.templePresident.contact.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-1.5 rounded-md bg-green-50 dark:bg-green-900/30 hover:bg-green-100 dark:hover:bg-green-800/50 transition-colors duration-200 border border-green-200 dark:border-green-700">
+                    <div className="flex items-center space-x-1.5">
+                      <IconBrandWhatsapp size={14} className="text-green-600 dark:text-green-400" />
+                      <span className="text-xs text-gray-700 dark:text-gray-300">WhatsApp</span>
+                    </div>
+                    <span className="text-xs text-green-700 dark:text-green-300 font-mono">{center.templePresident.contact.whatsapp}</span>
                   </a>
                 )}
                 {center.templePresident.contact.email && (
-                  <a href={`mailto:${center.templePresident.contact.email}`} className="flex items-center space-x-1.5 p-1 rounded-md hover:bg-blue-100/70 dark:hover:bg-blue-700/40">
-                    <IconMail size={13} className="text-blue-600 dark:text-blue-400" />
+                  <a href={`mailto:${center.templePresident.contact.email}`} className="flex items-center p-1.5 rounded-md bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-800/50 transition-colors duration-200 border border-blue-200 dark:border-blue-700">
+                    <IconMail size={14} className="text-blue-600 dark:text-blue-400 mr-1.5" />
                     <span className="text-xs text-gray-700 dark:text-gray-300">Email</span>
                   </a>
                 )}
@@ -258,17 +305,39 @@ export const Route = createFileRoute('/centers/')({
 function CentersRouteComponent() {
   const isMobile = useIsMobile();
   const [showGlobe, setShowGlobe] = useState(!isMobile); // Hide globe by default on mobile
-  const [selectedCenterDetails, setSelectedCenterDetails] = useState<CountryCenterData | null>(iskmCenters[0] || null);
+  const [selectedCenterDetails, setSelectedCenterDetails] = useState<CountryCenterData | null>(null);
   const [detailsDrawerOpen, setDetailsDrawerOpen] = useState(false); // State for mobile details drawer
 
-
-  // State for globe target position
-  const [targetGlobePosition, setTargetGlobePosition] = useState<{ lat: number; lng: number }>({
-    lat: iskmCenters[0]?.coordinates[1] || 0,
-    lng: iskmCenters[0]?.coordinates[0] || 0
+  // Fetch centers data using TanStack Query
+  const { data: centersData, isLoading, error } = useQuery({
+    queryKey: ['centers'],
+    queryFn: () => getCenters(),
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
 
-  const countryGroups = useMemo(() => getCountryGroups(iskmCenters), []);
+  const iskmCenters = useMemo(() => {
+    if (centersData && centersData.list) {
+      return transformToCountryCenterData(centersData.list);
+    }
+    return [];
+  }, [centersData]);
+
+  const [targetGlobePosition, setTargetGlobePosition] = useState<{ lat: number; lng: number }>({
+    lat: 0,
+    lng: 0
+  });
+
+  useEffect(() => {
+    if (iskmCenters.length > 0 && selectedCenterDetails === null) {
+      setSelectedCenterDetails(iskmCenters[0]);
+      setTargetGlobePosition({
+        lat: iskmCenters[0].coordinates[1] || 0,
+        lng: iskmCenters[0].coordinates[0] || 0
+      });
+    }
+  }, [iskmCenters]);
+
+  const countryGroups = useMemo(() => getCountryGroups(iskmCenters), [iskmCenters]);
 
   // Quotes
   const prabhupadaQuotes = useMemo(() => [
@@ -302,7 +371,7 @@ function CentersRouteComponent() {
     rings: 3,
     maxRings: 3,
     ringPropagationSpeed: 2,
-    initialPosition: { lat: iskmCenters[0]?.coordinates[1] || 0, lng: iskmCenters[0]?.coordinates[0] || 0 },
+    initialPosition: { lat: iskmCenters.length > 0 ? (iskmCenters[0].coordinates[1] || 0) : 0, lng: iskmCenters.length > 0 ? (iskmCenters[0].coordinates[0] || 0) : 0 },
     autoRotate: true,
     autoRotateSpeed: 0.25,
     cameraZ: isMobile ? 550 : 480, // Further camera on mobile = smaller globe
@@ -334,7 +403,15 @@ function CentersRouteComponent() {
       }
     }
     return generatedArcs;
-  }, []);
+  }, [iskmCenters]);
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-screen">Loading centers data...</div>;
+  }
+
+  if (error) {
+    return <div className="flex items-center justify-center h-screen">Error loading centers data: {error.message}</div>;
+  }
 
 
   // Handle center selection from collapsible list
@@ -428,28 +505,30 @@ function CentersRouteComponent() {
             </div>
           </div>
 
-          {/* Right side: Globe and Compact Details Card - Made Narrower */}
-          <div className="w-full lg:w-1/2 xl:w-3/5 relative flex flex-col items-center justify-center min-h-[60vh] lg:min-h-full p-0 md:py-4 md:pl-4 lg:pt-4 xl:pt-6"> {/* Further decreased width, removed right padding */}
-            <div className="absolute inset-0 flex items-center justify-center aspect-square">
-              {showGlobe ? ( // Globe is shown based on state
-                <Suspense fallback={
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div className="rounded-full h-16 w-16 sm:h-20 sm:w-20 border-4 border-pink-500 border-t-transparent animate-spin" />
+          {/* Centered Globe and Compact Details Card */}
+          <div className="w-full lg:w-1/2 xl:w-3/5 relative flex flex-col items-center justify-center min-h-[60vh] lg:min-h-full p-0 md:py-4 lg:pt-4 xl:pt-6">
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="relative w-full max-w-[800px] aspect-square"> {/* Increased max-width for larger size */}
+                {showGlobe ? ( // Globe is shown based on state
+                  <Suspense fallback={
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="rounded-full h-16 w-16 sm:h-20 sm:w-20 border-4 border-pink-500 border-t-transparent animate-spin" />
+                    </div>
+                  }>
+                    <LazyWorld
+                      globeConfig={globeConfig}
+                      data={arcs}
+                      targetCoordinates={targetGlobePosition}
+                      selectedCenter={selectedCenterDetails} // Pass the whole object
+                      // highlightedCenter prop is no longer needed here
+                    />
+                  </Suspense>
+                ) : (
+                  <div className="flex items-center justify-center h-full">
+                    <Button onClick={() => setShowGlobe(true)}>Load Globe</Button>
                   </div>
-                }>
-                  <LazyWorld
-                    globeConfig={globeConfig}
-                    data={arcs}
-                    targetCoordinates={targetGlobePosition}
-                    selectedCenter={selectedCenterDetails} // Pass the whole object
-                    // highlightedCenter prop is no longer needed here
-                  />
-                </Suspense>
-              ) : (
-                <div className="flex items-center justify-center h-full">
-                  <Button onClick={() => setShowGlobe(true)}>Load Globe</Button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
 
             {/* Desktop: Compact Details Card */}
