@@ -5,11 +5,41 @@ import { motion } from 'framer-motion'
 import { Sparkles } from '@/components/ui/sparkles'
 import { useState } from "react";
 import { SHLOKAS, ShlokaCard, ShlokaModal, type Shloka } from './shokla'
+import { useQuery } from '@tanstack/react-query';
+import { getShlokas } from '@/integrations/nocodb-api';
 
 
 function SideBySide() {
   const [selectedShloka, setSelectedShloka] = useState<Shloka | null>(null);
-  const todayShloka = SHLOKAS[0];
+  
+  // Fetch shlokas from NocoDB
+  const { data: shlokas = [] } = useQuery({
+    queryKey: ['shlokas'],
+    queryFn: async () => {
+      const response = await getShlokas();
+      return response.list.map((item: any) => ({
+        id: item.Id,
+        title: item['Shloka Number'],
+        sanskrit: item.Sanskrit,
+        translation: item.Translation,
+        synonyms: item.Synonyms || ''
+      }));
+    },
+    staleTime: 60 * 1000 * 5, // Cache for 5 minutes
+  });
+  
+  // Select a random shloka based on the current day
+  const getDailyShloka = () => {
+    if (shlokas.length === 0) {
+      return SHLOKAS[0]; // Fallback if no data is loaded
+    }
+    const now = new Date();
+    const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+    const index = dayOfYear % shlokas.length;
+    return shlokas[index];
+  };
+  
+  const todayShloka = getDailyShloka();
 
   return (
     <div className="overflow-hidden select-none">
@@ -110,23 +140,39 @@ function SideBySide() {
         </div>
       </article>
 
-      {/* Updated Shloka Cards Section */}
+      {/* Updated Shloka Cards Section with Dual Lane */}
       <div className="mt-20 pb-0">
         <div className="relative w-full overflow-hidden">
-          <div className="flex overflow-hidden [--duration:40s] [--gap:1rem]">
-            <div className="flex animate-marquee [animation-direction:reverse] [gap:var(--gap)] items-center">
-              {SHLOKAS.map((shloka) => (
+          <div className="flex flex-col overflow-hidden [--duration:40s] [--gap:1rem]">
+            {/* First Lane */}
+            <div className="flex animate-marquee [animation-direction:reverse] [gap:var(--gap)] items-center mb-4">
+              {(shlokas.length > 0 ? shlokas : SHLOKAS).slice(0, Math.ceil((shlokas.length > 0 ? shlokas.length : SHLOKAS.length) / 2)).map((shloka: Shloka) => (
                 <ShlokaCard
                   key={shloka.id}
                   shloka={shloka}
                   onClick={() => setSelectedShloka(shloka)}
                 />
               ))}
-            </div>
-            <div className="flex animate-marquee [animation-direction:reverse] [gap:var(--gap)] items-center" aria-hidden="true">
-              {SHLOKAS.map((shloka) => (
+              {(shlokas.length > 0 ? shlokas : SHLOKAS).slice(0, Math.ceil((shlokas.length > 0 ? shlokas.length : SHLOKAS.length) / 2)).map((shloka: Shloka) => (
                 <ShlokaCard
-                  key={`${shloka.id}-clone`}
+                  key={`${shloka.id}-clone1`}
+                  shloka={shloka}
+                  onClick={() => setSelectedShloka(shloka)}
+                />
+              ))}
+            </div>
+            {/* Second Lane */}
+            <div className="flex animate-marquee [animation-direction:normal] [animation-delay:calc(var(--duration)/-2)] [gap:var(--gap)] items-center">
+              {(shlokas.length > 0 ? shlokas : SHLOKAS).slice(Math.ceil((shlokas.length > 0 ? shlokas.length : SHLOKAS.length) / 2)).map((shloka: Shloka) => (
+                <ShlokaCard
+                  key={shloka.id}
+                  shloka={shloka}
+                  onClick={() => setSelectedShloka(shloka)}
+                />
+              ))}
+              {(shlokas.length > 0 ? shlokas : SHLOKAS).slice(Math.ceil((shlokas.length > 0 ? shlokas.length : SHLOKAS.length) / 2)).map((shloka: Shloka) => (
+                <ShlokaCard
+                  key={`${shloka.id}-clone2`}
                   shloka={shloka}
                   onClick={() => setSelectedShloka(shloka)}
                 />

@@ -11,7 +11,6 @@ import { useTheme } from "@/components/theme-provider"
 import { useMediaQuery } from "@uidotdev/usehooks"; // Added import
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerFooter,
   // DrawerHeader, // Using custom header structure
@@ -218,11 +217,6 @@ export function TempleEvents({ open, onOpenChange }: TempleEventsProps) {
                   Temple Events & Schedule
                 </h2>
               </div>
-              <DrawerClose asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-                  <X className="h-4 w-4 text-muted-foreground" />
-                </Button>
-              </DrawerClose>
             </div>
 
             {/* Scrollable Main Content for Drawer */}

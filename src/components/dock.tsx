@@ -653,17 +653,6 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
 
         {/* CommandDialog and related components are REMOVED */}
 
-        <TempleEvents 
-          open={eventsOpen} 
-          onOpenChange={setEventsOpen}
-          _onSoundPlay={safePlayClick}
-        />
-        
-        <DeityDarshan
-          open={deitiesOpen}
-          onOpenChange={setDeitiesOpen}
-        />
-
         <div className="h-[env(safe-area-inset-bottom)]" />
       </motion.nav>
 
@@ -672,6 +661,17 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
           <LazyUpcomingEventBanner />
         </Suspense>
       )}
+
+      <TempleEvents 
+        open={eventsOpen} 
+        onOpenChange={setEventsOpen}
+        _onSoundPlay={safePlayClick}
+      />
+      
+      <DeityDarshan
+        open={deitiesOpen}
+        onOpenChange={setDeitiesOpen}
+      />
     </MotionConfig>
   )
 }

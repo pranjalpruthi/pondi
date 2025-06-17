@@ -591,6 +591,16 @@ export function HeroSection() {
   // Preloading for background
   const [rightCarouselPreloaded, setRightCarouselPreloaded] = useState<boolean[]>(Array(heroShowcaseImages.length).fill(false));
 
+  // Autoplay effect for carousel
+  useEffect(() => {
+    if (!isModalOpen && isInView) {
+      const interval = setInterval(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % heroShowcaseImages.length);
+      }, 4000); // 4 seconds delay
+      return () => clearInterval(interval);
+    }
+  }, [isModalOpen, isInView]);
+
   // Preload images for background
   useEffect(() => {
     const newPreloadedStatus = [...rightCarouselPreloaded];
@@ -727,7 +737,7 @@ export function HeroSection() {
               <Carousel
                 options={{ loop: true }}
                 className="relative"
-                isAutoPlay={!isModalOpen}
+                isAutoPlay={false} // Disable built-in autoplay as we're handling it manually
                 currentIndex={currentIndex}
                 setCurrentIndex={setCurrentIndex}
                 thumbnailSlidesData={heroShowcaseImages.map((src, i) => ({ id: `hero-gallery-image-${i}`, src, alt: `Showcase image ${i + 1}` }))}
@@ -739,17 +749,31 @@ export function HeroSection() {
                       key={`hero-gallery-image-${index}`}
                       className="xl:h-[400px] sm:h-[350px] h-[300px] w-full"
                     >
-                      <motion.img
-                        src={image}
-                        width={1200}
-                        height={800}
-                        alt={`Showcase image ${index + 1}`}
-                        className="h-full object-cover rounded-3xl w-full cursor-zoom-in"
-                        loading={index < 3 ? "eager" : "lazy"}
-                        decoding="async"
-                        style={{ aspectRatio: '3/2' }}
-                        onClick={() => { setCurrentIndex(index); setIsModalOpen(true); }}
-                      />
+                      <div className="h-full w-full rounded-3xl bg-gradient-to-br from-[#FFEBCD] to-[#FFB6C1] p-1 relative">
+                        <motion.img
+                          src={image}
+                          width={1200}
+                          height={800}
+                          alt={`Showcase image ${index + 1}`}
+                          className="h-full object-contain rounded-3xl w-full cursor-zoom-in"
+                          loading={index < 3 ? "eager" : "lazy"}
+                          decoding="async"
+                          style={{ aspectRatio: '3/2' }}
+                          onClick={() => { setCurrentIndex(index); setIsModalOpen(true); }}
+                        />
+                        {!rightCarouselPreloaded[index] && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#FFEBCD] to-[#FFB6C1] rounded-3xl">
+                            <motion.p 
+                              className="text-lg font-semibold text-gray-800 dark:text-gray-200"
+                              initial={{ opacity: 0.5 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
+                            >
+                              Hare Krishna! Chant and Be Happy!
+                            </motion.p>
+                          </div>
+                        )}
+                      </div>
                     </Slider>
                   ))}
                 </SliderContainer>

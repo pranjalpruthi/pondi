@@ -177,3 +177,24 @@ export async function getCenters(limit?: number, offset = 0) {
     throw error;
   }
 }
+
+/**
+ * Fetches shlokas data from ISKMP base.
+ * @param limit - Maximum number of records to return.
+ * @param offset - Number of records to skip from the beginning.
+ * @returns An object containing the list of shlokas and pagination information.
+ */
+export async function getShlokas(limit: number = 200, offset = 0) {
+  try {
+    const tableId = await getTableId('Shlokas', CONFIG.PROJECTS.ISKMP.BASE_ID);
+    const query = limit !== undefined ? `limit=${limit}&` : '';
+    const response = await apiClient.get(`/tables/${tableId}/records?${query}offset=${offset}`);
+    return {
+      list: response.data.list,
+      pageInfo: response.data.pageInfo
+    };
+  } catch (error) {
+    console.error('Error fetching shlokas:', error);
+    throw error;
+  }
+}

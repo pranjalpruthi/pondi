@@ -73,12 +73,12 @@ interface WorldProps {
   data: Position[]; // Arc data
   targetCoordinates?: { lat: number; lng: number };
   selectedCenter?: CountryCenterData | null; // Use selectedCenter object
-  // highlightedCenter?: string; // Remove this
+  onMarkerClick?: (center: CountryCenterData | null) => void; // Callback for marker click
   controlsRef?: React.RefObject<any>;
 }
 
 // Update Globe component props
-export function Globe({ globeConfig, data, targetCoordinates, selectedCenter, controlsRef }: WorldProps) {
+export function Globe({ globeConfig, data, targetCoordinates, selectedCenter, onMarkerClick, controlsRef }: WorldProps) {
   const globeRef = useRef<ThreeGlobe | null>(null);
   const { camera } = useThree();
   const [globeData, setGlobeData] = useState<
@@ -94,32 +94,32 @@ export function Globe({ globeConfig, data, targetCoordinates, selectedCenter, co
     | null
   >(null);
 
-  // Enhanced default props with much whiter appearance
+  // Enhanced default props with sky-like gradient appearance
   const configStr = JSON.stringify(globeConfig);
   const defaultProps = useMemo(() => {
     // Create a base configuration with defaults
     const baseConfig = {
       pointSize: 1.0, 
-      globeColor: "#ffffff", // Pure white
+      globeColor: "#1E88E5", // Blue base for globe
       showAtmosphere: true,
-      atmosphereColor: "#ffffff", // White atmosphere
+      atmosphereColor: "#26C6DA", // Cyan atmosphere for gradient effect
       atmosphereAltitude: 0.12, // Thinner atmosphere
-      emissive: "#ffffff", 
-      emissiveIntensity: 1.0, // Maximum intensity
-      shininess: 1.2, // Extra high shininess
+      emissive: "#4DD0E1", // Teal emissive to complete gradient
+      emissiveIntensity: 0.8, // Adjusted intensity for gradient effect
+      shininess: 0.9, // Moderate shininess for smooth look
       polygonColor: (_feature: any) => { // Prefixed feature
-        // Pure white for all countries
-        return "#ffffff";
+        // Light blue for landmasses to fit gradient theme
+        return "#BBDEFB";
       },
-      polygonStrokeColor: "#ffffff", // White borders
+      polygonStrokeColor: "#90CAF9", // Lighter blue borders
       ambientLight: "#ffffff",
       directionalLeftLight: "#ffffff",
       directionalTopLight: "#ffffff",
-      pointLight: "#ffffff", // White light
-      pointLightIntensity: 1.5, // Brighter point light
+      pointLight: "#E91E63", // Keep original point light color
+      pointLightIntensity: 1.2, // Adjusted brightness
       arcTime: 600, 
       arcLength: 0.85,
-      arcColor: "#ffffff", // White arcs
+      arcColor: "#ffffff", // White arcs for contrast
       rings: 3, 
       maxRings: 3, 
       autoRotate: true,
@@ -253,9 +253,14 @@ export function Globe({ globeConfig, data, targetCoordinates, selectedCenter, co
         })
         .polygonStrokeColor((): string => defaultProps.polygonStrokeColor);
         
+      // Note: onPointClick is not directly supported in ThreeGlobe in React Fiber context
+      // As a workaround, a custom click detection mechanism or event listener could be implemented
+      // For now, log a message to indicate the limitation; future implementation will handle clicks
+      console.log("Click handling for globe markers is not yet implemented due to ThreeGlobe limitations in React Fiber.");
+      
       startAnimation();
     }
-  }, [globeData, defaultProps, data]);
+  }, [globeData, defaultProps, data, onMarkerClick, selectedCenter]);
 
   const startAnimation = () => {
     if (!globeRef.current || !data) return;
@@ -414,9 +419,8 @@ export function WebGLRendererConfig() {
 }
 
 export function World(props: WorldProps) {
-  const { globeConfig } = props;
+  const { globeConfig } = props; // Removed unused onMarkerClick
   const controlsRef = useRef<any>(null);
-  
   // Use the latest configuration values
   const configStr = JSON.stringify(globeConfig);
   const config = useMemo(() => {
