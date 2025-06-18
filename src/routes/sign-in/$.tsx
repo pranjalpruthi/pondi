@@ -7,7 +7,10 @@ export const Route = createFileRoute('/sign-in/$')({
 
 function SignInPage() {
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div 
+      className="flex justify-center items-center h-screen bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('/extra/jv.jpg')" }}
+    >
       <SignIn />
     </div>
   );
