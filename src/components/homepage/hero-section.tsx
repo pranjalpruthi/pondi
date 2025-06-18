@@ -793,7 +793,7 @@ export function HeroSection() {
         >
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 max-w-3xl mx-auto border border-gray-200 dark:border-gray-700">
             <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white leading-relaxed tracking-tight">
-              Join our sacred calling to spread Śrīla Prabhupāda's wisdom and guide souls back to Godhead.
+            Join our sacred calling: spread Śrīla Prabhupāda's wisdom and guide souls Back home, back to Godhead.
             </p>
           </div>
         </motion.div>
