@@ -12,7 +12,6 @@ import Carousel, {
   ThumsSlider,
 } from '@/components/gallery/carousel';
 import { createPortal } from "react-dom";
-import { HighlightText } from '@/components/animate-ui/text/highlight';
 
 import {
     IconBrandInstagram,
@@ -782,16 +781,21 @@ export function HeroSection() {
             </div>
           </div>
         </div>
+        {/* Separator */}
+        <div className="mt-12 border-t border-gray-200 dark:border-gray-700 w-full"></div>
+        
         {/* New section for the relocated and improved text */}
         <motion.div
-          className="mt-12 text-center px-4" // Added margin-top, text-center, and horizontal padding
+          className="mt-8 text-center px-4" // Adjusted margin-top, text-center, and horizontal padding
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 20 }}
           transition={{ delay: 0.9 }} // Delayed to appear after main content
         >
-          <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
-            Join our <HighlightText text="sacred calling" className="!px-1 !py-0.5 from-blue-400 to-indigo-400 dark:from-blue-500 dark:to-indigo-500 text-white" />: spread <HighlightText text="Śrīla Prabhupāda's wisdom" className="!px-1 !py-0.5 from-purple-400 to-pink-400 dark:from-purple-500 dark:to-pink-500 text-white" /> and guide 💫 souls back home 😇 , <HighlightText text=" back to Godhead 🩵 " className="!px-1 !py-0.5 from-green-400 to-teal-400 dark:from-green-500 dark:to-teal-500 text-white" />.
-          </p>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 max-w-3xl mx-auto border border-gray-200 dark:border-gray-700">
+            <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white leading-relaxed tracking-tight">
+              Join our sacred calling to spread Śrīla Prabhupāda's wisdom and guide souls back to Godhead.
+            </p>
+          </div>
         </motion.div>
       </div>
       {/* Modal/Gallery using the same images and currentIndex */}
