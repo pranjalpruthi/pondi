@@ -337,7 +337,7 @@ export function FeaturedBooksSection() {
 
   return (
     <>
-      <section className="pt-10 pb-6 md:pt-20 md:pb-20 bg-background overflow-hidden">
+      <section className="pt-1 pb-6 md:pt-6 md:pb-20 bg-background overflow-hidden">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

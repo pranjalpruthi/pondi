@@ -145,7 +145,7 @@ function SideBySide() {
           <p className="text-lg dark:text-muted-foreground text-zinc-700 italic">
             {todayShloka.translation}
           </p>
-            <div className="flex justify-center gap-2">
+            <div className="flex justify-center gap-2 flex-wrap">
             <p className="inline-flex py-1 px-3 rounded-full text-xs font-medium
               dark:bg-zinc-800 bg-zinc-100
               dark:text-zinc-400 text-zinc-600"
@@ -163,6 +163,13 @@ function SideBySide() {
               Copy Shloka
             </button>
             <button
+              className="inline-flex items-center gap-1 py-1 px-3 rounded-full text-xs font-medium bg-[#25D366]/30 hover:bg-[#25D366]/40 dark:bg-[#25D366]/20 dark:hover:bg-[#25D366]/30 text-[#25D366] dark:text-[#25D366] cursor-pointer"
+              onClick={() => window.open(`https://api.whatsapp.com/send?text=Shloka%20of%20the%20Day%20(${encodeURIComponent(todayShloka.title)}):%0A${encodeURIComponent(todayShloka.sanskrit)}%0A%0ATranslation:%20${encodeURIComponent(todayShloka.translation)}%0A%0ACitation:%20Bhagavad%20Gita%0A%0AVisit%20ISKM%20Pondicherry:%20https://pudhuvai.vrindavanam.org.in/%0AFollow%20us:%20https://instagram.com/iskm_pondy%0Ahttps://facebook.com/iskm.pondy%0Ahttps://www.youtube.com/@ISKMPondy`, '_blank')}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path><circle cx="12" cy="12" r="1"></circle><circle cx="16" cy="12" r="1"></circle><circle cx="8" cy="12" r="1"></circle></svg>
+              Share on WhatsApp
+            </button>
+            <button
               className="inline-flex items-center gap-1 py-1 px-3 rounded-full text-xs font-medium bg-[#1877F2]/30 hover:bg-[#1877F2]/40 dark:bg-[#1877F2]/20 dark:hover:bg-[#1877F2]/30 text-[#1877F2] dark:text-[#1877F2] cursor-pointer"
               onClick={() => {
                 const text = `Shloka of the Day (${todayShloka.title}):\n${todayShloka.sanskrit}\n\nTranslation: ${todayShloka.translation}\n\nCitation: Bhagavad Gita\n\nVisit ISKM Pondicherry: https://pudhuvai.vrindavanam.org.in/\nFollow us on Instagram: https://instagram.com/iskm_pondy\nFollow us on Facebook: https://facebook.com/iskm.pondy\nSubscribe on YouTube: https://www.youtube.com/@ISKMPondy`;
@@ -174,13 +181,6 @@ function SideBySide() {
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
               Share on Facebook
             </button>
-              <button
-                className="inline-flex items-center gap-1 py-1 px-3 rounded-full text-xs font-medium bg-[#1DA1F2]/30 hover:bg-[#1DA1F2]/40 dark:bg-[#1DA1F2]/20 dark:hover:bg-[#1DA1F2]/30 text-[#1DA1F2] dark:text-[#1DA1F2] cursor-pointer"
-                onClick={() => window.open(`https://x.com/intent/tweet?text=Shloka%20of%20the%20Day%20(${encodeURIComponent(todayShloka.title)}):%0A${encodeURIComponent(todayShloka.sanskrit)}%0A%0ATranslation:%20${encodeURIComponent(todayShloka.translation)}%0A%0ACitation:%20Bhagavad%20Gita%0A%0AVisit%20ISKM%20Pondicherry:%20https://pudhuvai.vrindavanam.org.in/%0AFollow%20us:%20https://instagram.com/iskm_pondy%0Ahttps://facebook.com/iskm.pondy%0Ahttps://www.youtube.com/@ISKMPondy&via=iskm_sg`, '_blank')}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
-                Share on X
-              </button>
             <button
               className="inline-flex items-center gap-1 py-1 px-3 rounded-full text-xs font-medium bg-[#E1306C]/30 hover:bg-[#E1306C]/40 dark:bg-[#E1306C]/20 dark:hover:bg-[#E1306C]/30 text-[#E1306C] dark:text-[#E1306C] cursor-pointer"
               onClick={() => window.open(`https://www.instagram.com/iskm_pondy/`, '_blank')}
@@ -294,6 +294,13 @@ function SideBySide() {
                       Copy Shloka
                     </button>
                     <button
+                      className="inline-flex items-center gap-1 py-1 px-3 rounded-full text-xs font-medium bg-[#25D366]/30 hover:bg-[#25D366]/40 dark:bg-[#25D366]/20 dark:hover:bg-[#25D366]/30 text-[#25D366] dark:text-[#25D366] cursor-pointer"
+                      onClick={() => window.open(`https://api.whatsapp.com/send?text=Shloka%20(${encodeURIComponent(shloka.title)}):%0A${encodeURIComponent(shloka.sanskrit)}%0A%0ATranslation:%20${encodeURIComponent(shloka.translation)}%0A%0ACitation:%20Bhagavad%20Gita%0A%0AVisit%20ISKM%20Pondicherry:%20https://pudhuvai.vrindavanam.org.in/%0AFollow%20us:%20https://instagram.com/iskm_pondy%0Ahttps://facebook.com/iskm.pondy%0Ahttps://www.youtube.com/@ISKMPondy`, '_blank')}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path><circle cx="12" cy="12" r="1"></circle><circle cx="16" cy="12" r="1"></circle><circle cx="8" cy="12" r="1"></circle></svg>
+                      Share on WhatsApp
+                    </button>
+                    <button
                       className="inline-flex items-center gap-1 py-1 px-3 rounded-full text-xs font-medium bg-[#1877F2]/30 hover:bg-[#1877F2]/40 dark:bg-[#1877F2]/20 dark:hover:bg-[#1877F2]/30 text-[#1877F2] dark:text-[#1877F2] cursor-pointer"
                       onClick={() => {
                         const text = `Shloka (${shloka.title}):\n${shloka.sanskrit}\n\nTranslation: ${shloka.translation}\n\nCitation: Bhagavad Gita\n\nVisit ISKM Pondicherry: https://pudhuvai.vrindavanam.org.in/\nFollow us on Instagram: https://instagram.com/iskm_pondy\nFollow us on Facebook: https://facebook.com/iskm.pondy\nSubscribe on YouTube: https://www.youtube.com/@ISKMPondy`;
@@ -305,13 +312,6 @@ function SideBySide() {
                       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
                       Share on Facebook
                     </button>
-                      <button
-                        className="inline-flex items-center gap-1 py-1 px-3 rounded-full text-xs font-medium bg-[#1DA1F2]/30 hover:bg-[#1DA1F2]/40 dark:bg-[#1DA1F2]/20 dark:hover:bg-[#1DA1F2]/30 text-[#1DA1F2] dark:text-[#1DA1F2] cursor-pointer"
-                        onClick={() => window.open(`https://x.com/intent/tweet?text=Shloka%20(${encodeURIComponent(shloka.title)}):%0A${encodeURIComponent(shloka.sanskrit)}%0A%0ATranslation:%20${encodeURIComponent(shloka.translation)}%0A%0ACitation:%20Bhagavad%20Gita%0A%0AVisit%20ISKM%20Pondicherry:%20https://pudhuvai.vrindavanam.org.in/%0AFollow%20us:%20https://instagram.com/iskm_pondy%0Ahttps://facebook.com/iskm.pondy%0Ahttps://www.youtube.com/@ISKMPondy&via=iskm_sg`, '_blank')}
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
-                        Share on X
-                      </button>
                     <button
                       className="inline-flex items-center gap-1 py-1 px-3 rounded-full text-xs font-medium bg-[#E1306C]/30 hover:bg-[#E1306C]/40 dark:bg-[#E1306C]/20 dark:hover:bg-[#E1306C]/30 text-[#E1306C] dark:text-[#E1306C] cursor-pointer"
                       onClick={() => window.open(`https://www.instagram.com/iskm_pondy/`, '_blank')}

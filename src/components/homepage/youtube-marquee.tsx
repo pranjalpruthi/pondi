@@ -3,21 +3,24 @@ import { Marquee } from "@/components/magicui/marquee";
 import { MagicCard } from "@/components/ui/magic-card";
 import { XMLParser } from "fast-xml-parser";
 
-interface YouTubeVideo {
+export interface YouTubeVideo { // Added export
   id: string;
   title: string;
   thumbnail: string;
   link?: string;
   publishedDate?: string;
+  description?: string;
+  views?: string;
+  stars?: string;
 }
 
-const YOUTUBE_CHANNEL_ID = "UC0vql4wq4-l-LKnugnKtUOQ";
+export const YOUTUBE_CHANNEL_ID = "UC0vql4wq4-l-LKnugnKtUOQ"; // ISKM Pondicherry - Corrected ID // Added export
 
-const RSS_FEED_URL = import.meta.env.DEV 
+export const RSS_FEED_URL = import.meta.env.DEV  // Added export
   ? `/youtube-feed/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`
   : `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://www.youtube.com/feeds/videos.xml?channel_id=${YOUTUBE_CHANNEL_ID}`)}`;
 
-const fetchYouTubeRssFeed = async (): Promise<YouTubeVideo[]> => {
+export const fetchYouTubeRssFeed = async (): Promise<YouTubeVideo[]> => { // Added export
   try {
     const response = await fetch(RSS_FEED_URL);
     if (!response.ok) {
@@ -71,15 +74,23 @@ const fetchYouTubeRssFeed = async (): Promise<YouTubeVideo[]> => {
       const videoId = entry["yt:videoId"];
       const title = entry.title;
       const link = entry.link?.["@_href"];
-      const thumbnailUrl = entry["media:group"]?.["media:thumbnail"]?.["@_url"];
+      const mediaGroup = entry["media:group"];
+      const thumbnailUrl = mediaGroup?.["media:thumbnail"]?.["@_url"];
       const publishedDate = entry.published ? new Date(entry.published).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : "Date not available";
-      
+      const description = mediaGroup?.["media:description"];
+      const views = mediaGroup?.["media:community"]?.["media:statistics"]?.["@_views"];
+      const stars = mediaGroup?.["media:community"]?.["media:starRating"]?.["@_average"];
+
+
       return {
         id: videoId || entry.id?.split(':').pop() || 'unknown-' + Math.random(),
         title: title || "Untitled Video",
         link: link || (videoId ? `https://www.youtube.com/watch?v=${videoId}`: '#'),
         thumbnail: thumbnailUrl || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` ,
         publishedDate,
+        description,
+        views,
+        stars,
       };
     })
     .filter((video: YouTubeVideo) => video.id && video.link && video.thumbnail && !video.id.startsWith('unknown-'))

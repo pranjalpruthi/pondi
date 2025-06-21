@@ -8,18 +8,26 @@ import IconHome from 'virtual:icons/line-md/home-md-alt-twotone'
 import IconTemple from 'virtual:icons/fluent-emoji-flat/hindu-temple'
 import IconCalendar from 'virtual:icons/uim/calender'
 import IconInfo from 'virtual:icons/line-md/alert-circle-twotone-loop';
-import { Menu, Search, Volume2, VolumeX, Globe as GlobeIcon, ShoppingBag as ShoppingBagIcon } from "lucide-react"; // Added ShoppingBagIcon
+import IconRobo from 'virtual:icons/mdi/robot-outline';
+import { Menu, Volume2, VolumeX, Globe as GlobeIcon, ShoppingBag as ShoppingBagIcon, Phone, ArrowLeft, MapPin, Youtube } from "lucide-react"; // Added ShoppingBagIcon, Youtube
+import { IconBrandFacebook, IconBrandTelegram, IconBrandInstagram, IconBrandYoutube, IconBrandWhatsapp } from '@tabler/icons-react';
+import { CopyButton } from '@/components/animate-ui/buttons/copy';
 import { useSound } from 'use-sound';
 import { useSoundSettings } from '@/components/context/sound-context';
 import { SoundProvider } from '@/components/context/sound-context';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTempleStatus } from '@/hooks/useTempleStatus'; // Added
-import { TempleEvents } from '@/components/temple-events';
+import { TempleEvents, TempleEventsPanel } from '@/components/temple-events';
 import { DeityDarshan } from '@/components/deity-darshan';
 import { SignedIn, SignedOut, UserButton, SignInButton, SignOutButton } from '@clerk/tanstack-react-start';
 import { LayoutDashboard, LogIn, LogOut } from 'lucide-react';
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Suspense } from 'react'; // Added Suspense import
+
+import { AppleChatInput } from '@/components/ui/apple-chat-input';
+import { ThreeDotSimpleLoader } from '@/components/ui/three-dot-loader';
+import useAutoScroll from '@/hooks/use-auto-scroll';
+import { ClipsPanel } from '@/components/homepage/clips-panel'; // Changed to import ClipsPanel
 
 const LazyUpcomingEventBanner = React.lazy(() => // Added import for the banner
   import('@/components/upcoming-event-banner').then(module => ({ default: module.UpcomingEventBanner }))
@@ -70,6 +78,8 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
   const isMainMenuPanelActive = item.isExpandable && activeDockItem === item.id && isDockOpen;
 
   const isDeityButton = item.label === 'Deities';
+  const isAiBotButton = item.label === 'AI Bot';
+  const isClipsButton = item.label === 'Clips';
   let deityButtonSpecificStyles = "";
   if (isDeityButton) {
       const statusColorClass = templeStatus.colorClass;
@@ -112,14 +122,15 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
     )}>
       <div className={cn("flex flex-col items-center", isLabelVisible ? "" : "text-center")}>
         {item.title} {/* Icon */}
-        {item.subtitle && (
+        {item.subtitle && ! (isClipsButton && !isMainMenuPanelActive && !isLabelVisible) && ( // Hide subtitle for Clips button if panel not open and not a label interaction
           <span className={cn(
             "text-[0.65rem] sm:text-[0.7rem] mt-1 font-medium",
-            isLabelVisible ? "hidden" : "block",
-            isDeityButton && templeStatus.colorClass.includes('gray') ? "text-gray-500 dark:text-gray-400" : 
+            isLabelVisible ? "hidden" : "block", // This handles general label visibility
+            (isClipsButton && !isMainMenuPanelActive) ? "hidden" : "block", // Specifically hide for clips button if panel not open
+            isDeityButton && templeStatus.colorClass.includes('gray') ? "text-gray-500 dark:text-gray-400" :
             isDeityButton && templeStatus.colorClass.includes('red') ? "text-red-600 dark:text-red-400" :
-            isDeityButton && templeStatus.colorClass.includes('pink') ? "text-pink-600 dark:text-pink-400" : 
-            isDeityButton && templeStatus.colorClass.includes('green') ? "text-green-600 dark:text-green-400" : 
+            isDeityButton && templeStatus.colorClass.includes('pink') ? "text-pink-600 dark:text-pink-400" :
+            isDeityButton && templeStatus.colorClass.includes('green') ? "text-green-600 dark:text-green-400" :
             isDeityButton && templeStatus.colorClass.includes('yellow') ? "text-yellow-600 dark:text-yellow-400" :
             isDeityButton && templeStatus.colorClass.includes('orange') ? "text-orange-600 dark:text-orange-400" :
             "text-foreground/70"
@@ -129,7 +140,7 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
         )}
       </div>
       <AnimatePresence>
-        {isLabelVisible && (
+        {isLabelVisible && !isMobile && (
           <motion.span
             className="ml-1.5 sm:ml-2 text-xs sm:text-sm font-medium whitespace-nowrap transform-gpu"
             initial={{ opacity: 0, x: -8 }}
@@ -146,18 +157,39 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
   
   const baseItemClasses = "relative flex items-center rounded-xl cursor-pointer overflow-hidden h-14 sm:h-16 text-foreground/80 transition-colors focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]";
   
-  const itemWidth = item.isExpandable 
+  const itemWidth = isClipsButton // Clips button is always circular (width = height)
                     ? (isMobile ? 56 : 64)
-                    : (isLabelVisible ? (isMobile ? 110 : 130) : (isMobile ? 56 : 64));
+                    : item.isExpandable
+                      ? (isMobile ? 56 : 64)
+                      : (isLabelVisible ? (isMobile ? 56 : 130) : (isMobile ? 56 : 64));
 
-  const combinedItemClasses = cn(
-      baseItemClasses,
-      isDeityButton
-          ? deityButtonSpecificStyles
-          : (isMainMenuPanelActive || isLabelVisible)
-              ? "bg-pink-100/70 dark:bg-pink-700/70 text-primary" 
-              : "hover:bg-pink-100/50 dark:hover:bg-amber-500/30 hover:text-amber-400"
-  );
+  let itemSpecificStyling = "";
+
+  if (isClipsButton) {
+    if (isMainMenuPanelActive) { // Clips Panel is open
+      itemSpecificStyling = "bg-gradient-to-br from-red-500 to-red-600 text-white shadow-lg ring-2 ring-white/50 rounded-full aspect-square scale-110 transform transition-all duration-300"; // Active Clips style
+    } else { // Clips Panel is closed - default highlighted state
+      itemSpecificStyling = "bg-gradient-to-br from-red-500 to-pink-500 text-white hover:from-red-600 hover:to-pink-600 shadow-md hover:shadow-lg ring-1 ring-white/20 hover:ring-white/40 rounded-full aspect-square transition-all duration-200 transform hover:scale-105"; // Default Highlighted Clips style
+    }
+  } else if (isAiBotButton) {
+    if (isMainMenuPanelActive) { // AI Panel is open
+      // Active AI style: Gold/Yellow gradient, prominent shadow, ring
+      // Dark mode: Slightly desaturated gold/amber, less bright text
+      itemSpecificStyling = "bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-500 text-white dark:from-amber-500 dark:via-yellow-600 dark:to-orange-600 dark:text-amber-50 shadow-lg ring-2 ring-white/30 dark:ring-amber-400/40 scale-105 transform transition-all duration-300 rounded-xl";
+    } else { // AI Panel is closed - default highlighted state
+      // Default Highlighted AI style: Gold/Yellow gradient, subtle shadow, hover effects
+      // Dark mode: More muted gold/amber, softer text and hover
+      itemSpecificStyling = "bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-400 text-yellow-900 dark:text-amber-200 dark:from-amber-600/80 dark:via-yellow-700/80 dark:to-orange-700/80 hover:from-yellow-400 hover:to-orange-500 dark:hover:from-amber-500 dark:hover:to-orange-600 shadow-md hover:shadow-lg ring-1 ring-amber-500/30 dark:ring-amber-700/50 hover:ring-amber-500/50 dark:hover:ring-amber-500/70 transition-all duration-200 transform hover:scale-105 rounded-xl";
+    }
+  } else if (isDeityButton) {
+    itemSpecificStyling = deityButtonSpecificStyles;
+  } else if (isMainMenuPanelActive || isLabelVisible) { // For other items (like Menu button or regular hovered/clicked items)
+    itemSpecificStyling = "bg-pink-100/70 dark:bg-pink-700/70 text-primary";
+  } else { // Default hover for other non-active, non-deity, non-AI, non-Shorts buttons
+    itemSpecificStyling = "hover:bg-pink-100/50 dark:hover:bg-amber-500/30 hover:text-amber-400";
+  }
+
+  const combinedItemClasses = cn(baseItemClasses, itemSpecificStyling);
 
   if (item.isLink && item.to) {
     return (
@@ -205,11 +237,11 @@ interface NavbarContentProps {
 }
 
 const navItems = [
-  { 
-    icon: IconHome, 
-    label: 'Home', 
+  {
+    icon: IconHome,
+    label: 'Home',
     to: '/',
-    iconClassName: "text-primary/80" 
+    iconClassName: "text-primary/80"
   },
   { icon: IconTemple, label: 'Deities', to: '/deities', iconClassName: "text-primary/80" },
   { icon: IconCalendar, label: 'Events', to: '/events', iconClassName: "text-primary/80" },
@@ -217,6 +249,474 @@ const navItems = [
   { icon: GlobeIcon, label: 'Centers', to: '/centers', iconClassName: "text-primary/80" },
   { icon: IconInfo, label: 'About', to: '/about', iconClassName: "text-primary/80" },
 ];
+
+const templeTimingsData = [
+  { event: "Mangal Aarati", time: "4:30 AM" },
+  { event: "Darshan Aarati", time: "7:15 AM" },
+  { event: "Guru Puja", time: "7:20 AM" },
+  { event: "Bhagvatam Discourse", time: "8:00 AM" },
+  { event: "Temple Closes", time: "12:00 PM" },
+  { event: "Gaura Arati", time: "5:30 PM" },
+  { event: "Temple Closes", time: "6:30 PM" }
+];
+
+const bankDetailsData = {
+  accountName: "ISKM PONDICHERRY",
+  accountType: "SAVINGS ACCOUNT",
+  accountNo: "1197110110052583",
+  ifscCode: "UJVN0001197",
+  bankName: "UJJIVAN BANK, PONDICHERRY BRANCH"
+};
+
+const formatTimingsForCopy = () => {
+  return templeTimingsData.map(timing => `${timing.event}: ${timing.time}`).join('\n');
+};
+
+const formatBankDetailsForCopy = () => {
+  return `Account Name: ${bankDetailsData.accountName}\nAccount Type: ${bankDetailsData.accountType}\nAccount No: ${bankDetailsData.accountNo}\nIFSC Code: ${bankDetailsData.ifscCode}\nBank: ${bankDetailsData.bankName}`;
+};
+
+const StarIcon = ({ filled, className }: { filled: boolean; className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    className={cn("size-8", className)}
+    fill={filled ? "currentColor" : "none"}
+    stroke="currentColor"
+    strokeWidth="1"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+  </svg>
+);
+
+const StarRating = ({ rating, setRating, hoverRating, setHoverRating }: { rating: number; setRating: (r: number) => void; hoverRating: number; setHoverRating: (h: number) => void; }) => (
+    <div className="flex justify-center gap-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+            <motion.div
+                key={star}
+                initial={{ scale: 1 }}
+                whileHover={{ scale: 1.2, rotate: 5 }}
+                whileTap={{ scale: 0.9 }}
+                className="cursor-pointer"
+                onClick={() => setRating(star)}
+                onMouseEnter={() => setHoverRating(star)}
+                onMouseLeave={() => setHoverRating(0)}
+            >
+                <StarIcon
+                    className={cn(
+                        "transition-colors duration-200",
+                        (hoverRating || rating) >= star
+                            ? "text-yellow-400 fill-yellow-400"
+                            : "text-gray-300 dark:text-gray-600"
+                    )}
+                    filled={(hoverRating || rating) >= star}
+                />
+            </motion.div>
+        ))}
+    </div>
+);
+
+const AIPanel = React.memo(() => {
+  const initialGreeting = (
+    <div className="text-center whitespace-pre-wrap font-medium">
+      <p>🌹🪷🪷🌹🪷🌹🪷🪷🌹</p>
+      <p>🙌 Hare Kṛṣṇa! prabhu / mataji 🙌</p>
+      <p>🤖 ISKM Bhakta Bot reporting</p>
+      <p>🙇‍♂️ Dandwat pranam, please accept my humble obesiances 🙇‍♂️</p>
+      <p>🌹🪷🪷🌹🪷🌹🪷🪷🌹</p>
+    </div>
+  );
+
+  const [messages, setMessages] = React.useState<Array<{ id: number; sender: 'user' | 'bot'; content: React.ReactNode; }>>([
+    { id: 1, sender: 'bot', content: initialGreeting }
+  ]);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [messageSent, setMessageSent] = React.useState(false);
+const nextMessageId = React.useRef(2); // Start IDs from 2
+
+  const prabhupadaTeachings = [
+    "Chant Hare Krishna and your life will be sublime.",
+    "Religion without philosophy is sentiment, or sometimes fanaticism, while philosophy without religion is mental speculation.",
+    "A grain of spiritual force can overcome mountains of material opposition.",
+    "The purpose of human life is to inquire about the Absolute Truth.",
+    "Our only business is to love God, not to ask God for our necessities.",
+    "Serve God, and you will automatically serve humanity.",
+    "Books are the basis; purity is the force; preaching is the essence; utility is the principle.",
+    "Devotional service is the highest platform of happiness.",
+    "Krishna consciousness is the matchless gift."
+  ];
+
+  // Define FeedbackFormComponent here, so it has access to AIPanel's scope (createBotResponse, setMessages)
+  const FeedbackFormComponent = ({ onSubmit }: { onSubmit: () => void }) => {
+      const [rating, setRatingState] = React.useState(0); // Renamed to avoid conflict if props were named rating
+      const [hoverRating, setHoverRatingState] = React.useState(0); // Renamed
+
+      return (
+          <form className="mt-2 space-y-3" onSubmit={(e) => {
+              e.preventDefault();
+              onSubmit(); // This onSubmit is the callback passed from case 3
+          }}>
+              <StarRating rating={rating} setRating={setRatingState} hoverRating={hoverRating} setHoverRating={setHoverRatingState} />
+              <textarea placeholder="Your message..." className="w-full p-2 rounded-md border bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600" rows={3}></textarea>
+              <button type="submit" className="w-full p-2 rounded-md bg-gradient-to-br from-pink-500 to-rose-500 text-white">Send Feedback</button>
+          </form>
+      );
+  };
+
+  const scrollRef = useAutoScroll<HTMLDivElement>(true, [messages, isLoading]);
+
+  const handleGoBack = () => {
+    setMessages([{ id: 1, sender: 'bot', content: initialGreeting }]);
+  };
+
+  const suggestedQuestions = [
+    { id: 1, text: "Would you like to receive daily spiritual quotes from us?" },
+    { id: 2, text: "Would you like to know more about ISKM?" },
+    { id: 3, text: "How do you find our website and what do you expect from us?" },
+  ];
+
+  const quickActionButtons = [
+      { id: 4, text: 'Timings', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Alarm%20Clock.png" alt="Alarm Clock" width="25" height="25" />, color: "bg-blue-100 hover:bg-blue-200 dark:bg-blue-800 dark:hover:bg-blue-700 border-blue-500/70 text-blue-700 dark:text-blue-300" },
+      { id: 5, text: 'Donate', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="25" height="25" />, color: "bg-yellow-100 hover:bg-yellow-200 dark:bg-yellow-800 dark:hover:bg-yellow-700 border-yellow-500/70 text-yellow-700 dark:text-yellow-300" },
+      { id: 7, text: 'Calendar', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Spiral%20Calendar.png" alt="Spiral Calendar" width="25" height="25" />, color: "bg-purple-100 hover:bg-purple-200 dark:bg-purple-800 dark:hover:bg-purple-700 border-purple-500/70 text-purple-700 dark:text-purple-300" },
+      { id: 6, text: 'Contact', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Telephone%20Receiver.png" alt="Telephone Receiver" width="25" height="25" />, color: "bg-green-100 hover:bg-green-200 dark:bg-green-800 dark:hover:bg-green-700 border-green-500/70 text-green-700 dark:text-green-300" },
+  ]
+
+  const createBotResponse = React.useCallback((responseContent: React.ReactNode) => (
+    <div className="space-y-2">
+      {responseContent}
+      <p className="text-xs text-center pt-2 border-t border-border/50 mt-2">
+        🌹 All Glories 🌟 to Śrīla Prabhupāda! 🙏
+      </p>
+    </div>
+  ), []);
+
+  const handleQuestionClick = React.useCallback((question: { id: number; text: string }) => {
+    const userMessageId = nextMessageId.current++;
+    setMessages(prev => [...prev, { id: userMessageId, sender: 'user', content: <p>{question.text}</p> }]);
+    setIsLoading(true);
+
+    setTimeout(() => {
+      try {
+        let botResponseContent: React.ReactNode;
+        switch (question.id) {
+          case 1:
+            botResponseContent = (
+              <div>
+                <p>That's wonderful! To subscribe for daily quotes, please provide your details below. (This is a mock form).</p>
+                <form className="mt-2 space-y-2" onSubmit={(e) => { e.preventDefault(); alert('Thank you for subscribing!'); }}>
+                    <input type="text" placeholder="WhatsApp Number" className="w-full p-2 rounded-md border bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600" />
+                    <input type="email" placeholder="Email (Optional)" className="w-full p-2 rounded-md border bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600" />
+                    <button type="submit" className="w-full p-2 rounded-md bg-gradient-to-br from-pink-500 to-rose-500 text-white">Subscribe</button>
+                </form>
+              </div>
+            );
+            break;
+          case 2:
+            botResponseContent = (
+              <div className="space-y-2">
+                  <p>The International Society for Krishna Consciousness (ISKCON), as founded by A.C. Bhaktivedanta Swami Prabhupada, is a Gaudiya Vaishnava religious organization.</p>
+                  <p>Our information is based on Retrieval-Augmented Generation (RAG) from official documents like IA77, ensuring adherence to the ritvik system of initiation established by Srila Prabhupada.</p>
+                  <p>For more on this topic, you can watch this video: <a href="#" onClick={(e) => e.preventDefault()} className="text-primary underline">ISKCON vs ISKM (video)</a>.</p>
+                  <p className="text-xs italic">Please note: This AI is trained to be strict on this topic and will not deviate from official sources.</p>
+              </div>
+            );
+            break;
+          case 3:
+            botResponseContent = (
+              <div>
+                  <p>We'd love to hear your feedback on our website!</p>
+                  <FeedbackFormComponent onSubmit={() => {
+                      const thankYouMessage = createBotResponse(
+                          <div>
+                              <p>Thank you for your feedback! We appreciate you taking the time.</p>
+                              <p className="mt-2">We hope you'll visit us soon! Our temple is located at ISKCON, Hare Krishna Land, Sri Sri Radha Madhava Cultural and Educational Complex, ECR, Sri-Sailam, Puducherry, 605008.</p>
+                              <p>Darshan is open daily from 5:00 AM to 8:45 PM.</p>
+                              <p>For more info, see our <Link to="/about" className="text-primary underline">About Page</Link>.</p>
+                          </div>
+                      );
+                      const thankYouMessageId = nextMessageId.current++;
+                      setMessages(prev => [...prev, { id: thankYouMessageId, sender: 'bot', content: thankYouMessage }]);
+                  }} />
+              </div>
+            );
+            break;
+          case 4: // Timings
+            botResponseContent = (
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <h4 className="text-sm font-semibold text-[#0a84ff]">Temple Timings</h4>
+                  <CopyButton size="sm" variant="ghost" content={formatTimingsForCopy()} className="text-[#0a84ff]" />
+                </div>
+                <ul className="space-y-1 text-xs text-gray-700 dark:text-gray-300">
+                  {templeTimingsData.map((timing, index) => (
+                    <li key={index} className="flex justify-between">
+                      <span className="mr-4">{timing.event}</span>
+                      <span className="font-medium text-[#e94a9c]">{timing.time}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+            break;
+          case 5: // Donate
+            botResponseContent = (
+              <div className="space-y-4">
+                <div className="pt-0">
+                   <div className="flex justify-between items-center mb-2">
+                      <h4 className="text-sm font-semibold text-[#ffc547]">Bank Transfer Details</h4>
+                      <CopyButton size="sm" variant="ghost" content={formatBankDetailsForCopy()} className="text-[#ffc547]" />
+                  </div>
+                  <div className="space-y-0.5 text-xs text-gray-700 dark:text-gray-300">
+                    <p><strong>Account Name:</strong> {bankDetailsData.accountName}</p>
+                    <p><strong>Account Type:</strong> {bankDetailsData.accountType}</p>
+                    <p><strong>Account No:</strong> {bankDetailsData.accountNo}</p>
+                    <p><strong>IFSC Code:</strong> {bankDetailsData.ifscCode}</p>
+                    <p><strong>Bank:</strong> {bankDetailsData.bankName}</p>
+                  </div>
+                </div>
+                {/* UPI QR Code Section */}
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
+                  <h4 className="text-sm font-semibold text-green-600 dark:text-green-400 mb-2">Scan to Pay with UPI</h4>
+                  <div className="flex justify-center items-center p-2 bg-gray-50 dark:bg-gray-800 rounded-md">
+                    <img
+                      src="/assets/extra/miniqr.png"
+                      alt="UPI QR Code"
+                      className="w-28 h-auto object-contain"
+                    />
+                  </div>
+                  <div className="mt-2 text-center">
+                    <p className="text-xs text-gray-600 dark:text-gray-600 mb-1">Or use UPI ID:</p>
+                    <div className="flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-800/50 px-3 py-1.5 rounded-md max-w-xs mx-auto">
+                      <span className="text-sm font-mono text-purple-600 dark:text-purple-400">ISKM.04@idfcbank</span>
+                      <CopyButton size="sm" variant="ghost" content="ISKM.04@idfcbank" className="text-purple-600 dark:text-purple-400" />
+                    </div>
+                  </div>
+                   <p className="text-xs text-gray-500 dark:text-gray-600 mt-3">
+                      Your contribution supports our mission.
+                  </p>
+                </div>
+              </div>
+            );
+            break;
+          case 6: // Contact
+            botResponseContent = (
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="text-sm font-semibold text-green-600 dark:text-green-400">Contact Us</h4>
+                    <CopyButton size="sm" variant="ghost" content="+91 90426 42103\niskm.pondicherry@gmail.com" className="text-green-600 dark:text-green-400" />
+                  </div>
+                  <div className="space-y-2 text-xs text-gray-700 dark:text-gray-300">
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
+                      <a href="tel:+919042642103" className="text-green-700 dark:text-green-400 hover:text-green-600 dark:hover:text-green-300 transition-colors">+91 90426 42103</a>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-envelope text-green-600 dark:text-green-400" viewBox="0 0 16 16">
+                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+                      </svg>
+                      <a href="mailto:iskm.pondicherry@gmail.com" className="text-green-700 dark:text-green-400 hover:text-green-600 dark:hover:text-green-300 transition-colors">iskm.pondicherry@gmail.com</a>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <MapPin className="h-3.5 w-3.5 text-green-600 dark:text-green-400 mt-0.5" />
+                      <p className="text-gray-700 dark:text-gray-300">Pudhuvai Vrindavanam (Hare Krishna Temple), RS No-54/3, Koodappakkam Main Rd, near Pogo Land, Pathukannu, Puducherry 605502</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
+                  <div className="grid grid-cols-2 gap-2 text-gray-700 dark:text-gray-300">
+                    <a href="https://facebook.com/iskm.pondy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                      <IconBrandFacebook className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      <span className="text-xs">Facebook</span>
+                    </a>
+                    <a href="https://t.me/ISKMVaishnavasanga" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-blue-500 dark:hover:text-blue-300 transition-colors">
+                      <IconBrandTelegram className="h-4 w-4 text-blue-500 dark:text-blue-300" />
+                      <span className="text-xs">Telegram</span>
+                    </a>
+                    <a href="https://instagram.com/iskm_pondy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-pink-600 dark:hover:text-pink-400 transition-colors">
+                      <IconBrandInstagram className="h-4 w-4 text-pink-600 dark:text-pink-400" />
+                      <span className="text-xs">Instagram</span>
+                    </a>
+                    <a href="https://www.youtube.com/@ISKMPondy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-red-600 dark:hover:text-red-400 transition-colors">
+                      <IconBrandYoutube className="h-4 w-4 text-red-600 dark:text-red-400" />
+                      <span className="text-xs">YouTube</span>
+                    </a>
+                    <a href="https://wa.me/918056626108" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-green-600 dark:hover:text-green-400 transition-colors">
+                      <IconBrandWhatsapp className="h-4 w-4 text-green-600 dark:text-green-400" />
+                      <span className="text-xs">WhatsApp</span>
+                    </a>
+                    <a href="https://maps.app.goo.gl/8CGJUsGp4Vt8fLdN7" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-green-600 dark:hover:text-green-400 transition-colors">
+                      <MapPin className="h-4 w-4 text-green-600 dark:text-green-400" />
+                      <span className="text-xs">Google Maps</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            );
+            break;
+          case 7: // Calendar
+              botResponseContent = (
+                <div className="space-y-2">
+                  <p>You can view all our events on the main calendar page.</p>
+                  <Link to="/calender" className="block">
+                    <button className="w-full p-2 rounded-lg bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 ease-out active:scale-95 transform-gpu">
+                      Go to Calendar
+                    </button>
+                  </Link>
+                </div>
+              );
+              break;
+          default:
+            botResponseContent = <p>Sorry, I don't have an answer for that.</p>;
+        }
+        const fullResponse = createBotResponse(botResponseContent);
+        const botMessageId = nextMessageId.current++;
+        setMessages(prev => [...prev, { id: botMessageId, sender: 'bot', content: fullResponse }]);
+        } catch (error) {
+          console.error("Error handling question click:", error);
+          const errorResponse = createBotResponse(<p>Sorry, an error occurred while processing your request.</p>);
+          const errorBotMessageId = nextMessageId.current++;
+          setMessages(prev => [...prev, { id: errorBotMessageId, sender: 'bot', content: errorResponse }]);
+        } finally {
+          setIsLoading(false);
+        }
+    }, 1500);
+  }, [createBotResponse]);
+
+  const handleSendMessage = (message: string) => {
+    if (!message.trim() || isLoading) return;
+
+    const userMessageId = nextMessageId.current++;
+    const userMessage = {
+        id: userMessageId,
+        sender: 'user' as const,
+        content: <p>{message}</p>,
+    };
+    setMessages(prev => [...prev, userMessage]);
+    setIsLoading(true);
+
+    setTimeout(() => {
+        const randomIndex = Math.floor(Math.random() * prabhupadaTeachings.length);
+        const randomTeaching = prabhupadaTeachings[randomIndex];
+
+        const botResponse = createBotResponse(
+          <>
+            <p>{randomTeaching}</p>
+            <p className="mt-2 text-xs italic">Our AI is blossoming with the teachings of Śrīla Prabhupāda. Full conversational abilities are coming soon. Hare Kṛṣṇa!</p>
+          </>
+        );
+        const botMessageId = nextMessageId.current++;
+        setMessages(prev => [...prev, { id: botMessageId, sender: 'bot', content: botResponse }]);
+        setIsLoading(false);
+    }, 1500);
+  };
+
+  React.useEffect(() => {
+    if (messageSent) {
+      const timer = setTimeout(() => {
+        setMessageSent(false);
+      }, 1000); // Duration of the glow
+      return () => clearTimeout(timer);
+    }
+  }, [messageSent]);
+
+  return (
+    <div className='flex flex-col p-2 min-h-[420px] max-h-[calc(100vh-180px)] bg-gray-50 dark:bg-black'>
+        <AnimatePresence>
+            {messages.length > 1 && (
+            <motion.div
+                className="flex-shrink-0 pb-2 px-2"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+            >
+                <button
+                onClick={handleGoBack}
+                className="flex items-center justify-center gap-2 w-full p-2 rounded-xl text-sm font-medium bg-gradient-to-br from-pink-500 to-rose-500 text-white shadow-lg hover:from-pink-600 hover:to-rose-600 transition-all active:scale-95 transform-gpu"
+                >
+                <ArrowLeft className="size-4" />
+                <span>Start New Chat</span>
+                </button>
+            </motion.div>
+            )}
+        </AnimatePresence>
+      <div ref={scrollRef} className="flex-grow space-y-4 p-2 overflow-y-auto">
+        {messages.map((msg, index) => (
+          <div key={msg.id} className={cn("flex items-end gap-2", msg.sender === 'user' ? 'justify-end' : 'justify-start')}>
+            {msg.sender === 'bot' && (
+              <motion.div
+                className="relative size-8 flex-shrink-0"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 20, delay: index === 0 ? 0.5 : 0 }}
+              >
+                <div className="absolute -inset-1 bg-pink-500/50 rounded-full blur-lg animate-pulse-glow" />
+                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Robot.png" alt="Robot" width="25" height="25" className="relative bg-background rounded-full p-0.5" />
+              </motion.div>
+            )}
+            <motion.div
+              className={cn(
+                "max-w-xs md:max-w-md rounded-2xl p-3 text-sm",
+                msg.sender === 'user'
+                  ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-br-lg"
+                  : "bg-gray-200 dark:bg-gray-600 text-gray-900 dark:text-gray-200 rounded-bl-lg"
+              )}
+              initial={{ opacity: 0, y: 10, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25, delay: index === 0 ? 0.8 : 0.1 }}
+            >
+              {msg.content}
+            </motion.div>
+          </div>
+        ))}
+        {isLoading && (
+          <div className="flex items-end gap-2 justify-start">
+            <IconRobo className="size-8 mb-1 text-primary flex-shrink-0 bg-background rounded-full p-1" />
+            <div className="bg-gray-200 dark:bg-gray-600 rounded-2xl rounded-bl-lg p-3">
+              <ThreeDotSimpleLoader />
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="flex-shrink-0 pt-2">
+        {messages.length <= 1 && (
+            <div className="p-2 space-y-3">
+                <div className="grid grid-cols-4 gap-2">
+                    {quickActionButtons.map(q => (
+                        <button key={q.id} onClick={() => handleQuestionClick(q)} className={cn("flex flex-col items-center justify-center gap-1.5 p-2 rounded-xl shadow-lg transition-colors aspect-square", q.color)}>
+                            {q.icon}
+                            <span className="text-xs text-center">{q.text}</span>
+                        </button>
+                    ))}
+                </div>
+                <div className="flex flex-col gap-2">
+                    {suggestedQuestions.map(q => (
+                    <button key={q.id} onClick={() => handleQuestionClick(q)} className="text-left text-sm p-3 rounded-xl bg-gray-100 dark:bg-gray-800/50 hover:bg-gray-200 dark:hover:bg-gray-700/50 transition-colors w-full">
+                        {q.text}
+                    </button>
+                    ))}
+                </div>
+            </div>
+        )}
+        <motion.div
+          className="pt-2 border-t border-border/50"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30, delay: 0.2 }}
+        >
+          <AppleChatInput onSendMessage={handleSendMessage} />
+        </motion.div>
+      </div>
+    </div>
+  );
+});
+
+// Removed the old ShortsPanel component
 
 function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDashboardPage prop
   // --- State ---
@@ -244,25 +744,11 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
   const [isDockVisible, setIsDockVisible] = React.useState(true);
   const lastScrollYRef = React.useRef(0);
   const [isFooterVisible, setIsFooterVisible] = React.useState(false);
+  const [clipsPanelCurrentIndex, setClipsPanelCurrentIndex] = React.useState(0); // Added state for clips panel
 
-  // Placeholder texts for the new search bar
-  const placeholderPhrases = React.useMemo(() => [
-    "AI search coming soon...",
-    "Ask me anything...",
-    "Discover something new...",
-    "What are you looking for?",
-    "Temple wisdom at your fingertips...",
-  ], []);
-  const [currentPlaceholder, setCurrentPlaceholder] = React.useState(placeholderPhrases[0]);
-
-  React.useEffect(() => {
-    let currentIndex = 0;
-    const intervalId = setInterval(() => {
-      currentIndex = (currentIndex + 1) % placeholderPhrases.length;
-      setCurrentPlaceholder(placeholderPhrases[currentIndex]);
-    }, 3000); // Change placeholder every 3 seconds
-    return () => clearInterval(intervalId);
-  }, [placeholderPhrases]);
+  const aiPanelContent = React.useMemo(() => <AIPanel />, []);
+  const clipsPanelContent = React.useMemo(() => <ClipsPanel currentIndex={clipsPanelCurrentIndex} setCurrentIndex={setClipsPanelCurrentIndex} />, [clipsPanelCurrentIndex, setClipsPanelCurrentIndex]); // Changed to use ClipsPanel
+  const eventsPanelContent = React.useMemo(() => <TempleEventsPanel />, []);
 
   // useClickOutside hook (from snippet, adapted path)
   useClickOutside(dockWrapperRef, () => {
@@ -414,7 +900,8 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
       label: 'Events',
       title: <IconCalendar className='size-5' />,
       subtitle: 'Calendar',
-      action: () => { setEventsOpen(true); safePlayClick(); },
+      isExpandable: true,
+      content: eventsPanelContent,
     },
     {
       id: 6, // New ID for Shop (already present)
@@ -434,18 +921,6 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
       isExpandable: true,
       content: (
         <div className='flex flex-col gap-2 p-2 max-h-[calc(100vh-200px)] overflow-y-auto'> {/* Reduced p-3 to p-2, gap-3 to gap-2 */}
-          {/* AI Search Bar Placeholder */}
-          <div className="relative w-full col-span-2 sm:col-span-3 mb-1"> {/* Reduced mb-2 to mb-1 */}
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder={currentPlaceholder}
-              className="flex h-9 w-full rounded-full border border-input bg-background px-3 py-2 pl-10 text-xs sm:text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-900/30 dark:border-indigo-700/50"
-              readOnly // Make it read-only as it's a placeholder
-              onFocus={(e) => e.target.blur()} // Prevent focus to reinforce it's non-interactive
-            />
-          </div>
-          
           <div className='grid grid-cols-2 sm:grid-cols-3 gap-2 place-items-center w-full'> {/* Reduced gap-3 to gap-2 */}
             {/* Sound Toggle Button - Styled as a square item */}
             <button
@@ -559,7 +1034,23 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
         </div>
       ),
     },
-  ], [isMobile, isSoundEnabled, handleNavClick, handleSoundToggle, playTempleBell, safePlayClick, safePlayHover, setDeitiesOpen, setEventsOpen, navItems, templeStatus, setActiveDockItem, setIsDockOpen, currentPlaceholder]); // setOpen removed from dependencies
+    {
+      id: 7,
+      label: 'AI Bot',
+      title: <IconRobo className='size-5' />,
+      subtitle: 'Ask',
+      isExpandable: true,
+      content: aiPanelContent,
+    },
+    {
+      id: 8, // ID for Clips (formerly Shorts)
+      label: 'Clips', // Renamed from Shorts
+      title: <Youtube className='size-5' />,
+      subtitle: 'Watch', // Updated subtitle
+      isExpandable: true,
+      content: clipsPanelContent, // Use the new ClipsPanel
+    },
+  ], [isMobile, isSoundEnabled, handleNavClick, handleSoundToggle, playTempleBell, safePlayClick, safePlayHover, setDeitiesOpen, navItems, templeStatus, setActiveDockItem, setIsDockOpen, aiPanelContent, clipsPanelContent, clipsPanelCurrentIndex, setClipsPanelCurrentIndex, eventsPanelContent]); // Updated to clipsPanelContent
 
 
   const handleDockItemClick = React.useCallback((item: DockItemData) => {
@@ -568,10 +1059,20 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
     if (item.isExpandable) {
       setActiveLabelItemId(null);
       setHoveredLabelItemId(null);
-      setIsDockOpen(prev => !prev);
-      setActiveDockItem(currentActiveDockItem => (isDockOpen && currentActiveDockItem === item.id ? null : item.id));
+      
+      const isClickedItemActive = activeDockItem === item.id;
+
+      if (isDockOpen && isClickedItemActive) {
+        setIsDockOpen(false);
+        setActiveDockItem(null);
+      } else {
+        setIsDockOpen(true);
+        setActiveDockItem(item.id);
+      }
     } else {
-      setActiveLabelItemId(prevId => (prevId === item.id ? null : item.id));
+      if (!isMobile) {
+        setActiveLabelItemId(prevId => (prevId === item.id ? null : item.id));
+      }
       setHoveredLabelItemId(null);
       setIsDockOpen(false);
       setActiveDockItem(null);
@@ -579,15 +1080,19 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
         item.action();
       }
     }
-  }, [isDockOpen, playTempleBell, safePlayClick, setActiveDockItem, setActiveLabelItemId, setHoveredLabelItemId, setIsDockOpen]);
+  }, [isMobile, isDockOpen, activeDockItem, playTempleBell, safePlayClick, setActiveDockItem, setActiveLabelItemId, setHoveredLabelItemId, setIsDockOpen]);
 
   const handleDockItemMouseEnter = React.useCallback((item: DockItemData) => {
-    if (!item.isExpandable) {
+    if (!isMobile && !item.isExpandable) {
       setHoveredLabelItemId(item.id);
       safePlayHover();
     }
-  }, [safePlayHover, setHoveredLabelItemId]);
+  }, [isMobile, safePlayHover, setHoveredLabelItemId]);
 
+
+  const activeItem = DOCK_ITEMS.find(item => item.id === activeDockItem);
+  const isClipsPanelActive = isDockOpen && activeItem?.label === 'Clips';
+  const isEventsPanelActive = isDockOpen && activeItem?.label === 'Events';
 
   return (
     <MotionConfig transition={{ layout: { duration: 0.35, type: 'spring', bounce: 0.1 } }}>
@@ -595,56 +1100,226 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
         className="fixed bottom-[var(--banner-height,44px)] left-0 w-full pb-safe pointer-events-none transform-gpu"
         initial={{ y: 0 }}
         // Adjust z-index based on visibility to ensure it's below footer when hidden
-        animate={{ 
-          y: isDockVisible && !isFooterVisible ? 10 : 160, // Adjusted to position lower and increase hidden offset
-          zIndex: isDockVisible && !isFooterVisible ? 40 : 10 // Lower z-index when hidden
+        animate={{
+          y: (isClipsPanelActive || isEventsPanelActive) ? 0 : (isDockVisible && !isFooterVisible ? 10 : 160),
+          zIndex: (isClipsPanelActive || isEventsPanelActive) ? 50 : (isDockVisible && !isFooterVisible ? 40 : 10)
         }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
       >
-        <div className="container relative mx-auto flex justify-center px-2 pb-2 sm:px-4">
+        <div className={cn(
+            "relative mx-auto flex justify-center",
+            isClipsPanelActive ? "w-full h-full p-0" : "container px-2 pb-2 sm:px-4"
+          )}>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={mainDockAppearanceTransition}
-            className="relative w-full max-w-md rounded-3xl bg-pink-50/60 backdrop-blur-sm dark:bg-pink-900/50 sm:max-w-fit pointer-events-auto overflow-hidden mb-2 transform-gpu border border-pink-200/30 dark:border-pink-700/30 shadow-[0_0_10px_rgba(255,182,193,0.3)] dark:shadow-[0_0_10px_rgba(255,105,180,0.3)]"
+            className={cn(
+              "relative pointer-events-auto mb-2",
+              isClipsPanelActive
+                ? "w-full h-full max-w-full rounded-none border-none bg-black shadow-none" // Ensure full width and height
+                : "w-full sm:max-w-fit max-w-md rounded-3xl bg-pink-50/60 backdrop-blur-sm dark:bg-pink-900/50 border border-pink-200/30 dark:border-pink-700/30 shadow-[0_0_10px_rgba(255,182,193,0.3)] dark:shadow-[0_0_10px_rgba(255,105,180,0.3)] transform-gpu",
+              isClipsPanelActive ? '' : (isMobile ? 'overflow-visible' : 'overflow-hidden')
+            )}
             ref={dockWrapperRef}
             onMouseLeave={() => setHoveredLabelItemId(null)} >
             <MotionConfig transition={dockSpringTransition}>
-              <div className='h-full w-full p-2'>
-                <div className='overflow-hidden rounded-t-2xl'>
+              <div className={cn('h-full w-full', isClipsPanelActive ? 'p-0' : 'p-2')}>
+                <div className={cn(isClipsPanelActive ? 'rounded-none h-full w-full' : 'overflow-hidden rounded-t-2xl')}> {/* Ensure full height/width for clips panel content area */}
                   <AnimatePresence initial={false} mode='sync'>
-                    {isDockOpen && activeDockItem === DOCK_ITEMS.find(i => i.isExpandable)?.id && (
+                    {isDockOpen && activeItem?.isExpandable && (
                       <motion.div
-                        key='content'
+                        key={activeItem.id}
                         initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: heightContent || 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        style={{ width: maxDockWidth > 0 ? maxDockWidth : 'auto' }}
+                        animate={{
+                          height: isClipsPanelActive
+                            ? (isMobile ? 'calc(100vh - var(--banner-height, 44px) - 56px - env(safe-area-inset-bottom))' : 'calc(100vh - var(--banner-height, 44px) - 64px - env(safe-area-inset-bottom))') // Adjusted height calculation
+                            : heightContent || 'auto',
+                          opacity: 1
+                        }}
+                        exit={{ y: "100%", opacity: 0, transition: { duration: 0.3, ease: "easeInOut" } }}
+                        style={{
+                          width: isClipsPanelActive
+                            ? '100vw' // Panel content itself can be 100vw
+                            : (maxDockWidth > 0 ? maxDockWidth : 'auto'),
+                          maxWidth: '100vw' // Ensure it doesn't exceed viewport
+                        }}
                       >
-                        <div ref={contentRef} className='p-0'>
-                          {DOCK_ITEMS.find(item => item.id === activeDockItem && item.isExpandable)?.content}
+                        <div
+                          ref={contentRef}
+                          className={cn(
+                            isClipsPanelActive ? 'h-full w-full p-0' : 'p-0' // Ensure full height/width for clips panel content
+                          )}
+                        >
+                          {activeItem.content}
                         </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </div>
-                <div className='flex space-x-2 sm:space-x-3 p-1.5 sm:p-2.5 justify-center' ref={menuRef}>
-                  {DOCK_ITEMS.map((item) => (
-                    <DockItemComponent
-                      key={item.id}
-                      item={item}
-                      isMobile={isMobile}
-                      templeStatus={templeStatus}
-                      activeLabelItemId={activeLabelItemId}
-                      hoveredLabelItemId={hoveredLabelItemId}
-                      isDockOpen={isDockOpen}
-                      activeDockItem={activeDockItem}
-                      dockSpringTransition={dockSpringTransition}
-                      onItemClick={handleDockItemClick}
-                      onItemMouseEnter={handleDockItemMouseEnter}
-                    />
-                  ))}
-                  <div className="h-8 w-px bg-border mx-1" />
+                <div className={cn(
+                    'flex items-end', // Use items-end to align with the bottom, allowing the center button to pop up
+                    isClipsPanelActive
+                      ? 'p-0 py-1 fixed bottom-[env(safe-area-inset-bottom)] left-0 right-0 bg-black/80 backdrop-blur-sm h-[56px] sm:h-[64px] justify-center space-x-2 sm:space-x-3'
+                      : 'p-1.5 sm:p-2.5',
+                    isMobile && !isClipsPanelActive ? 'relative' : 'justify-center space-x-2 sm:space-x-3'
+                  )} ref={menuRef}>
+                  {isMobile && !isClipsPanelActive ? (
+                    <>
+                      {/* Bottom row of 4 icons */}
+                      <div className="flex w-full justify-between items-end">
+                        {/* Left 2 items */}
+                        <div className="flex justify-evenly w-[calc(50%-36px)]">
+                          {[1, 2].map(id => DOCK_ITEMS.find(item => item.id === id)).map(item => item && (
+                            <DockItemComponent
+                              key={item.id}
+                              item={item}
+                              isMobile={isMobile}
+                              templeStatus={templeStatus}
+                              activeLabelItemId={activeLabelItemId}
+                              hoveredLabelItemId={hoveredLabelItemId}
+                              isDockOpen={isDockOpen}
+                              activeDockItem={activeDockItem}
+                              dockSpringTransition={dockSpringTransition}
+                              onItemClick={handleDockItemClick}
+                              onItemMouseEnter={handleDockItemMouseEnter}
+                            />
+                          ))}
+                        </div>
+                        {/* Right 2 items */}
+                        <div className="flex justify-evenly w-[calc(50%-36px)]">
+                          {[3, 5].map(id => DOCK_ITEMS.find(item => item.id === id)).map(item => item && (
+                            <DockItemComponent
+                              key={item.id}
+                              item={item}
+                              isMobile={isMobile}
+                              templeStatus={templeStatus}
+                              activeLabelItemId={activeLabelItemId}
+                              hoveredLabelItemId={hoveredLabelItemId}
+                              isDockOpen={isDockOpen}
+                              activeDockItem={activeDockItem}
+                              dockSpringTransition={dockSpringTransition}
+                              onItemClick={handleDockItemClick}
+                              onItemMouseEnter={handleDockItemMouseEnter}
+                            />
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Center "Clips" Button and AI Pill - absolutely positioned */}
+                      <div className="absolute left-1/2 -translate-x-1/2 -top-7 flex flex-col items-center gap-2">
+                        {/* Clips Button */}
+                        {DOCK_ITEMS.filter(item => item.id === 8).map(item => (
+                          <DockItemComponent
+                            key={item.id}
+                            item={item}
+                            isMobile={isMobile}
+                            templeStatus={templeStatus}
+                            activeLabelItemId={activeLabelItemId}
+                            hoveredLabelItemId={hoveredLabelItemId}
+                            isDockOpen={isDockOpen}
+                            activeDockItem={activeDockItem}
+                            dockSpringTransition={dockSpringTransition}
+                            onItemClick={handleDockItemClick}
+                            onItemMouseEnter={handleDockItemMouseEnter}
+                          />
+                        ))}
+                        {/* AI Pill Button */}
+                        {DOCK_ITEMS.filter(item => item.id === 7).map(item => {
+                            const isMainMenuPanelActive = activeDockItem === item.id && isDockOpen;
+                            const aiPillStyling = isMainMenuPanelActive
+                                ? "bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-500 text-white dark:from-amber-500 dark:via-yellow-600 dark:to-orange-600 dark:text-amber-50 shadow-lg ring-2 ring-white/30 dark:ring-amber-400/40 scale-105"
+                                : "bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-400 text-yellow-900 dark:text-amber-200 dark:from-amber-600/80 dark:via-yellow-700/80 dark:to-orange-700/80 hover:from-yellow-400 hover:to-orange-500 dark:hover:from-amber-500 dark:hover:to-orange-600 shadow-md hover:shadow-lg ring-1 ring-amber-500/30 dark:ring-amber-700/50 hover:ring-amber-500/50 dark:hover:ring-amber-500/70 transform hover:scale-105";
+
+                            return (
+                                <motion.button
+                                    key={item.id}
+                                    type="button"
+                                    aria-label={item.label}
+                                    layout
+                                    className={cn(
+                                        "relative flex items-center justify-center rounded-full cursor-pointer h-7 px-3 text-foreground/80 transition-all duration-200 active:scale-[0.98]",
+                                        aiPillStyling
+                                    )}
+                                    onClick={() => handleDockItemClick(item)}
+                                    onMouseEnter={() => handleDockItemMouseEnter(item)}
+                                >
+                                    <div className="flex items-center gap-1">
+                                        {item.title}
+                                        <span className="text-xs font-medium hidden sm:inline">{item.label}</span>
+                                    </div>
+                                </motion.button>
+                            );
+                        })}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Desktop Layout or when Clips Panel is Active on Mobile */}
+                      <div className={cn('flex space-x-2 sm:space-x-3', isClipsPanelActive ? 'text-white' : '')}>
+                        {DOCK_ITEMS.filter(item => {
+                          // If clips panel is active on mobile, we only want the main controls, not AI/Clips again
+                          if (isMobile && isClipsPanelActive) {
+                            return [1, 2, 3, 5, 8].includes(item.id);
+                          }
+                          // Desktop: show all except AI Bot (7) and Clips (8) in the main group
+                          if (!isMobile) {
+                            return ![7, 8].includes(item.id)
+                          }
+                          return false; // Should not be reached
+                        }).map((item) => (
+                          <DockItemComponent
+                            key={item.id}
+                            item={item}
+                            isMobile={isMobile}
+                            templeStatus={templeStatus}
+                            activeLabelItemId={activeLabelItemId}
+                            hoveredLabelItemId={hoveredLabelItemId}
+                            isDockOpen={isDockOpen}
+                            activeDockItem={activeDockItem}
+                            dockSpringTransition={dockSpringTransition}
+                            onItemClick={handleDockItemClick}
+                            onItemMouseEnter={handleDockItemMouseEnter}
+                          />
+                        ))}
+                      </div>
+                      {!isMobile && (
+                        <>
+                          <div className="h-8 w-px bg-border self-center" />
+                          {DOCK_ITEMS.filter(item => item.id === 8).map((item) => (
+                            <DockItemComponent
+                              key={item.id}
+                              item={item}
+                              isMobile={isMobile}
+                              templeStatus={templeStatus}
+                              activeLabelItemId={activeLabelItemId}
+                              hoveredLabelItemId={hoveredLabelItemId}
+                              isDockOpen={isDockOpen}
+                              activeDockItem={activeDockItem}
+                              dockSpringTransition={dockSpringTransition}
+                              onItemClick={handleDockItemClick}
+                              onItemMouseEnter={handleDockItemMouseEnter}
+                            />
+                          ))}
+                          {DOCK_ITEMS.filter(item => item.id === 7).map((item) => (
+                            <DockItemComponent
+                              key={item.id}
+                              item={item}
+                              isMobile={isMobile}
+                              templeStatus={templeStatus}
+                              activeLabelItemId={activeLabelItemId}
+                              hoveredLabelItemId={hoveredLabelItemId}
+                              isDockOpen={isDockOpen}
+                              activeDockItem={activeDockItem}
+                              dockSpringTransition={dockSpringTransition}
+                              onItemClick={handleDockItemClick}
+                              onItemMouseEnter={handleDockItemMouseEnter}
+                            />
+                          ))}
+                        </>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
             </MotionConfig>

@@ -791,7 +791,7 @@ export function HeroSection() {
           animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 20 }}
           transition={{ delay: 0.9 }} // Delayed to appear after main content
         >
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 max-w-3xl mx-auto border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-pink-900/20 rounded-2xl shadow-md p-6 max-w-3xl mx-auto border border-gray-200 dark:border-pink-700/30">
             <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white leading-relaxed tracking-tight">
             Join our sacred calling: spread Śrīla Prabhupāda's wisdom and guide souls Back home, back to Godhead.
             </p>

@@ -382,6 +382,21 @@ code {
   .animate-pulse-fast {
     animation: pulse-fast 1.5s ease-in-out infinite;
   }
+.text-glow {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 192, 203, 0.5), 0 0 12px rgba(255, 105, 180, 0.5);
+  }
+
+  .dark .text-glow {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6), 0 0 10px rgba(255, 192, 203, 0.6), 0 0 12px rgba(255, 105, 180, 0.6);
+  }
+
+  .text-glow-hover:hover {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.7), 0 0 10px rgba(255, 192, 203, 0.7), 0 0 12px rgba(255, 105, 180, 0.7);
+  }
+
+  .dark .text-glow-hover:hover {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 192, 203, 0.8), 0 0 12px rgba(255, 105, 180, 0.8);
+  }
 }
 
 .glass::after {
@@ -421,4 +436,31 @@ code {
   border-color: rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 
               inset 0 2px 8px rgba(255, 255, 255, 0.05);
+}
+
+@keyframes chat-input-glow-animation {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 5px rgba(0, 122, 255, 0.1);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.4);
+  }
+}
+
+.chat-input-glow {
+  animation: chat-input-glow-animation 2.5s infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.dark .chat-input-glow {
+  animation: chat-input-glow-animation 2.5s infinite;
+}
+
+input:focus + .chat-input-glow,
+.chat-input-glow:active {
+  opacity: 1;
 }

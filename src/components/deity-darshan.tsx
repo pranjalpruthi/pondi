@@ -6,27 +6,21 @@ import {
   ChevronRight, 
   Facebook,
   MessageCircle,
-  Sparkles // Added for header
-  // XIcon removed as full screen view is removed
+  Sparkles,
+  X
 } from "lucide-react"
 import { useQuery } from '@tanstack/react-query'
 import { useState, useRef, useEffect, useMemo, useCallback, memo } from "react"
 import { Button } from "@/components/ui/button"
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer"
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+
 import { useTempleStatus } from '@/hooks/useTempleStatus';
+import { useTheme } from "@/components/theme-provider";
+import { useMediaQuery } from "@uidotdev/usehooks";
 
 interface DeityDarshanProps {
   open: boolean
@@ -204,6 +198,8 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
   const carouselRef = useRef<HTMLDivElement>(null)
   // Autoplay timer ref removed
   const templeStatus = useTempleStatus();
+  const { theme } = useTheme();
+  const isMobile = useMediaQuery('(max-width: 767px)');
   
   const { data: deities } = useQuery({
     queryKey: ['deitiesInfo'],
@@ -338,33 +334,264 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
 
   return (
     <>
-      <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent className={cn(
-          "h-[90vh] md:h-[95vh] max-h-[95vh] overflow-hidden backdrop-blur-sm",
-          "bg-gradient-to-b",
-          templeStatus.label === "Darshan" ? "from-green-100/70 to-blue-50/70 dark:from-green-900/20 dark:to-blue-900/10" : "",
-          templeStatus.label === "Aarati" ? "from-pink-100/70 to-blue-50/70 dark:from-pink-900/20 dark:to-blue-900/10" : "",
-          templeStatus.label === "Temple Open" ? "from-yellow-100/70 to-blue-50/70 dark:from-yellow-900/20 dark:to-blue-900/10" : "",
-          templeStatus.label === "Closed" ? "from-red-100/70 to-blue-50/70 dark:from-red-900/20 dark:to-blue-900/10" : "",
-          templeStatus.label === "End of Day" ? "from-gray-100/70 to-blue-50/70 dark:from-gray-800/30 dark:to-blue-900/10" : "",
-          templeStatus.label === "Special Event" ? "from-orange-100/70 to-blue-50/70 dark:from-orange-900/20 dark:to-blue-900/10" : ""
-        )}>
-          <div className="mx-auto w-full max-w-6xl flex flex-col h-full p-2 sm:p-4">
-            <DrawerHeader className="px-2 pt-2 pb-1 sm:px-4 sm:pt-3 sm:pb-2 flex-shrink-0">
-                <div className="flex items-center justify-between mb-1 sm:mb-2">
-                  <div className="flex items-center gap-1.5 sm:gap-2">
-                    <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-0.5 sm:p-1 rounded-md sm:rounded-lg shadow-md">
-                      <Clock className={cn(
-                        "h-4 w-4 sm:h-5 md:h-6 lg:h-7 text-white",
-                        templeStatus.label === "Darshan" ? "text-green-500 dark:text-green-400" :
-                        templeStatus.label === "Aarati" ? "text-pink-500 dark:text-pink-400" :
-                        templeStatus.label === "Closed" ? "text-red-500 dark:text-red-400" :
-                        "text-amber-500 dark:text-amber-400"
-                      )} />
+      {isMobile ? (
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              className="fixed bottom-0 left-0 w-full h-[90vh] flex flex-col bg-gray-50 dark:bg-black z-50 pointer-events-auto"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+                <div className="flex items-center justify-between p-4 border-b dark:border-zinc-700 border-gray-200">
+                <div className="flex items-center gap-3">
+                  <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 p-0.5 rounded-full shadow-md">
+                    <div className={cn("rounded-full p-1", theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
+                      <Clock className="h-4 w-4 text-blue-500" />
                     </div>
-                    <DrawerTitle className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 text-transparent bg-clip-text">
+                  </div>
+                  <h2 className="text-lg font-semibold text-foreground">
+                    Divine Visions
+                  </h2>
+                  <Popover open={isAaratiPopoverOpen} onOpenChange={setIsAaratiPopoverOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className={cn(
+                          "relative rounded-full p-1.5 transition-colors h-8 w-8", 
+                          templeStatus.label === "Darshan" || templeStatus.label === "Aarati" 
+                            ? "hover:bg-green-100/50 dark:hover:bg-green-800/50" 
+                            : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                        )}
+                        aria-label="Aarati Timings"
+                      >
+                        <Clock className={cn(
+                          "h-4 w-4", 
+                          templeStatus.label === "Darshan" ? "text-green-500 dark:text-green-400" :
+                          templeStatus.label === "Aarati" ? "text-pink-500 dark:text-pink-400" :
+                          templeStatus.label === "Closed" ? "text-red-500 dark:text-red-400" :
+                          "text-amber-500 dark:text-amber-400"
+                        )} />
+                        {(templeStatus.label === "Aarati" || templeStatus.label === "Darshan") && (
+                          <span className="absolute top-0 right-0 flex h-2.5 w-2.5"> 
+                            <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full opacity-75", templeStatus.label === "Aarati" ? "bg-pink-400" : "bg-green-400")}></span>
+                            <span className={cn("relative inline-flex rounded-full h-full w-full", templeStatus.label === "Aarati" ? "bg-pink-500" : "bg-green-500")}></span>
+                          </span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent 
+                      className="w-60 p-0 rounded-xl border-gray-200 dark:border-gray-700 shadow-xl bg-white dark:bg-gray-800" 
+                      sideOffset={10}
+                    >
+                      <div className={cn(
+                        "p-2.5 rounded-t-xl flex items-center gap-2",
+                        templeStatus.label === "Darshan" ? "bg-gradient-to-r from-green-500 to-emerald-600" :
+                        templeStatus.label === "Aarati" ? "bg-gradient-to-r from-pink-500 to-rose-600" :
+                        templeStatus.label === "Closed" ? "bg-gradient-to-r from-red-500 to-orange-600" :
+                        "bg-gradient-to-r from-gray-500 to-slate-600"
+                      )}>
+                        <Clock className="h-4 w-4 text-white" /> 
+                        <h3 className="text-sm font-semibold text-white">Temple Aarati Timings</h3>
+                      </div>
+                      <div className="p-2.5 space-y-1.5">
+                        {AARATI_TIMINGS.map((aarati, index) => (
+                          <AaratiTimingItem key={index} name={aarati.name} time={aarati.time} />
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <button
+                  onClick={() => onOpenChange(false)}
+                  className="rounded-full p-1.5 hover:bg-gray-200/70 dark:hover:bg-zinc-700/70 transition-colors"
+                  aria-label="Close"
+                >
+                  <X className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto">
+                <div className="flex overflow-x-auto gap-3 px-2 pb-4 pt-2 flex-shrink-0">
+                  {deities.map((deity) => (
+                    <DeityTab 
+                      key={deity.id} 
+                      deity={deity} 
+                      isSelected={selectedDeity.id === deity.id} 
+                      onClick={() => handleSelectDeity(deity)} 
+                    />
+                  ))}
+                </div>
+                <div className="flex-1 min-h-0 overflow-y-auto px-2 pb-4">
+                  <div className="grid grid-cols-1 gap-6 md:gap-8">
+                    <div>
+                      <div 
+                        ref={carouselRef}
+                        className="relative rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 shadow-lg w-full aspect-square h-[40vh] cursor-grab"
+                        onTouchStart={handleTouchStart}
+                        onTouchMove={handleTouchMove}
+                        onTouchEnd={handleTouchEnd}
+                        onMouseDown={handleMouseDown}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseLeave}
+                      >
+                        <AnimatePresence mode="wait">
+                          {selectedDeity && selectedDeity.images && selectedDeity.images.length > 0 && (
+                            <motion.div
+                              key={`${selectedDeity.id}-${currentImageIndex}`}
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: isImageLoading ? 0 : 1 }}
+                              transition={{ duration: 0.3 }}
+                              className="absolute inset-0"
+                            >
+                              <DeityImage 
+                                src={selectedDeity.images[currentImageIndex].replace("w=700&h=700", "w=800&h=800")} 
+                                alt={selectedDeity.name}
+                                onLoad={() => setIsImageLoading(false)}
+                              />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                        {isImageLoading && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900">
+                            <Sparkles className="h-12 w-12 text-white/50 animate-pulse" />
+                          </div>
+                        )}
+                        
+                        {selectedDeity && selectedDeity.images && selectedDeity.images.length > 1 && (
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="absolute left-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-black/30 text-white hover:bg-black/50 dark:bg-white/20 dark:hover:bg-white/40 transition-opacity z-10"
+                              onClick={(e) => { e.stopPropagation(); navigateImage('prev'); }}
+                              aria-label="Previous Image"
+                            >
+                              <ChevronLeft className="h-6 w-6" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-black/30 text-white hover:bg-black/50 dark:bg-white/20 dark:hover:bg-white/40 transition-opacity z-10"
+                              onClick={(e) => { e.stopPropagation(); navigateImage('next'); }}
+                              aria-label="Next Image"
+                            >
+                              <ChevronRight className="h-6 w-6" />
+                            </Button>
+                          
+                            <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-2.5 z-10">
+                              {selectedDeity.images.map((_, index) => (
+                                <button
+                                  key={index}
+                                  onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(index);}}
+                                  className={cn(
+                                    "w-2.5 h-2.5 rounded-full transition-all duration-300 ease-in-out",
+                                    index === currentImageIndex
+                                      ? 'bg-white dark:bg-gray-200 w-5'
+                                      : 'bg-white/50 dark:bg-gray-500/50 hover:bg-white/80 dark:hover:bg-gray-400/80'
+                                  )}
+                                  aria-label={`Go to image ${index + 1}`}
+                                />
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      {renderDeityContent}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex-shrink-0 p-2 border-t border-border/50">
+                <div className="flex flex-col gap-3 w-full">
+                  <div className="flex gap-3 flex-1">
+                    {selectedDeity?.socialLinks?.facebook && (
+                      <a 
+                        href={selectedDeity.socialLinks.facebook}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1"
+                      >
+                        <Button 
+                          className="w-full bg-[#1877F2] text-white hover:bg-[#1877F2]/90 dark:bg-[#1877F2] dark:hover:bg-[#1877F2]/80 h-8 text-xs"
+                          size="sm"
+                        >
+                          <Facebook className="mr-1.5 h-3 w-3" />
+                          <span>Facebook</span>
+                        </Button>
+                      </a>
+                    )}
+                    
+                    {selectedDeity?.socialLinks?.telegram && (
+                      <a 
+                        href={selectedDeity.socialLinks.telegram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1"
+                      >
+                        <Button 
+                          className="w-full bg-[#0088CC] text-white hover:bg-[#0088CC]/90 dark:bg-[#0088CC] dark:hover:bg-[#0088CC]/80 h-8 text-xs"
+                          size="sm"
+                        >
+                          <MessageCircle className="mr-1.5 h-3 w-3" />
+                          <span>Telegram</span>
+                        </Button>
+                      </a>
+                    )}
+                  </div>
+                  
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full h-8 text-xs border-red-300 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-700 dark:text-red-300"
+                    onClick={() => onOpenChange(false)}
+                  >
+                    Close
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      ) : (
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              className="fixed inset-0 flex items-start justify-center p-2 sm:p-4 md:p-6 lg:p-8 overflow-y-auto z-[100] pointer-events-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                className="absolute inset-0 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-sm"
+                onClick={() => onOpenChange(false)}
+              />
+              <motion.div
+                initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 30, scale: 0.98 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                className={cn(
+                  "relative z-50 w-full max-w-4xl rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border",
+                  theme === 'dark' ? 'bg-zinc-900/90 border-zinc-700/80' : 'bg-white/90 border-gray-200/70',
+                  "backdrop-blur-xl"
+                )}
+              >
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 p-0.5 rounded-full shadow-md">
+                      <div className={cn("rounded-full p-1.5", theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
+                        <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-blue-500" />
+                      </div>
+                    </div>
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 text-transparent bg-clip-text">
                       Divine Visions
-                    </DrawerTitle>
+                    </h2>
                     <Popover open={isAaratiPopoverOpen} onOpenChange={setIsAaratiPopoverOpen}>
                       <PopoverTrigger asChild>
                         <Button
@@ -383,7 +610,7 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
                             templeStatus.label === "Darshan" ? "text-green-500 dark:text-green-400" :
                             templeStatus.label === "Aarati" ? "text-pink-500 dark:text-pink-400" :
                             templeStatus.label === "Closed" ? "text-red-500 dark:text-red-400" :
-                            "text-amber-500 dark:text-amber-400" // Default color changed to amber/saffron
+                            "text-amber-500 dark:text-amber-400"
                           )} />
                           {(templeStatus.label === "Aarati" || templeStatus.label === "Darshan") && (
                             <span className="absolute top-0 right-0 flex h-2.5 w-2.5 sm:h-3"> 
@@ -415,171 +642,164 @@ export function DeityDarshan({ open, onOpenChange }: DeityDarshanProps) {
                       </PopoverContent>
                     </Popover>
                   </div>
-                </div>
-                
-                <DrawerDescription className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-0.5 mb-1.5 sm:mb-2 hidden sm:block">
-                  Immerse yourself in the sacred presence of the Deities.
-                </DrawerDescription>
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="text-[10px] leading-tight sm:text-xs text-center italic text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-1.5 mt-1.5 sm:pt-2 sm:mt-2 hidden sm:block"
-                >
-                  "By chanting the Hare Krishna mantra, one cleanses the dust from the mirror of the mind and becomes eligible to understand his spiritual identity."
-                  <br />- Srila Prabhupada (Teachings of Queen Kunti, Ch. 18)
-                </motion.div>
-            </DrawerHeader>
-
-            <div className="flex overflow-x-auto gap-3 px-2 sm:px-4 pb-4 pt-2 flex-shrink-0">
-              {deities.map((deity) => (
-                <DeityTab 
-                  key={deity.id} 
-                  deity={deity} 
-                  isSelected={selectedDeity.id === deity.id} 
-                  onClick={() => handleSelectDeity(deity)} 
-                />
-              ))}
-            </div>
-
-            <div className="flex-1 min-h-0 overflow-y-auto px-2 sm:px-4 pb-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 md:h-full">
-                <div className="md:flex md:flex-col md:h-full">
-                  <div 
-                    ref={carouselRef}
-                    className="relative rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 shadow-lg w-full aspect-square h-[40vh] sm:h-[50vh] md:h-full md:aspect-auto md:flex-1 cursor-grab" // Added cursor-grab for drag indication
-                    onTouchStart={handleTouchStart}
-                    onTouchMove={handleTouchMove}
-                    onTouchEnd={handleTouchEnd}
-                    onMouseDown={handleMouseDown}
-                    onMouseMove={handleMouseMove}
-                    onMouseUp={handleMouseUp}
-                    onMouseLeave={handleMouseLeave}
-                    // onClick removed
+                  <button
+                    onClick={() => onOpenChange(false)}
+                    className="rounded-full p-1.5 sm:p-2 hover:bg-gray-200/70 dark:hover:bg-zinc-700/70 transition-colors"
+                    aria-label="Close"
                   >
-                    <AnimatePresence mode="wait">
-                      {selectedDeity && selectedDeity.images && selectedDeity.images.length > 0 && (
-                        <motion.div
-                          key={`${selectedDeity.id}-${currentImageIndex}`}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: isImageLoading ? 0 : 1 }}
-                          transition={{ duration: 0.3 }}
-                          className="absolute inset-0"
+                    <X className="h-5 w-5 sm:h-6 sm:w-6 text-gray-600 dark:text-gray-400" />
+                  </button>
+                </div>
+                <div className="overflow-y-auto">
+                  <div className="flex overflow-x-auto gap-3 pb-4 pt-2 flex-shrink-0">
+                    {deities.map((deity) => (
+                      <DeityTab 
+                        key={deity.id} 
+                        deity={deity} 
+                        isSelected={selectedDeity.id === deity.id} 
+                        onClick={() => handleSelectDeity(deity)} 
+                      />
+                    ))}
+                  </div>
+                  <div className="flex-1 min-h-0 overflow-y-auto pb-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 md:h-full">
+                      <div className="md:flex md:flex-col md:h-full">
+                        <div 
+                          ref={carouselRef}
+                          className="relative rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 shadow-lg w-full aspect-square h-[40vh] sm:h-[50vh] md:h-full md:aspect-auto md:flex-1 cursor-grab"
+                          onTouchStart={handleTouchStart}
+                          onTouchMove={handleTouchMove}
+                          onTouchEnd={handleTouchEnd}
+                          onMouseDown={handleMouseDown}
+                          onMouseMove={handleMouseMove}
+                          onMouseUp={handleMouseUp}
+                          onMouseLeave={handleMouseLeave}
                         >
-                          <DeityImage 
-                            src={selectedDeity.images[currentImageIndex].replace("w=700&h=700", "w=800&h=800")} 
-                            alt={selectedDeity.name}
-                            onLoad={() => setIsImageLoading(false)}
-                          />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                    {isImageLoading && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900">
-                        <Sparkles className="h-12 w-12 text-white/50 animate-pulse" />
-                      </div>
-                    )}
-                    
-                    {selectedDeity && selectedDeity.images && selectedDeity.images.length > 1 && (
-                      <>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-black/30 text-white hover:bg-black/50 dark:bg-white/20 dark:hover:bg-white/40 transition-opacity z-10"
-                          onClick={(e) => { e.stopPropagation(); navigateImage('prev'); }}
-                          aria-label="Previous Image"
-                        >
-                          <ChevronLeft className="h-6 w-6 sm:h-7 sm:w-7" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-black/30 text-white hover:bg-black/50 dark:bg-white/20 dark:hover:bg-white/40 transition-opacity z-10"
-                          onClick={(e) => { e.stopPropagation(); navigateImage('next'); }}
-                          aria-label="Next Image"
-                        >
-                          <ChevronRight className="h-6 w-6 sm:h-7 sm:w-7" />
-                        </Button>
-                      
-                        <div className="absolute bottom-3 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2.5 z-10">
-                          {selectedDeity.images.map((_, index) => (
-                            <button
-                              key={index}
-                              onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(index);}}
-                              className={cn(
-                                "w-2.5 h-2.5 rounded-full transition-all duration-300 ease-in-out",
-                                index === currentImageIndex
-                                  ? 'bg-white dark:bg-gray-200 w-5 sm:w-6'
-                                  : 'bg-white/50 dark:bg-gray-500/50 hover:bg-white/80 dark:hover:bg-gray-400/80'
-                              )}
-                              aria-label={`Go to image ${index + 1}`}
-                            />
-                          ))}
+                          <AnimatePresence mode="wait">
+                            {selectedDeity && selectedDeity.images && selectedDeity.images.length > 0 && (
+                              <motion.div
+                                key={`${selectedDeity.id}-${currentImageIndex}`}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: isImageLoading ? 0 : 1 }}
+                                transition={{ duration: 0.3 }}
+                                className="absolute inset-0"
+                              >
+                                <DeityImage 
+                                  src={selectedDeity.images[currentImageIndex].replace("w=700&h=700", "w=800&h=800")} 
+                                  alt={selectedDeity.name}
+                                  onLoad={() => setIsImageLoading(false)}
+                                />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                          {isImageLoading && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900">
+                              <Sparkles className="h-12 w-12 text-white/50 animate-pulse" />
+                            </div>
+                          )}
+                          
+                          {selectedDeity && selectedDeity.images && selectedDeity.images.length > 1 && (
+                            <>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-black/30 text-white hover:bg-black/50 dark:bg-white/20 dark:hover:bg-white/40 transition-opacity z-10"
+                                onClick={(e) => { e.stopPropagation(); navigateImage('prev'); }}
+                                aria-label="Previous Image"
+                              >
+                                <ChevronLeft className="h-6 w-6 sm:h-7 sm:w-7" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-black/30 text-white hover:bg-black/50 dark:bg-white/20 dark:hover:bg-white/40 transition-opacity z-10"
+                                onClick={(e) => { e.stopPropagation(); navigateImage('next'); }}
+                                aria-label="Next Image"
+                              >
+                                <ChevronRight className="h-6 w-6 sm:h-7 sm:w-7" />
+                              </Button>
+                            
+                              <div className="absolute bottom-3 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2.5 z-10">
+                                {selectedDeity.images.map((_, index) => (
+                                  <button
+                                    key={index}
+                                    onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(index);}}
+                                    className={cn(
+                                      "w-2.5 h-2.5 rounded-full transition-all duration-300 ease-in-out",
+                                      index === currentImageIndex
+                                        ? 'bg-white dark:bg-gray-200 w-5 sm:w-6'
+                                        : 'bg-white/50 dark:bg-gray-500/50 hover:bg-white/80 dark:hover:bg-gray-400/80'
+                                    )}
+                                    aria-label={`Go to image ${index + 1}`}
+                                  />
+                                ))}
+                              </div>
+                            </>
+                          )}
                         </div>
-                      </>
-                    )}
+                      </div>
+                      
+                      <div className="md:overflow-y-auto md:h-full md:pr-2">
+                        {renderDeityContent}
+                      </div>
+                    </div>
                   </div>
                 </div>
-                
-                <div className="md:overflow-y-auto md:h-full md:pr-2">
-                  {renderDeityContent}
-                </div>
-              </div>
-            </div>
-
-            <DrawerFooter className="px-2 sm:px-4 pb-3 pt-3 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
-              <div className="flex flex-col sm:flex-row gap-3 w-full">
-                <div className="flex gap-3 flex-1">
-                  {selectedDeity?.socialLinks?.facebook && (
-                    <a 
-                      href={selectedDeity.socialLinks.facebook}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1"
+                <div className="flex-shrink-0 p-2 border-t border-border/50">
+                  <div className="flex flex-col sm:flex-row gap-3 w-full">
+                    <div className="flex gap-3 flex-1">
+                      {selectedDeity?.socialLinks?.facebook && (
+                        <a 
+                          href={selectedDeity.socialLinks.facebook}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1"
+                        >
+                          <Button 
+                            className="w-full bg-[#1877F2] text-white hover:bg-[#1877F2]/90 dark:bg-[#1877F2] dark:hover:bg-[#1877F2]/80 h-8 text-xs"
+                            size="sm"
+                          >
+                            <Facebook className="mr-1.5 h-3 w-3" />
+                            <span className="hidden sm:inline">Facebook</span>
+                            <span className="sm:hidden">FB</span>
+                          </Button>
+                        </a>
+                      )}
+                      
+                      {selectedDeity?.socialLinks?.telegram && (
+                        <a 
+                          href={selectedDeity.socialLinks.telegram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1"
+                        >
+                          <Button 
+                            className="w-full bg-[#0088CC] text-white hover:bg-[#0088CC]/90 dark:bg-[#0088CC] dark:hover:bg-[#0088CC]/80 h-8 text-xs"
+                            size="sm"
+                          >
+                            <MessageCircle className="mr-1.5 h-3 w-3" />
+                            <span className="hidden sm:inline">Telegram</span>
+                            <span className="sm:hidden">TG</span>
+                          </Button>
+                        </a>
+                      )}
+                    </div>
+                    
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full sm:w-auto h-8 text-xs border-red-300 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-700 dark:text-red-300"
+                      onClick={() => onOpenChange(false)}
                     >
-                      <Button 
-                        className="w-full bg-[#1877F2] text-white hover:bg-[#1877F2]/90 dark:bg-[#1877F2] dark:hover:bg-[#1877F2]/80 h-12 text-base"
-                        size="lg"
-                      >
-                        <Facebook className="mr-2 h-5 w-5" />
-                        <span className="hidden sm:inline">Facebook</span>
-                        <span className="sm:hidden">FB</span>
-                      </Button>
-                    </a>
-                  )}
-                  
-                  {selectedDeity?.socialLinks?.telegram && (
-                    <a 
-                      href={selectedDeity.socialLinks.telegram}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1"
-                    >
-                      <Button 
-                        className="w-full bg-[#0088CC] text-white hover:bg-[#0088CC]/90 dark:bg-[#0088CC] dark:hover:bg-[#0088CC]/80 h-12 text-base"
-                        size="lg"
-                      >
-                        <MessageCircle className="mr-2 h-5 w-5" />
-                        <span className="hidden sm:inline">Telegram</span>
-                         <span className="sm:hidden">TG</span>
-                      </Button>
-                    </a>
-                  )}
+                      Close
+                    </Button>
+                  </div>
                 </div>
-                
-                <DrawerClose asChild className="flex-1 sm:flex-none sm:w-auto">
-                  <Button variant="outline" size="lg" className="w-full sm:w-auto h-12 text-base border-red-300 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-700 dark:text-red-300">
-                    Close
-                  </Button>
-                </DrawerClose>
-
-              </div>
-            </DrawerFooter>
-          </div>
-        </DrawerContent>
-      </Drawer>
-
-      {/* Full Image View Modal Removed */}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
     </>
   )
 }

@@ -10,7 +10,7 @@ import { InitialPageLoader } from '@/components/ui/initial-page-loader'; // Upda
 const LazyMilestoneTimeline = React.lazy(() =>
   import('@/components/homepage/milestone-timeline').then(module => ({ default: module.default }))
 );
-const LazyYouTubeMarquee = React.lazy(() => 
+const LazyYouTubeMarquee = React.lazy(() =>
   import('@/components/homepage/youtube-marquee').then(module => ({ default: module.YouTubeMarquee }))
 );
 const LazyQnASection = React.lazy(() => 
@@ -35,12 +35,10 @@ const LazyDisciplicSuccessionSection = React.lazy(() =>
 
 // Component for the section divider
 const SectionDivider = () => (
-  <div className="flex justify-center pt-12 pb-6 lg:pt-16 lg:pb-8"> {/* Adjusted padding: less bottom padding */}
-    <img 
-      src="/assets/extra/divider.svg" 
-      alt="Section Divider" 
-      className="h-4 sm:h-6 md:h-8 lg:h-10 text-gray-300 dark:text-gray-700" // Made smaller again
-      aria-hidden="true" // Decorative image
+  <div className="flex justify-center pt-12 pb-6 lg:pt-16 lg:pb-8">
+    <div 
+      className="w-24 sm:w-32 md:w-48 lg:w-64 h-1 sm:h-1.5 md:h-2 lg:h-2.5 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500"
+      aria-hidden="true" // Decorative element
     />
   </div>
 );
@@ -106,6 +104,8 @@ function HomePage() {
             <LazySlokaLearningSection />
           </Suspense>
 
+          <SectionDivider />
+
           <Suspense fallback={<SectionLoader />}>
             <LazyFeaturedBooksSection />
           </Suspense>
@@ -124,7 +124,7 @@ function HomePage() {
 
           <Suspense fallback={<SectionLoader />}>
             <LazyVisitUs />
-          </Suspense>
+i          </Suspense>
 
         </div>
       </main>
