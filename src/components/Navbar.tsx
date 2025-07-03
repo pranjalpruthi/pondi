@@ -191,7 +191,7 @@ function NavBarComponent({ className }: NavBarProps) {
                     </div>
 
                     {/* Desktop Navigation - Simplified */}
-                    <div className="hidden xl:flex items-center space-x-1">
+                    <div className="hidden xl:flex items-center space-x-0.5">
                         {Object.entries(navItems).map(([key, item]) => (
                             item.title !== 'Donate' && (
                                 item.subItems ? (
@@ -202,13 +202,13 @@ function NavBarComponent({ className }: NavBarProps) {
                                         onMouseLeave={() => setActiveMenu(null)}
                                     >
                                         <button
-                                            className="inline-flex items-center justify-center text-sm font-medium h-9 py-2 px-3
+                                            className="inline-flex items-center justify-center text-sm font-medium h-8 py-1 px-2
                                                         text-muted-foreground hover:text-primary
                                                         hover:bg-primary/10
                                                         rounded-full transition-all duration-200"
                                         >
                                             {item.icon}
-                                            <span className="ml-2">{item.title}</span>
+                                            <span className="ml-1.5">{item.title}</span>
                                         </button>
                                         <AnimatePresence>
                                             {activeMenu === item.title && (
@@ -242,13 +242,13 @@ function NavBarComponent({ className }: NavBarProps) {
                                         to={item.to!}
                                         onClick={safePlayClick}
                                         onMouseEnter={safePlayHover}
-                                        className="inline-flex items-center justify-center text-sm font-medium h-9 py-2 px-3
+                                        className="inline-flex items-center justify-center text-sm font-medium h-8 py-1 px-2
                                             text-muted-foreground hover:text-primary
                                             hover:bg-primary/10
                                             rounded-full transition-all duration-200"
                                     >
                                         {item.icon}
-                                        <span className="ml-2">{item.title}</span>
+                                        <span className="ml-1.5">{item.title}</span>
                                     </Link>
                                 )
                             )
@@ -406,12 +406,12 @@ export function NavBar({ className }: NavBarProps) {
 // Simplified navigation items - all as direct links
 const navItems: Record<string, NavItemType> = {
   home: {
-    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Love%20Hotel.png" alt="Home" width="25" height="25" fallback={<Home className="w-5 h-5" />} />,
+    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Love%20Hotel.png" alt="Home" width="22" height="22" fallback={<Home className="w-4 h-4" />} />,
     title: "Home",
     to: "/"
   },
   services: {
-    icon: <Menu className="w-5 h-5" />,
+    icon: <Menu className="w-4 h-4" />,
     title: "Services",
     subItems: [
       { title: 'Annadamn (Food Distribution)', to: '/coming-soon' },
@@ -421,27 +421,27 @@ const navItems: Record<string, NavItemType> = {
     ]
   },
   contribute: {
-    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Handshake.png" alt="Contribute" width="25" height="25" fallback={<Handshake className="w-5 h-5" />} />,
+    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Handshake.png" alt="Contribute" width="22" height="22" fallback={<Handshake className="w-4 h-4" />} />,
     title: "Contribute",
     to: "/coming-soon"
   },
   blog: {
-    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Writing%20Hand.png" alt="Blog" width="25" height="25" fallback={<PenSquare className="w-5 h-5" />} />,
+    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Writing%20Hand.png" alt="Blog" width="22" height="22" fallback={<PenSquare className="w-4 h-4" />} />,
     title: "Blog",
     to: "/coming-soon"
   },
   shop: {
-    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png" alt="Shop" width="25" height="25" fallback={<ShoppingCart className="w-5 h-5" />} />,
+    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png" alt="Shop" width="22" height="22" fallback={<ShoppingCart className="w-4 h-4" />} />,
     title: "Shop",
     to: "/shop"
   },
   about: {
-    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Globe%20with%20Meridians.png" alt="About" width="25" height="25" fallback={<Info className="w-5 h-5" />} />,
+    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Globe%20with%20Meridians.png" alt="About" width="22" height="22" fallback={<Info className="w-4 h-4" />} />,
     title: "About",
     to: "/about"
   },
   centers: {
-    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/World%20Map.png" alt="Centers" width="25" height="25" fallback={<Globe className="w-5 h-5" />} />,
+    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/World%20Map.png" alt="Centers" width="22" height="22" fallback={<Globe className="w-4 h-4" />} />,
     title: "Centers",
     to: "/centers"
   },

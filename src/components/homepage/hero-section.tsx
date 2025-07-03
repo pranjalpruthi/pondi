@@ -468,7 +468,7 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
                   className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full cursor-pointer"
                   onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}
                 >
-                  Support Us <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Heart%20Hands.png" alt="Heart Hands" width="25" height="25" className="ml-2" />
+                  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Heart%20Hands.png" alt="Heart Hands" width="25" height="25" className="mr-2" /> Support Us
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-80">
@@ -536,12 +536,18 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
             </form>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: props.isInView ? 1 : 0 }} transition={{ delay: 0.7 }} className="mt-8 flex flex-wrap justify-start gap-4 items-center">
-            <a href="https://www.youtube.com/@ISKMPondy" target="_blank" rel="noopener noreferrer" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover} className="cursor-pointer">
-              <Button variant="destructive" className="bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 dark:text-white rounded-full"><IconPlayerPlayFilled className="mr-2 h-4 w-4" /> Watch Live</Button>
+            <a href="https://www.youtube.com/@ISKMPondy" target="_blank" rel="noopener noreferrer" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover} className="cursor-pointer relative group">
+              <Button variant="destructive" className="bg-red-600 hover:bg-red-700 text-white rounded-full relative overflow-visible">
+                <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                </span>
+                <IconPlayerPlayFilled className="mr-2 h-4 w-4" /> Watch Live
+              </Button>
             </a>
             <Popover onOpenChange={(open) => open && props.safePlayPopOn()}>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-500 dark:hover:bg-blue-600 dark:text-white rounded-full" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}><IconMapPin className="mr-2 h-4 w-4" /> Our Location</Button>
+                <Button variant="outline" className="text-white bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 dark:from-blue-600 dark:to-cyan-600 dark:hover:from-blue-700 dark:hover:to-cyan-700 rounded-full border-none" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}><IconMapPin className="mr-2 h-4 w-4" /> Our Location</Button>
               </PopoverTrigger>
               <PopoverContent className="w-72">
                 <h3 className="font-semibold mb-2">ISKM Pudhuvai Temple</h3>

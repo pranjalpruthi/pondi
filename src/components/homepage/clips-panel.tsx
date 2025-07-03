@@ -1,16 +1,36 @@
-import { useQuery } from '@tanstack/react-query';
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { PanInfo } from 'framer-motion';
-import { ChevronUp, ChevronDown, Play, WifiOff, Youtube, Heart, Share2 } from 'lucide-react';
+import { ChevronUp, ChevronDown, Youtube, Heart, Share2 } from 'lucide-react';
 // import ReactPlayer from 'react-player/youtube'; // Removed ReactPlayer
 import {
-  YOUTUBE_CHANNEL_ID,
-  fetchYouTubeRssFeed
+  YOUTUBE_CHANNEL_ID
 } from './youtube-marquee';
 import type { YouTubeVideo } from './youtube-marquee';
 import { cn } from '@/lib/utils';
 // import { AspectRatio } from '@/components/ui/aspect-ratio'; // Removed AspectRatio
+
+const staticVideos: YouTubeVideo[] = [
+  { id: 'L13exiAC9bA', title: 'Clip 1', description: '', thumbnail: 'https://i.ytimg.com/vi/L13exiAC9bA/hqdefault.jpg', link: 'https://youtube.com/shorts/L13exiAC9bA' },
+  { id: '-SgFKSUCVJw', title: 'Clip 2', description: '', thumbnail: 'https://i.ytimg.com/vi/-SgFKSUCVJw/hqdefault.jpg', link: 'https://www.youtube.com/shorts/-SgFKSUCVJw' },
+  { id: 'fiEoW5kDPjA', title: 'Clip 3', description: '', thumbnail: 'https://i.ytimg.com/vi/fiEoW5kDPjA/hqdefault.jpg', link: 'https://www.youtube.com/shorts/fiEoW5kDPjA' },
+  { id: 'CX5a9nkbQfc', title: 'Clip 4', description: '', thumbnail: 'https://i.ytimg.com/vi/CX5a9nkbQfc/hqdefault.jpg', link: 'https://www.youtube.com/shorts/CX5a9nkbQfc' },
+  { id: 'gzF5rZYLq00', title: 'Clip 5', description: '', thumbnail: 'https://i.ytimg.com/vi/gzF5rZYLq00/hqdefault.jpg', link: 'https://www.youtube.com/shorts/gzF5rZYLq00' },
+  { id: 'qOyHzAYkJIE', title: 'Clip 6', description: '', thumbnail: 'https://i.ytimg.com/vi/qOyHzAYkJIE/hqdefault.jpg', link: 'https://youtube.com/shorts/qOyHzAYkJIE' },
+  { id: 'lj8Hd4o2Z7c', title: 'Clip 7', description: '', thumbnail: 'https://i.ytimg.com/vi/lj8Hd4o2Z7c/hqdefault.jpg', link: 'https://youtube.com/shorts/lj8Hd4o2Z7c' },
+  { id: 'nyAd1-Xg7RA', title: 'Clip 8', description: '', thumbnail: 'https://i.ytimg.com/vi/nyAd1-Xg7RA/hqdefault.jpg', link: 'https://www.youtube.com/shorts/nyAd1-Xg7RA' },
+  { id: '013sKd9n_gQ', title: 'Clip 9', description: '', thumbnail: 'https://i.ytimg.com/vi/013sKd9n_gQ/hqdefault.jpg', link: 'https://youtube.com/shorts/013sKd9n_gQ' },
+  { id: 'lAmtCt7yQSg', title: 'Clip 10', description: '', thumbnail: 'https://i.ytimg.com/vi/lAmtCt7yQSg/hqdefault.jpg', link: 'https://www.youtube.com/shorts/lAmtCt7yQSg' },
+  { id: 'd5G3ISk8Pck', title: 'Clip 11', description: '', thumbnail: 'https://i.ytimg.com/vi/d5G3ISk8Pck/hqdefault.jpg', link: 'https://www.youtube.com/shorts/d5G3ISk8Pck' },
+  { id: 'jlFM5MNOJQo', title: 'Clip 12', description: '', thumbnail: 'https://i.ytimg.com/vi/jlFM5MNOJQo/hqdefault.jpg', link: 'https://youtube.com/shorts/jlFM5MNOJQo' },
+  { id: 'A-hfzb2LOmE', title: 'Clip 13', description: '', thumbnail: 'https://i.ytimg.com/vi/A-hfzb2LOmE/hqdefault.jpg', link: 'https://www.youtube.com/shorts/A-hfzb2LOmE' },
+  { id: 'fJ-E4CRc7vQ', title: 'Clip 14', description: '', thumbnail: 'https://i.ytimg.com/vi/fJ-E4CRc7vQ/hqdefault.jpg', link: 'https://www.youtube.com/shorts/fJ-E4CRc7vQ' },
+  { id: '-lYGM0M9z-U', title: 'Clip 15', description: '', thumbnail: 'https://i.ytimg.com/vi/-lYGM0M9z-U/hqdefault.jpg', link: 'https://www.youtube.com/shorts/-lYGM0M9z-U' },
+  { id: '0BArhAwOfyc', title: 'Clip 16', description: '', thumbnail: 'https://i.ytimg.com/vi/0BArhAwOfyc/hqdefault.jpg', link: 'https://www.youtube.com/shorts/0BArhAwOfyc' },
+  { id: 'FnF6N6z_MpE', title: 'Clip 17', description: '', thumbnail: 'https://i.ytimg.com/vi/FnF6N6z_MpE/hqdefault.jpg', link: 'https://www.youtube.com/shorts/FnF6N6z_MpE' },
+  { id: 'YOY1gRfKfZw', title: 'Clip 18', description: '', thumbnail: 'https://i.ytimg.com/vi/YOY1gRfKfZw/hqdefault.jpg', link: 'https://www.youtube.com/shorts/YOY1gRfKfZw' },
+  { id: 'e8Yx9SzvEQU', title: 'Clip 19', description: '', thumbnail: 'https://i.ytimg.com/vi/e8Yx9SzvEQU/hqdefault.jpg', link: 'https://www.youtube.com/shorts/e8Yx9SzvEQU' },
+];
 
 const getYouTubeEmbedUrl = (url: string, autoplay: boolean, muted: boolean): string | null => {
   if (!url) return null;
@@ -19,6 +39,8 @@ const getYouTubeEmbedUrl = (url: string, autoplay: boolean, muted: boolean): str
     videoId = url.split('v=')[1].split('&')[0];
   } else if (url.includes('youtu.be/')) {
     videoId = url.split('youtu.be/')[1].split('?')[0];
+  } else if (url.includes('youtube.com/shorts/')) {
+    videoId = url.split('/shorts/')[1].split('?')[0];
   }
   // Enable JS API for event handling, use modest branding, disable related videos, set initial mute state
   return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=${autoplay ? 1 : 0}&controls=1&modestbranding=1&rel=0&enablejsapi=1&mute=${muted ? 1 : 0}` : null;
@@ -27,11 +49,11 @@ const getYouTubeEmbedUrl = (url: string, autoplay: boolean, muted: boolean): str
 const ClipPlayerCard = ({ video, isActive, paginate, currentIndex, totalVideos, isDragging }: { video: YouTubeVideo; isActive: boolean; paginate: (dir: number) => void; currentIndex: number; totalVideos: number; isDragging?: boolean; }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null); // Changed playerRef to iframeRef
   const playerWrapperRef = useRef<HTMLDivElement>(null);
-  const [playing, setPlaying] = useState(isActive);
+  const [playing, setPlaying] = useState(false);
+  const [userHasInteracted, setUserHasInteracted] = useState(false);
+  const [muted, setMuted] = useState(true);
   // const [played, setPlayed] = useState(0); // Removed for native controls
   // const [seeking, setSeeking] = useState(false); // Removed for native controls
-  // const [duration, setDuration] = useState(0); // Removed for native controls
-  const [muted] = useState(true); // Initial state is muted
   const [showControls, setShowControls] = useState(true);
   const controlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [liked, setLiked] = useState(false);
@@ -43,18 +65,16 @@ const ClipPlayerCard = ({ video, isActive, paginate, currentIndex, totalVideos, 
   };
 
   useEffect(() => {
-    setPlaying(isActive);
     if (isActive) {
-      // setPlayed(0); // Removed for native controls
-      // if (iframeRef.current) iframeRef.current.src = getYouTubeEmbedUrl(video.link, true, muted) || ''; // Potentially reload iframe to autoplay
-      resetControlsTimeout();
-    } else {
-      if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
-      if (iframeRef.current && iframeRef.current.contentWindow) { // Pause video if iframe API is used and it's not active
-        iframeRef.current.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-      }
+      setUserHasInteracted(true);
     }
-  }, [isActive, video.link, muted]); // Added muted to dependency array
+  }, [isActive]);
+
+  useEffect(() => {
+    if (!isActive && iframeRef.current && iframeRef.current.contentWindow) {
+      iframeRef.current.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+    }
+  }, [isActive]);
 
   const resetControlsTimeout = () => {
     if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
@@ -64,27 +84,18 @@ const ClipPlayerCard = ({ video, isActive, paginate, currentIndex, totalVideos, 
     }, 3000);
   };
 
-  const handlePlayPause = () => { // This custom button might be redundant if YouTube controls are used
-    setPlaying(prev => !prev);
-    // If using iframe API to control play/pause:
-    // if (iframeRef.current && iframeRef.current.contentWindow) {
-    //   const command = playing ? 'pauseVideo' : 'playVideo';
-    //   iframeRef.current.contentWindow.postMessage(`{"event":"command","func":"${command}","args":""}`, '*');
-    // }
-    resetControlsTimeout();
-  };
 
   // handleSeekChange, handleSeekMouseDown, handleSeekMouseUp, handleProgress, handleDuration, handleSeekAmount are removed
   // as we rely on YouTube's native controls.
 
-  const handleTap = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Double tap to seek is a native YouTube player feature, so custom implementation might not be needed.
-    // If custom overlay controls are absolutely necessary, this can be re-evaluated.
-    // For now, a single tap might toggle play/pause if we implement it via iframe API.
-    if (e.detail === 1) {
-      // Potentially toggle play/pause if custom controls are desired over YouTube's default.
-      // handlePlayPause();
+  const handleTap = () => {
+    if (!userHasInteracted) {
+      setUserHasInteracted(true);
+      setMuted(false); // Unmute on first interaction
+    } else {
+      setMuted(prev => !prev); // Toggle mute on subsequent taps
     }
+    resetControlsTimeout();
   };
 
 
@@ -175,7 +186,7 @@ const ClipPlayerCard = ({ video, isActive, paginate, currentIndex, totalVideos, 
           <div className="w-full h-full flex items-center justify-center"> {/* Removed max-w-7xl and px-6 for iframe to take full space */}
             <iframe
               ref={iframeRef}
-              src={getYouTubeEmbedUrl(video.link, playing, muted) || ''}
+              src={getYouTubeEmbedUrl(video.link, playing && userHasInteracted, muted) || ''}
               title={video.title}
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -201,22 +212,7 @@ const ClipPlayerCard = ({ video, isActive, paginate, currentIndex, totalVideos, 
           <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/60 to-transparent" />
         </div>
 
-        {/* Play button overlay (shown when not playing, if YouTube controls are hidden or supplemented) */}
-        {/* This might be redundant if YouTube's own play button is visible and sufficient */}
-        <AnimatePresence>
-          {!playing && isActive && ( // Only show if supposed to be active but not playing (e.g. initial load before autoplay or after pause)
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center pointer-events-none"
-              initial={{ opacity: 0, scale: 1.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.5 }}
-            >
-              <div className="bg-black/50 backdrop-blur-sm rounded-full p-4 cursor-pointer shadow-xl" onClick={handlePlayPause}> {/* Make clickable if it's a custom play, added shadow and blur */}
-                <Play size={64} className="text-white ml-1" />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Play button overlay has been removed as it's redundant with the native YouTube player controls. */}
 
         {/* Custom controls (volume, fullscreen) - YouTube's native controls will provide these. */}
         {/* If we want to keep these custom buttons, they need to interact with the iframe API. */}
@@ -294,14 +290,8 @@ const ClipPlayerCardSkeleton = () => (
 );
 
 export function ClipsPanel({ currentIndex, setCurrentIndex }: { currentIndex: number; setCurrentIndex: (index: number | ((prevIndex: number) => number)) => void; }) {
-  const { data: videos, isLoading, error: queryError, isError, refetch } = useQuery<YouTubeVideo[], Error>({
-    queryKey: ['youtubeClipsPanelVideos', YOUTUBE_CHANNEL_ID],
-    queryFn: fetchYouTubeRssFeed,
-    staleTime: 1000 * 60 * 30,
-    gcTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    retry: 2,
-  });
+  const videos = staticVideos;
+  const isLoading = false;
 
   // const [currentIndex, setCurrentIndex] = useState(0); // Managed by parent
   const [direction, setDirection] = useState(0);
@@ -339,31 +329,6 @@ export function ClipsPanel({ currentIndex, setCurrentIndex }: { currentIndex: nu
 
   if (isLoading) {
     return <div className="relative w-full h-full bg-black"><ClipPlayerCardSkeleton /></div>;
-  }
-
-  if (isError) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full text-center bg-black p-6 space-y-4">
-        <div className="relative flex items-center justify-center w-24 h-24">
-          <div className="absolute -inset-1 bg-red-500/30 rounded-full blur-xl animate-pulse-glow" />
-          <WifiOff size={48} className="text-red-400 z-10" />
-        </div>
-        <p className="font-semibold text-lg text-red-300">A Humble Apology</p>
-        <p className="text-sm text-gray-400 max-w-xs">
-          {queryError?.message.includes('404')
-            ? "My dear devotee, it seems we couldn't find the nectar of these video clips. The channel may be private, or perhaps there's a mistake in the sacred link."
-            : "Hare Kṛṣṇa. We're facing some disturbance in the ether, which is preventing us from loading the videos. Please check your connection to the material world (the internet)."
-          }
-        </p>
-        <p className="text-xs text-gray-500 mt-4">🌹 All Glories 🌟 to Śrīla Prabhupāda! 🙏</p>
-        <button
-          onClick={() => refetch()}
-          className="mt-4 px-6 py-2.5 bg-gradient-to-br from-pink-600 to-red-500 hover:from-pink-700 hover:to-red-600 text-white font-bold rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-75 shadow-lg"
-        >
-          Try Again
-        </button>
-      </div>
-    );
   }
 
   if (!videos || videos.length === 0) {

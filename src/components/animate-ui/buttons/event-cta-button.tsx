@@ -1,9 +1,9 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { type ReactNode } from "react";
+import React, { type ReactNode } from "react";
 
-interface EventCtaButtonProps {
+interface EventCtaButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   icon: ReactNode;
   defaultText: string;
@@ -12,17 +12,19 @@ interface EventCtaButtonProps {
   pulseColor?: string;
 }
 
-export default function EventCtaButton({
-  className,
-  icon,
-  defaultText,
-  hoverText,
-  emoji,
-  pulseColor = "rgba(34, 197, 94, 0.4)",
-}: EventCtaButtonProps) {
-  return (
-    <motion.div
-      animate={{
+const EventCtaButton = React.forwardRef<HTMLButtonElement, EventCtaButtonProps>(
+  ({
+    className,
+    icon,
+    defaultText,
+    hoverText,
+    emoji,
+    pulseColor = "rgba(34, 197, 94, 0.4)",
+    ...props
+  }, ref) => {
+    return (
+      <motion.div
+        animate={{
         scale: [1, 1.05, 1],
         boxShadow: [
           `0 0 0 0 ${pulseColor}`,
@@ -43,6 +45,8 @@ export default function EventCtaButton({
           className
         )}
         type="button"
+        ref={ref}
+        {...props}
       >
         <motion.span
           className="absolute inset-0 block"
@@ -66,5 +70,10 @@ export default function EventCtaButton({
         </div>
       </button>
     </motion.div>
-  );
-}
+    );
+  }
+);
+
+EventCtaButton.displayName = "EventCtaButton";
+
+export default EventCtaButton;

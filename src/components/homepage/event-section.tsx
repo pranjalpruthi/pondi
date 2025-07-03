@@ -3,7 +3,12 @@ import {useInfiniteQuery } from '@tanstack/react-query';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
 import { Calendar, ChevronRight, Info, Loader2, X, ArrowRight, ArrowLeft, Youtube, MapPin, CheckCircle } from 'lucide-react';
+import { IconCar, IconPhone, IconClock, IconPigMoney, IconCopy, IconCheck } from '@tabler/icons-react';
 import { Link } from '@tanstack/react-router';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useSound } from 'use-sound';
+import { useSoundSettings } from '@/components/context/sound-context';
+import { toast } from "sonner";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -127,39 +132,54 @@ const filterAndSortUpcomingEvents = (data: CalendarDay[]): UpcomingEvent[] => {
 
 
 // --- MOCK DATA FOR NEW CAROUSEL ---
+const bankDetails = {
+  name: "ISKM PONDICHERRY",
+  type: "SAVINGS ACCOUNT",
+  accountNo: "1197110110052583",
+  ifsc: "UJVN0001197",
+  bank: "UJJIVAN BANK, PONDICHERRY BRANCH"
+};
+
+const locationDetails = {
+  address: "International Sri Krishna Mandir, RS No:54/3, Koodappakam Village, (Near POGO Land), Pathukkannu Main Road, Pondicherry, India",
+  tourPhone: "+91 90426 42103",
+  hours: ["Monday - Sunday:", "5 am–12:30 pm", "4–8:45 pm"],
+  mapsLink: "https://maps.app.goo.gl/EoqakWfAySKhQWPi9"
+};
+
 const eventPosts: EventPost[] = [
   {
     id: 'event-1',
     title: 'Janmashtami Grand Celebration',
     description: 'Join us for the divine appearance day of Lord Krishna. A day of fasting, feasting, and celebration.',
     media: [
+      { type: 'image', src: '/updates/s8.webp', alt: 'Janmashtami Grand Celebration Poster' },
       { type: 'image', src: '/updates/s1.webp', alt: 'Altar decoration for Janmashtami' },
       { type: 'image', src: '/gallery/temple-2.webp', alt: 'Devotees celebrating Janmashtami' },
-      { type: 'video', src: 'https://www.youtube.com/embed/dQw4w9WgXcQ', thumbnail: '/gallery/temple-3.webp', alt: 'Janmashtami cultural program' },
     ],
-    registrationUrl: '/events',
+    registrationUrl: 'https://tally.so/r/mDoRD5',
   },
   {
     id: 'event-2',
-    title: 'Ratha Yatra - Festival of Chariots',
-    description: 'The spectacular festival of chariots where Their Lordships ride through the streets.',
+    title: 'OPENING OF CONFERENCE HALL | CONSTRUCTION UPDATE | ISKM PONDICHERRY',
+    description: `🕉️ Join us on this incredible journey as we vlog the heartwarming efforts of devoted souls coming together to build a temple for the pleasure of Krishna! 🏰🙏
+
+As we poured our hearts and souls into building this temple, we felt an overwhelming sense of joy and fulfillment, knowing that our efforts are aimed at pleasing the lotus feet of Krishna. 🌈🌌
+
+By the boundless mercy of Prabhupada, we successfully completed the first slab of this divine project. 🙌🏼✨
+
+Join us in this uplifting experience of devotion, hard work, and love as we embark on this sacred journey together. Don't forget to like, share, and subscribe to our channel to stay updated on the temple's progress and more such spiritual adventures! 🎉🔔`,
     media: [
-      { type: 'image', src: '/gallery/temple-4.webp', alt: 'Ratha Yatra chariot' },
+      { type: 'video', src: 'https://www.youtube.com/embed/MUKV9AbYmK4', thumbnail: '/gallery/temple-3.webp', alt: 'Opening of Conference Hall' },
     ],
   },
   {
     id: 'event-3',
-    title: 'Online Bhagavad Gita Classes',
-    description: 'Deepen your understanding of spiritual wisdom with our weekly online classes.',
+    title: 'Chennai Sunday Program Kirtan | ISKM Pondicherry | HG Prahlad Bhakta Prabhu',
+    description: 'Chennai Sunday Program Kirtan | ISKM Pondicherry | HG Prahlad Bhakta Prabhu',
     media: [
-      { type: 'video', src: 'https://www.youtube.com/embed/dQw4w9WgXcQ', thumbnail: '/gallery/temple-5.webp', alt: 'Bhagavad Gita class promo' },
+      { type: 'video', src: 'https://www.youtube.com/embed/ImuffDdPpvQ', thumbnail: 'https://i.ytimg.com/vi/ImuffDdPpvQ/hqdefault.jpg', alt: 'Chennai Sunday Program Kirtan' },
     ],
-  },
-  {
-    id: 'event-4',
-    title: 'Upcoming Kirtan Mela',
-    description: 'Immerse yourself in the blissful ocean of the holy names. A 24-hour non-stop kirtan event.',
-    media: [], // Text-only event
   },
 ];
 
@@ -169,9 +189,9 @@ const EventCarousel = () => {
   const [currentEventIndex, setCurrentEventIndex] = useState(0);
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-  const [isPaginating, setIsPaginating] = useState(false);
+  const [, setIsPaginating] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const AUTOPLAY_INTERVAL = 7000; // 7 seconds
+  const AUTOPLAY_INTERVAL = 9000; // 9 seconds
 
   const event = eventPosts[currentEventIndex];
   const media = event.media[currentMediaIndex];
@@ -233,9 +253,9 @@ const EventCarousel = () => {
       {/* Media Container - z-0 */}
       <div className="absolute inset-0 z-0">
         {event.media.length > 0 ? (
-          <AnimatePresence initial={false} custom={direction}>
+          <AnimatePresence initial={false} custom={direction} mode="wait">
             <motion.div
-              key={currentMediaIndex}
+              key={event.id + '-' + currentMediaIndex}
               custom={direction}
               variants={variants}
               initial="enter"
@@ -255,7 +275,7 @@ const EventCarousel = () => {
                 <img src={media.src} alt={media.alt} className="w-full h-full object-cover" />
               ) : (
                 <iframe
-                  src={`${media.src}?autoplay=1&mute=1&loop=1&playlist=${media.src.split('/').pop()?.split('?')[0]}`}
+                  src={`${media.src}?loop=1&playlist=${media.src.split('/').pop()?.split('?')[0]}`}
                   title={media.alt}
                   className="w-full h-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -274,7 +294,7 @@ const EventCarousel = () => {
         <div className={cn(
           "relative w-full pointer-events-auto text-white",
           event.media.length > 0 
-            ? "h-1/3 bg-gradient-to-t from-black/70 via-black/30 to-transparent" 
+            ? "h-1/3 bg-gradient-to-t from-black/60 via-black/20 to-transparent backdrop-blur-sm" 
             : "h-full bg-black/40"
         )}>
           {event.media.length > 0 ? (
@@ -311,21 +331,21 @@ const EventCarousel = () => {
                     </div>
                   )}
                   {/* Title & Desc */}
-                  {isPaginating ? (
-                    <div className="space-y-2">
-                      <div className="h-7 w-3/4 rounded-md bg-white/20 animate-pulse" />
-                      <div className="h-4 w-full rounded-md bg-white/20 animate-pulse" />
-                      <div className="h-4 w-5/6 rounded-md bg-white/20 animate-pulse" />
-                    </div>
-                  ) : (
-                    <div>
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={event.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.3 }}
+                    >
                       <h3 className="font-bold text-lg">{event.title}</h3>
                       <p className="text-sm text-white/80 line-clamp-2">{event.description}</p>
-                    </div>
-                  )}
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
                 {/* Right side: Buttons */}
-                <div className="flex flex-col justify-between items-end flex-shrink-0 self-stretch">
+                <div className="flex flex-col justify-between items-end flex-shrink-0 self-stretch gap-y-4">
                   <div className="flex items-center gap-2">
                       <Button size="sm" variant="outline" onClick={() => paginateEvent(-1)} className="bg-white/20 border-white/30 hover:bg-white/30 text-white">
                         <ArrowLeft className="h-4 w-4 mr-2" />
@@ -338,7 +358,7 @@ const EventCarousel = () => {
                   </div>
                   <div className="flex items-center justify-end gap-2">
                       {event.registrationUrl && (
-                        <Link to={event.registrationUrl}>
+                        <a href={event.registrationUrl} target="_blank" rel="noopener noreferrer">
                           <EventCtaButton
                             icon={<CheckCircle className="h-6 w-6" />}
                             defaultText="Register Now!"
@@ -347,9 +367,10 @@ const EventCarousel = () => {
                             className="bg-green-500 hover:bg-green-600"
                             pulseColor="rgba(34, 197, 94, 0.4)"
                           />
-                        </Link>
+                        </a>
                       )}
-                      <Link to="/">
+                      <Popover>
+                        <PopoverTrigger asChild>
                           <EventCtaButton
                             icon={<MapPin className="h-6 w-6" />}
                             defaultText="Plan a Visit"
@@ -358,7 +379,25 @@ const EventCarousel = () => {
                             className="bg-blue-500 hover:bg-blue-600"
                             pulseColor="rgba(59, 130, 246, 0)" // Disable pulse for this one
                           />
-                      </Link>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-72 text-black dark:text-white">
+                          <h3 className="font-semibold mb-2">ISKM Pudhuvai Temple</h3>
+                          <p className="text-sm text-muted-foreground mb-3">{locationDetails.address}</p>
+                          <div className="flex flex-col space-y-2 mb-3">
+                            <Badge variant="secondary" className="flex items-center gap-1 w-fit bg-green-500 hover:bg-green-600 text-white"><IconCar className="h-3 w-3" />Book Temple Tour</Badge>
+                            <a href={`tel:${locationDetails.tourPhone}`} className="w-fit">
+                              <Badge variant="secondary" className="flex items-center gap-1 cursor-pointer bg-purple-500 hover:bg-purple-600 text-white"><IconPhone className="h-3 w-3" />{locationDetails.tourPhone}</Badge>
+                            </a>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold flex items-center text-sm mb-1"><IconClock className="mr-2 h-4 w-4" /> Opening Hours:</h4>
+                            <ul className="text-sm text-muted-foreground space-y-0.5">{locationDetails.hours.map((line, i) => <li key={i}>{line}</li>)}</ul>
+                          </div>
+                          <div className="mt-4">
+                            <Button variant="secondary" size="sm" className="w-full bg-blue-500 hover:bg-blue-600 text-white" onClick={() => { window.open(locationDetails.mapsLink, '_blank'); }}><MapPin className="mr-2 h-4 w-4" />Open in Maps</Button>
+                          </div>
+                        </PopoverContent>
+                      </Popover>
                   </div>
                 </div>
               </div>
@@ -366,20 +405,21 @@ const EventCarousel = () => {
           ) : (
             // Layout for text-only events
             <div className="p-8 h-full flex flex-col justify-center items-center text-center">
-              {isPaginating ? (
-                <div className="space-y-3 max-w-md">
-                  <div className="h-8 w-3/4 mx-auto rounded-md bg-white/20 animate-pulse" />
-                  <div className="h-4 w-full rounded-md bg-white/20 animate-pulse" />
-                  <div className="h-4 w-5/6 mx-auto rounded-md bg-white/20 animate-pulse" />
-                </div>
-              ) : (
-                <div className="max-w-md">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={event.id}
+                  className="max-w-md"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                >
                   <h3 className="text-3xl font-bold text-shadow-lg">{event.title}</h3>
                   <p className="text-white/90 mt-2 text-shadow">{event.description}</p>
-                </div>
-              )}
+                </motion.div>
+              </AnimatePresence>
               {/* Buttons for text-only card */}
-              <div className="absolute bottom-4 right-4 flex flex-col items-end gap-2">
+              <div className="absolute bottom-4 right-4 flex flex-col items-end gap-4">
                 <div className="flex items-center gap-2">
                   <Button size="sm" variant="outline" onClick={() => paginateEvent(-1)} className="bg-white/20 border-white/30 hover:bg-white/30 text-white">
                     <ArrowLeft className="h-4 w-4 mr-2" />
@@ -392,7 +432,7 @@ const EventCarousel = () => {
                 </div>
                 <div className="flex items-center justify-end gap-2">
                   {event.registrationUrl && (
-                    <Link to={event.registrationUrl}>
+                    <a href={event.registrationUrl} target="_blank" rel="noopener noreferrer">
                       <EventCtaButton
                         icon={<CheckCircle className="h-6 w-6" />}
                         defaultText="Register Now!"
@@ -401,18 +441,37 @@ const EventCarousel = () => {
                         className="bg-green-500 hover:bg-green-600"
                         pulseColor="rgba(34, 197, 94, 0.4)"
                       />
-                    </Link>
+                    </a>
                   )}
-                  <Link to="/">
-                    <EventCtaButton
-                      icon={<MapPin className="h-6 w-6" />}
-                      defaultText="Plan a Visit"
-                      hoverText="Get Directions"
-                      emoji="🗺️"
-                      className="bg-blue-500 hover:bg-blue-600"
-                      pulseColor="rgba(59, 130, 246, 0)"
-                    />
-                  </Link>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <EventCtaButton
+                        icon={<MapPin className="h-6 w-6" />}
+                        defaultText="Plan a Visit"
+                        hoverText="Get Directions"
+                        emoji="🗺️"
+                        className="bg-blue-500 hover:bg-blue-600"
+                        pulseColor="rgba(59, 130, 246, 0)"
+                      />
+                    </PopoverTrigger>
+                    <PopoverContent className="w-72 text-black dark:text-white">
+                      <h3 className="font-semibold mb-2">ISKM Pudhuvai Temple</h3>
+                      <p className="text-sm text-muted-foreground mb-3">{locationDetails.address}</p>
+                      <div className="flex flex-col space-y-2 mb-3">
+                        <Badge variant="secondary" className="flex items-center gap-1 w-fit bg-green-500 hover:bg-green-600 text-white"><IconCar className="h-3 w-3" />Book Temple Tour</Badge>
+                        <a href={`tel:${locationDetails.tourPhone}`} className="w-fit">
+                          <Badge variant="secondary" className="flex items-center gap-1 cursor-pointer bg-purple-500 hover:bg-purple-600 text-white"><IconPhone className="h-3 w-3" />{locationDetails.tourPhone}</Badge>
+                        </a>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold flex items-center text-sm mb-1"><IconClock className="mr-2 h-4 w-4" /> Opening Hours:</h4>
+                        <ul className="text-sm text-muted-foreground space-y-0.5">{locationDetails.hours.map((line, i) => <li key={i}>{line}</li>)}</ul>
+                      </div>
+                      <div className="mt-4">
+                        <Button variant="secondary" size="sm" className="w-full bg-blue-500 hover:bg-blue-600 text-white" onClick={() => { window.open(locationDetails.mapsLink, '_blank'); }}><MapPin className="mr-2 h-4 w-4" />Open in Maps</Button>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
             </div>
@@ -687,8 +746,27 @@ const UpcomingEventsList = () => {
   );
 };
 
-const SpecialEventBanner = () => {
+interface SpecialEventBannerProps {
+  safePlayHover: () => void;
+  safePlayClick: () => void;
+  safePlayPopOn: () => void;
+}
+
+const SpecialEventBanner = ({ safePlayHover, safePlayClick, safePlayPopOn }: SpecialEventBannerProps) => {
   const [isVisible, setIsVisible] = useState(true);
+  const [copiedValue, setCopiedValue] = useState<string | null>(null);
+
+  const copyToClipboard = useCallback((text: string, type: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedValue(type);
+      safePlayPopOn();
+      toast.success("Copied to clipboard!", { description: `${type} copied successfully.`, duration: 2000 });
+      setTimeout(() => setCopiedValue(null), 2000);
+    }).catch(err => {
+      console.error('Failed to copy: ', err);
+      toast.error("Copy Failed", { description: "Could not copy text to clipboard." });
+    });
+  }, [safePlayPopOn]);
 
   if (!isVisible) return null;
 
@@ -715,12 +793,83 @@ const SpecialEventBanner = () => {
             <div>
               <h4 className="font-bold">Special Announcement</h4>
               <p className="text-sm">Janmashtami Grand Celebration: Join us on August 26th!</p>
+              <blockquote className="border-l-2 border-white/50 pl-3 italic text-white/80 text-xs mt-2">
+                "In this age of Kali, the holy name of the Lord, the Hare Kṛṣṇa mahā-mantra, is the incarnation of Lord Kṛṣṇa."
+              </blockquote>
+              <cite className="mt-1 block text-right text-xs text-white/90 not-italic">— CC, Ādi 17.22</cite>
             </div>
           </div>
           <div className="flex items-center">
-            <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 mr-2">
-              Learn More <ChevronRight className="h-4 w-4 ml-1" />
-            </Button>
+            <Popover onOpenChange={(open) => open && safePlayPopOn()}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="secondary"
+                  className="rounded-full cursor-pointer mr-2 bg-white text-gray-900 hover:bg-gray-100 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-200"
+                  onClick={safePlayClick} onMouseEnter={safePlayHover}
+                >
+                  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Heart%20Hands.png" alt="Heart Hands" width="20" height="20" className="mr-2" /> Support Us
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80 text-black dark:text-white">
+                <div className="space-y-3">
+                  <h3 className="font-semibold flex items-center gap-2">
+                    <IconPigMoney className="h-5 w-5 text-primary" /> Bank Transfer Details
+                  </h3>
+                  <div className="text-sm space-y-1 text-muted-foreground">
+                    <p className="font-medium text-foreground">{bankDetails.name}</p>
+                    <p>{bankDetails.type}</p>
+                    <div className="flex items-center justify-between">
+                      <span>AC NO: {bankDetails.accountNo}</span>
+                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { copyToClipboard(bankDetails.accountNo, 'Account No'); }} onMouseEnter={safePlayHover} aria-label="Copy Account Number">
+                        {copiedValue === 'Account No' ? <IconCheck className="h-4 w-4 text-green-500" /> : <IconCopy className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span>IFSC: {bankDetails.ifsc}</span>
+                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { copyToClipboard(bankDetails.ifsc, 'IFSC Code'); }} onMouseEnter={safePlayHover} aria-label="Copy IFSC Code">
+                        {copiedValue === 'IFSC Code' ? <IconCheck className="h-4 w-4 text-green-500" /> : <IconCopy className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                    <p>{bankDetails.bank}</p>
+                  </div>
+                  {/* UPI QR Code Section */}
+                  <div className="border-t pt-3 mt-3 space-y-2">
+                    <h3 className="font-semibold flex items-center gap-2 text-sm">
+                      <img src="/assets/extra/miniqr.png" alt="UPI Icon" className="h-5 w-5 rounded" /> Scan to Pay with UPI
+                    </h3>
+                    <div className="flex justify-center items-center p-1 bg-gray-50 dark:bg-gray-800/50 rounded-md">
+                      <img 
+                        src="/assets/extra/miniqr.png" 
+                        alt="UPI QR Code" 
+                        className="w-28 h-auto object-contain rounded" 
+                      />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs text-muted-foreground mb-0.5">Or use UPI ID:</p>
+                      <div className="flex items-center justify-center gap-1 bg-gray-100 dark:bg-gray-700/60 px-2 py-1 rounded-md max-w-xs mx-auto">
+                        <span className="text-xs font-mono text-purple-600 dark:text-purple-400">ISKM.04@idfcbank</span>
+                        <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => { copyToClipboard("ISKM.04@idfcbank", 'UPI ID'); }} onMouseEnter={safePlayHover} aria-label="Copy UPI ID">
+                          {copiedValue === 'UPI ID' ? <IconCheck className="h-3 w-3 text-green-500" /> : <IconCopy className="h-3 w-3" />}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                  <Link to="/donate" onClick={safePlayClick} onMouseEnter={safePlayHover}>
+                    <Button className="w-full mt-3" size="sm">More Donation Methods</Button>
+                  </Link>
+                </div>
+              </PopoverContent>
+            </Popover>
+            <a href="https://tally.so/r/mDoRD5" target="_blank" rel="noopener noreferrer">
+              <EventCtaButton
+                icon={<CheckCircle className="h-4 w-4" />}
+                defaultText="Register Now"
+                hoverText="for this event"
+                emoji="✨"
+                className="bg-green-500 hover:bg-green-600 text-xs px-3 py-1.5 mr-2 rounded-full"
+                pulseColor="rgba(34, 197, 94, 0.4)"
+              />
+            </a>
             <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={() => setIsVisible(false)}>
               <X className="h-4 w-4" />
             </Button>
@@ -734,6 +883,15 @@ const SpecialEventBanner = () => {
 
 // --- Main Component ---
 export function EventSection() {
+  const { isSoundEnabled } = useSoundSettings();
+  const [playHover] = useSound('/sounds/hover.mp3', { volume: 0.3, soundEnabled: isSoundEnabled });
+  const [playClick] = useSound('/sounds/click.wav', { volume: 0.25, soundEnabled: isSoundEnabled });
+  const [playPopOn] = useSound('/sounds/pop-on.wav', { volume: 0.25, soundEnabled: isSoundEnabled });
+
+  const safePlayHover = useCallback(() => { if (isSoundEnabled) playHover(); }, [isSoundEnabled, playHover]);
+  const safePlayClick = useCallback(() => { if (isSoundEnabled) playClick(); }, [isSoundEnabled, playClick]);
+  const safePlayPopOn = useCallback(() => { if (isSoundEnabled) playPopOn(); }, [isSoundEnabled, playPopOn]);
+
   return (
     <section className="py-24 bg-gray-50/50 dark:bg-black/50">
       <div className="container mx-auto px-4">
@@ -762,7 +920,11 @@ export function EventSection() {
           </div>
         </motion.div>
 
-        <SpecialEventBanner />
+        <SpecialEventBanner 
+          safePlayHover={safePlayHover}
+          safePlayClick={safePlayClick}
+          safePlayPopOn={safePlayPopOn}
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <div className="lg:col-span-1 h-[600px]">

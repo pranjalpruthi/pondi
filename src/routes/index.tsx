@@ -107,6 +107,7 @@ function HomePage() {
 
           <SectionDivider />
 
+
           <Suspense fallback={<SectionLoader />}>
             <LazySlokaLearningSection />
           </Suspense>
@@ -117,6 +118,10 @@ function HomePage() {
             <LazyDiscussionSection />
           </Suspense>
 
+          <Suspense fallback={<SectionLoader />}>
+            <LazyYouTubeMarquee />
+          </Suspense>
+          
           <Suspense fallback={<SectionLoader />}>
             <LazyFeaturedBooksSection />
           </Suspense>
@@ -132,11 +137,6 @@ function HomePage() {
           </Suspense>
 
           <SideBySide /> {/* Render SideBySide without props */}
-
-
-          <Suspense fallback={<SectionLoader />}>
-            <LazyYouTubeMarquee />
-          </Suspense>
 
           <Suspense fallback={<SectionLoader />}>
             <LazyVisitUs />
