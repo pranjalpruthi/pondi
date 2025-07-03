@@ -265,7 +265,7 @@ export const TempleEventsPanel = memo(() => {
         }
         
       } catch (err) {
-        setCalendarError(err instanceof Error ? err.message : "Unknown error fetching calendar data");
+        setCalendarError("🦚 The Lord's plans are mysterious. We couldn't retrieve the calendar at this moment. Please try again later. Hare Krishna!");
         setMonthCalendarData([]);
         setTodayCalendarData(null);
       } finally {
@@ -493,7 +493,7 @@ export const TempleEventsPanel = memo(() => {
             {daysOfWeek.map(day => <div key={day} className="py-2">{day.substring(0,2)}</div>)}
           </div>
           {calendarLoading && <div className="flex justify-center items-center h-20"><Loader2 className="h-5 w-5 animate-spin text-sky-500"/></div>}
-          {calendarError && <div className="text-red-500 text-xs p-1 text-center">{calendarError}</div>}
+          {calendarError && <div className="text-yellow-600 dark:text-yellow-400 text-sm p-4 text-center rounded-md bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/30">{calendarError}</div>}
           {!calendarLoading && !calendarError && (
             <div className="grid grid-cols-7 gap-1">
               {Array.from({ length: firstDayOfMonthWeekday }).map((_, i) => <div key={`empty-panel-${i}`} />)}

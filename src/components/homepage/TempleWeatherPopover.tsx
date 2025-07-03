@@ -202,48 +202,48 @@ export function TempleWeatherPopover({ weather, templeStatus, isMobile, safePlay
                     <BellIcon className="w-3.5 h-3.5" />
                     <div className={cn("absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full", templeStatus.colorClass)} />
                   </div>
-                  <p className="font-semibold text-base xs:text-lg">{templeStatus.label}</p>
+                  <p className="font-semibold text-sm xs:text-base">{templeStatus.label}</p>
                 </div>
-                <span className="text-sm font-medium">Current Status</span>
+                <span className="text-xs font-medium">Current Status</span>
               </div>
-              <p className="mt-1 text-sm text-muted-foreground">{templeStatus.detailedText}</p>
+              <p className="mt-2 text-xs text-muted-foreground">{templeStatus.detailedText}</p>
               
               {/* Daily Schedule with 24h format option */}
-              <div className="mt-2 pt-2 border-t border-border/50">
-                <p className="text-sm font-medium mb-1">Daily Schedule:</p>
-                <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-sm">
+              <div className="mt-3 pt-3 border-t border-border/50">
+                <p className="text-xs font-medium mb-2">Daily Schedule:</p>
+                <div className="grid grid-cols-2 gap-x-2 gap-y-2 text-xs">
                   <div className="flex justify-between items-center">
-                    <span className="text-base xs:text-lg text-muted-foreground">Mangal Aarati:</span>
-                    <Badge variant="default" className="text-sm font-medium px-1.5 py-0.5">{is24HourFormat ? '04:30' : '4:30 AM'}</Badge>
+                    <span className="text-sm xs:text-base text-muted-foreground">Mangal Aarati:</span>
+                    <Badge variant="default" className="text-xs font-medium px-1.5 py-0.5">{is24HourFormat ? '04:30' : '4:30 AM'}</Badge>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-base xs:text-lg text-muted-foreground">Darshan Aarati:</span>
-                    <Badge variant="default" className="text-sm font-medium px-1.5 py-0.5">{is24HourFormat ? '07:15' : '7:15 AM'}</Badge>
+                    <span className="text-sm xs:text-base text-muted-foreground">Darshan Aarati:</span>
+                    <Badge variant="default" className="text-xs font-medium px-1.5 py-0.5">{is24HourFormat ? '07:15' : '7:15 AM'}</Badge>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-base xs:text-lg text-muted-foreground">Guru Puja:</span>
-                    <Badge variant="default" className="text-sm font-medium px-1.5 py-0.5">{is24HourFormat ? '07:20' : '7:20 AM'}</Badge>
+                    <span className="text-sm xs:text-base text-muted-foreground">Guru Puja:</span>
+                    <Badge variant="default" className="text-xs font-medium px-1.5 py-0.5">{is24HourFormat ? '07:20' : '7:20 AM'}</Badge>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-base xs:text-lg text-muted-foreground">Bhagvatam:</span>
-                    <Badge variant="default" className="text-sm font-medium px-1.5 py-0.5">{is24HourFormat ? '08:00' : '8:00 AM'}</Badge>
+                    <span className="text-sm xs:text-base text-muted-foreground">Bhagvatam:</span>
+                    <Badge variant="default" className="text-xs font-medium px-1.5 py-0.5">{is24HourFormat ? '08:00' : '8:00 AM'}</Badge>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-base xs:text-lg text-muted-foreground">Darshan Closes:</span>
-                    <Badge variant="default" className="text-sm font-medium px-1.5 py-0.5">{is24HourFormat ? '12:00' : '12:00 PM'}</Badge>
+                    <span className="text-sm xs:text-base text-muted-foreground">Darshan Closes:</span>
+                    <Badge variant="default" className="text-xs font-medium px-1.5 py-0.5">{is24HourFormat ? '12:00' : '12:00 PM'}</Badge>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-base xs:text-lg text-muted-foreground">Gaura Arati:</span>
-                    <Badge variant="default" className="text-sm font-medium px-1.5 py-0.5">{is24HourFormat ? '17:30' : '5:30 PM'}</Badge>
+                    <span className="text-sm xs:text-base text-muted-foreground">Gaura Arati:</span>
+                    <Badge variant="default" className="text-xs font-medium px-1.5 py-0.5">{is24HourFormat ? '17:30' : '5:30 PM'}</Badge>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-base xs:text-lg text-muted-foreground">Darshan Closes:</span>
-                    <Badge variant="default" className="text-sm font-medium px-1.5 py-0.5">{is24HourFormat ? '18:30' : '6:30 PM'}</Badge>
+                    <span className="text-sm xs:text-base text-muted-foreground">Darshan Closes:</span>
+                    <Badge variant="default" className="text-xs font-medium px-1.5 py-0.5">{is24HourFormat ? '18:30' : '6:30 PM'}</Badge>
                   </div>
                 </div>
               </div>
               
-              <div className="mt-2 pt-2 border-t border-border/50 grid grid-cols-2 gap-x-3 gap-y-1 text-sm">
+              <div className="mt-3 pt-3 border-t border-border/50 grid grid-cols-2 gap-x-3 gap-y-2 text-xs">
                 <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></div><span>Darshan Open</span></div>
                 <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-pink-500 flex-shrink-0"></div><span>Aarati Ongoing</span></div>
                 <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-yellow-500 flex-shrink-0"></div><span>Temple Open</span></div>
@@ -439,50 +439,50 @@ export function TempleWeatherPopover({ weather, templeStatus, isMobile, safePlay
                   <BellIcon className="w-4 h-4" />
                   <div className={cn("absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full", templeStatus.colorClass)} />
                 </div>
-                <p className="font-semibold text-lg">{templeStatus.label}</p>
+                <p className="font-semibold text-base">{templeStatus.label}</p>
               </div>
             </div>
-            <p className="mt-1 text-base text-muted-foreground">{templeStatus.detailedText}</p>
+            <p className="mt-2 text-sm text-muted-foreground">{templeStatus.detailedText}</p>
             
-            <div className="mt-3 pt-3 border-t border-border/50">
-              <p className="text-base font-medium mb-2">Daily Schedule:</p>
-              <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-base">
-                <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1">
-                  <span className="text-base text-muted-foreground">Mangal Aarati:</span>
-                  <Badge variant="default" className="text-base font-medium px-1.5 py-0.5">{is24HourFormat ? '04:30' : '4:30 AM'}</Badge>
+            <div className="mt-4 pt-4 border-t border-border/50">
+              <p className="text-sm font-medium mb-2">Daily Schedule:</p>
+              <div className="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
+                <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1.5">
+                  <span className="text-sm text-muted-foreground">Mangal Aarati:</span>
+                  <Badge variant="default" className="text-sm font-medium px-1.5 py-0.5">{is24HourFormat ? '04:30' : '4:30 AM'}</Badge>
                 </div>
-                <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1">
-                  <span className="text-base text-muted-foreground">Darshan Aarati:</span>
-                  <Badge variant="default" className="text-base font-medium px-1.5 py-0.5">{is24HourFormat ? '07:15' : '7:15 AM'}</Badge>
+                <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1.5">
+                  <span className="text-sm text-muted-foreground">Darshan Aarati:</span>
+                  <Badge variant="default" className="text-sm font-medium px-1.5 py-0.5">{is24HourFormat ? '07:15' : '7:15 AM'}</Badge>
                 </div>
-                <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1">
-                  <span className="text-base text-muted-foreground">Guru Puja:</span>
-                  <Badge variant="default" className="text-base font-medium px-1.5 py-0.5">{is24HourFormat ? '07:20' : '7:20 AM'}</Badge>
+                <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1.5">
+                  <span className="text-sm text-muted-foreground">Guru Puja:</span>
+                  <Badge variant="default" className="text-sm font-medium px-1.5 py-0.5">{is24HourFormat ? '07:20' : '7:20 AM'}</Badge>
                 </div>
-                <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1">
-                  <span className="text-base text-muted-foreground">Bhagvatam:</span>
-                  <Badge variant="default" className="text-base font-medium px-1.5 py-0.5">{is24HourFormat ? '08:00' : '8:00 AM'}</Badge>
+                <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1.5">
+                  <span className="text-sm text-muted-foreground">Bhagvatam:</span>
+                  <Badge variant="default" className="text-sm font-medium px-1.5 py-0.5">{is24HourFormat ? '08:00' : '8:00 AM'}</Badge>
                 </div>
-                <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1">
-                  <span className="text-base text-muted-foreground">Darshan Closes:</span>
-                  <Badge variant="default" className="text-base font-medium px-1.5 py-0.5">{is24HourFormat ? '12:00' : '12:00 PM'}</Badge>
+                <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1.5">
+                  <span className="text-sm text-muted-foreground">Darshan Closes:</span>
+                  <Badge variant="default" className="text-sm font-medium px-1.5 py-0.5">{is24HourFormat ? '12:00' : '12:00 PM'}</Badge>
                 </div>
-                <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1">
-                  <span className="text-base text-muted-foreground">Gaura Arati:</span>
-                  <Badge variant="default" className="text-base font-medium px-1.5 py-0.5">{is24HourFormat ? '17:30' : '5:30 PM'}</Badge>
+                <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1.5">
+                  <span className="text-sm text-muted-foreground">Gaura Arati:</span>
+                  <Badge variant="default" className="text-sm font-medium px-1.5 py-0.5">{is24HourFormat ? '17:30' : '5:30 PM'}</Badge>
                 </div>
-                <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1">
-                  <span className="text-base text-muted-foreground">Darshan Closes:</span>
-                  <Badge variant="default" className="text-base font-medium px-1.5 py-0.5">{is24HourFormat ? '18:30' : '6:30 PM'}</Badge>
+                <div className="flex items-center justify-between bg-accent/30 rounded-md px-2 py-1.5">
+                  <span className="text-sm text-muted-foreground">Darshan Closes:</span>
+                  <Badge variant="default" className="text-sm font-medium px-1.5 py-0.5">{is24HourFormat ? '18:30' : '6:30 PM'}</Badge>
                 </div>
               </div>
             </div>
             
-            <div className="mt-3 pt-3 border-t border-border/50 grid grid-cols-2 gap-x-2 gap-y-1.5 text-base">
-              <div className="flex items-center gap-1.5 bg-green-100/50 dark:bg-green-900/20 rounded-md px-2 py-1"><div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div><span className="font-medium text-green-800 dark:text-green-300">Darshan Open</span></div>
-              <div className="flex items-center gap-1.5 bg-pink-100/50 dark:bg-pink-900/20 rounded-md px-2 py-1"><div className="w-2 h-2 rounded-full bg-pink-500 flex-shrink-0"></div><span className="font-medium text-pink-800 dark:text-pink-300">Aarati Ongoing</span></div>
-              <div className="flex items-center gap-1.5 bg-yellow-100/50 dark:bg-yellow-900/20 rounded-md px-2 py-1"><div className="w-2 h-2 rounded-full bg-yellow-500 flex-shrink-0"></div><span className="font-medium text-yellow-800 dark:text-yellow-300">Temple Open</span></div>
-              <div className="flex items-center gap-1.5 bg-red-100/50 dark:bg-red-900/20 rounded-md px-2 py-1"><div className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></div><span className="font-medium text-red-800 dark:text-red-300">Closed (End of Day)</span></div>
+            <div className="mt-4 pt-4 border-t border-border/50 grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
+              <div className="flex items-center gap-1.5 bg-green-100/50 dark:bg-green-900/20 rounded-md px-2 py-1.5"><div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div><span className="font-medium text-green-800 dark:text-green-300">Darshan Open</span></div>
+              <div className="flex items-center gap-1.5 bg-pink-100/50 dark:bg-pink-900/20 rounded-md px-2 py-1.5"><div className="w-2 h-2 rounded-full bg-pink-500 flex-shrink-0"></div><span className="font-medium text-pink-800 dark:text-pink-300">Aarati Ongoing</span></div>
+              <div className="flex items-center gap-1.5 bg-yellow-100/50 dark:bg-yellow-900/20 rounded-md px-2 py-1.5"><div className="w-2 h-2 rounded-full bg-yellow-500 flex-shrink-0"></div><span className="font-medium text-yellow-800 dark:text-yellow-300">Temple Open</span></div>
+              <div className="flex items-center gap-1.5 bg-red-100/50 dark:bg-red-900/20 rounded-md px-2 py-1.5"><div className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></div><span className="font-medium text-red-800 dark:text-red-300">Closed (End of Day)</span></div>
                 {/* Legend for status colors */}
                 </div>
               </motion.div>

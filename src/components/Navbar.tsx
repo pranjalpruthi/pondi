@@ -7,15 +7,10 @@ import { ModeToggle } from "./mode-toggle";
 // Switch, Label, and weather-specific icons (CloudIcon, SunIcon etc.) and related Lucide icons (ClockIcon, BellIcon etc.) are removed as they are now in TempleWeatherPopover
 import { cn } from "@/lib/utils";
 import { useWeather } from "@/hooks/useWeather";
-import { User, Menu, X } from 'lucide-react';
+import { User, Menu, X, ChevronDown, Home, Handshake, PenSquare, ShoppingCart, Info, Globe } from 'lucide-react';
 // Import icons from iconify (general ones)
-import HomeIcon from '~icons/lucide/home';
-import InfoIcon from '~icons/lucide/info';
-import NewspaperIcon from '~icons/lucide/newspaper';
-import HeartHandshakeIcon from '~icons/lucide/heart-handshake';
-import ShoppingBagIcon from '~icons/lucide/shopping-bag';
 import GiftIcon from '~icons/lucide/gift';
-import GlobeIcon from '~icons/lucide/globe';
+
 
 // WeatherIcon component, Popover, Drawer, and related imports moved to TempleWeatherPopover.tsx
 
@@ -30,8 +25,31 @@ import { TempleWeatherPopover } from "./homepage/TempleWeatherPopover"; // Impor
 interface NavItemType {
   icon: React.ReactNode;
   title: string;
-  to: string;
+  to?: string;
+  subItems?: { title: string; to: string; }[];
 }
+
+interface IconWithFallbackProps {
+  src: string;
+  alt: string;
+  width: string | number;
+  height: string | number;
+  fallback: React.ReactNode;
+}
+
+const IconWithFallback: React.FC<IconWithFallbackProps> = ({ src, alt, width, height, fallback }) => {
+  const [hasError, setHasError] = React.useState(false);
+
+  const handleError = () => {
+    setHasError(true);
+  };
+
+  if (hasError) {
+    return <>{fallback}</>;
+  }
+
+  return <img src={src} alt={alt} width={width} height={height} onError={handleError} />;
+};
 
 interface NavBarProps {
   className?: string;
@@ -40,6 +58,8 @@ interface NavBarProps {
 function NavBarComponent({ className }: NavBarProps) {
     const isMobile = useIsMobile();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+    const [activeMenu, setActiveMenu] = React.useState<string | null>(null);
+    const [openMobileSubMenu, setOpenMobileSubMenu] = React.useState<string | null>(null);
     const [mobileMenuContentRef, { height: mobileMenuHeight }] = useMeasure();
     const mobileMenuWrapperRef = React.useRef<HTMLDivElement>(null);
 
@@ -161,35 +181,76 @@ function NavBarComponent({ className }: NavBarProps) {
                             onMouseEnter={safePlayHover}
                         >
                             <h1 className="text-sm md:text-base font-semibold text-foreground flex flex-col sm:block">
-                                <span>ISKM</span>
-                                <span className="sm:ml-1">Pondicherry</span>
+                                <span>Pudhuvai</span>
+                                <span className="sm:ml-1">Vrindavanam</span>
                             </h1>
                             <p className="text-xs text-muted-foreground hidden 2xl:block truncate">
-                                Pudhuvai Vrindavanam, Radha Krishna Temple
-                            </p>
-                            <p className="text-xs text-muted-foreground hidden sm:block truncate">
-                                International Sri Krishna Mandir 
+                                Radha Krishna Temple
                             </p>
                         </Link>
                     </div>
 
                     {/* Desktop Navigation - Simplified */}
                     <div className="hidden xl:flex items-center space-x-1">
-                        {Object.values(navItems).map((item) => (
+                        {Object.entries(navItems).map(([key, item]) => (
                             item.title !== 'Donate' && (
-                                <Link
-                                    key={item.title}
-                                    to={item.to}
-                                    onClick={safePlayClick}
-                                    onMouseEnter={safePlayHover}
-                                    className="inline-flex items-center justify-center text-sm font-medium h-9 py-2 px-3
-                                        text-muted-foreground hover:text-primary
-                                        hover:bg-primary/10
-                                        rounded-full transition-all duration-200"
-                                >
-                                    {item.icon}
-                                    <span className="ml-2">{item.title}</span>
-                                </Link>
+                                item.subItems ? (
+                                    <div 
+                                        key={key} 
+                                        className="relative"
+                                        onMouseEnter={() => setActiveMenu(item.title)}
+                                        onMouseLeave={() => setActiveMenu(null)}
+                                    >
+                                        <button
+                                            className="inline-flex items-center justify-center text-sm font-medium h-9 py-2 px-3
+                                                        text-muted-foreground hover:text-primary
+                                                        hover:bg-primary/10
+                                                        rounded-full transition-all duration-200"
+                                        >
+                                            {item.icon}
+                                            <span className="ml-2">{item.title}</span>
+                                        </button>
+                                        <AnimatePresence>
+                                            {activeMenu === item.title && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                    exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                                                    transition={{ duration: 0.2, ease: "easeOut" }}
+                                                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 origin-top rounded-md bg-background p-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-40"
+                                                >
+                                                    <div className="py-1">
+                                                        {item.subItems.map((subItem) => (
+                                                            <Link
+                                                                key={subItem.title}
+                                                                to={subItem.to!}
+                                                                onClick={safePlayClick}
+                                                                onMouseEnter={safePlayHover}
+                                                                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-left text-foreground hover:bg-accent rounded-md"
+                                                            >
+                                                                {subItem.title}
+                                                            </Link>
+                                                        ))}
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                ) : (
+                                    <Link
+                                        key={item.title}
+                                        to={item.to!}
+                                        onClick={safePlayClick}
+                                        onMouseEnter={safePlayHover}
+                                        className="inline-flex items-center justify-center text-sm font-medium h-9 py-2 px-3
+                                            text-muted-foreground hover:text-primary
+                                            hover:bg-primary/10
+                                            rounded-full transition-all duration-200"
+                                    >
+                                        {item.icon}
+                                        <span className="ml-2">{item.title}</span>
+                                    </Link>
+                                )
                             )
                         ))}
                         <Link to="/donate" onClick={safePlayClick} onMouseEnter={safePlayHover}>
@@ -260,21 +321,66 @@ function NavBarComponent({ className }: NavBarProps) {
                         style={{ position: 'absolute', top: '100%', left: 0, right: 0 }} // Removed zIndex: -1
                     >
                         <div ref={mobileMenuContentRef} className="p-4 space-y-2">
-                            {Object.values(navItems).map((item) => (
-                                <Link
-                                    key={`mobile-${item.title}`}
-                                    to={item.to}
-                                    onClick={() => {
-                                      setIsMobileMenuOpen(false);
-                                      safePlayClick();
-                                      safePlayMenuClose();
-                                    }}
-                                    onMouseEnter={safePlayHover}
-                                    className="w-full p-3 flex items-center gap-3 text-foreground hover:bg-accent rounded-md transition-colors text-base"
-                                >
-                                    <div className="text-primary">{item.icon}</div>
-                                    <span className="font-medium">{item.title}</span>
-                                </Link>
+                            {Object.entries(navItems).map(([key, item]) => (
+                                item.subItems ? (
+                                    <div key={`mobile-${key}`}>
+                                        <button
+                                            onClick={() => {
+                                                setOpenMobileSubMenu(openMobileSubMenu === item.title ? null : item.title);
+                                                safePlayClick();
+                                            }}
+                                            className="w-full p-3 flex items-center justify-between gap-3 text-foreground hover:bg-accent rounded-md transition-colors text-base"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="text-primary">{item.icon}</div>
+                                                <span className="font-medium">{item.title}</span>
+                                            </div>
+                                            <ChevronDown className={`w-5 h-5 transition-transform ${openMobileSubMenu === item.title ? 'rotate-180' : ''}`} />
+                                        </button>
+                                        <AnimatePresence>
+                                            {openMobileSubMenu === item.title && (
+                                                <motion.div
+                                                    initial={{ height: 0, opacity: 0 }}
+                                                    animate={{ height: 'auto', opacity: 1 }}
+                                                    exit={{ height: 0, opacity: 0 }}
+                                                    className="overflow-hidden pl-8"
+                                                >
+                                                    <div className="pt-2 space-y-1">
+                                                        {item.subItems.map(subItem => (
+                                                            <Link
+                                                                key={`mobile-sub-${subItem.title}`}
+                                                                to={subItem.to!}
+                                                                onClick={() => {
+                                                                    setIsMobileMenuOpen(false);
+                                                                    safePlayClick();
+                                                                    safePlayMenuClose();
+                                                                }}
+                                                                className="w-full p-2 flex items-center gap-3 text-muted-foreground hover:text-foreground rounded-md transition-colors text-base"
+                                                            >
+                                                                {subItem.title}
+                                                            </Link>
+                                                        ))}
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                ) : (
+                                    <Link
+                                        key={`mobile-${item.title}`}
+                                        to={item.to!}
+                                        onClick={() => {
+                                          setIsMobileMenuOpen(false);
+                                          safePlayClick();
+                                          safePlayMenuClose();
+                                        }}
+                                        onMouseEnter={safePlayHover}
+                                        className="w-full p-3 flex items-center gap-3 text-foreground hover:bg-accent rounded-md transition-colors text-base"
+                                    >
+                                        <div className="text-primary">{item.icon}</div>
+                                        <span className="font-medium">{item.title}</span>
+                                    </Link>
+                                )
                             ))}
                             <a href="/sign-in" className="sm:hidden w-full p-3 flex items-center gap-3 text-foreground hover:bg-accent rounded-md transition-colors text-base" onClick={() => { setIsMobileMenuOpen(false); safePlayClick(); safePlayMenuClose(); }} onMouseEnter={safePlayHover}>
                                 <User className="text-primary w-5 h-5" />
@@ -300,38 +406,48 @@ export function NavBar({ className }: NavBarProps) {
 // Simplified navigation items - all as direct links
 const navItems: Record<string, NavItemType> = {
   home: {
-    icon: <HomeIcon className="w-4 h-4" />,
+    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Love%20Hotel.png" alt="Home" width="25" height="25" fallback={<Home className="w-5 h-5" />} />,
     title: "Home",
     to: "/"
   },
+  services: {
+    icon: <Menu className="w-5 h-5" />,
+    title: "Services",
+    subItems: [
+      { title: 'Annadamn (Food Distribution)', to: '/coming-soon' },
+      { title: 'Goshala (Cow Protection)', to: '/coming-soon' },
+      { title: 'Youth Preaching', to: '/coming-soon' },
+      { title: 'Temple Construction', to: '/coming-soon' },
+    ]
+  },
   contribute: {
-    icon: <HeartHandshakeIcon className="w-4 h-4" />,
+    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Handshake.png" alt="Contribute" width="25" height="25" fallback={<Handshake className="w-5 h-5" />} />,
     title: "Contribute",
-    to: "/coming-soon" // Updated to /coming-soon
+    to: "/coming-soon"
   },
   blog: {
-    icon: <NewspaperIcon className="w-4 h-4" />,
+    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Writing%20Hand.png" alt="Blog" width="25" height="25" fallback={<PenSquare className="w-5 h-5" />} />,
     title: "Blog",
-    to: "/coming-soon" // Updated to /coming-soon
+    to: "/coming-soon"
   },
   shop: {
-    icon: <ShoppingBagIcon className="w-4 h-4" />,
+    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png" alt="Shop" width="25" height="25" fallback={<ShoppingCart className="w-5 h-5" />} />,
     title: "Shop",
-    to: "/shop" // Updated to /coming-soon
+    to: "/shop"
   },
   about: {
-    icon: <InfoIcon className="w-4 h-4" />,
+    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Globe%20with%20Meridians.png" alt="About" width="25" height="25" fallback={<Info className="w-5 h-5" />} />,
     title: "About",
     to: "/about"
+  },
+  centers: {
+    icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/World%20Map.png" alt="Centers" width="25" height="25" fallback={<Globe className="w-5 h-5" />} />,
+    title: "Centers",
+    to: "/centers"
   },
   donate: {
     icon: <GiftIcon className="w-4 h-4" />,
     title: "Donate",
     to: "/donate"
   },
-  centers: { // Added Centers item
-    icon: <GlobeIcon className="w-4 h-4" />,
-    title: "Centers",
-    to: "/centers"
-  }
 };

@@ -244,7 +244,7 @@ function SideBySide() {
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
           >
-            Preview Sholka PDF
+            Preview Shloka PDF
           </motion.button>
         </div>
       </div>
@@ -345,7 +345,7 @@ function SideBySide() {
             transition={{ type: "spring", stiffness: 300, damping: 15 }}
           >
             <div className="sticky top-0 bg-background/80 backdrop-blur-sm z-10 p-4 border-b border-blue-500/20 flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-blue-300">Bhagavad Gita Important Sholka's</h2>
+              <h2 className="text-2xl font-bold text-blue-300">Bhagavad Gita Important Shloka's</h2>
               <button
                 className="text-blue-300 hover:text-blue-200 cursor-pointer text-2xl"
                 onClick={() => setShowBhagavadGitaPreview(false)}
@@ -363,7 +363,7 @@ function SideBySide() {
                       animate={{ scale: [1, 1.05, 1] }}
                       transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                     >
-                      Download 108 Sholka's PDF
+                      Download 108 Shloka's PDF
                     </motion.button>
                   </a>
                 </div>

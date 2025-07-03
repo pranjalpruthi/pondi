@@ -1,4 +1,4 @@
-import { motion, AnimatePresence, type PanInfo } from "framer-motion";
+import { motion, AnimatePresence, type PanInfo } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -41,6 +41,8 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import React from "react";
+import { useMutation } from "@tanstack/react-query";
+import { addLead } from "@/integrations/nocodb-api";
 
 const heroShowcaseImages = [
   '/temple-building/1.webp?w=1200&format=webp&quality=80',
@@ -83,8 +85,6 @@ const bankDetails = {
   ifsc: "UJVN0001197",
   bank: "UJJIVAN BANK, PONDICHERRY BRANCH"
 };
-
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 interface BackgroundImageCarouselProps {
   currentIndex: number;
@@ -468,7 +468,7 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
                   className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full cursor-pointer"
                   onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}
                 >
-                  Support Us
+                  Support Us <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Heart%20Hands.png" alt="Heart Hands" width="25" height="25" className="ml-2" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-80">
@@ -537,19 +537,19 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: props.isInView ? 1 : 0 }} transition={{ delay: 0.7 }} className="mt-8 flex flex-wrap justify-start gap-4 items-center">
             <a href="https://www.youtube.com/@ISKMPondy" target="_blank" rel="noopener noreferrer" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover} className="cursor-pointer">
-              <Button variant="destructive" className="bg-red-600 hover:bg-red-700 rounded-full"><IconPlayerPlayFilled className="mr-2 h-4 w-4" /> Watch Live</Button>
+              <Button variant="destructive" className="bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 dark:text-white rounded-full"><IconPlayerPlayFilled className="mr-2 h-4 w-4" /> Watch Live</Button>
             </a>
             <Popover onOpenChange={(open) => open && props.safePlayPopOn()}>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="rounded-full" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}><IconMapPin className="mr-2 h-4 w-4" /> Our Location</Button>
+                <Button variant="outline" className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-500 dark:hover:bg-blue-600 dark:text-white rounded-full" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}><IconMapPin className="mr-2 h-4 w-4" /> Our Location</Button>
               </PopoverTrigger>
               <PopoverContent className="w-72">
                 <h3 className="font-semibold mb-2">ISKM Pudhuvai Temple</h3>
                 <p className="text-sm text-muted-foreground mb-3">{props.locationDetails.address}</p>
                 <div className="flex flex-col space-y-2 mb-3">
-                  <Badge variant="secondary" className="flex items-center gap-1 w-fit"><IconCar className="h-3 w-3" />Book Temple Tour</Badge>
+                  <Badge variant="secondary" className="flex items-center gap-1 w-fit bg-green-500 hover:bg-green-600 dark:bg-green-500 dark:hover:bg-green-600 dark:text-white text-white"><IconCar className="h-3 w-3" />Book Temple Tour</Badge>
                   <a href={`tel:${props.locationDetails.tourPhone}`} className="w-fit" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
-                    <Badge variant="secondary" className="flex items-center gap-1 cursor-pointer hover:bg-accent"><IconPhone className="h-3 w-3" />{props.locationDetails.tourPhone}</Badge>
+                    <Badge variant="secondary" className="flex items-center gap-1 cursor-pointer bg-purple-500 hover:bg-purple-600 dark:bg-purple-500 dark:hover:bg-purple-600 dark:text-white text-white"><IconPhone className="h-3 w-3" />{props.locationDetails.tourPhone}</Badge>
                   </a>
                 </div>
                 <div>
@@ -557,7 +557,7 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
                   <ul className="text-sm text-muted-foreground space-y-0.5">{props.locationDetails.hours.map((line, i) => <li key={i}>{line}</li>)}</ul>
                 </div>
                 <div className="mt-4">
-                  <Button variant="secondary" size="sm" className="w-full" onClick={() => { window.open(props.locationDetails.mapsLink, '_blank'); props.safePlayClick(); }} onMouseEnter={props.safePlayHover}><IconMapPin className="mr-2 h-4 w-4" />Open in Maps</Button>
+                  <Button variant="secondary" size="sm" className="w-full bg-blue-500 hover:bg-blue-600 dark:bg-blue-500 dark:hover:bg-blue-600 dark:text-white" onClick={() => { window.open(props.locationDetails.mapsLink, '_blank'); props.safePlayClick(); }} onMouseEnter={props.safePlayHover}><IconMapPin className="mr-2 h-4 w-4" />Open in Maps</Button>
                 </div>
               </PopoverContent>
             </Popover>
@@ -589,6 +589,24 @@ export function HeroSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Preloading for background
   const [rightCarouselPreloaded, setRightCarouselPreloaded] = useState<boolean[]>(Array(heroShowcaseImages.length).fill(false));
+
+  const addLeadMutation = useMutation({
+    mutationFn: addLead,
+    onSuccess: () => {
+      setIsNewsletterSuccess(true);
+      safePlayFanfare();
+      toast.success("Subscribed!", { description: "Thank you for joining our newsletter." });
+      setTimeout(() => {
+        setIsNewsletterSuccess(false);
+        setShowNewsletterInput(false);
+        setNewsletterEmail('');
+      }, 2000);
+    },
+    onError: (error) => {
+      console.error("Failed to subscribe:", error);
+      toast.error("Subscription Failed", { description: "Could not add you to the newsletter. Please try again." });
+    },
+  });
 
   // Autoplay effect for carousel
   useEffect(() => {
@@ -648,14 +666,20 @@ export function HeroSection() {
     e.preventDefault();
     if (!showNewsletterInput) {
       setShowNewsletterInput(true);
-      safePlayClick(); return;
+      safePlayClick();
+      return;
     }
-    startNewsletterTransition(async () => {
-      await sleep(2000); setIsNewsletterSuccess(true); safePlayFanfare();
-      toast.success("Subscribed!", { description: "Thank you for joining our newsletter." });
-      await sleep(2000); setIsNewsletterSuccess(false); setShowNewsletterInput(false); setNewsletterEmail('');
+    if (!newsletterEmail) {
+      toast.error("Please enter your email.");
+      return;
+    }
+    startNewsletterTransition(() => {
+      addLeadMutation.mutate({
+        Email: newsletterEmail,
+        Source: 'Newsletter',
+      });
     });
-  }, [showNewsletterInput, startNewsletterTransition, safePlayClick, safePlayFanfare]);
+  }, [showNewsletterInput, newsletterEmail, addLeadMutation, safePlayClick]);
 
   const copyToClipboard = useCallback((text: string, type: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -793,7 +817,11 @@ export function HeroSection() {
         >
           <div className="bg-white dark:bg-pink-900/20 rounded-2xl shadow-md p-6 max-w-3xl mx-auto border border-gray-200 dark:border-pink-700/30">
             <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white leading-relaxed tracking-tight">
-            Join our sacred calling: spread Śrīla Prabhupāda's wisdom and guide souls Back home, back to Godhead.
+            Join our sacred calling
+            <Badge variant="secondary" className="mx-2 p-1 align-middle inline-block bg-white/50 dark:bg-black/20 border-primary/50">
+              <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Telephone%20Receiver.png" alt="Telephone Receiver" width="25" height="25" />
+            </Badge>
+            spread Śrīla Prabhupāda's wisdom and guide souls back home, back to Godhead.
             </p>
           </div>
         </motion.div>

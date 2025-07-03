@@ -180,6 +180,15 @@ function TermsAndConditions() {
           </p>
         </Section>
 
+        <Section title="Donations" emoji="💖">
+            <p>
+                All donations made through our platform are considered final and non-refundable. We are deeply grateful for your support, which is vital for maintaining our temple activities and community services.
+            </p>
+            <p>
+                In exceptional circumstances, a refund may be considered. For more details on such cases, please refer to our <Link to="/refund-and-cancellation-policy" className="text-blue-600 hover:underline">Refund and Cancellation Policy</Link>.
+            </p>
+        </Section>
+
         <Section title="iFrames" emoji="🖼️">
           <p>
             Without prior approval and written permission, you may not create frames around our Webpages that

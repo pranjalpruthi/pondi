@@ -23,6 +23,7 @@ import { SignedIn, SignedOut, UserButton, SignInButton, SignOutButton } from '@c
 import { LayoutDashboard, LogIn, LogOut } from 'lucide-react';
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Suspense } from 'react'; // Added Suspense import
+import { addLead } from '@/integrations/nocodb-api';
 
 import { AppleChatInput } from '@/components/ui/apple-chat-input';
 import { ThreeDotSimpleLoader } from '@/components/ui/three-dot-loader';
@@ -80,6 +81,7 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
   const isDeityButton = item.label === 'Deities';
   const isAiBotButton = item.label === 'AI Bot';
   const isClipsButton = item.label === 'Clips';
+  const isDonateButton = item.label === 'Donate';
   let deityButtonSpecificStyles = "";
   if (isDeityButton) {
       const statusColorClass = templeStatus.colorClass;
@@ -181,6 +183,9 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
       // Dark mode: More muted gold/amber, softer text and hover
       itemSpecificStyling = "bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-400 text-yellow-900 dark:text-amber-200 dark:from-amber-600/80 dark:via-yellow-700/80 dark:to-orange-700/80 hover:from-yellow-400 hover:to-orange-500 dark:hover:from-amber-500 dark:hover:to-orange-600 shadow-md hover:shadow-lg ring-1 ring-amber-500/30 dark:ring-amber-700/50 hover:ring-amber-500/50 dark:hover:ring-amber-500/70 transition-all duration-200 transform hover:scale-105 rounded-xl";
     }
+  } else if (isDonateButton) {
+    // Style for the Donate button
+    itemSpecificStyling = "bg-gradient-to-br from-green-300 to-emerald-400 text-green-900 dark:from-green-500 dark:to-emerald-600 dark:text-white hover:from-green-400 hover:to-emerald-500 shadow-md hover:shadow-lg ring-1 ring-white/20 hover:ring-white/40 transition-all duration-200 rounded-xl";
   } else if (isDeityButton) {
     itemSpecificStyling = deityButtonSpecificStyles;
   } else if (isMainMenuPanelActive || isLabelVisible) { // For other items (like Menu button or regular hovered/clicked items)
@@ -244,7 +249,7 @@ const navItems = [
     iconClassName: "text-primary/80"
   },
   { icon: IconTemple, label: 'Deities', to: '/deities', iconClassName: "text-primary/80" },
-  { icon: IconCalendar, label: 'Events', to: '/events', iconClassName: "text-primary/80" },
+  { icon: IconCalendar, label: 'Calendar', to: '/calender', iconClassName: "text-primary/80" },
   { icon: ShoppingBagIcon, label: 'Shop', to: '/shop', iconClassName: "text-primary/80" }, // Added Shop item
   { icon: GlobeIcon, label: 'Centers', to: '/centers', iconClassName: "text-primary/80" },
   { icon: IconInfo, label: 'About', to: '/about', iconClassName: "text-primary/80" },
@@ -348,21 +353,126 @@ const nextMessageId = React.useRef(2); // Start IDs from 2
     "Krishna consciousness is the matchless gift."
   ];
 
+  const DailyQuotesForm = ({ onSubscribed }: { onSubscribed: () => void }) => {
+    const [phone, setPhone] = React.useState('');
+    const [email, setEmail] = React.useState('');
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
+    const [error, setError] = React.useState<string | null>(null);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!phone && !email) {
+        setError('Please provide either a WhatsApp number or an email.');
+        return;
+      }
+      setError(null);
+      setIsSubmitting(true);
+      try {
+        await addLead({
+          Phone: phone,
+          Email: email,
+          Source: 'AI Bot',
+        });
+        onSubscribed();
+      } catch (err) {
+        setError('Failed to subscribe. Please try again later.');
+        console.error(err);
+      } finally {
+        setIsSubmitting(false);
+      }
+    };
+
+    return (
+      <form className="mt-2 space-y-2" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="WhatsApp Number"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className="w-full p-2 rounded-md border bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
+          disabled={isSubmitting}
+        />
+        <input
+          type="email"
+          placeholder="Email (Optional)"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full p-2 rounded-md border bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
+          disabled={isSubmitting}
+        />
+        <button
+          type="submit"
+          className="w-full p-2 rounded-md bg-gradient-to-br from-pink-500 to-rose-500 text-white disabled:opacity-50"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Subscribing...' : 'Subscribe'}
+        </button>
+        {error && <p className="text-red-500 text-xs text-center">{error}</p>}
+      </form>
+    );
+  };
+
   // Define FeedbackFormComponent here, so it has access to AIPanel's scope (createBotResponse, setMessages)
   const FeedbackFormComponent = ({ onSubmit }: { onSubmit: () => void }) => {
-      const [rating, setRatingState] = React.useState(0); // Renamed to avoid conflict if props were named rating
-      const [hoverRating, setHoverRatingState] = React.useState(0); // Renamed
+    const [rating, setRating] = React.useState(0);
+    const [hoverRating, setHoverRating] = React.useState(0);
+    const [email, setEmail] = React.useState('');
+    const [message, setMessage] = React.useState('');
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
+    const [error, setError] = React.useState<string | null>(null);
 
-      return (
-          <form className="mt-2 space-y-3" onSubmit={(e) => {
-              e.preventDefault();
-              onSubmit(); // This onSubmit is the callback passed from case 3
-          }}>
-              <StarRating rating={rating} setRating={setRatingState} hoverRating={hoverRating} setHoverRating={setHoverRatingState} />
-              <textarea placeholder="Your message..." className="w-full p-2 rounded-md border bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600" rows={3}></textarea>
-              <button type="submit" className="w-full p-2 rounded-md bg-gradient-to-br from-pink-500 to-rose-500 text-white">Send Feedback</button>
-          </form>
-      );
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!message) {
+        setError('Please enter your feedback message.');
+        return;
+      }
+      setError(null);
+      setIsSubmitting(true);
+      try {
+        await addLead({
+          Email: email,
+          Source: 'AI Bot',
+          Notes: `Rating: ${rating}/5\n\nFeedback: ${message}`,
+        });
+        onSubmit(); // Trigger the thank you message
+      } catch (err) {
+        setError('Failed to send feedback. Please try again later.');
+        console.error(err);
+      } finally {
+        setIsSubmitting(false);
+      }
+    };
+
+    return (
+      <form className="mt-2 space-y-3" onSubmit={handleSubmit}>
+        <StarRating rating={rating} setRating={setRating} hoverRating={hoverRating} setHoverRating={setHoverRating} />
+        <input
+          type="email"
+          placeholder="Email (Optional)"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full p-2 rounded-md border bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
+          disabled={isSubmitting}
+        />
+        <textarea
+          placeholder="Your message..."
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          className="w-full p-2 rounded-md border bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
+          rows={3}
+          disabled={isSubmitting}
+        ></textarea>
+        <button
+          type="submit"
+          className="w-full p-2 rounded-md bg-gradient-to-br from-pink-500 to-rose-500 text-white disabled:opacity-50"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Sending...' : 'Send Feedback'}
+        </button>
+        {error && <p className="text-red-500 text-xs text-center">{error}</p>}
+      </form>
+    );
   };
 
   const scrollRef = useAutoScroll<HTMLDivElement>(true, [messages, isLoading]);
@@ -378,11 +488,11 @@ const nextMessageId = React.useRef(2); // Start IDs from 2
   ];
 
   const quickActionButtons = [
-      { id: 4, text: 'Timings', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Alarm%20Clock.png" alt="Alarm Clock" width="25" height="25" />, color: "bg-blue-100 hover:bg-blue-200 dark:bg-blue-800 dark:hover:bg-blue-700 border-blue-500/70 text-blue-700 dark:text-blue-300" },
-      { id: 5, text: 'Donate', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="25" height="25" />, color: "bg-yellow-100 hover:bg-yellow-200 dark:bg-yellow-800 dark:hover:bg-yellow-700 border-yellow-500/70 text-yellow-700 dark:text-yellow-300" },
-      { id: 7, text: 'Calendar', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Spiral%20Calendar.png" alt="Spiral Calendar" width="25" height="25" />, color: "bg-purple-100 hover:bg-purple-200 dark:bg-purple-800 dark:hover:bg-purple-700 border-purple-500/70 text-purple-700 dark:text-purple-300" },
-      { id: 6, text: 'Contact', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Telephone%20Receiver.png" alt="Telephone Receiver" width="25" height="25" />, color: "bg-green-100 hover:bg-green-200 dark:bg-green-800 dark:hover:bg-green-700 border-green-500/70 text-green-700 dark:text-green-300" },
-  ]
+      { id: 4, text: 'Timings', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Alarm%20Clock.png" alt="Alarm Clock" width="40" height="40" />, color: "bg-blue-100 hover:bg-blue-200 dark:bg-blue-800 dark:hover:bg-blue-700 border-blue-500/70 text-blue-700 dark:text-blue-300" },
+      { id: 5, text: 'Donate', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="40" height="40" />, color: "bg-yellow-100 hover:bg-yellow-200 dark:bg-yellow-800 dark:hover:bg-yellow-700 border-yellow-500/70 text-yellow-700 dark:text-yellow-300" },
+      { id: 7, text: 'Calendar', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Spiral%20Calendar.png" alt="Spiral Calendar" width="40" height="40" />, color: "bg-purple-100 hover:bg-purple-200 dark:bg-purple-800 dark:hover:bg-purple-700 border-purple-500/70 text-purple-700 dark:text-purple-300" },
+      { id: 6, text: 'Contact', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Telephone%20Receiver.png" alt="Telephone Receiver" width="40" height="40" />, color: "bg-green-100 hover:bg-green-200 dark:bg-green-800 dark:hover:bg-green-700 border-green-500/70 text-green-700 dark:text-green-300" },
+  ];
 
   const createBotResponse = React.useCallback((responseContent: React.ReactNode) => (
     <div className="space-y-2">
@@ -403,14 +513,18 @@ const nextMessageId = React.useRef(2); // Start IDs from 2
         let botResponseContent: React.ReactNode;
         switch (question.id) {
           case 1:
+            const handleSubscribed = () => {
+              const thankYouMessage = createBotResponse(
+                <p>Thank you for subscribing! You'll receive daily spiritual quotes from us soon. Hare Kṛṣṇa!</p>
+              );
+              const thankYouMessageId = nextMessageId.current++;
+              setMessages(prev => [...prev, { id: thankYouMessageId, sender: 'bot', content: thankYouMessage }]);
+            };
+
             botResponseContent = (
               <div>
-                <p>That's wonderful! To subscribe for daily quotes, please provide your details below. (This is a mock form).</p>
-                <form className="mt-2 space-y-2" onSubmit={(e) => { e.preventDefault(); alert('Thank you for subscribing!'); }}>
-                    <input type="text" placeholder="WhatsApp Number" className="w-full p-2 rounded-md border bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600" />
-                    <input type="email" placeholder="Email (Optional)" className="w-full p-2 rounded-md border bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600" />
-                    <button type="submit" className="w-full p-2 rounded-md bg-gradient-to-br from-pink-500 to-rose-500 text-white">Subscribe</button>
-                </form>
+                <p>That's wonderful! To subscribe for daily quotes, please provide your details below.</p>
+                <DailyQuotesForm onSubscribed={handleSubscribed} />
               </div>
             );
             break;
@@ -891,9 +1005,18 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
     {
       id: 2,
       label: 'Deities',
-      title: <IconTemple className='size-5' />,
+      title: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Hindu%20Temple.png" alt="Hindu Temple" width="25" height="25" />,
       subtitle: 'Darshan',
       action: () => { setDeitiesOpen(true); playTempleBell(); },
+    },
+    {
+      id: 9, // New ID for Donate
+      label: 'Donate',
+      title: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="25" height="25" />,
+      subtitle: 'Donate',
+      action: () => handleNavClick('/donate'),
+      isLink: true,
+      to: '/donate',
     },
     {
       id: 3,
@@ -933,19 +1056,48 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
             </button>
 
             {/* Navigation Items - Styled as square items */}
-            {navItems.filter(item => ['/centers', '/about', '/shop'].includes(item.to) && !(isMobile && item.to === '/donate')).map(navItem => (
-            <Link
-              key={`dock-menu-${navItem.to}`}
-              to={navItem.to}
-              onClick={() => { handleNavClick(navItem.to); setIsDockOpen(false); setActiveDockItem(null); }}
-              onMouseEnter={safePlayHover}
-              className="flex flex-col items-center justify-center h-14 w-14 sm:h-16 sm:w-16 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
-              aria-label={navItem.label}
-            >
-              <navItem.icon className={cn("size-6 mb-1", navItem.iconClassName)} />
-              <span className="text-[0.7rem] sm:text-[0.75rem] text-center">{navItem.label}</span>
-            </Link>
-          ))}
+            {navItems.filter(item => ['/centers', '/about', '/shop'].includes(item.to)).map(navItem => (
+              <Link
+                key={`dock-menu-${navItem.to}`}
+                to={navItem.to}
+                onClick={() => { handleNavClick(navItem.to); setIsDockOpen(false); setActiveDockItem(null); }}
+                onMouseEnter={safePlayHover}
+                className="flex flex-col items-center justify-center h-14 w-14 sm:h-16 sm:w-16 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
+                aria-label={navItem.label}
+              >
+                <navItem.icon className={cn("size-6 mb-1", navItem.iconClassName)} />
+                <span className="text-[0.7rem] sm:text-[0.75rem] text-center">{navItem.label}</span>
+              </Link>
+            ))}
+
+            {isMobile && (() => {
+              const calendarNavItem = navItems.find(item => item.to === '/calender');
+              if (!calendarNavItem) return null;
+
+              // Create a static object for the click handler to avoid circular dependency.
+              // It only needs the properties used by handleDockItemClick for this action.
+              const mockEventsItem: DockItemData = {
+                id: 3,
+                label: 'Events',
+                isExpandable: true,
+                title: <></>, // Dummy data to satisfy type
+                subtitle: '', // Dummy data to satisfy type
+              };
+
+              return (
+                <button
+                  key="dock-menu-calendar"
+                  type="button"
+                  onClick={() => handleDockItemClick(mockEventsItem)}
+                  onMouseEnter={safePlayHover}
+                  className="flex flex-col items-center justify-center h-14 w-14 sm:h-16 sm:w-16 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
+                  aria-label={calendarNavItem.label}
+                >
+                  <calendarNavItem.icon className={cn("size-6 mb-1", calendarNavItem.iconClassName)} />
+                  <span className="text-[0.7rem] sm:text-[0.75rem] text-center">{calendarNavItem.label}</span>
+                </button>
+              );
+            })()}
 
           {/* SignedIn Items - Styled as square items */}
           <SignedIn>
@@ -1083,7 +1235,7 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
   }, [isMobile, isDockOpen, activeDockItem, playTempleBell, safePlayClick, setActiveDockItem, setActiveLabelItemId, setHoveredLabelItemId, setIsDockOpen]);
 
   const handleDockItemMouseEnter = React.useCallback((item: DockItemData) => {
-    if (!isMobile && !item.isExpandable) {
+    if (!isMobile && !item.isExpandable && item.label !== 'Donate') {
       setHoveredLabelItemId(item.id);
       safePlayHover();
     }
@@ -1188,7 +1340,7 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
                         </div>
                         {/* Right 2 items */}
                         <div className="flex justify-evenly w-[calc(50%-36px)]">
-                          {[3, 5].map(id => DOCK_ITEMS.find(item => item.id === id)).map(item => item && (
+                          {[9, 5].map(id => DOCK_ITEMS.find(item => item.id === id)).map(item => item && (
                             <DockItemComponent
                               key={item.id}
                               item={item}
@@ -1260,7 +1412,7 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
                         {DOCK_ITEMS.filter(item => {
                           // If clips panel is active on mobile, we only want the main controls, not AI/Clips again
                           if (isMobile && isClipsPanelActive) {
-                            return [1, 2, 3, 5, 8].includes(item.id);
+                            return [1, 2, 9, 5, 8].includes(item.id);
                           }
                           // Desktop: show all except AI Bot (7) and Clips (8) in the main group
                           if (!isMobile) {

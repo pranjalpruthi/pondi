@@ -84,7 +84,7 @@ const Booking = () => {
   const { username, email } = user;
 
   return (
-    <div className="h-full flex items-end justify-center w-full">
+    <div className="flex items-end justify-center w-full">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         version="1.1"
@@ -115,7 +115,7 @@ const Booking = () => {
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              className="h-[300px] bg-primary text-primary-foreground  absolute rounded-3xl overflow-hidden -z-10 w-[500px] p-5 mx-auto "
+              className="h-[280px] bg-primary text-primary-foreground  absolute rounded-3xl overflow-hidden -z-10 w-[900px] p-5 mx-auto "
               variants={bookingVariant}
               initial="initial"
               animate="animate"
@@ -175,7 +175,7 @@ const Booking = () => {
                         })}
                       </div>
                     </div>
-                    <div className="flex-[0.6] bg-primary flex flex-col gap-10">
+                    <div className="flex-[1.2] bg-primary flex flex-col gap-10">
                       <div className="w-full flex items-center justify-between text-primary-foreground/50">
                         <p>
                           Wed <span>21</span>
@@ -335,7 +335,7 @@ const Booking = () => {
         </AnimatePresence>
 
         <div className="h-20 flex items-center justify-center">
-          <div className="flex items-center justify-between bg-primary rounded-2xl mx-auto z-10  p-1 w-[500px] px-2.5">
+          <div className="flex items-center justify-between bg-primary rounded-2xl mx-auto z-10  p-1 w-[900px] px-2.5">
             <motion.div
               animate={{
                 height: 50,

@@ -549,7 +549,7 @@ function AboutPage() {
              </div>
            </AlertDescription>
          </Alert>
-         <div className="text-center mt-6">
+         <div className="text-center mt-6 mb-12">
             <Link to="/donate">
                 <Button size="lg" className="bg-pink-600 hover:bg-pink-700 text-white rounded-full px-8 py-3">
                     Donate Online <ChevronRight className="h-4 w-4 ml-1.5"/>

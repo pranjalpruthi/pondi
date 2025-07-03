@@ -16,6 +16,9 @@ const LazyYouTubeMarquee = React.lazy(() =>
 const LazyQnASection = React.lazy(() => 
   import('@/components/homepage/qna-section').then(module => ({ default: module.QnASection }))
 );
+const LazyEventSection = React.lazy(() =>
+  import('@/components/homepage/event-section').then(module => ({ default: module.EventSection }))
+);
 const LazyVisitUs = React.lazy(() => 
   import('@/components/homepage/visit-us').then(module => ({ default: module.VisitUs }))
 );
@@ -27,6 +30,9 @@ const LazySlokaLearningSection = React.lazy(() =>
 );
 const LazyFeaturedBooksSection = React.lazy(() =>
   import('@/components/homepage/featured-books-section').then(module => ({ default: module.FeaturedBooksSection }))
+);
+const LazyDiscussionSection = React.lazy(() =>
+  import('@/components/homepage/discussion-section').then(module => ({ default: module.DiscussionSection }))
 );
 const LazyDisciplicSuccessionSection = React.lazy(() =>
   import('@/components/homepage/disciplic-succession-section').then(module => ({ default: module.default }))
@@ -88,15 +94,16 @@ function HomePage() {
             <Suspense fallback={<SectionLoader />}>
               <LazyFeaturedSection />
             </Suspense>
+            <SectionDivider />
 
             <Suspense fallback={<SectionLoader />}>
-              <LazyYouTubeMarquee />
+            <LazyEventSection />
+          </Suspense>
+
+            <Suspense fallback={<SectionLoader />}>
+              <LazyQnASection />
             </Suspense>
           </div>
-
-          <Suspense fallback={<SectionLoader />}>
-            <LazyQnASection />
-          </Suspense>
 
           <SectionDivider />
 
@@ -105,6 +112,10 @@ function HomePage() {
           </Suspense>
 
           <SectionDivider />
+
+          <Suspense fallback={<SectionLoader />}>
+            <LazyDiscussionSection />
+          </Suspense>
 
           <Suspense fallback={<SectionLoader />}>
             <LazyFeaturedBooksSection />
@@ -122,9 +133,14 @@ function HomePage() {
 
           <SideBySide /> {/* Render SideBySide without props */}
 
+
+          <Suspense fallback={<SectionLoader />}>
+            <LazyYouTubeMarquee />
+          </Suspense>
+
           <Suspense fallback={<SectionLoader />}>
             <LazyVisitUs />
-i          </Suspense>
+          </Suspense>
 
         </div>
       </main>

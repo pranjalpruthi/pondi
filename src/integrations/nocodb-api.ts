@@ -179,6 +179,37 @@ export async function getCenters(limit?: number, offset = 0) {
 }
 
 /**
+ * Fetches hero images from the NocoDB ISKMP base.
+ * @returns An object containing the list of hero images.
+ */
+export async function getHeroImages() {
+  try {
+    const tableId = await getTableId('hero_images', CONFIG.PROJECTS.ISKMP.BASE_ID);
+    const response = await apiClient.get(`/tables/${tableId}/records`);
+    
+    // The 'image' field in NocoDB is an array of attachments. We need to construct the full URL.
+    const formattedList = response.data.list.map((record: any) => {
+      const imageUrl = record.image && record.image.length > 0 
+        ? `${CONFIG.BASE_URL}${record.image[0].path}` 
+        : null;
+
+      return {
+        ...record,
+        image_url: imageUrl,
+      };
+    });
+
+    return {
+      list: formattedList,
+      pageInfo: response.data.pageInfo
+    };
+  } catch (error) {
+    console.error('Error fetching hero images:', error);
+    throw error;
+  }
+}
+
+/**
  * Fetches shlokas data from ISKMP base.
  * @param limit - Maximum number of records to return. Set to a high number to fetch all records.
  * @param offset - Number of records to skip from the beginning.
@@ -195,6 +226,41 @@ export async function getShlokas(limit: number = 1000, offset = 0) {
     };
   } catch (error) {
     console.error('Error fetching shlokas:', error);
+    throw error;
+  }
+}
+
+/**
+ * Interface for lead data submission.
+ */
+interface LeadData {
+  Name?: string;
+  Email?: string;
+  Phone?: string;
+  Source: 'Newsletter' | 'Shop Waitlist' | 'Magazine Subscription' | 'AI Bot';
+  Status?: 'New' | 'Contacted' | 'Converted';
+  Notes?: string;
+}
+
+/**
+ * Submits a new lead to the Leads table in NocoDB.
+ * @param leadData - The lead data to submit.
+ * @returns The response data from the API.
+ */
+export async function addLead(leadData: LeadData) {
+  try {
+    const tableId = await getTableId('Leads', CONFIG.PROJECTS.ISKMP.BASE_ID);
+    
+    const response = await apiClient.post(`/tables/${tableId}/records`, {
+        ...leadData,
+        SubscribedAt: new Date().toISOString(),
+        Status: leadData.Status || 'New',
+    });
+    
+    return response.data;
+  } catch (error: any) {
+    console.error('Error submitting lead:', error.response?.data || error.message);
+    // Re-throwing the error so the calling function (e.g., a React component) can handle it.
     throw error;
   }
 }

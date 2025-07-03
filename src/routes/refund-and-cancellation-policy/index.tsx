@@ -210,6 +210,29 @@ function RefundAndCancellationPolicy() {
           </p>
         </Section>
 
+        <Section title="Donations Policy" emoji="💖">
+            <p>
+                Donations made to our Temple are deeply appreciated and are vital for our operations and community services. As such, they are generally considered <HighlightText text="non-refundable" />.
+            </p>
+            <SubSection title="Exceptional Cases for Refund">
+                <p>
+                    We understand that exceptional circumstances can occur. A refund for a donation may be considered in cases such as:
+                </p>
+                <ul className="list-disc list-inside space-y-2 mt-4">
+                    <li>A demonstrable technical error in the payment process (e.g., duplicate transaction).</li>
+                    <li>An accidental donation amount that is significantly different from the intended amount.</li>
+                </ul>
+                <p className="mt-4">
+                    All refund requests for donations will be reviewed on a case-by-case basis and are at the sole discretion of the Temple management. To request a refund, you must contact us within <HighlightText text="3 business days" /> of the transaction.
+                </p>
+            </SubSection>
+            <SubSection title="Refund Processing Timeline">
+                <p>
+                    If a refund is approved, please allow up to <HighlightText text="15-20 business days" /> for the transaction to be processed and reflected in your account. The final timeline may vary depending on the payment gateway and your bank's policies.
+                </p>
+            </SubSection>
+        </Section>
+
         <Section title="Contact Us" emoji="✉️">
           <p>If you have any questions about our Returns and Refunds Policy, please contact us:</p>
           <div className="space-y-4 mt-4">

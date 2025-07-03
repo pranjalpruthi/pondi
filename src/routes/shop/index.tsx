@@ -6,6 +6,9 @@ import AnimatedPathText from '@/fancy/components/text/text-along-path';
 import MinimalShop from '../../components/shop/minimal-shop';
 import { Button } from '@/components/ui/button'; // Added Button import
 import { Input } from '@/components/ui/input'; // Added Input import
+import { useMutation } from '@tanstack/react-query';
+import { addLead } from '@/integrations/nocodb-api';
+import { toast } from 'sonner';
 
 export const Route = createFileRoute('/shop/')({
   component: ShopPageWithComingSoonOverlay,
@@ -15,6 +18,23 @@ function ShopPageWithComingSoonOverlay() {
   const [email, setEmail] = useState("");
   const [buttonState, setButtonState] = useState<"idle" | "loading" | "success">("idle");
 
+  const addLeadMutation = useMutation({
+    mutationFn: addLead,
+    onSuccess: () => {
+      setButtonState("success");
+      toast.success("Joined!", { description: "You're on the waitlist. We'll notify you!" });
+      setTimeout(() => {
+        setButtonState("idle");
+        setEmail("");
+      }, 3500);
+    },
+    onError: (error) => {
+      console.error("Failed to join waitlist:", error);
+      toast.error("Submission Failed", { description: "Could not add you to the waitlist. Please try again." });
+      setButtonState("idle");
+    },
+  });
+
   const buttonCopy = {
     idle: "Join Waitlist",
     loading: <motion.div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />,
@@ -22,17 +42,16 @@ function ShopPageWithComingSoonOverlay() {
   } as const;
 
   const handleSubmit = useCallback(() => {
-    if (buttonState === "success" || !email) return;
+    if (buttonState !== "idle" || !email) {
+      if (!email) toast.error("Please enter a valid email address.");
+      return;
+    }
     setButtonState("loading");
-    setTimeout(() => {
-      setButtonState("success");
-      console.log("Waitlist joined with:", { email });
-    }, 1750);
-    setTimeout(() => {
-      setButtonState("idle");
-      setEmail("");
-    }, 3500);
-  }, [buttonState, email]);
+    addLeadMutation.mutate({
+      Email: email,
+      Source: 'Shop Waitlist',
+    });
+  }, [buttonState, email, addLeadMutation]);
 
   // Paths and texts for the background animation, inspired by the new snippet
   const paths = [

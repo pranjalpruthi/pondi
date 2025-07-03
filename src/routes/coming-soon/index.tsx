@@ -18,13 +18,41 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useState } from "react"
+import { useMutation } from "@tanstack/react-query"
+import { addLead } from "@/integrations/nocodb-api"
+import { toast } from "sonner"
 
 export const Route = createFileRoute('/coming-soon/')({
   component: ComingSoonPage,
 })
 
 function ComingSoonPage() { // Changed from 'export function'
-  const [isSubscribeOpen, setIsSubscribeOpen] = useState(false)
+  const [isSubscribeOpen, setIsSubscribeOpen] = useState(false);
+  const [email, setEmail] = useState("");
+
+  const addLeadMutation = useMutation({
+    mutationFn: addLead,
+    onSuccess: () => {
+      toast.success("Subscribed!", { description: "You'll receive the next issue of Back to Godhead." });
+      setIsSubscribeOpen(false);
+      setEmail("");
+    },
+    onError: (error) => {
+      console.error("Failed to subscribe:", error);
+      toast.error("Subscription Failed", { description: "Could not subscribe you to the magazine. Please try again." });
+    },
+  });
+
+  const handleSubscribe = () => {
+    if (!email) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+    addLeadMutation.mutate({
+      Email: email,
+      Source: 'Magazine Subscription',
+    });
+  };
 
   return (
     // <PageWrapper> removed
@@ -207,14 +235,17 @@ function ComingSoonPage() { // Changed from 'export function'
                                   type="email"
                                   placeholder="Enter your email address"
                                   className="bg-background/50"
+                                  value={email}
+                                  onChange={(e) => setEmail(e.target.value)}
                                 />
                               </div>
                             </div>
                             <ShinyRotatingBorderButton
-                              onClick={() => setIsSubscribeOpen(false)}
+                              onClick={handleSubscribe}
                               className="w-full"
+                              disabled={addLeadMutation.isPending}
                             >
-                              Subscribe Now
+                              {addLeadMutation.isPending ? "Subscribing..." : "Subscribe Now"}
                             </ShinyRotatingBorderButton>
                             <p className="text-xs text-center text-muted-foreground pt-2">
                               You can unsubscribe at any time. No spam, ever.
