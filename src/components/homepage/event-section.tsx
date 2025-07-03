@@ -190,6 +190,8 @@ const EventCarousel = () => {
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [, setIsPaginating] = useState(false);
+  // const [isHovered, setIsHovered] = useState(false);
+  // const AUTOPLAY_INTERVAL = 9000; // 9 seconds - commented out as autoplay is removed
 
   const event = eventPosts[currentEventIndex];
   const media = event.media[currentMediaIndex];
@@ -246,8 +248,8 @@ const EventCarousel = () => {
   return (
     <div 
       className="w-full h-full bg-background rounded-2xl shadow-lg overflow-hidden relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      // onMouseEnter={() => setIsHovered(true)}
+      // onMouseLeave={() => setIsHovered(false)}
     >
       {/* Media Container - z-0 */}
       <div className="absolute inset-0 z-0">
