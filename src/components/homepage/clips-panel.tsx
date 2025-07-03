@@ -67,6 +67,7 @@ const ClipPlayerCard = ({ video, isActive, paginate, currentIndex, totalVideos, 
   useEffect(() => {
     if (isActive) {
       setUserHasInteracted(true);
+      setPlaying(true); // Ensure video autoplays when it becomes active
     }
   }, [isActive]);
 
