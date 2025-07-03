@@ -203,15 +203,16 @@ const EventCarousel = () => {
     setTimeout(() => setIsPaginating(false), 600);
   }, []);
 
-  useEffect(() => {
-    if (isHovered) return;
-
-    const interval = setInterval(() => {
-      paginateEvent(1);
-    }, AUTOPLAY_INTERVAL);
-
-    return () => clearInterval(interval);
-  }, [isHovered, paginateEvent]);
+  // Autoplay removed as per user request
+  // useEffect(() => {
+  //   if (isHovered) return;
+  //
+  //   const interval = setInterval(() => {
+  //     paginateEvent(1);
+  //   }, AUTOPLAY_INTERVAL);
+  //
+  //   return () => clearInterval(interval);
+  // }, [isHovered, paginateEvent]);
 
   const paginateMedia = (newDirection: number) => {
     setDirection(newDirection);
@@ -300,20 +301,19 @@ const EventCarousel = () => {
           {event.media.length > 0 ? (
             // Layout for events with media
             <div className="p-4 h-full flex flex-col justify-end">
-              <div className="flex justify-between items-end">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 md:gap-0">
                 {/* Left side: Thumbnails, Title, Description */}
-                <div className="flex-grow pr-4 flex flex-col justify-end" key={event.id}>
+                <div className="flex-grow pr-0 md:pr-4 flex flex-col justify-end" key={event.id}>
                   {/* Thumbnails */}
                   {event.media.length > 1 && (
                     <div className="mb-4">
-                      <div className="flex gap-2 overflow-x-auto pb-2">
+                      <div className="flex gap-2 overflow-x-auto pb-2 bg-black/50 p-2 rounded-lg">
                         {event.media.map((item, index) => (
                           <motion.button
                             key={index}
                             onClick={() => setCurrentMediaIndex(index)}
                             className={cn(
-                              'w-20 h-14 rounded-md overflow-hidden relative flex-shrink-0 border-2',
-                              index === currentMediaIndex ? 'border-white' : 'border-transparent'
+                              'w-20 h-14 rounded-md overflow-hidden relative flex-shrink-0 border-2 border-transparent'
                             )}
                             initial={{ opacity: 0.5 }}
                             animate={{ opacity: index === currentMediaIndex ? 1 : 0.6 }}
@@ -340,23 +340,25 @@ const EventCarousel = () => {
                       transition={{ duration: 0.3 }}
                     >
                       <h3 className="font-bold text-lg">{event.title}</h3>
-                      <p className="text-sm text-white/80 line-clamp-2">{event.description}</p>
+                      <div className="hidden md:block">
+                        <p className="text-sm text-white/80 line-clamp-2">{event.description}</p>
+                      </div>
                     </motion.div>
                   </AnimatePresence>
                 </div>
                 {/* Right side: Buttons */}
-                <div className="flex flex-col justify-between items-end flex-shrink-0 self-stretch gap-y-4">
-                  <div className="flex items-center gap-2">
-                      <Button size="sm" variant="outline" onClick={() => paginateEvent(-1)} className="bg-white/20 border-white/30 hover:bg-white/30 text-white">
+                <div className="flex flex-col justify-between items-end md:items-end flex-shrink-0 self-stretch gap-y-4 w-full md:w-auto">
+                  <div className="flex items-center justify-center md:justify-end gap-2 w-full md:w-auto">
+                      <Button size="sm" variant="outline" onClick={() => paginateEvent(-1)} className="bg-blue-500/50 border-blue-400/30 hover:bg-blue-600/60 text-white">
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Prev
                       </Button>
-                      <Button size="sm" variant="outline" onClick={() => paginateEvent(1)} className="bg-white/20 border-white/30 hover:bg-white/30 text-white">
+                      <Button size="sm" variant="outline" onClick={() => paginateEvent(1)} className="bg-blue-500/50 border-blue-400/30 hover:bg-blue-600/60 text-white">
                         Next
                         <ArrowRight className="h-4 w-4 ml-2" />
                       </Button>
                   </div>
-                  <div className="flex items-center justify-end gap-2">
+                  <div className="flex items-center justify-center md:justify-end gap-2 w-full md:w-auto flex-wrap">
                       {event.registrationUrl && (
                         <a href={event.registrationUrl} target="_blank" rel="noopener noreferrer">
                           <EventCtaButton
@@ -483,14 +485,14 @@ const EventCarousel = () => {
       {event.media.length > 1 && (
         <>
           <div className="absolute right-4 top-1/2 -translate-y-1/2 z-20">
-            <Button size="icon" onClick={() => paginateMedia(1)} variant="secondary" className="rounded-full shadow-lg">
-              <ChevronRight />
-            </Button>
+                  <Button size="icon" onClick={() => paginateMedia(1)} variant="secondary" className="rounded-full shadow-lg bg-blue-500/50 hover:bg-blue-600/60">
+                    <ChevronRight />
+                  </Button>
           </div>
           <div className="absolute left-4 top-1/2 -translate-y-1/2 z-20">
-            <Button size="icon" onClick={() => paginateMedia(-1)} variant="secondary" className="rounded-full shadow-lg">
-              <ArrowLeft />
-            </Button>
+                  <Button size="icon" onClick={() => paginateMedia(-1)} variant="secondary" className="rounded-full shadow-lg bg-blue-500/50 hover:bg-blue-600/60">
+                    <ArrowLeft />
+                  </Button>
           </div>
         </>
       )}
@@ -777,29 +779,29 @@ const SpecialEventBanner = ({ safePlayHover, safePlayClick, safePlayPopOn }: Spe
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20, height: 0, padding: 0, margin: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="relative bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white p-4 rounded-xl shadow-lg mb-12 overflow-hidden"
+        className="relative bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white p-4 rounded-xl shadow-lg mb-6 md:mb-12 overflow-hidden"
       >
         <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full" />
         <div className="absolute -left-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full" />
         <div className="relative flex items-center justify-between">
-          <div className="flex items-center">
+          <div className="flex items-center flex-col md:flex-row gap-4 md:gap-0 text-center md:text-left">
             <motion.div
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="mr-4"
+              className="mr-0 md:mr-4"
             >
               <Info className="h-6 w-6" />
             </motion.div>
             <div>
-              <h4 className="font-bold">Special Announcement</h4>
-              <p className="text-sm">Janmashtami Grand Celebration: Join us on August 26th!</p>
+              <h4 className="font-bold text-base md:text-xl">Special Announcement</h4>
+              <p className="text-sm md:text-base">Janmashtami Grand Celebration: Join us on August 26th!</p>
               <blockquote className="border-l-2 border-white/50 pl-3 italic text-white/80 text-xs mt-2">
                 "In this age of Kali, the holy name of the Lord, the Hare Kṛṣṇa mahā-mantra, is the incarnation of Lord Kṛṣṇa."
               </blockquote>
               <cite className="mt-1 block text-right text-xs text-white/90 not-italic">— CC, Ādi 17.22</cite>
             </div>
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center justify-center md:justify-end mt-4 md:mt-0 flex-wrap gap-2">
             <Popover onOpenChange={(open) => open && safePlayPopOn()}>
               <PopoverTrigger asChild>
                 <Button
