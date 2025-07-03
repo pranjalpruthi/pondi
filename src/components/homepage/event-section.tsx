@@ -190,8 +190,6 @@ const EventCarousel = () => {
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [, setIsPaginating] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const AUTOPLAY_INTERVAL = 9000; // 9 seconds
 
   const event = eventPosts[currentEventIndex];
   const media = event.media[currentMediaIndex];
