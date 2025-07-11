@@ -38,20 +38,29 @@ import { toast } from "sonner";
 import React from "react";
 import { useMutation } from "@tanstack/react-query";
 import { addLead } from "@/integrations/nocodb-api";
+import { IconPlayerPlay } from "@tabler/icons-react";
+import { AuroraText } from "@/components/magicui/aurora-text";
 
 const heroShowcaseData = [
-  { src: '/updates/s9.webp?w=1200&format=webp&quality=80', title: 'Janmashtami Festival Registration', description: 'Register now for the grand celebration of Lord Krishna\'s appearance on August 16th.' },
-  { src: '/updates/s8.webp?w=1200&format=webp&quality=80', title: 'Janmashtami Poaster', description: 'The Magnificent Festival  of Lord Krishna at ISKM Pondicherry.' },
-  { src: '/updates/s10.webp?w=1200&format=webp&quality=80', title: 'Sponsor a Bhagavad Gita', description: 'Contribute ₹250 for one copy and be part of the 5108 Gita distribution yajna.' },
-  { src: '/updates/s11.webp?w=1200&format=webp&quality=80', title: 'Janmashtami School Competition', description: 'Organized by the ISKM Janmashtami Team for young talents.' },
-  { src: '/temple-building/1.webp?w=1200&format=webp&quality=80', title: 'A Glimpse Inside', description: 'An artist\'s 3D rendering of the temple\'s interior view.' },
-  { src: '/temple-building/2.webp?w=1200&format=webp&quality=80', title: 'The Grand Vision', description: 'A 3D projection of the magnificent temple exterior.' },
-  { src: '/temple-building/3.webp?w=1200&format=webp&quality=80', title: 'Welcoming Façade', description: 'The stunning front view of the proposed temple design.' },
-  { src: '/temple-building/4.webp?w=1200&format=webp&quality=80', title: 'Architectural Splendor', description: 'A detailed rear view of the temple\'s 3D model.' },
-  { src: '/temple-building/5.webp?w=1200&format=webp&quality=80', title: 'A 108-ft Marvel', description: 'Top-down view of the temple, featuring three majestic vimanas inspired by ISKCON Vrindavan.' },
+  { type: 'image', src: '/updates/s9.webp?w=1200&format=webp&quality=80', title: 'Janmashtami Festival Registration', description: 'Register now for the grand celebration of Lord Krishna\'s appearance on August 16th.' },
+  { type: 'video', src: 'https://img.youtube.com/vi/pI0_TXhDBmU/hqdefault.jpg', videoUrl: 'https://www.youtube.com/watch?v=pI0_TXhDBmU', title: 'One Day In Pudhuvai Vrindavanam', description: 'A glimpse into the daily activities at our temple. Come experience the spiritual vibrancy.' },
+  { type: 'video', src: 'https://img.youtube.com/vi/E0kbzl0_9qk/hqdefault.jpg', videoUrl: 'https://youtu.be/E0kbzl0_9qk', title: 'New Calf "Sita" at our Goshala', description: 'A new calf, Sita, was born on the auspicious day of Sita Navami at our Gokulam Goshala.' },
+  { type: 'image', src: '/updates/s8.webp?w=1200&format=webp&quality=80', title: 'Janmashtami Poster', description: 'The Magnificent Festival of Lord Krishna at ISKM Pondicherry.' },
+  { type: 'video', src: 'https://img.youtube.com/vi/L13exiAC9bA/hqdefault.jpg', videoUrl: 'https://youtu.be/L13exiAC9bA', title: 'Daily Prasadam Distribution', description: 'Every Saturday and Wednesday, devotees distribute prasadam at Goubert Market, the largest market in Pondicherry.' },
+  { type: 'image', src: '/updates/s10.webp?w=1200&format=webp&quality=80', title: 'Sponsor a Bhagavad Gita', description: 'Contribute ₹250 for one copy and be part of the 5108 Gita distribution yajna.' },
+  { type: 'image', src: '/updates/s11.webp?w=1200&format=webp&quality=80', title: 'Janmashtami School Competition', description: 'Organized by the ISKM Janmashtami Team for young talents.' },
+  { type: 'image', src: '/temple-building/1.webp?w=1200&format=webp&quality=80', title: 'A Glimpse Inside', description: 'An artist\'s 3D rendering of the temple\'s interior view.' },
+  { type: 'image', src: '/temple-building/2.webp?w=1200&format=webp&quality=80', title: 'The Grand Vision', description: 'A 3D projection of the magnificent temple exterior.' },
+  { type: 'image', src: '/temple-building/3.webp?w=1200&format=webp&quality=80', title: 'Welcoming Façade', description: 'The stunning front view of the proposed temple design.' },
+  { type: 'image', src: '/temple-building/4.webp?w=1200&format=webp&quality=80', title: 'Architectural Splendor', description: 'A detailed rear view of the temple\'s 3D model.' },
+  { type: 'image', src: '/temple-building/5.webp?w=1200&format=webp&quality=80', title: 'A 108-ft Marvel', description: 'Top-down view of the temple, featuring three majestic vimanas inspired by ISKCON Vrindavan.' },
 ];
 
-const heroShowcaseImages = heroShowcaseData.map(item => item.src);
+const heroShowcaseImages = heroShowcaseData.filter(item => item.type === 'image').map(item => item.src);
+const heroShowcaseAll = heroShowcaseData.map((item, i) => ({
+  id: `hero-gallery-item-${i}`,
+  ...item
+}));
 
 const socialLinks = [
   { icon: IconBrandInstagram, url: 'https://www.instagram.com/iskm_pondy', label: 'Instagram', color: 'bg-[#E1306C] text-white' },
@@ -414,6 +423,7 @@ function HeroGalleryModal({
 // --- End of New HeroGalleryModal ---
 
 const HeroForeground = React.memo<HeroForegroundProps>((props) => {
+  const [contactIconError, setContactIconError] = useState(false);
   return (
     <div className="z-10 relative px-4 sm:px-6">
       <div className="grid grid-cols-1 gap-12 items-center">
@@ -542,9 +552,19 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
             </Popover>
             <Popover onOpenChange={(open) => { if (open) props.safePlayPopOn(); else props.safePlayPopOff(); }}>
               <PopoverTrigger asChild>
-                <Button className="h-20 w-24 p-1.5 rounded-2xl shadow-lg bg-teal-500 hover:bg-teal-600 text-white">
+                <Button className="h-20 w-24 p-1.5 rounded-2xl shadow-lg bg-gradient-to-br from-green-200 to-green-400 hover:from-green-300 hover:to-green-500 text-green-800">
                   <div className="flex flex-col items-center justify-center gap-1">
-                    <IconPhone className="h-6 w-6" />
+                    {contactIconError ? (
+                      <IconPhone className="h-6 w-6" />
+                    ) : (
+                      <img
+                        src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Telephone%20Receiver.png"
+                        alt="Telephone Receiver"
+                        width="25"
+                        height="25"
+                        onError={() => setContactIconError(true)}
+                      />
+                    )}
                     <span className="text-sm font-semibold">Contact</span>
                   </div>
                 </Button>
@@ -670,6 +690,12 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
 });
 HeroForeground.displayName = "HeroForeground";
 
+function getYouTubeId(url: string): string | null {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+}
+
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const isMobile = useIsMobile();
@@ -681,7 +707,8 @@ export function HeroSection() {
   const [isNewsletterSuccess, setIsNewsletterSuccess] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [rightCarouselPreloaded, setRightCarouselPreloaded] = useState<boolean[]>(Array(heroShowcaseImages.length).fill(false));
+  const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
+  const [rightCarouselPreloaded, setRightCarouselPreloaded] = useState<boolean[]>(Array(heroShowcaseAll.length).fill(false));
 
   const addLeadMutation = useMutation({
     mutationFn: addLead,
@@ -702,22 +729,22 @@ export function HeroSection() {
 
   // Autoplay effect for carousel
   useEffect(() => {
-    if (!isModalOpen && isInView) {
+    if (!isModalOpen && isInView && !playingVideoId) {
       const interval = setInterval(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % heroShowcaseImages.length);
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % heroShowcaseAll.length);
       }, 4000); // 4 seconds delay
       return () => clearInterval(interval);
     }
-  }, [isModalOpen, isInView]);
+  }, [isModalOpen, isInView, heroShowcaseAll.length, playingVideoId]);
 
   // Preload images for carousel
   useEffect(() => {
     const newPreloadedStatus = [...rightCarouselPreloaded];
     let allLoaded = true;
-    heroShowcaseImages.forEach((src, index) => {
+    heroShowcaseAll.forEach((item, index) => {
       if (!newPreloadedStatus[index]) {
         const img = new window.Image();
-        img.src = src;
+        img.src = item.src;
         img.onload = () => {
           newPreloadedStatus[index] = true;
           setRightCarouselPreloaded([...newPreloadedStatus]);
@@ -727,7 +754,7 @@ export function HeroSection() {
     });
     if (allLoaded) setRightCarouselPreloaded(newPreloadedStatus);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [heroShowcaseAll]);
 
   // Intersection observer for inView
   useEffect(() => {
@@ -794,14 +821,16 @@ export function HeroSection() {
       <div className="container mx-auto px-0 xs:px-2 sm:px-4 z-10 relative pt-24 sm:pt-28 lg:pt-32"> {/* Increased top padding */}
         <div className="grid grid-cols-1 gap-8 md:gap-12 items-center text-center"> {/* Changed to grid-cols-1 and text-center */}
           {/* Heading */}
-          <motion.h1
-            className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 dark:text-white leading-tight tracking-tight"
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 20 }}
             transition={{ delay: 0.2 }}
+            className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight tracking-tight"
           >
-            Reawakening Kṛṣṇa Consciousness Worldwide
-          </motion.h1>
+            <AuroraText>
+              Reawakening Kṛṣṇa Consciousness Worldwide
+            </AuroraText>
+          </motion.div>
 
           {/* Carousel */}
           <div className="w-full max-w-4xl mx-auto relative group">
@@ -811,58 +840,105 @@ export function HeroSection() {
               isAutoPlay={false}
               currentIndex={currentIndex}
               setCurrentIndex={setCurrentIndex}
-              thumbnailSlidesData={heroShowcaseImages.map((src, i) => ({ id: `hero-gallery-image-${i}`, src, alt: `Showcase image ${i + 1}` }))}
+              thumbnailSlidesData={heroShowcaseAll.map(item => ({ id: item.id, src: item.src, alt: item.title }))}
             >
               <SliderContainer className="gap-2">
-                {heroShowcaseData.map((item, index) => (
-                  <Slider
-                    key={`hero-gallery-image-${index}`}
-                    className="xl:h-[400px] sm:h-[350px] h-[300px] w-full"
-                  >
-                    <div
-                      className="h-full w-full rounded-3xl p-1 relative transition-colors duration-1000 overflow-hidden"
-                      style={{
-                        background: backgroundColors.length > 1
-                          ? `linear-gradient(145deg, ${backgroundColors[0]}, ${backgroundColors[1]}, ${backgroundColors[2] || backgroundColors[0]})`
-                          : 'linear-gradient(145deg, #FFEBCD, #FFB6C1)',
-                      }}
+                {heroShowcaseAll.map((item, index) => {
+                  const isPlaying = playingVideoId === item.id;
+                  const videoId = item.type === 'video' && item.videoUrl ? getYouTubeId(item.videoUrl) : null;
+
+                  return (
+                    <Slider
+                      key={item.id}
+                      className="xl:h-[400px] sm:h-[350px] h-[300px] w-full"
                     >
-                      <motion.img
-                        src={item.src}
-                        width={1200}
-                        height={800}
-                        alt={item.title}
-                        className="h-full object-contain rounded-3xl w-full cursor-zoom-in"
-                        loading={index < 3 ? "eager" : "lazy"}
-                        decoding="async"
-                        style={{ aspectRatio: '3/2' }}
-                        onClick={() => { setCurrentIndex(index); setIsModalOpen(true); }}
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-black/20 backdrop-blur-md rounded-b-3xl">
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.2, duration: 0.5 }}
-                        >
-                          <h3 className="text-white text-lg font-bold truncate">{item.title}</h3>
-                          <p className="text-white/80 text-sm mt-1 truncate">{item.description}</p>
-                        </motion.div>
+                      <div
+                        className="h-full w-full rounded-3xl p-1 relative transition-colors duration-1000 overflow-hidden group"
+                        style={{
+                          background: backgroundColors.length > 1
+                            ? `linear-gradient(145deg, ${backgroundColors[0]}, ${backgroundColors[1]}, ${backgroundColors[2] || backgroundColors[0]})`
+                            : 'linear-gradient(145deg, #FFEBCD, #FFB6C1)',
+                        }}
+                      >
+                        {isPlaying && videoId ? (
+                          <>
+                            <iframe
+                              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1`}
+                              frameBorder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                              className="absolute inset-0 w-full h-full rounded-3xl"
+                              title={item.title}
+                            ></iframe>
+                            <button
+                              onClick={() => setPlayingVideoId(null)}
+                              className="absolute top-3 right-3 z-20 bg-black/60 text-white rounded-full p-1.5 hover:bg-black/80 transition-colors"
+                              aria-label="Close video"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <motion.img
+                              src={item.src}
+                              width={1200}
+                              height={800}
+                              alt={item.title}
+                              className={cn(
+                                "h-full w-full rounded-3xl object-contain",
+                                item.type === 'image' ? "cursor-zoom-in" : "cursor-pointer",
+                              )}
+                              loading={index < 3 ? "eager" : "lazy"}
+                              decoding="async"
+                              style={{ aspectRatio: '3/2' }}
+                              onClick={() => {
+                                if (item.type === 'image') {
+                                  const imageIndex = heroShowcaseImages.findIndex(imgSrc => imgSrc === item.src);
+                                  if (imageIndex !== -1) {
+                                    setCurrentIndex(imageIndex);
+                                    setIsModalOpen(true);
+                                  }
+                                } else if (item.type === 'video') {
+                                  setPlayingVideoId(item.id);
+                                }
+                              }}
+                            />
+                            {item.type === 'video' && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/30 pointer-events-none">
+                                <IconPlayerPlay className="h-16 w-16 text-white/80 drop-shadow-lg transition-transform duration-300 group-hover:scale-110" />
+                              </div>
+                            )}
+                            {!isPlaying && (
+                              <div className="absolute bottom-0 left-0 right-0 p-4 bg-black/20 backdrop-blur-md rounded-b-3xl">
+                                <motion.div
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: 0.2, duration: 0.5 }}
+                                >
+                                  <h3 className="text-white text-lg font-bold truncate">{item.title}</h3>
+                                  <p className="text-white/80 text-sm mt-1 truncate">{item.description}</p>
+                                </motion.div>
+                              </div>
+                            )}
+                          </>
+                        )}
+                        {!rightCarouselPreloaded[index] && !isPlaying && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-3xl">
+                            <motion.p
+                              className="text-lg font-semibold text-gray-800 dark:text-gray-200"
+                              initial={{ opacity: 0.5 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
+                            >
+                              Hare Krishna! Chant and Be Happy!
+                            </motion.p>
+                          </div>
+                        )}
                       </div>
-                      {!rightCarouselPreloaded[index] && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-3xl">
-                          <motion.p
-                            className="text-lg font-semibold text-gray-800 dark:text-gray-200"
-                            initial={{ opacity: 0.5 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-                          >
-                            Hare Krishna! Chant and Be Happy!
-                          </motion.p>
-                        </div>
-                      )}
-                    </div>
-                  </Slider>
-                ))}
+                    </Slider>
+                  );
+                })}
               </SliderContainer>
               <ThumsSlider />
             </Carousel>
