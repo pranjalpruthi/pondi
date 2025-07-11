@@ -14,13 +14,14 @@ import GiftIcon from '~icons/lucide/gift';
 
 // WeatherIcon component, Popover, Drawer, and related imports moved to TempleWeatherPopover.tsx
 
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, type Transition } from "motion/react";
 import useMeasure from 'react-use-measure';
 import useClickOutside from '@/hooks/useClickOutside';
 import { RainbowButton } from "./ui/rainbow-button";
 import { useTempleStatus } from "@/hooks/useTempleStatus"; // Added
 import { useIsMobile } from "@/hooks/use-mobile";
-import { TempleWeatherPopover } from "./homepage/TempleWeatherPopover"; // Import the new component
+import { TempleWeatherPopover } from "./homepage/status"; // Import the new component
+import { useNavbarVisibility } from "@/hooks/use-navbar-visibility";
 
 interface NavItemType {
   icon: React.ReactNode;
@@ -64,8 +65,7 @@ function NavBarComponent({ className }: NavBarProps) {
     const mobileMenuWrapperRef = React.useRef<HTMLDivElement>(null);
 
     // isFahrenheit and is24HourFormat states moved to TempleWeatherPopover
-    const [lastScrollY, setLastScrollY] = React.useState(0);
-    const [isVisible, setIsVisible] = React.useState(true);
+    const isVisible = useNavbarVisibility(isMobileMenuOpen);
 
     const templeStatus = useTempleStatus(); // Temple status
     const weather = useWeather(); // Weather information
@@ -92,38 +92,6 @@ function NavBarComponent({ className }: NavBarProps) {
     }, [isSoundEnabled, playMenuClose]);
     
     
-    // Handle scroll behavior
-    React.useEffect(() => {
-      const controlNavbar = () => {
-        // For mobile - don't hide if mobile menu is open
-        if (isMobileMenuOpen) {
-          setIsVisible(true);
-          return;
-        }
-        
-        const scrollY = window.scrollY;
-        
-        // Determine scroll direction and distance
-        if (scrollY > lastScrollY && scrollY > 80) {
-          // Scrolling DOWN & past navbar height - hide
-          setIsVisible(false);
-        } else {
-          // Scrolling UP or at top - show
-          setIsVisible(true);
-        }
-        
-        // Update scroll position
-        setLastScrollY(scrollY);
-      };
-      
-      // Add scroll event listener
-      window.addEventListener('scroll', controlNavbar);
-      
-      // Cleanup
-      return () => {
-        window.removeEventListener('scroll', controlNavbar);
-      };
-    }, [lastScrollY, isMobileMenuOpen]);
 
     // const handleDrawerOpenChange = React.useCallback((openState: boolean) => { // Old Drawer handler
     //   setIsOpen(openState);
@@ -148,8 +116,8 @@ function NavBarComponent({ className }: NavBarProps) {
         });
     };
     
-    const springTransition = { type: "spring", stiffness: 400, damping: 35, mass: 0.8 };
-    const mobileMenuSpringTransition = { type: "spring", stiffness: 300, damping: 30, bounce: 0.1 };
+    const springTransition: Transition = { type: "spring", stiffness: 400, damping: 35, mass: 0.8 };
+    const mobileMenuSpringTransition: Transition = { type: "spring", stiffness: 300, damping: 30, bounce: 0.1 };
 
     // Helper functions (formatTemperature, formatTime) and related display variables (nextEventTimeDisplay, nextEventLabelDisplay) moved to TempleWeatherPopover
 
@@ -184,7 +152,7 @@ function NavBarComponent({ className }: NavBarProps) {
                                 <span>Pudhuvai</span>
                                 <span className="sm:ml-1">Vrindavanam</span>
                             </h1>
-                            <p className="text-xs text-muted-foreground hidden 2xl:block truncate">
+                            <p className="text-xs text-muted-foreground hidden sm:block truncate">
                                 Radha Krishna Temple
                             </p>
                         </Link>
@@ -423,7 +391,7 @@ const navItems: Record<string, NavItemType> = {
   contribute: {
     icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Handshake.png" alt="Contribute" width="22" height="22" fallback={<Handshake className="w-4 h-4" />} />,
     title: "Contribute",
-    to: "/coming-soon"
+    to: "/contribute"
   },
   blog: {
     icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Writing%20Hand.png" alt="Blog" width="22" height="22" fallback={<PenSquare className="w-4 h-4" />} />,

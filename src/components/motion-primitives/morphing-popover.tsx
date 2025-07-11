@@ -18,7 +18,6 @@ import useClickOutside from '@/hooks/useClickOutside';
 import { cn } from '@/lib/utils';
 
 const TRANSITION = {
-  type: 'spring',
   bounce: 0.1,
   duration: 0.4,
 };

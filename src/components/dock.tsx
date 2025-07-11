@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { motion, MotionConfig, AnimatePresence } from 'motion/react'; // Added AnimatePresence
+import { motion, MotionConfig, AnimatePresence, type Transition } from 'motion/react'; // Added AnimatePresence
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import useMeasure from 'react-use-measure'; // Added useMeasure
@@ -25,14 +25,11 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Suspense } from 'react'; // Added Suspense import
 import { addLead } from '@/integrations/nocodb-api';
 
+import ShimmerText from '@/components/ui/shimmer-text'; // Added
 import { AppleChatInput } from '@/components/ui/apple-chat-input';
 import { ThreeDotSimpleLoader } from '@/components/ui/three-dot-loader';
 import useAutoScroll from '@/hooks/use-auto-scroll';
 import { ClipsPanel } from '@/components/homepage/clips-panel'; // Changed to import ClipsPanel
-
-const LazyUpcomingEventBanner = React.lazy(() => // Added import for the banner
-  import('@/components/upcoming-event-banner').then(module => ({ default: module.UpcomingEventBanner }))
-);
 
 // Define types for DockItem and its props
 interface DockItemData {
@@ -236,10 +233,6 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
 });
 DockItemComponent.displayName = 'DockItemComponent';
 
-
-interface NavbarContentProps {
-  isDashboardPage?: boolean; // Prop to indicate if it's a dashboard page
-}
 
 const navItems = [
   {
@@ -832,7 +825,7 @@ const nextMessageId = React.useRef(2); // Start IDs from 2
 
 // Removed the old ShortsPanel component
 
-function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDashboardPage prop
+function NavbarContent() {
   // --- State ---
   // const [open, setOpen] = React.useState(false); // Command Dialog state - REMOVED
   const [eventsOpen, setEventsOpen] = React.useState(false); // Events Dialog state
@@ -978,14 +971,14 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
 
   // useEffect for Cmd+K/Ctrl+K to open CommandDialog - REMOVED
 
-  const dockSpringTransition = {
+  const dockSpringTransition: Transition = {
     type: "spring",
     stiffness: 400,
     damping: 30,
     mass: 0.8,
   };
 
-  const mainDockAppearanceTransition = {
+  const mainDockAppearanceTransition: Transition = {
     type: "spring",
     stiffness: 250,
     damping: 30,
@@ -1155,30 +1148,31 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
           {/* Separators are removed as grid layout handles spacing */}
           </div>
           {/* Mini Buttons for Terms, Privacy, Returns */}
-          <div className="col-span-2 sm:col-span-3 mt-2 pt-2 border-t border-border/50 flex justify-center items-center space-x-3"> {/* Reduced mt-3 to mt-2, pt-3 to pt-2, space-x-4 to space-x-3 */}
-            <Link 
-              to="/terms-and-conditions" 
-              onClick={() => { safePlayClick(); setIsDockOpen(false); setActiveDockItem(null); }}
-              onMouseEnter={safePlayHover}
-              className="text-xs text-muted-foreground hover:text-primary transition-colors"
-            >
-              Terms
-            </Link>
-            <span className="text-xs text-muted-foreground">|</span>
-            <Link 
-              to="/privacy-policy" 
-              onClick={() => { safePlayClick(); setIsDockOpen(false); setActiveDockItem(null); }}
-              onMouseEnter={safePlayHover}
-              className="text-xs text-muted-foreground hover:text-primary transition-colors"
-            >
-              Privacy
-            </Link>
-            <span className="text-xs text-muted-foreground">|</span>
+          <div className="col-span-2 sm:col-span-3 mt-2 pt-2 border-t border-border/50 flex justify-between items-center px-4 sm:px-6">
+            <div className="flex items-center space-x-3">
+              <Link 
+                to="/terms-and-conditions" 
+                onClick={() => { safePlayClick(); setIsDockOpen(false); setActiveDockItem(null); }}
+                onMouseEnter={safePlayHover}
+                className="text-xs text-muted-foreground hover:text-primary dark:text-white transition-colors"
+              >
+                Terms
+              </Link>
+              <span className="text-xs text-muted-foreground dark:text-white">|</span>
+              <Link 
+                to="/privacy-policy" 
+                onClick={() => { safePlayClick(); setIsDockOpen(false); setActiveDockItem(null); }}
+                onMouseEnter={safePlayHover}
+                className="text-xs text-muted-foreground hover:text-primary dark:text-white transition-colors"
+              >
+                Privacy
+              </Link>
+            </div>
             <Link 
               to="/refund-and-cancellation-policy" 
               onClick={() => { safePlayClick(); setIsDockOpen(false); setActiveDockItem(null); }}
               onMouseEnter={safePlayHover}
-              className="text-xs text-muted-foreground hover:text-primary transition-colors"
+              className="text-xs text-muted-foreground hover:text-primary dark:text-white transition-colors"
             >
               Returns
             </Link>
@@ -1249,11 +1243,11 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
   return (
     <MotionConfig transition={{ layout: { duration: 0.35, type: 'spring', bounce: 0.1 } }}>
       <motion.nav 
-        className="fixed bottom-[var(--banner-height,44px)] left-0 w-full pb-safe pointer-events-none transform-gpu"
+        className="fixed bottom-0 left-0 w-full pb-safe pointer-events-none transform-gpu"
         initial={{ y: 0 }}
         // Adjust z-index based on visibility to ensure it's below footer when hidden
         animate={{
-          y: (isClipsPanelActive || isEventsPanelActive) ? 0 : (isDockVisible && !isFooterVisible ? 10 : 160),
+          y: (isClipsPanelActive || isEventsPanelActive) ? 0 : (isDockVisible && !isFooterVisible ? 0 : 160),
           zIndex: (isClipsPanelActive || isEventsPanelActive) ? 50 : (isDockVisible && !isFooterVisible ? 40 : 10)
         }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -1285,7 +1279,7 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
                         initial={{ height: 0, opacity: 0 }}
                         animate={{
                           height: isClipsPanelActive
-                            ? (isMobile ? 'calc(100vh - var(--banner-height, 44px) - 56px - env(safe-area-inset-bottom))' : 'calc(100vh - var(--banner-height, 44px) - 64px - env(safe-area-inset-bottom))') // Adjusted height calculation
+                            ? (isMobile ? 'calc(100vh - 56px - env(safe-area-inset-bottom))' : 'calc(100vh - 64px - env(safe-area-inset-bottom))') // Adjusted height calculation
                             : heightContent || 'auto',
                           opacity: 1
                         }}
@@ -1314,9 +1308,9 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
                     isClipsPanelActive
                       ? 'p-0 py-1 fixed bottom-[env(safe-area-inset-bottom)] left-0 right-0 bg-black/80 backdrop-blur-sm h-[56px] sm:h-[64px] justify-center space-x-2 sm:space-x-3'
                       : 'p-1.5 sm:p-2.5',
-                    isMobile && !isClipsPanelActive ? 'relative' : 'justify-center space-x-2 sm:space-x-3'
+                    isMobile ? 'relative' : 'justify-center space-x-2 sm:space-x-3'
                   )} ref={menuRef}>
-                  {isMobile && !isClipsPanelActive ? (
+                  {isMobile ? (
                     <>
                       {/* Bottom row of 4 icons */}
                       <div className="flex w-full justify-between items-end">
@@ -1407,13 +1401,9 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
                     </>
                   ) : (
                     <>
-                      {/* Desktop Layout or when Clips Panel is Active on Mobile */}
+                      {/* Desktop Layout */}
                       <div className={cn('flex space-x-2 sm:space-x-3', isClipsPanelActive ? 'text-white' : '')}>
                         {DOCK_ITEMS.filter(item => {
-                          // If clips panel is active on mobile, we only want the main controls, not AI/Clips again
-                          if (isMobile && isClipsPanelActive) {
-                            return [1, 2, 9, 5, 8].includes(item.id);
-                          }
                           // Desktop: show all except AI Bot (7) and Clips (8) in the main group
                           if (!isMobile) {
                             return ![7, 8].includes(item.id)
@@ -1483,12 +1473,6 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
         <div className="h-[env(safe-area-inset-bottom)]" />
       </motion.nav>
 
-      {!isDashboardPage && (
-        <Suspense fallback={null}>
-          <LazyUpcomingEventBanner />
-        </Suspense>
-      )}
-
       <TempleEvents 
         open={eventsOpen} 
         onOpenChange={setEventsOpen}
@@ -1503,10 +1487,22 @@ function NavbarContent({ isDashboardPage }: NavbarContentProps) { // Accept isDa
   )
 }
 
-export default function Navbar({ isDashboardPage }: NavbarContentProps) {
+export default function Navbar() {
+  const loadingFallback = (
+    <div className="fixed inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-[100]">
+      <div className="flex flex-col items-center gap-4">
+        <img src="/logo192.webp" alt="Loading" className="size-16 animate-pulse-slow" />
+        <ShimmerText text='"Chant Hare Krishna and your life will be sublime."' />
+        <p className="text-sm text-muted-foreground">- Śrīla Prabhupāda</p>
+      </div>
+    </div>
+  );
+
   return (
     <SoundProvider>
-      <NavbarContent isDashboardPage={isDashboardPage} />
+      <Suspense fallback={loadingFallback}>
+        <NavbarContent />
+      </Suspense>
     </SoundProvider>
   )
 }

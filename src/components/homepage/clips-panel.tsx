@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import type { PanInfo } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
+import type { PanInfo } from 'motion/react';
 import { ChevronUp, ChevronDown, Youtube, Heart, Share2 } from 'lucide-react';
 // import ReactPlayer from 'react-player/youtube'; // Removed ReactPlayer
 import {

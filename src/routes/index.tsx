@@ -1,5 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import React, { Suspense, useState, useEffect } from 'react';
+import { motion } from "motion/react";
+import { Badge } from "@/components/ui/badge";
 import { HeroSection } from "@/components/homepage/hero-section";
 import SideBySide from "@/components/homepage/side-by-side";
 import { InitialPageLoader } from '@/components/ui/initial-page-loader'; // Updated import
@@ -92,21 +94,38 @@ function HomePage() {
           <div className="min-h-screen">
             <HeroSection />
             <Suspense fallback={<SectionLoader />}>
-              <LazyFeaturedSection />
+              <LazyEventSection />
             </Suspense>
+            
+            {/* New section for the relocated and improved text */}
+            <motion.div
+              className="mt-8 text-center px-4" // Adjusted margin-top, text-center, and horizontal padding
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.8 }} // Simplified animation
+            >
+              <div className="bg-white dark:bg-pink-900/20 rounded-2xl shadow-md p-6 max-w-3xl mx-auto border border-gray-200 dark:border-pink-700/30">
+                <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white leading-relaxed tracking-tight">
+                Join our sacred calling
+                <Badge variant="secondary" className="mx-2 p-1 align-middle inline-block bg-white/50 dark:bg-black/20 border-primary/50">
+                  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Telephone%20Receiver.png" alt="Telephone Receiver" width="25" height="25" />
+                </Badge>
+                spread Śrīla Prabhupāda's wisdom and guide souls back home, back to Godhead.
+                </p>
+              </div>
+            </motion.div>
+
             <SectionDivider />
-
-            <Suspense fallback={<SectionLoader />}>
-            <LazyEventSection />
-          </Suspense>
-
             <Suspense fallback={<SectionLoader />}>
               <LazyQnASection />
             </Suspense>
           </div>
 
-          <SectionDivider />
+          <Suspense fallback={<SectionLoader />}>
+            <LazyYouTubeMarquee />
+          </Suspense>
 
+          <SectionDivider />
 
           <Suspense fallback={<SectionLoader />}>
             <LazySlokaLearningSection />
@@ -118,10 +137,6 @@ function HomePage() {
             <LazyDiscussionSection />
           </Suspense>
 
-          <Suspense fallback={<SectionLoader />}>
-            <LazyYouTubeMarquee />
-          </Suspense>
-          
           <Suspense fallback={<SectionLoader />}>
             <LazyFeaturedBooksSection />
           </Suspense>
@@ -136,8 +151,12 @@ function HomePage() {
             <LazyMilestoneTimeline />
           </Suspense>
 
-          <SideBySide /> {/* Render SideBySide without props */}
+            <Suspense fallback={<SectionLoader />}>
+              <LazyFeaturedSection />
+            </Suspense>
+            <SectionDivider />
 
+          <SideBySide /> {/* Render SideBySide without props */}
           <Suspense fallback={<SectionLoader />}>
             <LazyVisitUs />
           </Suspense>

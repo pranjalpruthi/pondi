@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 // Image component removed - using standard img tag
 import { Sparkles } from '@/components/ui/sparkles'
 import { useState } from "react";

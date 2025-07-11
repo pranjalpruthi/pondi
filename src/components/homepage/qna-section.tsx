@@ -2,12 +2,10 @@ import { motion } from "motion/react"
 import { ExternalLink, MessageCircleQuestion, Calendar, Clock, Youtube } from "lucide-react"
 import { useQuery, keepPreviousData } from "@tanstack/react-query"
 import { XMLParser } from "fast-xml-parser"
-import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { RippleButton } from "@/components/animate-ui/buttons/ripple"
 import { Badge } from "@/components/ui/badge"
 
@@ -67,11 +65,6 @@ const fetchPreviousSessions = async (channelId: string): Promise<YouTubeVideo[]>
 
 export function QnASection() {
   const FRIDAY_CHANNEL_ID = "UCA7bxZwd7dF3r8GWpShRqug";
-  const SUNDAY_CHANNEL_ID = "UCI_lrxFMPnjcEcBsPtX47hQ"; // New Sunday channel ID
-
-  const [activeTab, setActiveTab] = useState("friday"); // State for active tab
-
-  const currentChannelId = activeTab === "friday" ? FRIDAY_CHANNEL_ID : SUNDAY_CHANNEL_ID;
 
   const {
     data: previousSessions,
@@ -79,8 +72,8 @@ export function QnASection() {
     isError,
     error
   } = useQuery<YouTubeVideo[], Error>({
-    queryKey: ['previousYouTubeSessions', currentChannelId],
-    queryFn: () => fetchPreviousSessions(currentChannelId),
+    queryKey: ['previousYouTubeSessions', FRIDAY_CHANNEL_ID],
+    queryFn: () => fetchPreviousSessions(FRIDAY_CHANNEL_ID),
     // The data will be considered fresh for 30 minutes.
     // No new network request will be made for this query during this time.
     staleTime: 1000 * 60 * 30, // 30 minutes
@@ -139,13 +132,8 @@ export function QnASection() {
           </motion.blockquote>
         </div>
 
-        <Tabs defaultValue="friday" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8 max-w-sm mx-auto"> {/* Centered tabs */}
-            <TabsTrigger value="friday" onClick={() => setActiveTab("friday")}>Friday Session</TabsTrigger>
-            <TabsTrigger value="sunday" onClick={() => setActiveTab("sunday")}>Sunday Session</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="friday">
+        <div className="w-full">
+          <div className="mb-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -221,86 +209,8 @@ export function QnASection() {
                 </div>
               </Card>
             </motion.div>
-          </TabsContent>
-
-          <TabsContent value="sunday">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              viewport={{ once: true }}
-              className="mb-8"
-            >
-              <Card className="overflow-hidden border border-gray-200 dark:border-gray-800 rounded-2xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg">
-                <div className="flex flex-col lg:flex-row">
-                  <div className="relative w-full lg:w-1/2 h-[300px] lg:h-auto overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-[#ffc547]/20 via-[#e94a9c]/10 to-transparent z-10"></div>
-                    <img
-                      src="/assets/extra/sunday.jpg" // Sunday image
-                      alt="Sunday Session Preview"
-                      className="absolute inset-0 w-full h-full object-contain"
-                    />
-                  </div>
-
-                  <div className="p-6 lg:p-8 flex flex-col justify-between lg:w-1/2">
-                    <div className="space-y-4">
-                      <h3 className="text-2xl font-semibold text-[#0a84ff] dark:text-[#0a84ff]">
-                        Unlocking the Secrets of Bhakti
-                      </h3>
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                        viewport={{ once: true }}
-                        className="text-lg text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2"
-                      >
-                        <span>With</span>
-                        <Badge variant="outline" className="border-pink-300 bg-pink-100/50 text-pink-800 dark:border-pink-700 dark:bg-pink-900/30 dark:text-pink-300 font-bold text-lg px-3 py-1">
-                          H.G. Prahlad Bhakta Prabhu
-                        </Badge>
-                      </motion.div>
-
-                      <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                        Delve into the profound science of devotion with H.G. Prahlad Bhakta Prabhu. These enlightening Sunday sessions offer a systematic journey into the heart of Bhakti, welcoming aspirants from all walks of life to discover its timeless wisdom.
-                      </p>
-
-                      <blockquote className="mt-4 border-l-4 border-pink-400/50 pl-4 italic text-gray-600 dark:text-gray-400">
-                        <p>"Just try to learn the truth by approaching a spiritual master. Inquire from him submissively and render service unto him. The self-realized soul can impart knowledge unto you because he has seen the truth."</p>
-                        <cite className="mt-2 block text-right text-sm not-italic text-gray-500">- Bhagavad-gītā 4.34</cite>
-                      </blockquote>
-
-                      <div className="flex flex-col space-y-2 pt-2">
-                        <div className="flex items-center space-x-3">
-                          <Calendar className="h-5 w-5 text-[#ffc547] dark:text-[#ffc547]" />
-                          <span className="font-medium">Every Sunday</span>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <Clock className="h-5 w-5 text-[#e94a9c] dark:text-[#e94a9c]" />
-                          <span className="font-medium">4:00 PM - 7:30 PM (IST)</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Responsive button group */}
-                    <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-3 sm:space-y-0 mt-8 items-center">
-                      <RippleButton className="w-full sm:flex-1 bg-gradient-to-r from-[#e94a9c] to-[#0a84ff] hover:from-[#d3428c] hover:to-[#0077ed] rounded-full border-0 h-14 sm:h-12 font-medium text-white shadow-sm transition-all">
-                        <a href="https://www.youtube.com/@harekrsnaleague2764" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-full h-full">
-                          <Youtube className="mr-2 h-5 w-5" /> Watch Live Stream
-                        </a>
-                      </RippleButton>
-
-                      <RippleButton variant="outline" className="w-full sm:flex-1 rounded-full h-14 sm:h-12 border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 font-medium transition-all">
-                        <a href="https://t.me/ISKMVaishnavasanga" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-full h-full">
-                          <ExternalLink className="mr-2 h-5 w-5" /> Join Telegram Group
-                        </a>
-                      </RippleButton>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
-          </TabsContent>
-        </Tabs>
+          </div>
+        </div>
 
         {/* Previous sessions grid - Mobile friendly */}
         <motion.div
@@ -378,7 +288,7 @@ export function QnASection() {
           
           <div className="mt-10 text-center">
             <Button variant="ghost" className="text-[#0a84ff] dark:text-[#0a84ff] hover:text-[#0077ed] dark:hover:text-[#0077ed] hover:bg-[#0a84ff]/5 dark:hover:bg-[#0a84ff]/10 rounded-full h-12 text-base">
-              <a href={`https://www.youtube.com/channel/${currentChannelId}/videos`} target="_blank" rel="noopener noreferrer" className="flex items-center px-8">
+              <a href={`https://www.youtube.com/channel/${FRIDAY_CHANNEL_ID}/videos`} target="_blank" rel="noopener noreferrer" className="flex items-center px-8">
                 View All Sessions <ExternalLink className="ml-2.5 h-4 w-4" />
               </a>
             </Button>

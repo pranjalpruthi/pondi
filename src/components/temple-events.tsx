@@ -8,7 +8,6 @@ import { useState, useEffect, memo } from "react"
 import { Link } from "@tanstack/react-router"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { useTheme } from "@/components/theme-provider"
 import { useMediaQuery } from "@uidotdev/usehooks";
 
 // Types
@@ -223,7 +222,6 @@ const getFastingProgress = (window: { start: Date, end: Date }): { progress: num
 
 // Main Panel Component
 export const TempleEventsPanel = memo(() => {
-  const { theme } = useTheme();
   const [selectedDayOfMonth, setSelectedDayOfMonth] = useState(new Date().getDate())
   const [activeMonthDate, setActiveMonthDate] = useState(new Date())
   const [monthCalendarData, setMonthCalendarData] = useState<CalendarDay[]>([]);
@@ -329,7 +327,7 @@ export const TempleEventsPanel = memo(() => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="bg-gradient-to-r from-[#e94a9c] via-[#ffc547] to-[#0a84ff] p-0.5 rounded-full shadow-md">
-              <div className={cn("rounded-full p-1", theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
+              <div className={cn("rounded-full p-1", "bg-white dark:bg-zinc-800")}>
                 <Calendar className="h-4 w-4 text-[#e94a9c]" />
               </div>
             </div>
@@ -361,7 +359,7 @@ export const TempleEventsPanel = memo(() => {
               </motion.div>
             </PopoverTrigger>
             <PopoverContent side="bottom" align="end" className="w-96 p-0 z-50">
-              <div className={cn("p-2 border-b", theme === 'dark' ? 'border-zinc-700' : 'border-gray-200')}>
+              <div className={cn("p-2 border-b", "border-gray-200 dark:border-zinc-700")}>
                 <h4 className="font-semibold text-sm">
                   Astro Events for {selectedDayForPopover ? formatDateDisplay(selectedDayForPopover.date_str, {month: 'short', day: 'numeric'}) : "Selected Day"}
                 </h4>
@@ -378,7 +376,7 @@ export const TempleEventsPanel = memo(() => {
                     >
                       <Clock className="h-4 w-4 mr-2 text-muted-foreground flex-shrink-0"/>
                       <span className="font-medium w-20 text-sm tabular-nums">{coreEvent.time}</span> {/* Ensure full time is shown */}
-                      <Badge variant="outline" className={cn("text-sm ml-2 px-2 py-1 leading-tight", theme === 'dark' ? 'border-blue-700/60 text-blue-300 bg-blue-900/40' : 'border-blue-300/70 text-blue-700 bg-blue-100/60')}>
+                      <Badge variant="outline" className={cn("text-sm ml-2 px-2 py-1 leading-tight", "border-blue-300/70 bg-blue-100/60 text-blue-700 dark:border-blue-700/60 dark:bg-blue-900/40 dark:text-blue-300")}>
                         {coreEvent.type_name} {coreEvent.dst_applied ? '(DST)' : ''}
                       </Badge>
                     </motion.div>
@@ -408,10 +406,10 @@ export const TempleEventsPanel = memo(() => {
               <div className="mt-2 p-2 rounded-lg bg-gradient-to-r from-pink-50/30 to-purple-50/30 dark:from-pink-900/20 dark:to-purple-900/20 border border-pink-200/50 dark:border-pink-800/30">
                 <div className="flex flex-wrap items-center justify-between gap-2 text-xs mb-1.5">
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className={cn("px-2.5 py-1 text-xs font-medium", theme === 'dark' ? 'border-pink-700 text-pink-300' : 'border-pink-300 text-pink-700')}>
+                    <Badge variant="outline" className={cn("px-2.5 py-1 text-xs font-medium", "border-pink-300 text-pink-700 dark:border-pink-700 dark:text-pink-300")}>
                       Start: {window.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </Badge>
-                    <Badge variant="outline" className={cn("px-2.5 py-1 text-xs font-medium", theme === 'dark' ? 'border-purple-700 text-purple-300' : 'border-purple-300 text-purple-700')}>
+                    <Badge variant="outline" className={cn("px-2.5 py-1 text-xs font-medium", "border-purple-300 text-purple-700 dark:border-purple-700 dark:text-purple-300")}>
                       End: {window.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </Badge>
                   </div>
@@ -465,7 +463,7 @@ export const TempleEventsPanel = memo(() => {
       </div>
       <div className="flex-1 overflow-y-auto p-2 space-y-4 styled-scrollbar">
         {/* Calendar Section */}
-        <div className={cn(theme === 'dark' ? 'bg-zinc-800/50' : 'bg-slate-100/50', 'p-3 rounded-lg shadow-inner space-y-3')}>
+        <div className={cn("p-3 rounded-lg shadow-inner space-y-3", "bg-slate-100/50 dark:bg-zinc-800/50")}>
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-semibold text-sky-600 dark:text-sky-400">{currentMonthName} {currentYear}</h3>
             <div className="flex gap-1">
@@ -512,10 +510,10 @@ export const TempleEventsPanel = memo(() => {
                         onClick={() => handleDayClick(dayNumber)}
                         className={cn(
                           "h-8 text-sm rounded flex items-center justify-center relative transition-all duration-150 ease-out select-none",
-                          selectedDayOfMonth === dayNumber 
+                          selectedDayOfMonth === dayNumber
                             ? "bg-gradient-to-r from-sky-500 to-blue-500 text-white font-semibold shadow-sm ring-1 ring-offset-0 ring-blue-500"
-                            : (theme === 'dark' ? "bg-zinc-700/60 hover:bg-zinc-600/80" : "bg-gray-100 hover:bg-gray-200"),
-                          dayData?.fasting_info.is_fasting_day && selectedDayOfMonth !== dayNumber && (theme === 'dark' ? "ring-1 ring-pink-600/70" : "ring-1 ring-pink-400/70"),
+                            : "bg-gray-100 hover:bg-gray-200 dark:bg-zinc-700/60 dark:hover:bg-zinc-600/80",
+                          dayData?.fasting_info.is_fasting_day && selectedDayOfMonth !== dayNumber && "ring-1 ring-pink-400/70 dark:ring-pink-600/70",
                           new Date().getFullYear() === activeMonthDate.getFullYear() && new Date().getMonth() === activeMonthDate.getMonth() && dayNumber === new Date().getDate() && "font-bold ring-1 ring-amber-500"
                         )}
                       >
@@ -526,20 +524,31 @@ export const TempleEventsPanel = memo(() => {
                       </motion.button>
                     </PopoverTrigger>
                     {selectedDayForPopover && selectedDayForPopover.date_str === dateStr && (
-                      <PopoverContent side="bottom" align="center" className="w-60 p-0 z-50">
-                        <div className={cn("p-2 border-b", theme === 'dark' ? 'border-zinc-700' : 'border-gray-200')}>
+                      <PopoverContent
+                        side="bottom"
+                        align="center"
+                        className={cn(
+                          "w-80 p-0 z-50",
+                          selectedDayForPopover.fasting_info.is_fasting_day
+                            ? "bg-pink-50/50 dark:bg-pink-900/20"
+                            : (selectedDayForPopover.events.length > 0 || selectedDayForPopover.raw_events.length > 0)
+                            ? "bg-sky-50/50 dark:bg-sky-900/20"
+                            : ""
+                        )}
+                      >
+                        <div className={cn("p-2 border-b", "border-gray-200 dark:border-zinc-700")}>
                           <h4 className="font-semibold text-xs">{formatDateDisplay(selectedDayForPopover.date_str)}</h4>
                           <p className="text-xs text-muted-foreground">{selectedDayForPopover.astro_details.tithi_name}, {selectedDayForPopover.astro_details.masa_name} Masa</p>
                         </div>
-                        <div className="p-3 max-h-40 overflow-y-auto space-y-2 text-sm styled-scrollbar"> {/* Adjusted max-h */}
+                        <div className="p-3 max-h-64 overflow-y-auto space-y-2 text-sm styled-scrollbar"> {/* Adjusted max-h */}
                           {selectedDayForPopover.fasting_info.is_fasting_day && (
-                            <Alert variant="default" className={cn("p-2 text-sm", theme === 'dark' ? 'bg-pink-900/60 border-pink-700/50 text-pink-300' : 'bg-pink-50/80 border-pink-200/70 text-pink-700')}><Sparkles className="h-4 w-4 text-pink-500" /><AlertTitle className="font-semibold text-sm">{selectedDayForPopover.fasting_info.description}</AlertTitle></Alert>
+                            <Alert variant="default" className={cn("p-2 text-sm", "bg-pink-50/80 border-pink-200/70 text-pink-700 dark:bg-pink-900/60 dark:border-pink-700/50 dark:text-pink-300")}><Sparkles className="h-4 w-4 text-pink-500" /><AlertTitle className="font-semibold text-sm">{selectedDayForPopover.fasting_info.description}</AlertTitle></Alert>
                           )}
                           {selectedDayForPopover.ekadasi_parana_details && (
-                            <Alert variant="default" className={cn("p-2 text-sm mt-2", theme === 'dark' ? 'bg-green-900/60 border-green-700/50 text-green-300' : 'bg-green-50/80 border-green-200/70 text-green-700')}><ListChecks className="h-4 w-4 text-green-500" /><AlertTitle className="font-semibold text-sm">Ekadasi Parana</AlertTitle><AlertDescription className="text-sm">{selectedDayForPopover.ekadasi_parana_details}</AlertDescription></Alert>
+                            <Alert variant="default" className={cn("p-2 text-sm mt-2", "bg-green-50/80 border-green-200/70 text-green-700 dark:bg-green-900/60 dark:border-green-700/50 dark:text-green-300")}><ListChecks className="h-4 w-4 text-green-500" /><AlertTitle className="font-semibold text-sm">Ekadasi Parana</AlertTitle><AlertDescription className="text-sm">{selectedDayForPopover.ekadasi_parana_details}</AlertDescription></Alert>
                           )}
                           {getAdditionalFastingInfo(selectedDayForPopover) && !selectedDayForPopover.ekadasi_parana_details && (
-                            <Alert variant="default" className={cn("p-2 text-sm mt-2", theme === 'dark' ? 'bg-green-900/60 border-green-700/50 text-green-300' : 'bg-green-50/80 border-green-200/70 text-green-700')}><ListChecks className="h-4 w-4 text-green-500" /><AlertTitle className="font-semibold text-sm">Fasting Info</AlertTitle><AlertDescription className="text-sm">{getAdditionalFastingInfo(selectedDayForPopover)}</AlertDescription></Alert>
+                            <Alert variant="default" className={cn("p-2 text-sm mt-2", "bg-green-50/80 border-green-200/70 text-green-700 dark:bg-green-900/60 dark:border-green-700/50 dark:text-green-300")}><ListChecks className="h-4 w-4 text-green-500" /><AlertTitle className="font-semibold text-sm">Fasting Info</AlertTitle><AlertDescription className="text-sm">{getAdditionalFastingInfo(selectedDayForPopover)}</AlertDescription></Alert>
                           )}
                           {/* Fasting Progress Bar REMOVED from here */}
                           
@@ -549,7 +558,7 @@ export const TempleEventsPanel = memo(() => {
                               {selectedDayForPopover.raw_events.map((event, idx) => (
                                 <div key={`dre-panel-${idx}`} className="flex items-start gap-2">
                                   <div className={cn("h-2 w-2 rounded-full mt-1 flex-shrink-0", getEventStyle(event).dot)}></div>
-                                  <Badge variant="outline" className={cn("text-sm px-2 py-0.5 leading-tight", getEventStyle(event).text, theme === 'dark' ? 'bg-opacity-10' : 'bg-opacity-20')}>
+                                  <Badge variant="outline" className={cn("text-sm px-2 py-0.5 leading-tight", getEventStyle(event).text, "bg-opacity-20 dark:bg-opacity-10")}>
                                     {event.text}
                                   </Badge>
                                 </div>
@@ -575,7 +584,7 @@ export const TempleEventsPanel = memo(() => {
         </div>
 
         {/* Daily Schedule Section */}
-        <div className={cn(theme === 'dark' ? 'bg-zinc-800/50' : 'bg-slate-100/50', 'p-3 rounded-lg shadow-inner space-y-3')}>
+        <div className={cn("p-3 rounded-lg shadow-inner space-y-3", "bg-slate-100/50 dark:bg-zinc-800/50")}>
           <h3 className="text-sm font-semibold text-[#ffc547] dark:text-[#ffc547]">Daily Activities</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[220px] overflow-y-auto pr-1.5 styled-scrollbar-thin">
             {schedule?.map((item, index) => (
@@ -585,15 +594,13 @@ export const TempleEventsPanel = memo(() => {
                 animate={{ opacity: 1, y: 0, transition: { delay: index * 0.05, type: 'spring', stiffness: 200, damping: 20 } }}
                 className={cn(
                   "flex gap-3 p-3 rounded-lg border transition-all duration-200 bg-gradient-to-r",
-                  theme === 'dark'
-                    ? 'border-zinc-700 hover:bg-zinc-700 hover:border-zinc-600 hover:shadow-lg'
-                    : 'border-gray-200 hover:border-gray-300 hover:shadow-lg',
-                  item.time.includes('4:30 AM') ? (theme === 'dark' ? 'from-purple-900/20 to-indigo-900/20 text-purple-300' : 'from-purple-100 to-indigo-100 text-purple-700') : '',
-                  item.time.includes('7:15 AM') || item.time.includes('7:20 AM') ? (theme === 'dark' ? 'from-orange-900/20 to-amber-900/20 text-orange-300' : 'from-orange-100 to-amber-100 text-orange-700') : '',
-                  item.time.includes('8:00 AM') ? (theme === 'dark' ? 'from-amber-900/20 to-yellow-900/20 text-amber-300' : 'from-amber-100 to-yellow-100 text-amber-700') : '',
-                  item.time.includes('12:00 PM') ? (theme === 'dark' ? 'from-yellow-900/20 to-green-900/20 text-yellow-300' : 'from-yellow-100 to-green-100 text-green-700') : '',
-                  item.time.includes('5:30 PM') ? (theme === 'dark' ? 'from-pink-900/20 to-rose-900/20 text-pink-300' : 'from-pink-100 to-rose-100 text-pink-700') : '',
-                  item.time.includes('6:30 PM') ? (theme === 'dark' ? 'from-indigo-900/20 to-purple-900/20 text-indigo-300' : 'from-indigo-100 to-purple-100 text-indigo-700') : ''
+                  "border-gray-200 hover:border-gray-300 hover:shadow-lg dark:border-zinc-700 dark:hover:bg-zinc-700 dark:hover:border-zinc-600 dark:hover:shadow-lg",
+                  item.time.includes('4:30 AM') ? "from-purple-100 to-indigo-100 text-purple-700 dark:from-purple-900/20 dark:to-indigo-900/20 dark:text-purple-300" : '',
+                  item.time.includes('7:15 AM') || item.time.includes('7:20 AM') ? "from-orange-100 to-amber-100 text-orange-700 dark:from-orange-900/20 dark:to-amber-900/20 dark:text-orange-300" : '',
+                  item.time.includes('8:00 AM') ? "from-amber-100 to-yellow-100 text-amber-700 dark:from-amber-900/20 dark:to-yellow-900/20 dark:text-amber-300" : '',
+                  item.time.includes('12:00 PM') ? "from-yellow-100 to-green-100 text-green-700 dark:from-yellow-900/20 dark:to-green-900/20 dark:text-yellow-300" : '',
+                  item.time.includes('5:30 PM') ? "from-pink-100 to-rose-100 text-pink-700 dark:from-pink-900/20 dark:to-rose-900/20 dark:text-pink-300" : '',
+                  item.time.includes('6:30 PM') ? "from-indigo-100 to-purple-100 text-indigo-700 dark:from-indigo-900/20 dark:to-purple-900/20 dark:text-indigo-300" : ''
                 )}
               >
                 <div className="flex items-center gap-2 min-w-[80px] text-gray-800 dark:text-[#ffc547]">
@@ -645,7 +652,6 @@ TempleEventsPanel.displayName = 'TempleEventsPanel';
 
 // Wrapper Component for Modal/Drawer
 export function TempleEvents({ open, onOpenChange }: TempleEventsProps) {
-  const { theme } = useTheme();
   const isMobile = useMediaQuery('(max-width: 767px)');
 
   return (
@@ -663,7 +669,7 @@ export function TempleEvents({ open, onOpenChange }: TempleEventsProps) {
               <div className="flex items-center justify-between p-4 border-b dark:border-zinc-700 border-gray-200">
                 <div className="flex items-center gap-3">
                   <div className="bg-gradient-to-r from-[#e94a9c] via-[#ffc547] to-[#0a84ff] p-0.5 rounded-full shadow-md">
-                    <div className={cn("rounded-full p-1", theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
+                    <div className={cn("rounded-full p-1", "bg-white dark:bg-zinc-800")}>
                       <Calendar className="h-4 w-4 text-[#e94a9c]" />
                     </div>
                   </div>
@@ -705,14 +711,14 @@ export function TempleEvents({ open, onOpenChange }: TempleEventsProps) {
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 className={cn(
                   "relative z-50 w-full max-w-4xl rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border",
-                  theme === 'dark' ? 'bg-zinc-900/90 border-zinc-700/80' : 'bg-white/90 border-gray-200/70',
+                  "bg-white/90 border-gray-200/70 dark:bg-zinc-900/90 dark:border-zinc-700/80",
                   "backdrop-blur-xl"
                 )}
               >
                 <div className="flex items-center justify-between mb-4 sm:mb-6">
                   <div className="flex items-center gap-2 sm:gap-3">
                     <div className="bg-gradient-to-r from-[#e94a9c] via-[#ffc547] to-[#0a84ff] p-0.5 rounded-full shadow-md">
-                      <div className={cn("rounded-full p-1.5", theme === 'dark' ? 'bg-zinc-800' : 'bg-white')}>
+                      <div className={cn("rounded-full p-1.5", "bg-white dark:bg-zinc-800")}>
                         <Calendar className="h-5 w-5 sm:h-6 sm:w-6 text-[#e94a9c]" />
                       </div>
                     </div>

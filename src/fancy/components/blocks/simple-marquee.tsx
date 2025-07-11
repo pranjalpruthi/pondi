@@ -1,4 +1,4 @@
-import {type RefObject, useRef } from "react"
+import {type RefObject, useRef, useState, useEffect } from "react"
 import {
   motion,
  type SpringOptions,
@@ -64,10 +64,16 @@ const SimpleMarquee = ({
   const innerContainer = useRef<HTMLDivElement>(null)
   const baseX = useMotionValue(0)
   const baseY = useMotionValue(0)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const { scrollY } = useScroll({
-    container:
-      (scrollContainer as RefObject<HTMLDivElement>) || innerContainer.current,
+    container: mounted
+      ? (scrollContainer as RefObject<HTMLDivElement>) || innerContainer.current
+      : undefined,
   })
 
   const scrollVelocity = useVelocity(scrollY)

@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {useInfiniteQuery } from '@tanstack/react-query';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
-import { Calendar, ChevronRight, Info, Loader2, X, ArrowRight, ArrowLeft, Youtube, MapPin, CheckCircle } from 'lucide-react';
+import { motion, AnimatePresence, type PanInfo } from 'motion/react';
+import { Calendar, ChevronRight, Info, Loader2, X, ArrowRight, ArrowLeft, Youtube, MapPin, CheckCircle, Heart } from 'lucide-react';
 import { IconCar, IconPhone, IconClock, IconPigMoney, IconCopy, IconCheck } from '@tabler/icons-react';
 import { Link } from '@tanstack/react-router';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -154,7 +154,6 @@ const eventPosts: EventPost[] = [
     description: 'Join us for the divine appearance day of Lord Krishna. A day of fasting, feasting, and celebration.',
     media: [
       { type: 'image', src: '/updates/s8.webp', alt: 'Janmashtami Grand Celebration Poster' },
-      { type: 'image', src: '/updates/s1.webp', alt: 'Altar decoration for Janmashtami' },
       { type: 'image', src: '/gallery/temple-2.webp', alt: 'Devotees celebrating Janmashtami' },
     ],
     registrationUrl: 'https://tally.so/r/mDoRD5',
@@ -647,6 +646,7 @@ const VirtualizedEventList = ({
 
 const UpcomingEventsList = () => {
   const [visibleMonth, setVisibleMonth] = useState('');
+  const [iconError, setIconError] = useState(false);
 
   const monthColor = useMemo(() => {
     if (!visibleMonth) {
@@ -717,7 +717,20 @@ const UpcomingEventsList = () => {
   return (
     <Card className="border-0 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl shadow-lg h-full flex flex-col">
       <CardHeader className="p-2 relative">
-        <CardTitle className="text-xl font-bold text-primary mb-2 px-2">Upcoming Events</CardTitle>
+        <CardTitle className="text-xl font-bold text-primary mb-2 px-2 flex items-center gap-2">
+          {iconError ? (
+            <Calendar className="h-6 w-6" />
+          ) : (
+            <img
+              src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Spiral%20Calendar.png"
+              alt="Spiral Calendar"
+              width="25"
+              height="25"
+              onError={() => setIconError(true)}
+            />
+          )}
+          <span>Upcoming Events</span>
+        </CardTitle>
         <AnimatePresence>
           {visibleMonth && (
             <motion.div
@@ -794,7 +807,7 @@ const SpecialEventBanner = ({ safePlayHover, safePlayClick, safePlayPopOn }: Spe
             </motion.div>
             <div>
               <h4 className="font-bold text-base md:text-xl">Special Announcement</h4>
-              <p className="text-sm md:text-base">Janmashtami Grand Celebration: Join us on August 26th!</p>
+              <p className="text-sm md:text-base">Janmashtami Grand Celebration: Join us on August 16th!</p>
               <blockquote className="border-l-2 border-white/50 pl-3 italic text-white/80 text-xs mt-2">
                 "In this age of Kali, the holy name of the Lord, the Hare Kṛṣṇa mahā-mantra, is the incarnation of Lord Kṛṣṇa."
               </blockquote>
@@ -804,13 +817,15 @@ const SpecialEventBanner = ({ safePlayHover, safePlayClick, safePlayPopOn }: Spe
           <div className="flex items-center justify-center md:justify-end mt-4 md:mt-0 flex-wrap gap-2">
             <Popover onOpenChange={(open) => open && safePlayPopOn()}>
               <PopoverTrigger asChild>
-                <Button
-                  variant="secondary"
-                  className="rounded-full cursor-pointer mr-2 bg-white text-gray-900 hover:bg-gray-100 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-200"
+                <EventCtaButton
+                  icon={<Heart className="h-4 w-4" />}
+                  defaultText="Support Us"
+                  hoverText="with a donation"
+                  emoji="🙏"
+                  className="bg-white hover:bg-gray-100 text-gray-900 text-xs px-3 py-1.5 mr-2 rounded-full"
+                  pulseColor="rgba(236, 72, 153, 0.4)"
                   onClick={safePlayClick} onMouseEnter={safePlayHover}
-                >
-                  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Heart%20Hands.png" alt="Heart Hands" width="20" height="20" className="mr-2" /> Support Us
-                </Button>
+                />
               </PopoverTrigger>
               <PopoverContent className="w-80 text-black dark:text-white">
                 <div className="space-y-3">
@@ -862,7 +877,7 @@ const SpecialEventBanner = ({ safePlayHover, safePlayClick, safePlayPopOn }: Spe
                 </div>
               </PopoverContent>
             </Popover>
-            <a href="https://tally.so/r/mDoRD5" target="_blank" rel="noopener noreferrer">
+            <Link to="/fests/invite">
               <EventCtaButton
                 icon={<CheckCircle className="h-4 w-4" />}
                 defaultText="Register Now"
@@ -871,7 +886,7 @@ const SpecialEventBanner = ({ safePlayHover, safePlayClick, safePlayPopOn }: Spe
                 className="bg-green-500 hover:bg-green-600 text-xs px-3 py-1.5 mr-2 rounded-full"
                 pulseColor="rgba(34, 197, 94, 0.4)"
               />
-            </a>
+            </Link>
             <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={() => setIsVisible(false)}>
               <X className="h-4 w-4" />
             </Button>

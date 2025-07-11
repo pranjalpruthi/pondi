@@ -6,7 +6,6 @@ import Icons from 'unplugin-icons/vite'
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 import { resolve } from "node:path";
 import { imagetools } from 'vite-imagetools';
-import reactScan from '@react-scan/vite-plugin-react-scan'; // Import react-scan plugin
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -28,7 +27,6 @@ export default defineConfig({
         ['progressive', 'true'],     // Progressive loading
       ])
     }),
-    reactScan(),
   ],
   test: {
     globals: true,

@@ -16,7 +16,6 @@ import {
 import { InView } from '@/components/motion-primitives/in-view';
 
 const springTransition = {
-  type: "spring",
   stiffness: 350,
   damping: 25,
   mass: 0.8,

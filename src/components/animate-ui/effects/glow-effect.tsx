@@ -40,7 +40,6 @@ export function GlowEffect({
   const BASE_TRANSITION = {
     repeat: Infinity,
     duration: duration,
-    ease: 'linear',
   };
 
   const animations = {

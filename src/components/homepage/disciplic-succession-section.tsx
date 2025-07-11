@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import { useMediaQuery } from '@uidotdev/usehooks';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ListTree, X, Play, Pause } from 'lucide-react'; // Added Play and Pause icons
+import { ListTree, X, Play, Pause, Copy, Check, Share2 } from 'lucide-react'; // Added Copy, Check, Share2 icons
 import { AuroraBackground } from '@/components/ui/aurora-background';
 import { AuroraText } from '@/components/magicui/aurora-text';
 import { cn } from '@/lib/utils';
@@ -117,6 +117,7 @@ const DisciplicSuccessionSection: React.FC = () => {
   const [selectedMasterId, setSelectedMasterId] = useState<number | null>(null);
   const [isFullListViewOpen, setIsFullListViewOpen] = useState(false);
   const [isMarqueeManuallyPaused, setIsMarqueeManuallyPaused] = useState(false); // State for manual pause
+  const [copiedVerse, setCopiedVerse] = useState<string | null>(null);
   // const [isSectionVisible, setIsSectionVisible] = useState(false); // Managed by Marquee visibility for play state implicitly
   // const [widthOfOneSetOfCards, setWidthOfOneSetOfCards] = useState(0); // Not needed with Marquee component
   // const [isHoverPaused, setIsHoverPaused] = useState(false); // Handled by Marquee's pauseOnHover prop
@@ -133,10 +134,13 @@ const DisciplicSuccessionSection: React.FC = () => {
   const bgImageRef = useRef<HTMLDivElement>(null);
   // firstSetOfCardsRef is not needed for width measurement with Marquee component
 
-  const smoothEasing = [0.4, 0.0, 0.2, 1];
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { scrollYProgress } = useScroll({
-    target: sectionRef,
+    target: mounted ? sectionRef : undefined,
     offset: ["start end", "end start"]
   });
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "-14%"]);
@@ -183,6 +187,33 @@ const DisciplicSuccessionSection: React.FC = () => {
 
   const activeMaster = spiritualMasters.find(m => m.id === selectedMasterId);
 
+  const handleCopyVerse = (verse: Verse) => {
+    const verseText = `${verse.reference}\n\n${verse.transliteration.join('\n')}\n\nTranslation:\n${verse.translation}\n\nShared from ISKM Pondicherry\nWebsite: http://pudhuvai.vrindavanam.org.in\nContact: +91 90426 42103\nYouTube: https://www.youtube.com/@ISKMPondy`;
+    navigator.clipboard.writeText(verseText).then(() => {
+      setCopiedVerse(verse.reference);
+      setTimeout(() => setCopiedVerse(null), 2000);
+    });
+  };
+
+  const handleShareVerse = async (verse: Verse) => {
+    const shareText = `${verse.reference}\n\n${verse.transliteration.join('\n')}\n\nTranslation:\n${verse.translation}\n\nShared from ISKM Pondicherry\nYouTube: https://www.youtube.com/@ISKMPondy`;
+    const shareData = {
+      title: `Verse from ${verse.reference}`,
+      text: shareText,
+      url: "http://pudhuvai.vrindavanam.org.in",
+    };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.error("Error sharing:", err);
+      }
+    } else {
+      handleCopyVerse(verse);
+      alert("Verse copied to clipboard. You can now paste it to share.");
+    }
+  };
+
   // Extracted card rendering logic into its own function for clarity
   const renderSpiritualMasterCard = (master: SpiritualMaster) => {
     const cardRenderWidth = isDesktop ? 300 : 280;
@@ -204,7 +235,7 @@ const DisciplicSuccessionSection: React.FC = () => {
           width: selectedMasterId === master.id ? (isDesktop ? "600px" : "90vw") : `${cardRenderWidth}px`,
           zIndex: selectedMasterId === master.id ? 10 : 1, // Bring selected card to front
         }}
-        transition={{ duration: 0.5, ease: smoothEasing }}
+        transition={{ duration: 0.5 }}
         onClick={() => handleCardClick(master.id)}
         ref={selectedMasterId === master.id ? expandedCardRef : null}
       >
@@ -240,7 +271,7 @@ const DisciplicSuccessionSection: React.FC = () => {
                 opacity: 1
               }}
               exit={{ width: 0, opacity: 0 }}
-              transition={{ duration: 0.5, ease: smoothEasing, opacity: { duration: 0.3, delay: 0.2 } }}
+              transition={{ duration: 0.5, opacity: { duration: 0.3, delay: 0.2 } }}
               onClick={(e) => e.stopPropagation()} // Prevent card click when interacting with expanded details
             >
               <motion.div
@@ -283,8 +314,8 @@ const DisciplicSuccessionSection: React.FC = () => {
   };
 
   return (
+    <section ref={sectionRef}>
     <AuroraBackground
-      ref={sectionRef}
       showRadialGradient={false}
       className="relative bg-transparent dark:bg-transparent min-h-[calc(100vh-var(--navbar-height,4rem))] !h-auto overflow-hidden select-none"
     >
@@ -304,17 +335,39 @@ const DisciplicSuccessionSection: React.FC = () => {
       <div className="relative z-20 flex flex-col 2xl:flex-row gap-x-12 gap-y-8 p-4 sm:p-6 md:p-8 text-gray-900 dark:text-gray-100 w-full max-w-screen-xl 2xl:max-w-screen-2xl mx-auto py-12 md:py-20"> {/* Added 2xl:max-w-screen-2xl */}
         <div className="w-full 2xl:w-1/3 space-y-6 2xl:sticky 2xl:top-[calc(var(--navbar-height,4rem)+2rem)] 2xl:max-h-[calc(100vh-var(--navbar-height,4rem)-4rem)] 2xl:overflow-y-auto pr-4">
           {verses.filter(v => v.reference.includes("Bhagavad-gītā")).map((verse, index) => (
-            <div key={`verse-bg-${index}`} className="space-y-6 p-4 sm:p-5 bg-orange-50/70 dark:bg-neutral-800/70 rounded-xl shadow-md border border-orange-200 dark:border-neutral-700 hover:shadow-lg transition-shadow duration-300">
+            <div key={`verse-bg-${index}`} className="relative space-y-6 p-4 sm:p-5 bg-orange-50/70 dark:bg-neutral-800/70 rounded-xl shadow-md border border-orange-200 dark:border-neutral-700 hover:shadow-lg transition-shadow duration-300">
+              <div className="absolute top-2 right-2 flex gap-x-1">
+                <Button variant="ghost" size="icon" onClick={() => handleCopyVerse(verse)} className="h-8 w-8 rounded-full bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-neutral-600 dark:text-neutral-300">
+                  {copiedVerse === verse.reference ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                </Button>
+                {mounted && typeof navigator.share === 'function' && (
+                  <Button variant="ghost" size="icon" onClick={() => handleShareVerse(verse)} className="h-8 w-8 rounded-full bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-neutral-600 dark:text-neutral-300">
+                    <Share2 className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
               {verse.title && <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-orange-900 dark:text-orange-50"><AuroraText>{verse.title}</AuroraText></h3>}
               <Badge variant="outline" className="mb-4 text-sm font-medium bg-orange-500/30 dark:bg-orange-400/30 border-orange-500/50 dark:border-orange-400/50 text-orange-700 dark:text-orange-200 backdrop-blur-sm py-1.5 px-3">
                 {verse.reference}
               </Badge>
-              <div className="italic space-y-1 mb-4 text-gray-600 dark:text-gray-300 text-center font-semibold">
-                {verse.transliteration.map((line, i) => <p key={i} className="text-base">{line}</p>)}
+              <div className="flex flex-col md:flex-row gap-4 items-stretch">
+                {/* Sanskrit Box */}
+                <div className="w-full md:w-1/2 flex flex-col p-4 rounded-lg bg-orange-100/70 dark:bg-orange-950/50 border border-orange-200/60 dark:border-orange-900/40">
+                  <h4 className="text-md font-bold text-orange-800 dark:text-orange-200 mb-2 text-center md:text-left">Sanskrit</h4>
+                  <div className="italic space-y-1 text-gray-600 dark:text-gray-300 text-center md:text-left font-semibold flex-grow flex flex-col justify-center">
+                    {verse.transliteration.map((line, i) => <p key={i} className="text-base">{line}</p>)}
+                  </div>
+                </div>
+                {/* Translation Box */}
+                <div className="w-full md:w-1/2 flex flex-col p-4 rounded-lg bg-orange-100/70 dark:bg-orange-950/50 border border-orange-200/60 dark:border-orange-900/40">
+                  <h4 className="text-md font-bold text-orange-800 dark:text-orange-200 mb-2 text-center md:text-left">Translation</h4>
+                  <div className="flex-grow flex flex-col justify-center">
+                    <p className="text-base font-semibold text-orange-800 dark:text-orange-100">
+                      {verse.translation}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <p className="text-lg font-semibold text-center text-orange-800 dark:text-orange-100 bg-orange-100/70 dark:bg-orange-950/50 p-4 rounded-lg border border-orange-200/60 dark:border-orange-900/40">
-                {verse.translation}
-              </p>
             </div>
           ))}
         </div>
@@ -377,17 +430,39 @@ const DisciplicSuccessionSection: React.FC = () => {
       {/* NEW Full-width section for SB Verse */}
       <div className="relative z-20 w-full max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12"> {/* Added 2xl:max-w-screen-2xl */}
         {verses.filter(v => v.reference.includes("ŚB")).map((verse, index) => (
-          <div key={`verse-sb-${index}`} className="space-y-6 p-4 sm:p-6 bg-sky-800/70 dark:bg-sky-950/80 backdrop-blur-md rounded-xl shadow-lg border border-sky-700/60 text-white mb-8">
+          <div key={`verse-sb-${index}`} className="relative space-y-6 p-4 sm:p-6 bg-sky-800/70 dark:bg-sky-950/80 backdrop-blur-md rounded-xl shadow-lg border border-sky-700/60 text-white mb-8">
+            <div className="absolute top-3 right-3 flex gap-x-1">
+              <Button variant="ghost" size="icon" onClick={() => handleCopyVerse(verse)} className="h-8 w-8 rounded-full text-white bg-white/10 hover:bg-white/20">
+                {copiedVerse === verse.reference ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              </Button>
+              {mounted && typeof navigator.share === 'function' && (
+                <Button variant="ghost" size="icon" onClick={() => handleShareVerse(verse)} className="h-8 w-8 rounded-full text-white bg-white/10 hover:bg-white/20">
+                  <Share2 className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
             {verse.title && <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-sky-100 dark:text-sky-50">{verse.title}</h3>}
             <Badge variant="outline" className="mb-4 text-sm font-medium bg-sky-500/40 dark:bg-sky-400/40 border-sky-500/60 dark:border-sky-400/60 text-sky-200 dark:text-sky-100 backdrop-blur-sm py-1.5 px-3">
               {verse.reference}
             </Badge>
-            <div className="italic space-y-1 mb-4 text-gray-200 dark:text-gray-300 text-center font-semibold">
-              {verse.transliteration.map((line, i) => <p key={i} className="text-base">{line}</p>)}
+            <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-stretch">
+              {/* Sanskrit Box */}
+              <div className="w-full md:w-1/2 flex flex-col p-4 sm:p-6 rounded-lg bg-sky-700/50 dark:bg-sky-900/60 border border-sky-600/60 dark:border-sky-800/60">
+                <h4 className="text-lg font-bold text-sky-200 dark:text-sky-100 mb-3 text-center md:text-left">Sanskrit</h4>
+                <div className="italic space-y-1 text-gray-200 dark:text-gray-300 text-center md:text-left font-semibold flex-grow flex flex-col justify-center">
+                  {verse.transliteration.map((line, i) => <p key={i} className="text-lg">{line}</p>)}
+                </div>
+              </div>
+              {/* Translation Box */}
+              <div className="w-full md:w-1/2 flex flex-col p-4 sm:p-6 rounded-lg bg-sky-700/50 dark:bg-sky-900/60 border border-sky-600/60 dark:border-sky-800/60">
+                <h4 className="text-lg font-bold text-sky-200 dark:text-sky-100 mb-3 text-center md:text-left">Translation</h4>
+                <div className="flex-grow flex flex-col justify-center">
+                  <p className="text-lg font-semibold text-sky-100 dark:text-sky-50">
+                    {verse.translation}
+                  </p>
+                </div>
+              </div>
             </div>
-            <p className="text-lg font-semibold text-center text-sky-100 dark:text-sky-50 bg-sky-700/50 dark:bg-sky-900/60 p-4 rounded-lg border border-sky-600/60 dark:border-sky-800/60">
-              {verse.translation}
-            </p>
           </div>
         ))}
       </div>
@@ -432,6 +507,7 @@ const DisciplicSuccessionSection: React.FC = () => {
         )}
       </AnimatePresence>
     </AuroraBackground>
+    </section>
   );
 };
 

@@ -8,6 +8,7 @@ import Footer from '../components/Footer';
 import { Toaster } from 'sonner'; // Import Toaster from sonner
 import { ClerkProvider } from '@clerk/tanstack-react-start'
 import { CookieToast } from '@/components/cookie-toast';
+import { UpcomingEventBanner } from '@/components/homepage/UpcomingEventBanner';
 
 export const Route = createRootRoute({
   pendingComponent: InitialPageLoader,
@@ -29,11 +30,12 @@ export const Route = createRootRoute({
                 <main className={`flex-1 ${!isDashboardPage ? 'pt-16 sm:pt-20' : ''}`}> {/* Adjust padding based on NavBar visibility */}
                   <Outlet />
                 </main>
-                {!isDashboardPage && <Navbar isDashboardPage={isDashboardPage} />} {/* Conditionally render Navbar/Dock */}
+                {!isDashboardPage && <Navbar />} {/* Conditionally render Navbar/Dock */}
                 {!isDashboardPage && <Footer />} {/* Conditionally render Footer */}
                 {/* <TanstackQueryLayout /> */}
                 <Toaster richColors position="top-right" /> {/* Add Toaster component */}
                 {!isDashboardPage && <CookieToast />} {/* Conditionally render CookieToast */}
+                {!isDashboardPage && <UpcomingEventBanner />}
               </div>
             {/* </TanstackQueryProvider> */}
           </SoundProvider>

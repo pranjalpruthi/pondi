@@ -365,7 +365,6 @@ export function UpcomingEventBanner() {
                         rotate: 0,
                         zIndex: 100,
                         transition: {
-                          type: "spring",
                           stiffness: 300
                         }
                       }}
@@ -497,7 +496,6 @@ const dialogVariants = {
     scale: 1,
     y: 0,
     transition: {
-      type: "spring",
       stiffness: 300,
       damping: 30,
       staggerChildren: 0.1
@@ -508,8 +506,7 @@ const dialogVariants = {
     scale: 0.95,
     y: 20,
     transition: {
-      duration: 0.2,
-      ease: "easeOut"
+      duration: 0.2
     }
   }
 };
@@ -525,7 +522,6 @@ const contentVariants = {
     y: 0,
     scale: 1,
     transition: {
-      type: "spring",
       stiffness: 400,
       damping: 30
     }

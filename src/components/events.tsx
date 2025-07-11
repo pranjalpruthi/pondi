@@ -30,12 +30,10 @@ const Booking = () => {
       opacity: 1,
       y: -320,
       transition: {
-        type: "spring",
         stiffness: 260,
         damping: 20,
         delay: 0.2,
         duration: 5,
-        ease: [0.9, 0.1, 0.25, 1],
       },
     },
     exit: {

@@ -8,287 +8,447 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as EventsRouteImport } from './routes/events'
+import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as TermsAndConditionsIndexRouteImport } from './routes/terms-and-conditions/index'
+import { Route as ShopIndexRouteImport } from './routes/shop/index'
+import { Route as RefundAndCancellationPolicyIndexRouteImport } from './routes/refund-and-cancellation-policy/index'
+import { Route as PrivacyPolicyIndexRouteImport } from './routes/privacy-policy/index'
+import { Route as DonateIndexRouteImport } from './routes/donate/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as ContributeIndexRouteImport } from './routes/contribute/index'
+import { Route as ComingSoonIndexRouteImport } from './routes/coming-soon/index'
+import { Route as CentersIndexRouteImport } from './routes/centers/index'
+import { Route as CalenderIndexRouteImport } from './routes/calender/index'
+import { Route as AboutIndexRouteImport } from './routes/about/index'
+import { Route as SignUpSplatRouteImport } from './routes/sign-up/$'
+import { Route as SignInSplatRouteImport } from './routes/sign-in/$'
+import { Route as FestsInviteRouteImport } from './routes/fests/invite'
+import { Route as DemoTanstackQueryRouteImport } from './routes/demo.tanstack-query'
+import { Route as DashboardUsersRouteImport } from './routes/dashboard/users'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
+import { Route as DashboardCentersRouteImport } from './routes/dashboard/Centers'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as EventsImport } from './routes/events'
-import { Route as DashboardRouteImport } from './routes/dashboard/route'
-import { Route as IndexImport } from './routes/index'
-import { Route as TermsAndConditionsIndexImport } from './routes/terms-and-conditions/index'
-import { Route as ShopIndexImport } from './routes/shop/index'
-import { Route as RefundAndCancellationPolicyIndexImport } from './routes/refund-and-cancellation-policy/index'
-import { Route as PrivacyPolicyIndexImport } from './routes/privacy-policy/index'
-import { Route as DonateIndexImport } from './routes/donate/index'
-import { Route as DashboardIndexImport } from './routes/dashboard/index'
-import { Route as ComingSoonIndexImport } from './routes/coming-soon/index'
-import { Route as CentersIndexImport } from './routes/centers/index'
-import { Route as CalenderIndexImport } from './routes/calender/index'
-import { Route as AboutIndexImport } from './routes/about/index'
-import { Route as SignUpSplatImport } from './routes/sign-up/$'
-import { Route as SignInSplatImport } from './routes/sign-in/$'
-import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
-import { Route as DashboardUsersImport } from './routes/dashboard/users'
-import { Route as DashboardSettingsImport } from './routes/dashboard/settings'
-import { Route as DashboardCentersImport } from './routes/dashboard/Centers'
-
-// Create/Update Routes
-
-const EventsRoute = EventsImport.update({
+const EventsRoute = EventsRouteImport.update({
   id: '/events',
   path: '/events',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const DashboardRouteRoute = DashboardRouteImport.update({
+const DashboardRouteRoute = DashboardRouteRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const TermsAndConditionsIndexRoute = TermsAndConditionsIndexImport.update({
+const TermsAndConditionsIndexRoute = TermsAndConditionsIndexRouteImport.update({
   id: '/terms-and-conditions/',
   path: '/terms-and-conditions/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const ShopIndexRoute = ShopIndexImport.update({
+const ShopIndexRoute = ShopIndexRouteImport.update({
   id: '/shop/',
   path: '/shop/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
 const RefundAndCancellationPolicyIndexRoute =
-  RefundAndCancellationPolicyIndexImport.update({
+  RefundAndCancellationPolicyIndexRouteImport.update({
     id: '/refund-and-cancellation-policy/',
     path: '/refund-and-cancellation-policy/',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => rootRouteImport,
   } as any)
-
-const PrivacyPolicyIndexRoute = PrivacyPolicyIndexImport.update({
+const PrivacyPolicyIndexRoute = PrivacyPolicyIndexRouteImport.update({
   id: '/privacy-policy/',
   path: '/privacy-policy/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const DonateIndexRoute = DonateIndexImport.update({
+const DonateIndexRoute = DonateIndexRouteImport.update({
   id: '/donate/',
   path: '/donate/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const DashboardIndexRoute = DashboardIndexImport.update({
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
-
-const ComingSoonIndexRoute = ComingSoonIndexImport.update({
+const ContributeIndexRoute = ContributeIndexRouteImport.update({
+  id: '/contribute/',
+  path: '/contribute/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComingSoonIndexRoute = ComingSoonIndexRouteImport.update({
   id: '/coming-soon/',
   path: '/coming-soon/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const CentersIndexRoute = CentersIndexImport.update({
+const CentersIndexRoute = CentersIndexRouteImport.update({
   id: '/centers/',
   path: '/centers/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const CalenderIndexRoute = CalenderIndexImport.update({
+const CalenderIndexRoute = CalenderIndexRouteImport.update({
   id: '/calender/',
   path: '/calender/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AboutIndexRoute = AboutIndexImport.update({
+const AboutIndexRoute = AboutIndexRouteImport.update({
   id: '/about/',
   path: '/about/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const SignUpSplatRoute = SignUpSplatImport.update({
+const SignUpSplatRoute = SignUpSplatRouteImport.update({
   id: '/sign-up/$',
   path: '/sign-up/$',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const SignInSplatRoute = SignInSplatImport.update({
+const SignInSplatRoute = SignInSplatRouteImport.update({
   id: '/sign-in/$',
   path: '/sign-in/$',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const DemoTanstackQueryRoute = DemoTanstackQueryImport.update({
+const FestsInviteRoute = FestsInviteRouteImport.update({
+  id: '/fests/invite',
+  path: '/fests/invite',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
   id: '/demo/tanstack-query',
   path: '/demo/tanstack-query',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const DashboardUsersRoute = DashboardUsersImport.update({
+const DashboardUsersRoute = DashboardUsersRouteImport.update({
   id: '/users',
   path: '/users',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
-
-const DashboardSettingsRoute = DashboardSettingsImport.update({
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
-
-const DashboardCentersRoute = DashboardCentersImport.update({
+const DashboardCentersRoute = DashboardCentersRouteImport.update({
   id: '/Centers',
   path: '/Centers',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 
-// Populate the FileRoutesByPath interface
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/events': typeof EventsRoute
+  '/dashboard/Centers': typeof DashboardCentersRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/users': typeof DashboardUsersRoute
+  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/fests/invite': typeof FestsInviteRoute
+  '/sign-in/$': typeof SignInSplatRoute
+  '/sign-up/$': typeof SignUpSplatRoute
+  '/about': typeof AboutIndexRoute
+  '/calender': typeof CalenderIndexRoute
+  '/centers': typeof CentersIndexRoute
+  '/coming-soon': typeof ComingSoonIndexRoute
+  '/contribute': typeof ContributeIndexRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/donate': typeof DonateIndexRoute
+  '/privacy-policy': typeof PrivacyPolicyIndexRoute
+  '/refund-and-cancellation-policy': typeof RefundAndCancellationPolicyIndexRoute
+  '/shop': typeof ShopIndexRoute
+  '/terms-and-conditions': typeof TermsAndConditionsIndexRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/events': typeof EventsRoute
+  '/dashboard/Centers': typeof DashboardCentersRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/users': typeof DashboardUsersRoute
+  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/fests/invite': typeof FestsInviteRoute
+  '/sign-in/$': typeof SignInSplatRoute
+  '/sign-up/$': typeof SignUpSplatRoute
+  '/about': typeof AboutIndexRoute
+  '/calender': typeof CalenderIndexRoute
+  '/centers': typeof CentersIndexRoute
+  '/coming-soon': typeof ComingSoonIndexRoute
+  '/contribute': typeof ContributeIndexRoute
+  '/dashboard': typeof DashboardIndexRoute
+  '/donate': typeof DonateIndexRoute
+  '/privacy-policy': typeof PrivacyPolicyIndexRoute
+  '/refund-and-cancellation-policy': typeof RefundAndCancellationPolicyIndexRoute
+  '/shop': typeof ShopIndexRoute
+  '/terms-and-conditions': typeof TermsAndConditionsIndexRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/events': typeof EventsRoute
+  '/dashboard/Centers': typeof DashboardCentersRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/users': typeof DashboardUsersRoute
+  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/fests/invite': typeof FestsInviteRoute
+  '/sign-in/$': typeof SignInSplatRoute
+  '/sign-up/$': typeof SignUpSplatRoute
+  '/about/': typeof AboutIndexRoute
+  '/calender/': typeof CalenderIndexRoute
+  '/centers/': typeof CentersIndexRoute
+  '/coming-soon/': typeof ComingSoonIndexRoute
+  '/contribute/': typeof ContributeIndexRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/donate/': typeof DonateIndexRoute
+  '/privacy-policy/': typeof PrivacyPolicyIndexRoute
+  '/refund-and-cancellation-policy/': typeof RefundAndCancellationPolicyIndexRoute
+  '/shop/': typeof ShopIndexRoute
+  '/terms-and-conditions/': typeof TermsAndConditionsIndexRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/events'
+    | '/dashboard/Centers'
+    | '/dashboard/settings'
+    | '/dashboard/users'
+    | '/demo/tanstack-query'
+    | '/fests/invite'
+    | '/sign-in/$'
+    | '/sign-up/$'
+    | '/about'
+    | '/calender'
+    | '/centers'
+    | '/coming-soon'
+    | '/contribute'
+    | '/dashboard/'
+    | '/donate'
+    | '/privacy-policy'
+    | '/refund-and-cancellation-policy'
+    | '/shop'
+    | '/terms-and-conditions'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/events'
+    | '/dashboard/Centers'
+    | '/dashboard/settings'
+    | '/dashboard/users'
+    | '/demo/tanstack-query'
+    | '/fests/invite'
+    | '/sign-in/$'
+    | '/sign-up/$'
+    | '/about'
+    | '/calender'
+    | '/centers'
+    | '/coming-soon'
+    | '/contribute'
+    | '/dashboard'
+    | '/donate'
+    | '/privacy-policy'
+    | '/refund-and-cancellation-policy'
+    | '/shop'
+    | '/terms-and-conditions'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/events'
+    | '/dashboard/Centers'
+    | '/dashboard/settings'
+    | '/dashboard/users'
+    | '/demo/tanstack-query'
+    | '/fests/invite'
+    | '/sign-in/$'
+    | '/sign-up/$'
+    | '/about/'
+    | '/calender/'
+    | '/centers/'
+    | '/coming-soon/'
+    | '/contribute/'
+    | '/dashboard/'
+    | '/donate/'
+    | '/privacy-policy/'
+    | '/refund-and-cancellation-policy/'
+    | '/shop/'
+    | '/terms-and-conditions/'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
+  EventsRoute: typeof EventsRoute
+  DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
+  FestsInviteRoute: typeof FestsInviteRoute
+  SignInSplatRoute: typeof SignInSplatRoute
+  SignUpSplatRoute: typeof SignUpSplatRoute
+  AboutIndexRoute: typeof AboutIndexRoute
+  CalenderIndexRoute: typeof CalenderIndexRoute
+  CentersIndexRoute: typeof CentersIndexRoute
+  ComingSoonIndexRoute: typeof ComingSoonIndexRoute
+  ContributeIndexRoute: typeof ContributeIndexRoute
+  DonateIndexRoute: typeof DonateIndexRoute
+  PrivacyPolicyIndexRoute: typeof PrivacyPolicyIndexRoute
+  RefundAndCancellationPolicyIndexRoute: typeof RefundAndCancellationPolicyIndexRoute
+  ShopIndexRoute: typeof ShopIndexRoute
+  TermsAndConditionsIndexRoute: typeof TermsAndConditionsIndexRoute
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof DashboardRouteRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/events': {
-      id: '/events'
-      path: '/events'
-      fullPath: '/events'
-      preLoaderRoute: typeof EventsImport
-      parentRoute: typeof rootRoute
-    }
-    '/dashboard/Centers': {
-      id: '/dashboard/Centers'
-      path: '/Centers'
-      fullPath: '/dashboard/Centers'
-      preLoaderRoute: typeof DashboardCentersImport
-      parentRoute: typeof DashboardRouteImport
-    }
-    '/dashboard/settings': {
-      id: '/dashboard/settings'
-      path: '/settings'
-      fullPath: '/dashboard/settings'
-      preLoaderRoute: typeof DashboardSettingsImport
-      parentRoute: typeof DashboardRouteImport
-    }
-    '/dashboard/users': {
-      id: '/dashboard/users'
-      path: '/users'
-      fullPath: '/dashboard/users'
-      preLoaderRoute: typeof DashboardUsersImport
-      parentRoute: typeof DashboardRouteImport
-    }
-    '/demo/tanstack-query': {
-      id: '/demo/tanstack-query'
-      path: '/demo/tanstack-query'
-      fullPath: '/demo/tanstack-query'
-      preLoaderRoute: typeof DemoTanstackQueryImport
-      parentRoute: typeof rootRoute
-    }
-    '/sign-in/$': {
-      id: '/sign-in/$'
-      path: '/sign-in/$'
-      fullPath: '/sign-in/$'
-      preLoaderRoute: typeof SignInSplatImport
-      parentRoute: typeof rootRoute
-    }
-    '/sign-up/$': {
-      id: '/sign-up/$'
-      path: '/sign-up/$'
-      fullPath: '/sign-up/$'
-      preLoaderRoute: typeof SignUpSplatImport
-      parentRoute: typeof rootRoute
-    }
-    '/about/': {
-      id: '/about/'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/calender/': {
-      id: '/calender/'
-      path: '/calender'
-      fullPath: '/calender'
-      preLoaderRoute: typeof CalenderIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/centers/': {
-      id: '/centers/'
-      path: '/centers'
-      fullPath: '/centers'
-      preLoaderRoute: typeof CentersIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/coming-soon/': {
-      id: '/coming-soon/'
-      path: '/coming-soon'
-      fullPath: '/coming-soon'
-      preLoaderRoute: typeof ComingSoonIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/dashboard/': {
-      id: '/dashboard/'
+    '/': {
+      id: '/'
       path: '/'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof DashboardIndexImport
-      parentRoute: typeof DashboardRouteImport
-    }
-    '/donate/': {
-      id: '/donate/'
-      path: '/donate'
-      fullPath: '/donate'
-      preLoaderRoute: typeof DonateIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/privacy-policy/': {
-      id: '/privacy-policy/'
-      path: '/privacy-policy'
-      fullPath: '/privacy-policy'
-      preLoaderRoute: typeof PrivacyPolicyIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/refund-and-cancellation-policy/': {
-      id: '/refund-and-cancellation-policy/'
-      path: '/refund-and-cancellation-policy'
-      fullPath: '/refund-and-cancellation-policy'
-      preLoaderRoute: typeof RefundAndCancellationPolicyIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/shop/': {
-      id: '/shop/'
-      path: '/shop'
-      fullPath: '/shop'
-      preLoaderRoute: typeof ShopIndexImport
-      parentRoute: typeof rootRoute
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/terms-and-conditions/': {
       id: '/terms-and-conditions/'
       path: '/terms-and-conditions'
       fullPath: '/terms-and-conditions'
-      preLoaderRoute: typeof TermsAndConditionsIndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof TermsAndConditionsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop/': {
+      id: '/shop/'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/refund-and-cancellation-policy/': {
+      id: '/refund-and-cancellation-policy/'
+      path: '/refund-and-cancellation-policy'
+      fullPath: '/refund-and-cancellation-policy'
+      preLoaderRoute: typeof RefundAndCancellationPolicyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy/': {
+      id: '/privacy-policy/'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/donate/': {
+      id: '/donate/'
+      path: '/donate'
+      fullPath: '/donate'
+      preLoaderRoute: typeof DonateIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/contribute/': {
+      id: '/contribute/'
+      path: '/contribute'
+      fullPath: '/contribute'
+      preLoaderRoute: typeof ContributeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/coming-soon/': {
+      id: '/coming-soon/'
+      path: '/coming-soon'
+      fullPath: '/coming-soon'
+      preLoaderRoute: typeof ComingSoonIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/centers/': {
+      id: '/centers/'
+      path: '/centers'
+      fullPath: '/centers'
+      preLoaderRoute: typeof CentersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calender/': {
+      id: '/calender/'
+      path: '/calender'
+      fullPath: '/calender'
+      preLoaderRoute: typeof CalenderIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about/': {
+      id: '/about/'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-up/$': {
+      id: '/sign-up/$'
+      path: '/sign-up/$'
+      fullPath: '/sign-up/$'
+      preLoaderRoute: typeof SignUpSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-in/$': {
+      id: '/sign-in/$'
+      path: '/sign-in/$'
+      fullPath: '/sign-in/$'
+      preLoaderRoute: typeof SignInSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fests/invite': {
+      id: '/fests/invite'
+      path: '/fests/invite'
+      fullPath: '/fests/invite'
+      preLoaderRoute: typeof FestsInviteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo/tanstack-query': {
+      id: '/demo/tanstack-query'
+      path: '/demo/tanstack-query'
+      fullPath: '/demo/tanstack-query'
+      preLoaderRoute: typeof DemoTanstackQueryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/users': {
+      id: '/dashboard/users'
+      path: '/users'
+      fullPath: '/dashboard/users'
+      preLoaderRoute: typeof DashboardUsersRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/Centers': {
+      id: '/dashboard/Centers'
+      path: '/Centers'
+      fullPath: '/dashboard/Centers'
+      preLoaderRoute: typeof DashboardCentersRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
   }
 }
-
-// Create and export the route tree
 
 interface DashboardRouteRouteChildren {
   DashboardCentersRoute: typeof DashboardCentersRoute
@@ -308,268 +468,25 @@ const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
   DashboardRouteRouteChildren,
 )
 
-export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRouteWithChildren
-  '/events': typeof EventsRoute
-  '/dashboard/Centers': typeof DashboardCentersRoute
-  '/dashboard/settings': typeof DashboardSettingsRoute
-  '/dashboard/users': typeof DashboardUsersRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/sign-in/$': typeof SignInSplatRoute
-  '/sign-up/$': typeof SignUpSplatRoute
-  '/about': typeof AboutIndexRoute
-  '/calender': typeof CalenderIndexRoute
-  '/centers': typeof CentersIndexRoute
-  '/coming-soon': typeof ComingSoonIndexRoute
-  '/dashboard/': typeof DashboardIndexRoute
-  '/donate': typeof DonateIndexRoute
-  '/privacy-policy': typeof PrivacyPolicyIndexRoute
-  '/refund-and-cancellation-policy': typeof RefundAndCancellationPolicyIndexRoute
-  '/shop': typeof ShopIndexRoute
-  '/terms-and-conditions': typeof TermsAndConditionsIndexRoute
-}
-
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/events': typeof EventsRoute
-  '/dashboard/Centers': typeof DashboardCentersRoute
-  '/dashboard/settings': typeof DashboardSettingsRoute
-  '/dashboard/users': typeof DashboardUsersRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/sign-in/$': typeof SignInSplatRoute
-  '/sign-up/$': typeof SignUpSplatRoute
-  '/about': typeof AboutIndexRoute
-  '/calender': typeof CalenderIndexRoute
-  '/centers': typeof CentersIndexRoute
-  '/coming-soon': typeof ComingSoonIndexRoute
-  '/dashboard': typeof DashboardIndexRoute
-  '/donate': typeof DonateIndexRoute
-  '/privacy-policy': typeof PrivacyPolicyIndexRoute
-  '/refund-and-cancellation-policy': typeof RefundAndCancellationPolicyIndexRoute
-  '/shop': typeof ShopIndexRoute
-  '/terms-and-conditions': typeof TermsAndConditionsIndexRoute
-}
-
-export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRouteWithChildren
-  '/events': typeof EventsRoute
-  '/dashboard/Centers': typeof DashboardCentersRoute
-  '/dashboard/settings': typeof DashboardSettingsRoute
-  '/dashboard/users': typeof DashboardUsersRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/sign-in/$': typeof SignInSplatRoute
-  '/sign-up/$': typeof SignUpSplatRoute
-  '/about/': typeof AboutIndexRoute
-  '/calender/': typeof CalenderIndexRoute
-  '/centers/': typeof CentersIndexRoute
-  '/coming-soon/': typeof ComingSoonIndexRoute
-  '/dashboard/': typeof DashboardIndexRoute
-  '/donate/': typeof DonateIndexRoute
-  '/privacy-policy/': typeof PrivacyPolicyIndexRoute
-  '/refund-and-cancellation-policy/': typeof RefundAndCancellationPolicyIndexRoute
-  '/shop/': typeof ShopIndexRoute
-  '/terms-and-conditions/': typeof TermsAndConditionsIndexRoute
-}
-
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/dashboard'
-    | '/events'
-    | '/dashboard/Centers'
-    | '/dashboard/settings'
-    | '/dashboard/users'
-    | '/demo/tanstack-query'
-    | '/sign-in/$'
-    | '/sign-up/$'
-    | '/about'
-    | '/calender'
-    | '/centers'
-    | '/coming-soon'
-    | '/dashboard/'
-    | '/donate'
-    | '/privacy-policy'
-    | '/refund-and-cancellation-policy'
-    | '/shop'
-    | '/terms-and-conditions'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/events'
-    | '/dashboard/Centers'
-    | '/dashboard/settings'
-    | '/dashboard/users'
-    | '/demo/tanstack-query'
-    | '/sign-in/$'
-    | '/sign-up/$'
-    | '/about'
-    | '/calender'
-    | '/centers'
-    | '/coming-soon'
-    | '/dashboard'
-    | '/donate'
-    | '/privacy-policy'
-    | '/refund-and-cancellation-policy'
-    | '/shop'
-    | '/terms-and-conditions'
-  id:
-    | '__root__'
-    | '/'
-    | '/dashboard'
-    | '/events'
-    | '/dashboard/Centers'
-    | '/dashboard/settings'
-    | '/dashboard/users'
-    | '/demo/tanstack-query'
-    | '/sign-in/$'
-    | '/sign-up/$'
-    | '/about/'
-    | '/calender/'
-    | '/centers/'
-    | '/coming-soon/'
-    | '/dashboard/'
-    | '/donate/'
-    | '/privacy-policy/'
-    | '/refund-and-cancellation-policy/'
-    | '/shop/'
-    | '/terms-and-conditions/'
-  fileRoutesById: FileRoutesById
-}
-
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
-  EventsRoute: typeof EventsRoute
-  DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
-  SignInSplatRoute: typeof SignInSplatRoute
-  SignUpSplatRoute: typeof SignUpSplatRoute
-  AboutIndexRoute: typeof AboutIndexRoute
-  CalenderIndexRoute: typeof CalenderIndexRoute
-  CentersIndexRoute: typeof CentersIndexRoute
-  ComingSoonIndexRoute: typeof ComingSoonIndexRoute
-  DonateIndexRoute: typeof DonateIndexRoute
-  PrivacyPolicyIndexRoute: typeof PrivacyPolicyIndexRoute
-  RefundAndCancellationPolicyIndexRoute: typeof RefundAndCancellationPolicyIndexRoute
-  ShopIndexRoute: typeof ShopIndexRoute
-  TermsAndConditionsIndexRoute: typeof TermsAndConditionsIndexRoute
-}
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
   EventsRoute: EventsRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
+  FestsInviteRoute: FestsInviteRoute,
   SignInSplatRoute: SignInSplatRoute,
   SignUpSplatRoute: SignUpSplatRoute,
   AboutIndexRoute: AboutIndexRoute,
   CalenderIndexRoute: CalenderIndexRoute,
   CentersIndexRoute: CentersIndexRoute,
   ComingSoonIndexRoute: ComingSoonIndexRoute,
+  ContributeIndexRoute: ContributeIndexRoute,
   DonateIndexRoute: DonateIndexRoute,
   PrivacyPolicyIndexRoute: PrivacyPolicyIndexRoute,
   RefundAndCancellationPolicyIndexRoute: RefundAndCancellationPolicyIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
   TermsAndConditionsIndexRoute: TermsAndConditionsIndexRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/dashboard",
-        "/events",
-        "/demo/tanstack-query",
-        "/sign-in/$",
-        "/sign-up/$",
-        "/about/",
-        "/calender/",
-        "/centers/",
-        "/coming-soon/",
-        "/donate/",
-        "/privacy-policy/",
-        "/refund-and-cancellation-policy/",
-        "/shop/",
-        "/terms-and-conditions/"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/dashboard": {
-      "filePath": "dashboard/route.tsx",
-      "children": [
-        "/dashboard/Centers",
-        "/dashboard/settings",
-        "/dashboard/users",
-        "/dashboard/"
-      ]
-    },
-    "/events": {
-      "filePath": "events.tsx"
-    },
-    "/dashboard/Centers": {
-      "filePath": "dashboard/Centers.tsx",
-      "parent": "/dashboard"
-    },
-    "/dashboard/settings": {
-      "filePath": "dashboard/settings.tsx",
-      "parent": "/dashboard"
-    },
-    "/dashboard/users": {
-      "filePath": "dashboard/users.tsx",
-      "parent": "/dashboard"
-    },
-    "/demo/tanstack-query": {
-      "filePath": "demo.tanstack-query.tsx"
-    },
-    "/sign-in/$": {
-      "filePath": "sign-in/$.tsx"
-    },
-    "/sign-up/$": {
-      "filePath": "sign-up/$.tsx"
-    },
-    "/about/": {
-      "filePath": "about/index.tsx"
-    },
-    "/calender/": {
-      "filePath": "calender/index.tsx"
-    },
-    "/centers/": {
-      "filePath": "centers/index.tsx"
-    },
-    "/coming-soon/": {
-      "filePath": "coming-soon/index.tsx"
-    },
-    "/dashboard/": {
-      "filePath": "dashboard/index.tsx",
-      "parent": "/dashboard"
-    },
-    "/donate/": {
-      "filePath": "donate/index.tsx"
-    },
-    "/privacy-policy/": {
-      "filePath": "privacy-policy/index.tsx"
-    },
-    "/refund-and-cancellation-policy/": {
-      "filePath": "refund-and-cancellation-policy/index.tsx"
-    },
-    "/shop/": {
-      "filePath": "shop/index.tsx"
-    },
-    "/terms-and-conditions/": {
-      "filePath": "terms-and-conditions/index.tsx"
-    }
-  }
-}
-ROUTE_MANIFEST_END */

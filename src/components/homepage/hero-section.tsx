@@ -1,4 +1,4 @@
-import { motion, AnimatePresence, type PanInfo } from "motion/react";
+import { AnimatePresence, type PanInfo, motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -6,6 +6,7 @@ import { Link } from "@tanstack/react-router";
 import { useState, useEffect, useTransition, useCallback, useRef } from "react";
 import { useSound } from 'use-sound';
 import { useSoundSettings } from '@/components/context/sound-context';
+import { ColorExtractor } from 'react-color-extractor';
 import Carousel, {
   Slider,
   SliderContainer,
@@ -24,7 +25,6 @@ import {
     IconClock,
     IconCar,
     IconPhone,
-    IconPlayerPlayFilled,
     IconCopy,
     IconCheck,
     IconPigMoney,
@@ -38,6 +38,7 @@ import {
   InputButtonSubmit,
   InputButtonInput,
 } from '@/components/animate-ui/buttons/input';
+import EventCtaButton from '@/components/animate-ui/buttons/event-cta-button';
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import React from "react";
@@ -57,10 +58,6 @@ const heroShowcaseImages = [
   '/temple-building/4.webp?w=1200&format=webp&quality=80',
   '/temple-building/5.webp?w=1200&format=webp&quality=80',
 ];
-
-const blurredBackgrounds = heroShowcaseImages.map(img => 
-  img.replace('w=1200', 'w=30').replace('quality=80', 'quality=40') + '&blur=50'
-);
 
 const socialLinks = [
   { icon: IconBrandInstagram, url: 'https://www.instagram.com/iskm_pondy', label: 'Instagram', color: 'bg-[#E1306C] text-white' },
@@ -89,47 +86,45 @@ const bankDetails = {
 interface BackgroundImageCarouselProps {
   currentIndex: number;
   images: string[];
-  blurredBackgrounds: string[];
-  preloadedImages: boolean[];
+  onColorsExtracted: (colors: string[]) => void;
+  backgroundColors: string[];
   isInView: boolean;
 }
 
 const BackgroundImageCarousel: React.FC<BackgroundImageCarouselProps> = ({
   currentIndex,
   images,
-  blurredBackgrounds,
-  preloadedImages,
+  onColorsExtracted,
+  backgroundColors,
   isInView,
 }) => (
-  <div className="absolute inset-0 z-0 overflow-hidden"> {/* Reverted fixed to absolute */}
+  <div className="absolute inset-0 z-0 overflow-hidden">
+    {/* This is hidden, only for color extraction */}
+    <ColorExtractor
+      src={images[currentIndex]}
+      getColors={onColorsExtracted}
+      maxColors={8}
+    />
     <AnimatePresence mode="wait">
       {isInView && (
         <motion.div
           key={`bg-${currentIndex}`}
-          className="absolute inset-0 transform-gpu"
+          className="absolute inset-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1.2, ease: "easeInOut" }}
-        >
-          {/* Blurred background */}
-          {blurredBackgrounds[currentIndex] && (
-            <div
-              className="absolute inset-0 bg-cover bg-center scale-110 transform-gpu" // Removed blur-xl, added transform-gpu
-              style={{ backgroundImage: `url(${blurredBackgrounds[currentIndex]})`, willChange: 'filter' }}
-            />
-          )}
-          {/* Main image with blur */}
-          <img
-            src={images[currentIndex]}
-            alt={`Temple Image ${currentIndex + 1}`}
-            className="w-full h-full object-cover filter blur-md scale-110 transform-gpu" // Changed blur-lg to blur-md, added transform-gpu
-            style={{ opacity: preloadedImages[currentIndex] ? 1 : 0, willChange: 'filter' }}
-          />
-        </motion.div>
+          transition={{ duration: 1.5, ease: "easeInOut" }}
+          style={{
+            background: backgroundColors.length > 1
+              ? `linear-gradient(145deg, ${backgroundColors[0]}, ${backgroundColors[1]}, ${backgroundColors[2] || backgroundColors[0]})`
+              : backgroundColors.length === 1
+              ? backgroundColors[0]
+              : 'transparent',
+          }}
+        />
       )}
     </AnimatePresence>
-    <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/60 to-transparent dark:from-black/90 dark:via-black/70" />
+    <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/50 to-transparent dark:from-black/80 dark:via-black/60" />
   </div>
 );
 
@@ -437,39 +432,34 @@ function HeroGalleryModal({
 
 const HeroForeground = React.memo<HeroForegroundProps>((props) => {
   return (
-    <div className="z-10 relative px-4 sm:px-6"> 
+    <div className="z-10 relative px-4 sm:px-6">
       <div className="grid grid-cols-1 gap-12 items-center">
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: props.isInView ? 1 : 0, x: props.isInView ? 0 : -20 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: props.isInView ? 1 : 0, y: props.isInView ? 0 : 20 }}
           transition={{ duration: 0.8 }}
-          className="mt-8" // Removed max-w-3xl and added mt-8
+          className="mt-8"
         >
-          {/* Logo div removed */}
-          <motion.h1
-            className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 text-gray-900 dark:text-white leading-tight tracking-tight"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: props.isInView ? 1 : 0, y: props.isInView ? 0 : 20 }}
-            transition={{ delay: 0.2 }}
-          >
-            Reawakening Kṛṣṇa Consciousness Worldwide
-          </motion.h1>
-          {/* The paragraph has been removed from here and will be placed below the two-column grid */}
+          {/* The h1 and paragraph are now rendered directly in HeroSection */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: props.isInView ? 1 : 0 }}
             transition={{ delay: 0.6 }}
-            className="flex flex-wrap gap-4"
+            className="flex flex-wrap gap-4 justify-center items-center"
           >
             <Popover onOpenChange={(open) => open && props.safePlayPopOn()}>
               <PopoverTrigger asChild>
-                <Button
-                  variant="default"
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full cursor-pointer"
-                  onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}
-                >
-                  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Heart%20Hands.png" alt="Heart Hands" width="25" height="25" className="mr-2" /> Support Us
-                </Button>
+                <EventCtaButton
+                  icon={<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Heart%20Hands.png" alt="Heart Hands" width="25" height="25" />}
+                  defaultText="Support Us"
+                  hoverText="with a donation"
+                  emoji="🫶"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                  onClick={props.safePlayClick}
+                  onMouseEnter={props.safePlayHover}
+                  isExpanded={true}
+                  hasShimmer={false}
+                />
               </PopoverTrigger>
               <PopoverContent className="w-80">
                 <div className="space-y-3">
@@ -521,33 +511,33 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
                 </div>
               </PopoverContent>
             </Popover>
-            <form onSubmit={props.handleNewsletterSubmit} className="w-full max-w-[300px]">
-              <InputButtonProvider showInput={props.showNewsletterInput} setShowInput={props.setShowNewsletterInput}>
-                <InputButton className="bg-[#e94a9c] hover:bg-[#d3428c] border-none rounded-full" onMouseEnter={props.safePlayHover}>
-                  <InputButtonAction className="text-white bg-transparent border-none hover:bg-white/10" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
-                    Join the newsletter
-                  </InputButtonAction>
-                  <InputButtonSubmit type="submit" disabled={props.isNewsletterPending} onClick={props.safePlayClick} onMouseEnter={props.safePlayHover} className={cn("bg-slate-700 text-white hover:bg-slate-800 dark:bg-pink-600 dark:hover:bg-pink-700 dark:text-white", props.isNewsletterPending || props.isNewsletterSuccess ? 'aspect-square px-0' : '')}>
-                    {props.isNewsletterSuccess ? <motion.span key="success" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}><Check className="h-4 w-4"/></motion.span> : props.isNewsletterPending ? <motion.span key="pending" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}><Loader2 className="animate-spin h-4 w-4" /></motion.span> : 'Subscribe'}
-                  </InputButtonSubmit>
-                </InputButton>
-                <InputButtonInput type="email" placeholder="harekrsna@mail.com 💫" value={props.newsletterEmail} onChange={(e) => props.setNewsletterEmail(e.target.value)} disabled={props.isNewsletterPending} required className="text-sm placeholder:text-gray-500" autoFocus />
-              </InputButtonProvider>
-            </form>
-          </motion.div>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: props.isInView ? 1 : 0 }} transition={{ delay: 0.7 }} className="mt-8 flex flex-wrap justify-start gap-4 items-center">
-            <a href="https://www.youtube.com/@ISKMPondy" target="_blank" rel="noopener noreferrer" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover} className="cursor-pointer relative group">
-              <Button variant="destructive" className="bg-red-600 hover:bg-red-700 text-white rounded-full relative overflow-visible">
-                <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                </span>
-                <IconPlayerPlayFilled className="mr-2 h-4 w-4" /> Watch Live
-              </Button>
+
+            <a href="https://www.youtube.com/@ISKMPondy" target="_blank" rel="noopener noreferrer" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
+              <EventCtaButton
+                icon={<IconBrandYoutube className="h-6 w-6" />}
+                defaultText="Watch Live"
+                hoverText="on YouTube"
+                emoji="🔴"
+                className="bg-red-600 hover:bg-red-700 text-white"
+                isExpanded={true}
+                hasPulse={true}
+                hasShimmer={true}
+              />
             </a>
+
             <Popover onOpenChange={(open) => open && props.safePlayPopOn()}>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="text-white bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 dark:from-blue-600 dark:to-cyan-600 dark:hover:from-blue-700 dark:hover:to-cyan-700 rounded-full border-none" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}><IconMapPin className="mr-2 h-4 w-4" /> Our Location</Button>
+                <EventCtaButton
+                  icon={<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Love%20Hotel.png" alt="Love Hotel" width="25" height="25" />}
+                  defaultText="Our Location"
+                  hoverText="Get Directions"
+                  emoji="🗺️"
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                  onClick={props.safePlayClick}
+                  onMouseEnter={props.safePlayHover}
+                  isExpanded={true}
+                  hasShimmer={false}
+                />
               </PopoverTrigger>
               <PopoverContent className="w-72">
                 <h3 className="font-semibold mb-2">ISKM Pudhuvai Temple</h3>
@@ -563,17 +553,98 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
                   <ul className="text-sm text-muted-foreground space-y-0.5">{props.locationDetails.hours.map((line, i) => <li key={i}>{line}</li>)}</ul>
                 </div>
                 <div className="mt-4">
-                  <Button variant="secondary" size="sm" className="w-full bg-blue-500 hover:bg-blue-600 dark:bg-blue-500 dark:hover:bg-blue-600 dark:text-white" onClick={() => { window.open(props.locationDetails.mapsLink, '_blank'); props.safePlayClick(); }} onMouseEnter={props.safePlayHover}><IconMapPin className="mr-2 h-4 w-4" />Open in Maps</Button>
+                  <Button size="sm" className="w-full bg-blue-500 hover:bg-blue-600 text-white" onClick={() => { window.open(props.locationDetails.mapsLink, '_blank'); props.safePlayClick(); }} onMouseEnter={props.safePlayHover}><IconMapPin className="mr-2 h-4 w-4" />Open in Maps</Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+            <Popover onOpenChange={(open) => open && props.safePlayPopOn()}>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-16 h-16 p-1.5 rounded-xl shadow-lg bg-green-100 hover:bg-green-200 dark:bg-green-800 dark:hover:bg-green-700 border-green-500/70 text-green-700 dark:text-green-300">
+                  <div className="flex flex-col items-center justify-center gap-0.5">
+                    <IconPhone className="h-6 w-6" />
+                    <span className="text-[10px] font-semibold">Contact</span>
+                  </div>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent side="top" align="center" className="w-full max-w-xs sm:max-w-sm bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-gray-300 dark:border-gray-700 shadow-xl rounded-xl">
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <h4 className="text-sm font-semibold text-green-600 dark:text-green-400">Contact Us</h4>
+                      <Button size="sm" variant="ghost" onClick={() => props.onCopyToClipboard('+91 90426 42103\niskm.pondicherry@gmail.com', 'Contact Info')} className="text-green-600 dark:text-green-400">
+                        {props.copiedValue === 'Contact Info' ? <IconCheck className="h-4 w-4" /> : <IconCopy className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                    <div className="space-y-2 text-xs text-gray-700 dark:text-gray-300">
+                      <div className="flex items-center gap-2">
+                        <IconPhone className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
+                        <a href="tel:+919042642103" className="hover:text-green-600 dark:hover:text-green-400 transition-colors">+91 90426 42103</a>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-envelope text-green-600 dark:text-green-400" viewBox="0 0 16 16">
+                          <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+                        </svg>
+                        <a href="mailto:iskm.pondicherry@gmail.com" className="hover:text-green-600 dark:hover:text-green-400 transition-colors">iskm.pondicherry@gmail.com</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
+                    <div className="grid grid-cols-2 gap-2">
+                      {props.socialLinks.map(link => (
+                        <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                          <link.icon className="h-4 w-4" />
+                          <span className="text-xs">{link.label}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </PopoverContent>
             </Popover>
           </motion.div>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: props.isInView ? 1 : 0 }} transition={{ delay: 0.8 }} className="mt-6 flex justify-start gap-3">
-            {props.socialLinks.map((item, index) => (
-              <a key={index} href={item.url} target="_blank" rel="noopener noreferrer" className="transition-transform duration-150 ease-in-out hover:scale-110 active:scale-95" aria-label={`Follow us on ${item.label}`} onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
-                <Badge variant="secondary" className={cn("cursor-pointer p-2 transition-colors duration-200", item.color)}><item.icon className="h-4 w-4" /></Badge>
-              </a>
-            ))}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: props.isInView ? 1 : 0, y: props.isInView ? 0 : 20 }} 
+            transition={{ delay: 0.7 }} 
+            className="mt-8 flex flex-col items-center gap-3 text-center"
+          >
+            <div className="max-w-md">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Stay Connected with ISKM</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Join our newsletter for weekly updates, event news, and spiritual insights delivered to your inbox.
+              </p>
+            </div>
+            <form onSubmit={props.handleNewsletterSubmit} className="w-full max-w-xs sm:max-w-sm">
+              <InputButtonProvider showInput={props.showNewsletterInput} setShowInput={props.setShowNewsletterInput}>
+                <InputButton className="bg-gradient-to-r from-pink-500 to-rose-500 hover:shadow-lg hover:shadow-rose-500/30 border-none rounded-full transition-shadow" onMouseEnter={props.safePlayHover}>
+                  <InputButtonAction className="text-white bg-transparent border-none hover:bg-white/10 flex items-center gap-2" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
+                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Love%20Letter.png" alt="Love Letter" width="20" height="20" />
+                    Get Weekly Updates
+                  </InputButtonAction>
+                  <InputButtonSubmit type="submit" disabled={props.isNewsletterPending} onClick={props.safePlayClick} onMouseEnter={props.safePlayHover} className={cn("bg-pink-600 text-white hover:bg-pink-700", props.isNewsletterPending || props.isNewsletterSuccess ? 'aspect-square px-0' : '')}>
+                    {props.isNewsletterSuccess ? <motion.span key="success" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}><Check className="h-4 w-4"/></motion.span> : props.isNewsletterPending ? <motion.span key="pending" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}><Loader2 className="animate-spin h-4 w-4" /></motion.span> : 'Subscribe'}
+                  </InputButtonSubmit>
+                </InputButton>
+                <InputButtonInput type="email" placeholder="harekrsna@mail.com" value={props.newsletterEmail} onChange={(e) => props.setNewsletterEmail(e.target.value)} disabled={props.isNewsletterPending} required className="text-sm placeholder:text-gray-500 dark:placeholder:text-gray-400" autoFocus />
+              </InputButtonProvider>
+            </form>
+          </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: props.isInView ? 1 : 0, y: props.isInView ? 0 : 20 }} 
+            transition={{ delay: 0.8 }} 
+            className="mt-10"
+          >
+            <h4 className="text-center text-sm font-medium text-muted-foreground mb-3">Follow us on social media</h4>
+            <div className="flex justify-center gap-4">
+              {props.socialLinks.map((item, index) => (
+                <a key={index} href={item.url} target="_blank" rel="noopener noreferrer" className="transition-transform duration-150 ease-in-out hover:scale-110 active:scale-95" aria-label={`Follow us on ${item.label}`} onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
+                  <div className={cn("rounded-full p-3 flex items-center justify-center transition-colors duration-200", item.color)}>
+                    <item.icon className="h-5 w-5" />
+                  </div>
+                </a>
+              ))}
+            </div>
           </motion.div>
         </motion.div>
         {/* Remove the right column with <HeroGalleryCarousel /> or any carousel here */}
@@ -587,13 +658,13 @@ export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [isInView, setIsInView] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [backgroundColors, setBackgroundColors] = useState<string[]>([]);
   const [copiedValue, setCopiedValue] = useState<string | null>(null);
-  const [showNewsletterInput, setShowNewsletterInput] = useState(false);
+  const [showNewsletterInput, setShowNewsletterInput] = useState(true);
   const [isNewsletterPending, startNewsletterTransition] = useTransition();
   const [isNewsletterSuccess, setIsNewsletterSuccess] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // Preloading for background
   const [rightCarouselPreloaded, setRightCarouselPreloaded] = useState<boolean[]>(Array(heroShowcaseImages.length).fill(false));
 
   const addLeadMutation = useMutation({
@@ -624,7 +695,7 @@ export function HeroSection() {
     }
   }, [isModalOpen, isInView]);
 
-  // Preload images for background
+  // Preload images for carousel
   useEffect(() => {
     const newPreloadedStatus = [...rightCarouselPreloaded];
     let allLoaded = true;
@@ -670,11 +741,6 @@ export function HeroSection() {
 
   const handleNewsletterSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!showNewsletterInput) {
-      setShowNewsletterInput(true);
-      safePlayClick();
-      return;
-    }
     if (!newsletterEmail) {
       toast.error("Please enter your email.");
       return;
@@ -722,14 +788,81 @@ export function HeroSection() {
       <BackgroundImageCarousel
         currentIndex={currentIndex}
         images={heroShowcaseImages}
-        blurredBackgrounds={blurredBackgrounds}
-        preloadedImages={rightCarouselPreloaded}
+        onColorsExtracted={setBackgroundColors}
+        backgroundColors={backgroundColors}
         isInView={isInView}
       />
       <div className="container mx-auto px-0 xs:px-2 sm:px-4 z-10 relative pt-24 sm:pt-28 lg:pt-32"> {/* Increased top padding */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center"> {/* Changed to md breakpoint, adjusted gap */}
-          {/* Left: Text, CTAs, etc. */}
-          <div>
+        <div className="grid grid-cols-1 gap-8 md:gap-12 items-center text-center"> {/* Changed to grid-cols-1 and text-center */}
+          {/* Heading */}
+          <motion.h1
+            className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 dark:text-white leading-tight tracking-tight"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 20 }}
+            transition={{ delay: 0.2 }}
+          >
+            Reawakening Kṛṣṇa Consciousness Worldwide
+          </motion.h1>
+
+          {/* Carousel */}
+          <div className="w-full max-w-4xl mx-auto">
+            <div className="bg-background rounded-3xl shadow-lg">
+              <Carousel
+                options={{ loop: true }}
+                className="relative"
+                isAutoPlay={false} // Disable built-in autoplay as we're handling it manually
+                currentIndex={currentIndex}
+                setCurrentIndex={setCurrentIndex}
+                thumbnailSlidesData={heroShowcaseImages.map((src, i) => ({ id: `hero-gallery-image-${i}`, src, alt: `Showcase image ${i + 1}` }))}
+              >
+                <SliderContainer className="gap-2">
+                  {heroShowcaseImages.map((image, index) => (
+                    <Slider
+                      key={`hero-gallery-image-${index}`}
+                      className="xl:h-[400px] sm:h-[350px] h-[300px] w-full"
+                    >
+                      <div 
+                        className="h-full w-full rounded-3xl p-1 relative transition-colors duration-1000"
+                        style={{
+                          background: backgroundColors.length > 1
+                            ? `linear-gradient(145deg, ${backgroundColors[0]}, ${backgroundColors[1]}, ${backgroundColors[2] || backgroundColors[0]})`
+                            : 'linear-gradient(145deg, #FFEBCD, #FFB6C1)',
+                        }}
+                      >
+                        <motion.img
+                          src={image}
+                          width={1200}
+                          height={800}
+                          alt={`Showcase image ${index + 1}`}
+                          className="h-full object-contain rounded-3xl w-full cursor-zoom-in"
+                          loading={index < 3 ? "eager" : "lazy"}
+                          decoding="async"
+                          style={{ aspectRatio: '3/2' }}
+                          onClick={() => { setCurrentIndex(index); setIsModalOpen(true); }}
+                        />
+                        {!rightCarouselPreloaded[index] && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-3xl">
+                            <motion.p 
+                              className="text-lg font-semibold text-gray-800 dark:text-gray-200"
+                              initial={{ opacity: 0.5 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
+                            >
+                              Hare Krishna! Chant and Be Happy!
+                            </motion.p>
+                          </div>
+                        )}
+                      </div>
+                    </Slider>
+                  ))}
+                </SliderContainer>
+                <ThumsSlider />
+              </Carousel>
+            </div>
+          </div>
+
+          {/* Buttons and other foreground elements */}
+          <div className="mt-8">
             <HeroForeground
               isInView={isInView}
               bankDetails={bankDetails}
@@ -760,77 +893,7 @@ export function HeroSection() {
               safePlayFanfare={safePlayFanfare}
             />
           </div>
-          {/* Right: Carousel */}
-          <div>
-            <div className="2xl:w-[90%] sm:w-[95%] w-full bg-background mx-auto rounded-3xl shadow-lg">
-              <Carousel
-                options={{ loop: true }}
-                className="relative"
-                isAutoPlay={false} // Disable built-in autoplay as we're handling it manually
-                currentIndex={currentIndex}
-                setCurrentIndex={setCurrentIndex}
-                thumbnailSlidesData={heroShowcaseImages.map((src, i) => ({ id: `hero-gallery-image-${i}`, src, alt: `Showcase image ${i + 1}` }))}
-                // onSlideClick={(idx) => { setCurrentIndex(idx); setIsModalOpen(true); }} // Removed as onSlideClick is not a prop of Carousel
-              >
-                <SliderContainer className="gap-2">
-                  {heroShowcaseImages.map((image, index) => (
-                    <Slider
-                      key={`hero-gallery-image-${index}`}
-                      className="xl:h-[400px] sm:h-[350px] h-[300px] w-full"
-                    >
-                      <div className="h-full w-full rounded-3xl bg-gradient-to-br from-[#FFEBCD] to-[#FFB6C1] p-1 relative">
-                        <motion.img
-                          src={image}
-                          width={1200}
-                          height={800}
-                          alt={`Showcase image ${index + 1}`}
-                          className="h-full object-contain rounded-3xl w-full cursor-zoom-in"
-                          loading={index < 3 ? "eager" : "lazy"}
-                          decoding="async"
-                          style={{ aspectRatio: '3/2' }}
-                          onClick={() => { setCurrentIndex(index); setIsModalOpen(true); }}
-                        />
-                        {!rightCarouselPreloaded[index] && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#FFEBCD] to-[#FFB6C1] rounded-3xl">
-                            <motion.p 
-                              className="text-lg font-semibold text-gray-800 dark:text-gray-200"
-                              initial={{ opacity: 0.5 }}
-                              animate={{ opacity: 1 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-                            >
-                              Hare Krishna! Chant and Be Happy!
-                            </motion.p>
-                          </div>
-                        )}
-                      </div>
-                    </Slider>
-                  ))}
-                </SliderContainer>
-                <ThumsSlider />
-              </Carousel>
-            </div>
-          </div>
         </div>
-        {/* Separator */}
-        <div className="mt-12 border-t border-gray-200 dark:border-gray-700 w-full"></div>
-        
-        {/* New section for the relocated and improved text */}
-        <motion.div
-          className="mt-8 text-center px-4" // Adjusted margin-top, text-center, and horizontal padding
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 20 }}
-          transition={{ delay: 0.9 }} // Delayed to appear after main content
-        >
-          <div className="bg-white dark:bg-pink-900/20 rounded-2xl shadow-md p-6 max-w-3xl mx-auto border border-gray-200 dark:border-pink-700/30">
-            <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white leading-relaxed tracking-tight">
-            Join our sacred calling
-            <Badge variant="secondary" className="mx-2 p-1 align-middle inline-block bg-white/50 dark:bg-black/20 border-primary/50">
-              <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Telephone%20Receiver.png" alt="Telephone Receiver" width="25" height="25" />
-            </Badge>
-            spread Śrīla Prabhupāda's wisdom and guide souls back home, back to Godhead.
-            </p>
-          </div>
-        </motion.div>
       </div>
       {/* Modal/Gallery using the same images and currentIndex */}
       <HeroGalleryModal
