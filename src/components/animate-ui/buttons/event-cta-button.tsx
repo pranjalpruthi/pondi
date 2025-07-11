@@ -47,9 +47,11 @@ const EventCtaButton = React.forwardRef<HTMLButtonElement, EventCtaButtonProps>(
       >
         <button
           className={cn(
-            "group h-20 p-2 rounded-2xl flex items-center justify-center gap-2 shadow-lg text-white font-bold relative overflow-hidden transition-all duration-500",
-            isExpanded ? "w-48" : "w-28 hover:w-48",
-            className
+            "group rounded-2xl flex items-center justify-center shadow-lg text-white font-bold relative overflow-hidden transition-all duration-500",
+            isExpanded
+              ? "h-20 w-48 p-2"
+              : "h-20 w-24 p-1 hover:w-48 hover:p-2",
+            className,
           )}
           type="button"
           ref={ref}
@@ -66,20 +68,40 @@ const EventCtaButton = React.forwardRef<HTMLButtonElement, EventCtaButtonProps>(
               transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
             />
           )}
-          <div className="relative z-10 flex items-center justify-center gap-2">
+          <div
+            className={cn(
+              "relative z-10 flex justify-center items-center transition-all duration-300",
+              isExpanded
+                ? "flex-row gap-2"
+                : "flex-col gap-1 group-hover:flex-row group-hover:gap-2",
+            )}
+          >
             {icon}
-            <div className="flex flex-col items-start">
+            <div
+              className={cn(
+                "flex flex-col",
+                isExpanded ? "items-start" : "items-center group-hover:items-start",
+              )}
+            >
               <span className="text-sm font-semibold">{defaultText}</span>
-              <div className={cn(
-                "w-fit overflow-hidden transition-all duration-500",
-                isExpanded ? "max-h-5 max-w-32" : "max-h-0 max-w-0 group-hover:max-h-5 group-hover:max-w-32"
-              )}>
-                  <span className={cn(
+              <div
+                className={cn(
+                  "w-fit overflow-hidden transition-all duration-500",
+                  isExpanded
+                    ? "max-h-5 max-w-32"
+                    : "max-h-0 max-w-0 group-hover:max-h-5 group-hover:max-w-32",
+                )}
+              >
+                <span
+                  className={cn(
                     "whitespace-nowrap text-xs transition-opacity duration-500",
-                    isExpanded ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                  )}>
-                    {hoverText} {emoji}
-                  </span>
+                    isExpanded
+                      ? "opacity-100"
+                      : "opacity-0 group-hover:opacity-100",
+                  )}
+                >
+                  {hoverText} {emoji}
+                </span>
               </div>
             </div>
           </div>

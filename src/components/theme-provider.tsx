@@ -17,7 +17,7 @@ const ThemeProviderContext = createContext<ThemeProviderState | null>(null)
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
+  defaultTheme = "light",
   storageKey = "vite-ui-theme",
   ...props
 }: ThemeProviderProps) {
@@ -60,4 +60,4 @@ export const useTheme = () => {
   const context = useContext(ThemeProviderContext)
   if (!context) throw new Error("useTheme must be used within a ThemeProvider")
   return context
-} 
+}

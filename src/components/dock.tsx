@@ -9,7 +9,7 @@ import IconTemple from 'virtual:icons/fluent-emoji-flat/hindu-temple'
 import IconCalendar from 'virtual:icons/uim/calender'
 import IconInfo from 'virtual:icons/line-md/alert-circle-twotone-loop';
 import IconRobo from 'virtual:icons/mdi/robot-outline';
-import { Menu, Volume2, VolumeX, Globe as GlobeIcon, ShoppingBag as ShoppingBagIcon, Phone, ArrowLeft, MapPin, Youtube } from "lucide-react"; // Added ShoppingBagIcon, Youtube
+import { Menu, Volume2, VolumeX, Globe as GlobeIcon, ShoppingBag as ShoppingBagIcon, Phone, ArrowLeft, MapPin, Youtube } from "lucide-react"; // Added ShoppingBagIcon, Youtube, PartyPopper
 import { IconBrandFacebook, IconBrandTelegram, IconBrandInstagram, IconBrandYoutube, IconBrandWhatsapp } from '@tabler/icons-react';
 import { CopyButton } from '@/components/animate-ui/buttons/copy';
 import { useSound } from 'use-sound';
@@ -24,6 +24,7 @@ import { LayoutDashboard, LogIn, LogOut } from 'lucide-react';
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Suspense } from 'react'; // Added Suspense import
 import { addLead } from '@/integrations/nocodb-api';
+import { UpcomingEventBanner, FestivalToggleButton } from '@/components/homepage/UpcomingEventBanner';
 
 import ShimmerText from '@/components/ui/shimmer-text'; // Added
 import { AppleChatInput } from '@/components/ui/apple-chat-input';
@@ -42,6 +43,7 @@ interface DockItemData {
   to?: string;
   isExpandable?: boolean;
   content?: React.ReactNode; // Changed from JSX.Element
+  customStyling?: string; // Added for custom styling
 }
 
 interface DockItemComponentProps {
@@ -79,6 +81,7 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
   const isAiBotButton = item.label === 'AI Bot';
   const isClipsButton = item.label === 'Clips';
   const isDonateButton = item.label === 'Donate';
+  const isFestivalsButton = item.id === 10; // Added for the Festivals button
   let deityButtonSpecificStyles = "";
   if (isDeityButton) {
       const statusColorClass = templeStatus.colorClass;
@@ -183,6 +186,9 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
   } else if (isDonateButton) {
     // Style for the Donate button
     itemSpecificStyling = "bg-gradient-to-br from-green-300 to-emerald-400 text-green-900 dark:from-green-500 dark:to-emerald-600 dark:text-white hover:from-green-400 hover:to-emerald-500 shadow-md hover:shadow-lg ring-1 ring-white/20 hover:ring-white/40 transition-all duration-200 rounded-xl";
+  } else if (isFestivalsButton) {
+    // Style for the Festivals button - using a vibrant blue gradient
+    itemSpecificStyling = "bg-gradient-to-br from-blue-400 to-cyan-500 text-white hover:from-blue-500 hover:to-cyan-600 dark:from-blue-500 dark:to-cyan-600 shadow-md hover:shadow-lg ring-1 ring-white/20 hover:ring-white/40 transition-all duration-200 rounded-xl";
   } else if (isDeityButton) {
     itemSpecificStyling = deityButtonSpecificStyles;
   } else if (isMainMenuPanelActive || isLabelVisible) { // For other items (like Menu button or regular hovered/clicked items)
@@ -830,6 +836,7 @@ function NavbarContent() {
   // const [open, setOpen] = React.useState(false); // Command Dialog state - REMOVED
   const [eventsOpen, setEventsOpen] = React.useState(false); // Events Dialog state
   const [deitiesOpen, setDeitiesOpen] = React.useState(false); // Deities Dialog state
+  const [isEventBannerOpen, setIsEventBannerOpen] = React.useState(true); // Changed: Banner is open by default
 
   // --- Hooks ---
   const { isSoundEnabled, toggleSound } = useSoundSettings();
@@ -1196,7 +1203,14 @@ function NavbarContent() {
       isExpandable: true,
       content: clipsPanelContent, // Use the new ClipsPanel
     },
-  ], [isMobile, isSoundEnabled, handleNavClick, handleSoundToggle, playTempleBell, safePlayClick, safePlayHover, setDeitiesOpen, navItems, templeStatus, setActiveDockItem, setIsDockOpen, aiPanelContent, clipsPanelContent, clipsPanelCurrentIndex, setClipsPanelCurrentIndex, eventsPanelContent]); // Updated to clipsPanelContent
+    {
+      id: 10, // New ID for the event banner toggle
+      label: isEventBannerOpen ? 'Close' : 'Events',
+      title: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Party%20Popper.png" alt="Party Popper" width="25" height="25" />,
+      subtitle: 'Festival',
+      action: () => setIsEventBannerOpen(prev => !prev),
+    }
+  ], [isMobile, isSoundEnabled, handleNavClick, handleSoundToggle, playTempleBell, safePlayClick, safePlayHover, setDeitiesOpen, navItems, templeStatus, setActiveDockItem, setIsDockOpen, aiPanelContent, clipsPanelContent, clipsPanelCurrentIndex, setClipsPanelCurrentIndex, eventsPanelContent, isEventBannerOpen, setIsEventBannerOpen]); // Updated to clipsPanelContent
 
 
   const handleDockItemClick = React.useCallback((item: DockItemData) => {
@@ -1240,6 +1254,81 @@ function NavbarContent() {
   const isClipsPanelActive = isDockOpen && activeItem?.label === 'Clips';
   const isEventsPanelActive = isDockOpen && activeItem?.label === 'Events';
 
+  const SplitButton = () => {
+    const darshanItem = DOCK_ITEMS.find(item => item.id === 2);
+    const eventsItem = DOCK_ITEMS.find(item => item.id === 3);
+
+    if (!darshanItem || !eventsItem) return null;
+
+    const statusColorClass = templeStatus.colorClass;
+    let darshanBg = "bg-gray-200/80 dark:bg-gray-700/80";
+    let darshanText = "text-gray-800 dark:text-gray-200";
+    let darshanHoverBg = "hover:bg-gray-300/80 dark:hover:bg-gray-600/80";
+
+    if (statusColorClass.includes('green')) {
+        darshanBg = "bg-green-400/20 dark:bg-green-500/20";
+        darshanText = "text-green-700 dark:text-green-300";
+        darshanHoverBg = "hover:bg-green-400/30 dark:hover:bg-green-500/30";
+    } else if (statusColorClass.includes('pink')) {
+        darshanBg = "bg-pink-400/20 dark:bg-pink-500/20";
+        darshanText = "text-pink-700 dark:text-pink-300";
+        darshanHoverBg = "hover:bg-pink-400/30 dark:hover:bg-pink-500/30";
+    } else if (statusColorClass.includes('red')) {
+        darshanBg = "bg-red-400/20 dark:bg-red-500/20";
+        darshanText = "text-red-700 dark:text-red-300";
+        darshanHoverBg = "hover:bg-red-400/30 dark:hover:bg-red-500/30";
+    } else if (statusColorClass.includes('gray')) {
+        darshanBg = "bg-gray-400/20 dark:bg-gray-600/20";
+        darshanText = "text-gray-700 dark:text-gray-400";
+        darshanHoverBg = "hover:bg-gray-400/30 dark:hover:bg-gray-600/30";
+    } else if (statusColorClass.includes('yellow')) {
+        darshanBg = "bg-yellow-400/20 dark:bg-yellow-500/20";
+        darshanText = "text-yellow-700 dark:text-yellow-300";
+        darshanHoverBg = "hover:bg-yellow-400/30 dark:hover:bg-yellow-500/30";
+    } else if (statusColorClass.includes('orange')) {
+        darshanBg = "bg-orange-400/20 dark:bg-orange-500/20";
+        darshanText = "text-orange-700 dark:text-orange-300";
+        darshanHoverBg = "hover:bg-orange-400/30 dark:hover:bg-orange-500/30";
+    }
+
+    const handleDarshanClick = () => {
+      if (darshanItem.action) {
+        darshanItem.action();
+      }
+    };
+
+    const handleEventsClick = () => {
+      handleDockItemClick(eventsItem);
+    };
+
+    return (
+      <div className="flex flex-col items-center justify-center gap-1.5 h-14 sm:h-16 w-14 sm:w-16">
+        <motion.button
+          onClick={handleEventsClick}
+          onMouseEnter={safePlayHover}
+          className="h-6 px-4 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 text-white text-xs font-semibold whitespace-nowrap transition-all hover:from-blue-500 hover:to-cyan-600 active:scale-95 shadow-md hover:shadow-lg"
+          whileTap={{ scale: 0.95 }}
+          aria-label="Open Calendar"
+        >
+          Calendar
+        </motion.button>
+        <motion.button
+          onClick={handleDarshanClick}
+          onMouseEnter={safePlayHover}
+          className={cn(
+            "h-6 px-4 rounded-full text-xs font-semibold whitespace-nowrap transition-colors active:scale-95",
+            darshanBg,
+            darshanText,
+            darshanHoverBg
+          )}
+          whileTap={{ scale: 0.95 }}
+        >
+          Darshan
+        </motion.button>
+      </div>
+    );
+  };
+
   return (
     <MotionConfig transition={{ layout: { duration: 0.35, type: 'spring', bounce: 0.1 } }}>
       <motion.nav 
@@ -1256,6 +1345,12 @@ function NavbarContent() {
             "relative mx-auto flex justify-center",
             isClipsPanelActive ? "w-full h-full p-0" : "container px-2 pb-2 sm:px-4"
           )}>
+          <FestivalToggleButton
+            isEventBannerOpen={isEventBannerOpen}
+            setIsEventBannerOpen={setIsEventBannerOpen}
+            mainDockAppearanceTransition={mainDockAppearanceTransition}
+            isMobile={isMobile}
+          />
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -1316,7 +1411,7 @@ function NavbarContent() {
                       <div className="flex w-full justify-between items-end">
                         {/* Left 2 items */}
                         <div className="flex justify-evenly w-[calc(50%-36px)]">
-                          {[1, 2].map(id => DOCK_ITEMS.find(item => item.id === id)).map(item => item && (
+                          {DOCK_ITEMS.filter(item => item.id === 1).map(item => item && (
                             <DockItemComponent
                               key={item.id}
                               item={item}
@@ -1331,6 +1426,7 @@ function NavbarContent() {
                               onItemMouseEnter={handleDockItemMouseEnter}
                             />
                           ))}
+                          <SplitButton />
                         </div>
                         {/* Right 2 items */}
                         <div className="flex justify-evenly w-[calc(50%-36px)]">
@@ -1404,9 +1500,9 @@ function NavbarContent() {
                       {/* Desktop Layout */}
                       <div className={cn('flex space-x-2 sm:space-x-3', isClipsPanelActive ? 'text-white' : '')}>
                         {DOCK_ITEMS.filter(item => {
-                          // Desktop: show all except AI Bot (7) and Clips (8) in the main group
+                          // Desktop: show all except AI Bot (7), Clips (8), and the new Events (10) in the main group
                           if (!isMobile) {
-                            return ![7, 8].includes(item.id)
+                            return ![7, 8, 10].includes(item.id)
                           }
                           return false; // Should not be reached
                         }).map((item) => (
@@ -1428,22 +1524,7 @@ function NavbarContent() {
                       {!isMobile && (
                         <>
                           <div className="h-8 w-px bg-border self-center" />
-                          {DOCK_ITEMS.filter(item => item.id === 8).map((item) => (
-                            <DockItemComponent
-                              key={item.id}
-                              item={item}
-                              isMobile={isMobile}
-                              templeStatus={templeStatus}
-                              activeLabelItemId={activeLabelItemId}
-                              hoveredLabelItemId={hoveredLabelItemId}
-                              isDockOpen={isDockOpen}
-                              activeDockItem={activeDockItem}
-                              dockSpringTransition={dockSpringTransition}
-                              onItemClick={handleDockItemClick}
-                              onItemMouseEnter={handleDockItemMouseEnter}
-                            />
-                          ))}
-                          {DOCK_ITEMS.filter(item => item.id === 7).map((item) => (
+                          {[10, 8, 7].map(id => DOCK_ITEMS.find(item => item.id === id)).map(item => item && (
                             <DockItemComponent
                               key={item.id}
                               item={item}
@@ -1483,6 +1564,7 @@ function NavbarContent() {
         open={deitiesOpen}
         onOpenChange={setDeitiesOpen}
       />
+      <UpcomingEventBanner isOpen={isEventBannerOpen} onClose={() => setIsEventBannerOpen(false)} />
     </MotionConfig>
   )
 }

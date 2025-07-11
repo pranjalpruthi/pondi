@@ -1,11 +1,43 @@
 import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { motion, AnimatePresence } from 'motion/react';
-import { X, BadgeCheck, Sparkles, Calendar, MapPin, CalendarPlus } from 'lucide-react';
-import { useState, useEffect, useMemo, forwardRef } from 'react';
-import { useNavbarVisibility } from '@/hooks/use-navbar-visibility';
+import { motion, AnimatePresence, type Transition } from 'motion/react';
+import { X, Sparkles, Calendar, MapPin, CalendarPlus } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Badge } from '@/components/ui/badge';
 import NumberFlow, { NumberFlowGroup } from '@number-flow/react';
+// --- FestivalToggleButton Component ---
+interface FestivalToggleButtonProps {
+  isEventBannerOpen: boolean;
+  setIsEventBannerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  mainDockAppearanceTransition: Transition;
+  isMobile: boolean;
+}
+
+export const FestivalToggleButton: React.FC<FestivalToggleButtonProps> = ({
+  isEventBannerOpen,
+  setIsEventBannerOpen,
+  mainDockAppearanceTransition,
+  isMobile,
+}) => {
+  // This button is now mobile-only.
+  if (!isMobile) return null;
+
+  const buttonContent = isEventBannerOpen ? 'Close' : 'Festivals';
+  
+  return (
+    <motion.button
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ ...mainDockAppearanceTransition, delay: 0.6 }}
+      onClick={() => setIsEventBannerOpen(prev => !prev)}
+      className="absolute right-4 -top-10 z-10 pointer-events-auto flex items-center justify-center h-8 px-5 rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95"
+      aria-label={isEventBannerOpen ? "Close Upcoming Event Banner" : "Open Upcoming Event Banner"}
+    >
+      {buttonContent}
+    </motion.button>
+  );
+};
+// --- End FestivalToggleButton Component ---
 
 const eventDate = new Date("2025-08-16T15:00:00");
 
@@ -17,9 +49,12 @@ interface TimeLeft {
   isExpired: boolean;
 }
 
-export const UpcomingEventBanner = forwardRef<HTMLDivElement, {}>((_, ref) => {
-  const [isDismissed, setIsDismissed] = useState(false);
-  const isVisibleBasedOnScroll = useNavbarVisibility();
+interface UpcomingEventBannerProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export const UpcomingEventBanner: React.FC<UpcomingEventBannerProps> = ({ isOpen, onClose }) => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     days: 0,
     hours: 0,
@@ -27,13 +62,6 @@ export const UpcomingEventBanner = forwardRef<HTMLDivElement, {}>((_, ref) => {
     seconds: 0,
     isExpired: false,
   });
-
-  useEffect(() => {
-    const dismissed = sessionStorage.getItem('janmashtami-card-dismissed');
-    if (dismissed) {
-      setIsDismissed(true);
-    }
-  }, []);
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -62,11 +90,10 @@ export const UpcomingEventBanner = forwardRef<HTMLDivElement, {}>((_, ref) => {
   const handleDismiss = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     e.preventDefault();
-    setIsDismissed(true);
-    sessionStorage.setItem('janmashtami-card-dismissed', 'true');
+    onClose();
   };
 
-  const isVisible = isVisibleBasedOnScroll && !isDismissed && !timeLeft.isExpired;
+  const isVisible = isOpen && !timeLeft.isExpired;
 
   const eventDetails = useMemo(() => ({
     title: "Śrī Kṛṣṇa Janmāṣṭamī Grand Festival",
@@ -85,7 +112,6 @@ export const UpcomingEventBanner = forwardRef<HTMLDivElement, {}>((_, ref) => {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          ref={ref}
           initial={{ x: '100%', opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: '120%', opacity: 0 }}
@@ -118,6 +144,8 @@ export const UpcomingEventBanner = forwardRef<HTMLDivElement, {}>((_, ref) => {
             >
               <X className="h-4 w-4" />
             </Button>
+
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Ticket.png" alt="Ticket" width="80" height="80" className="absolute top-12 right-5 transform -rotate-12 opacity-80" />
 
             <div className="flex items-start gap-4">
               <div className="flex-1">
@@ -180,12 +208,19 @@ export const UpcomingEventBanner = forwardRef<HTMLDivElement, {}>((_, ref) => {
                   "The holy name... is the incarnation of Lord Kṛṣṇa."
                   <span className="opacity-80 ml-1">— CC, Ādi 17.22</span>
                 </p>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col items-center gap-2">
                   <Button asChild size="sm" className="w-full h-9 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-md hover:shadow-lg transition-all duration-300">
-                    <Link to="/fests/invite" onClick={() => setIsDismissed(true)}>
-                      <BadgeCheck className="h-4 w-4 mr-1.5" />
-                      Reserve Your Spot
+                    <Link to="/fests/invite" onClick={onClose}>
+                      <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Ticket.png" alt="Ticket" width="20" height="20" className="mr-1.5" />
+                      RESERVE YOUR FREE SPOT
                     </Link>
+                  </Button>
+                  <Button asChild size="sm" className="w-full h-9 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 text-white font-bold shadow-md hover:shadow-lg transition-all duration-300 hover:from-green-500 hover:to-emerald-600">
+                    <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
+                      <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width="20" height="20" className="mr-1.5" />
+                      Sponsor BG Seva
+                      <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Pleading%20Face.png" alt="Pleading Face" width="20" height="20" className="ml-1.5" />
+                    </a>
                   </Button>
                 </div>
               </div>
@@ -195,4 +230,4 @@ export const UpcomingEventBanner = forwardRef<HTMLDivElement, {}>((_, ref) => {
       )}
     </AnimatePresence>
   );
-});
+};

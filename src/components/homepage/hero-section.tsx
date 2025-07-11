@@ -1,3 +1,4 @@
+import { useIsMobile } from "@/hooks/use-mobile";
 import { AnimatePresence, type PanInfo, motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,14 +31,7 @@ import {
     IconPigMoney,
 
 } from '@tabler/icons-react';
-import { Check, Loader2, X, ChevronUp, ChevronDown } from 'lucide-react';
-import {
-  InputButton,
-  InputButtonAction,
-  InputButtonProvider,
-  InputButtonSubmit,
-  InputButtonInput,
-} from '@/components/animate-ui/buttons/input';
+import { Check, Loader2, X, ChevronUp, ChevronDown, Mail } from 'lucide-react';
 import EventCtaButton from '@/components/animate-ui/buttons/event-cta-button';
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -45,19 +39,19 @@ import React from "react";
 import { useMutation } from "@tanstack/react-query";
 import { addLead } from "@/integrations/nocodb-api";
 
-const heroShowcaseImages = [
-  '/temple-building/1.webp?w=1200&format=webp&quality=80',
-  '/temple-building/2.webp?w=1200&format=webp&quality=80',
-  '/updates/s2.webp?w=1200&format=webp&quality=80',
-  '/updates/s3.webp?w=1200&format=webp&quality=80',
-  '/updates/s4.webp?w=1200&format=webp&quality=80',
-  '/updates/s5.webp?w=1200&format=webp&quality=80',
-  '/updates/s6.webp?w=1200&format=webp&quality=80',
-  '/updates/s7.webp?w=1200&format=webp&quality=80',
-  '/temple-building/3.webp?w=1200&format=webp&quality=80',
-  '/temple-building/4.webp?w=1200&format=webp&quality=80',
-  '/temple-building/5.webp?w=1200&format=webp&quality=80',
+const heroShowcaseData = [
+  { src: '/updates/s9.webp?w=1200&format=webp&quality=80', title: 'Janmashtami Festival Registration', description: 'Register now for the grand celebration of Lord Krishna\'s appearance on August 16th.' },
+  { src: '/updates/s8.webp?w=1200&format=webp&quality=80', title: 'Ratha Yatra Festival', description: 'The magnificent chariot festival on the streets of Pondicherry.' },
+  { src: '/updates/s10.webp?w=1200&format=webp&quality=80', title: 'Sponsor a Bhagavad Gita', description: 'Contribute ₹250 for one copy and be part of the 5108 Gita distribution yajna.' },
+  { src: '/updates/s11.webp?w=1200&format=webp&quality=80', title: 'Janmashtami School Competition', description: 'Organized by the ISKM Janmashtami Team for young talents.' },
+  { src: '/temple-building/1.webp?w=1200&format=webp&quality=80', title: 'A Glimpse Inside', description: 'An artist\'s 3D rendering of the temple\'s interior view.' },
+  { src: '/temple-building/2.webp?w=1200&format=webp&quality=80', title: 'The Grand Vision', description: 'A 3D projection of the magnificent temple exterior.' },
+  { src: '/temple-building/3.webp?w=1200&format=webp&quality=80', title: 'Welcoming Façade', description: 'The stunning front view of the proposed temple design.' },
+  { src: '/temple-building/4.webp?w=1200&format=webp&quality=80', title: 'Architectural Splendor', description: 'A detailed rear view of the temple\'s 3D model.' },
+  { src: '/temple-building/5.webp?w=1200&format=webp&quality=80', title: 'A 108-ft Marvel', description: 'Top-down view of the temple, featuring three majestic vimanas inspired by ISKCON Vrindavan.' },
 ];
+
+const heroShowcaseImages = heroShowcaseData.map(item => item.src);
 
 const socialLinks = [
   { icon: IconBrandInstagram, url: 'https://www.instagram.com/iskm_pondy', label: 'Instagram', color: 'bg-[#E1306C] text-white' },
@@ -135,8 +129,6 @@ interface HeroForegroundProps {
   socialLinks: typeof socialLinks;
   onCopyToClipboard: (text: string, type: string) => void;
   copiedValue: string | null;
-  showNewsletterInput: boolean;
-  setShowNewsletterInput: React.Dispatch<React.SetStateAction<boolean>>;
   isNewsletterPending: boolean;
   handleNewsletterSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   isNewsletterSuccess: boolean;
@@ -146,16 +138,7 @@ interface HeroForegroundProps {
   safePlayClick: () => void;
   safePlayPopOn: () => void;
   safePlayPopOff: () => void;
-  safePlayFanfare: () => void;
-  rightCarouselImages: string[];
-  currentRightCarouselIndex: number;
-  goToNextRightSlide: () => void;
-  goToPrevRightSlide: () => void;
-  goToRightSlide: (index: number) => void;
-  isLightboxOpen: boolean;
-  setIsLightboxOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  lightboxIndex: number;
-  setLightboxIndex: React.Dispatch<React.SetStateAction<number>>;
+  isMobile: boolean;
 }
 
 // --- New HeroGalleryModal (adapted from user's SliderModal example) ---
@@ -445,19 +428,19 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: props.isInView ? 1 : 0 }}
             transition={{ delay: 0.6 }}
-            className="flex flex-wrap gap-4 justify-center items-center"
+            className="flex flex-wrap gap-2 sm:gap-4 justify-center items-center"
           >
-            <Popover onOpenChange={(open) => open && props.safePlayPopOn()}>
+            <Popover onOpenChange={(open) => { if (open) props.safePlayPopOn(); else props.safePlayPopOff(); }}>
               <PopoverTrigger asChild>
                 <EventCtaButton
                   icon={<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Heart%20Hands.png" alt="Heart Hands" width="25" height="25" />}
-                  defaultText="Support Us"
-                  hoverText="with a donation"
+                  defaultText={props.isMobile ? "Support" : "Support Us"}
+                  hoverText={props.isMobile ? "Donate" : "with a donation"}
                   emoji="🫶"
                   className="bg-primary hover:bg-primary/90 text-primary-foreground"
                   onClick={props.safePlayClick}
                   onMouseEnter={props.safePlayHover}
-                  isExpanded={true}
+                  isExpanded={!props.isMobile}
                   hasShimmer={false}
                 />
               </PopoverTrigger>
@@ -515,27 +498,27 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
             <a href="https://www.youtube.com/@ISKMPondy" target="_blank" rel="noopener noreferrer" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
               <EventCtaButton
                 icon={<IconBrandYoutube className="h-6 w-6" />}
-                defaultText="Watch Live"
-                hoverText="on YouTube"
+                defaultText={props.isMobile ? "Live" : "Watch Live"}
+                hoverText={props.isMobile ? "YouTube" : "on YouTube"}
                 emoji="🔴"
                 className="bg-red-600 hover:bg-red-700 text-white"
-                isExpanded={true}
+                isExpanded={!props.isMobile}
                 hasPulse={true}
                 hasShimmer={true}
               />
             </a>
 
-            <Popover onOpenChange={(open) => open && props.safePlayPopOn()}>
+            <Popover onOpenChange={(open) => { if (open) props.safePlayPopOn(); else props.safePlayPopOff(); }}>
               <PopoverTrigger asChild>
                 <EventCtaButton
                   icon={<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Love%20Hotel.png" alt="Love Hotel" width="25" height="25" />}
-                  defaultText="Our Location"
-                  hoverText="Get Directions"
+                  defaultText={props.isMobile ? "Visit Us" : "Our Location"}
+                  hoverText="Directions"
                   emoji="🗺️"
                   className="bg-blue-500 hover:bg-blue-600 text-white"
                   onClick={props.safePlayClick}
                   onMouseEnter={props.safePlayHover}
-                  isExpanded={true}
+                  isExpanded={!props.isMobile}
                   hasShimmer={false}
                 />
               </PopoverTrigger>
@@ -557,12 +540,12 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
                 </div>
               </PopoverContent>
             </Popover>
-            <Popover onOpenChange={(open) => open && props.safePlayPopOn()}>
+            <Popover onOpenChange={(open) => { if (open) props.safePlayPopOn(); else props.safePlayPopOff(); }}>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-16 h-16 p-1.5 rounded-xl shadow-lg bg-green-100 hover:bg-green-200 dark:bg-green-800 dark:hover:bg-green-700 border-green-500/70 text-green-700 dark:text-green-300">
-                  <div className="flex flex-col items-center justify-center gap-0.5">
+                <Button className="h-20 w-24 p-1.5 rounded-2xl shadow-lg bg-teal-500 hover:bg-teal-600 text-white">
+                  <div className="flex flex-col items-center justify-center gap-1">
                     <IconPhone className="h-6 w-6" />
-                    <span className="text-[10px] font-semibold">Contact</span>
+                    <span className="text-sm font-semibold">Contact</span>
                   </div>
                 </Button>
               </PopoverTrigger>
@@ -602,37 +585,70 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
               </PopoverContent>
             </Popover>
           </motion.div>
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: props.isInView ? 1 : 0, y: props.isInView ? 0 : 20 }} 
-            transition={{ delay: 0.7 }} 
-            className="mt-8 flex flex-col items-center gap-3 text-center"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: props.isInView ? 1 : 0, y: props.isInView ? 0 : 20 }}
+            transition={{ delay: 0.7 }}
+            className="mt-8"
           >
-            <div className="max-w-md">
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Stay Connected with ISKM</h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                Join our newsletter for weekly updates, event news, and spiritual insights delivered to your inbox.
-              </p>
+            <div className="w-full max-w-lg mx-auto p-4 md:p-6 bg-white/10 dark:bg-black/10 backdrop-blur-sm border border-white/20 dark:border-black/20 rounded-2xl shadow-lg">
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Get Weekly Updates</h3>
+                <p className="mt-2 text-sm text-gray-800 dark:text-gray-200">
+                  Join our newsletter for event news and spiritual insights delivered to your inbox.
+                </p>
+              </div>
+              <form onSubmit={props.handleNewsletterSubmit} className="mt-4">
+                <div className="relative flex items-center">
+                  <Mail className="absolute left-3 w-5 h-5 text-gray-400 dark:text-gray-500" />
+                  <input
+                    type="email"
+                    placeholder="your.email@example.com"
+                    value={props.newsletterEmail}
+                    onChange={(e) => props.setNewsletterEmail(e.target.value)}
+                    disabled={props.isNewsletterPending}
+                    required
+                    className="w-full pl-10 pr-20 py-3 text-base bg-white/50 dark:bg-black/50 border border-gray-300/50 dark:border-gray-700/50 rounded-full focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 placeholder:text-gray-500 dark:placeholder:text-gray-400"
+                  />
+                  <button
+                    type="submit"
+                    disabled={props.isNewsletterPending || props.isNewsletterSuccess}
+                    onClick={props.safePlayClick}
+                    onMouseEnter={props.safePlayHover}
+                    className={cn(
+                      "absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 rounded-full text-white transition-all duration-300 ease-in-out",
+                      props.isNewsletterSuccess
+                        ? "bg-green-500"
+                        : "bg-gradient-to-r from-pink-500 to-rose-500 hover:shadow-lg hover:shadow-rose-500/30",
+                      props.isNewsletterPending ? "cursor-not-allowed" : "",
+                      props.isNewsletterSuccess ? "cursor-default" : "hover:scale-105 active:scale-95"
+                    )}
+                    aria-label="Subscribe to newsletter"
+                  >
+                    <AnimatePresence mode="wait">
+                      {props.isNewsletterSuccess ? (
+                        <motion.span key="success" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}>
+                          <Check className="h-5 w-5" />
+                        </motion.span>
+                      ) : props.isNewsletterPending ? (
+                        <motion.span key="pending" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}>
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                        </motion.span>
+                      ) : (
+                        <motion.span key="idle" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}>
+                           <ChevronUp className="h-5 w-5 transform rotate-90" />
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </button>
+                </div>
+              </form>
             </div>
-            <form onSubmit={props.handleNewsletterSubmit} className="w-full max-w-xs sm:max-w-sm">
-              <InputButtonProvider showInput={props.showNewsletterInput} setShowInput={props.setShowNewsletterInput}>
-                <InputButton className="bg-gradient-to-r from-pink-500 to-rose-500 hover:shadow-lg hover:shadow-rose-500/30 border-none rounded-full transition-shadow" onMouseEnter={props.safePlayHover}>
-                  <InputButtonAction className="text-white bg-transparent border-none hover:bg-white/10 flex items-center gap-2" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
-                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Love%20Letter.png" alt="Love Letter" width="20" height="20" />
-                    Get Weekly Updates
-                  </InputButtonAction>
-                  <InputButtonSubmit type="submit" disabled={props.isNewsletterPending} onClick={props.safePlayClick} onMouseEnter={props.safePlayHover} className={cn("bg-pink-600 text-white hover:bg-pink-700", props.isNewsletterPending || props.isNewsletterSuccess ? 'aspect-square px-0' : '')}>
-                    {props.isNewsletterSuccess ? <motion.span key="success" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}><Check className="h-4 w-4"/></motion.span> : props.isNewsletterPending ? <motion.span key="pending" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}><Loader2 className="animate-spin h-4 w-4" /></motion.span> : 'Subscribe'}
-                  </InputButtonSubmit>
-                </InputButton>
-                <InputButtonInput type="email" placeholder="harekrsna@mail.com" value={props.newsletterEmail} onChange={(e) => props.setNewsletterEmail(e.target.value)} disabled={props.isNewsletterPending} required className="text-sm placeholder:text-gray-500 dark:placeholder:text-gray-400" autoFocus />
-              </InputButtonProvider>
-            </form>
           </motion.div>
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: props.isInView ? 1 : 0, y: props.isInView ? 0 : 20 }} 
-            transition={{ delay: 0.8 }} 
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: props.isInView ? 1 : 0, y: props.isInView ? 0 : 20 }}
+            transition={{ delay: 0.8 }}
             className="mt-10"
           >
             <h4 className="text-center text-sm font-medium text-muted-foreground mb-3">Follow us on social media</h4>
@@ -656,11 +672,11 @@ HeroForeground.displayName = "HeroForeground";
 
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const isMobile = useIsMobile();
   const [isInView, setIsInView] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [backgroundColors, setBackgroundColors] = useState<string[]>([]);
   const [copiedValue, setCopiedValue] = useState<string | null>(null);
-  const [showNewsletterInput, setShowNewsletterInput] = useState(true);
   const [isNewsletterPending, startNewsletterTransition] = useTransition();
   const [isNewsletterSuccess, setIsNewsletterSuccess] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -675,7 +691,6 @@ export function HeroSection() {
       toast.success("Subscribed!", { description: "Thank you for joining our newsletter." });
       setTimeout(() => {
         setIsNewsletterSuccess(false);
-        setShowNewsletterInput(false);
         setNewsletterEmail('');
       }, 2000);
     },
@@ -751,7 +766,7 @@ export function HeroSection() {
         Source: 'Newsletter',
       });
     });
-  }, [showNewsletterInput, newsletterEmail, addLeadMutation, safePlayClick]);
+  }, [newsletterEmail, addLeadMutation]);
 
   const copyToClipboard = useCallback((text: string, type: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -763,22 +778,6 @@ export function HeroSection() {
       toast.error("Copy Failed", { description: "Could not copy text to clipboard." });
     });
   }, [safePlayPopOn]);
-
-  const goToNextRightSlide = useCallback(() => {
-    setTimeout(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % heroShowcaseImages.length);
-    }, 500);
-  }, []);
-
-  const goToPrevRightSlide = useCallback(() => {
-    setTimeout(() => {
-      setCurrentIndex((prevIndex) => (prevIndex - 1 + heroShowcaseImages.length) % heroShowcaseImages.length);
-    }, 500);
-  }, []);
-
-  const goToRightSlide = useCallback((index: number) => {
-    setCurrentIndex(index);
-  }, []);
 
   return (
     <section
@@ -805,92 +804,105 @@ export function HeroSection() {
           </motion.h1>
 
           {/* Carousel */}
-          <div className="w-full max-w-4xl mx-auto">
-            <div className="bg-background rounded-3xl shadow-lg">
-              <Carousel
-                options={{ loop: true }}
-                className="relative"
-                isAutoPlay={false} // Disable built-in autoplay as we're handling it manually
-                currentIndex={currentIndex}
-                setCurrentIndex={setCurrentIndex}
-                thumbnailSlidesData={heroShowcaseImages.map((src, i) => ({ id: `hero-gallery-image-${i}`, src, alt: `Showcase image ${i + 1}` }))}
-              >
-                <SliderContainer className="gap-2">
-                  {heroShowcaseImages.map((image, index) => (
-                    <Slider
-                      key={`hero-gallery-image-${index}`}
-                      className="xl:h-[400px] sm:h-[350px] h-[300px] w-full"
+          <div className="w-full max-w-4xl mx-auto relative group">
+            <Carousel
+              options={{ loop: true }}
+              className="relative"
+              isAutoPlay={false}
+              currentIndex={currentIndex}
+              setCurrentIndex={setCurrentIndex}
+              thumbnailSlidesData={heroShowcaseImages.map((src, i) => ({ id: `hero-gallery-image-${i}`, src, alt: `Showcase image ${i + 1}` }))}
+            >
+              <SliderContainer className="gap-2">
+                {heroShowcaseData.map((item, index) => (
+                  <Slider
+                    key={`hero-gallery-image-${index}`}
+                    className="xl:h-[400px] sm:h-[350px] h-[300px] w-full"
+                  >
+                    <div
+                      className="h-full w-full rounded-3xl p-1 relative transition-colors duration-1000 overflow-hidden"
+                      style={{
+                        background: backgroundColors.length > 1
+                          ? `linear-gradient(145deg, ${backgroundColors[0]}, ${backgroundColors[1]}, ${backgroundColors[2] || backgroundColors[0]})`
+                          : 'linear-gradient(145deg, #FFEBCD, #FFB6C1)',
+                      }}
                     >
-                      <div 
-                        className="h-full w-full rounded-3xl p-1 relative transition-colors duration-1000"
-                        style={{
-                          background: backgroundColors.length > 1
-                            ? `linear-gradient(145deg, ${backgroundColors[0]}, ${backgroundColors[1]}, ${backgroundColors[2] || backgroundColors[0]})`
-                            : 'linear-gradient(145deg, #FFEBCD, #FFB6C1)',
-                        }}
-                      >
-                        <motion.img
-                          src={image}
-                          width={1200}
-                          height={800}
-                          alt={`Showcase image ${index + 1}`}
-                          className="h-full object-contain rounded-3xl w-full cursor-zoom-in"
-                          loading={index < 3 ? "eager" : "lazy"}
-                          decoding="async"
-                          style={{ aspectRatio: '3/2' }}
-                          onClick={() => { setCurrentIndex(index); setIsModalOpen(true); }}
-                        />
-                        {!rightCarouselPreloaded[index] && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-3xl">
-                            <motion.p 
-                              className="text-lg font-semibold text-gray-800 dark:text-gray-200"
-                              initial={{ opacity: 0.5 }}
-                              animate={{ opacity: 1 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-                            >
-                              Hare Krishna! Chant and Be Happy!
-                            </motion.p>
-                          </div>
-                        )}
+                      <motion.img
+                        src={item.src}
+                        width={1200}
+                        height={800}
+                        alt={item.title}
+                        className="h-full object-contain rounded-3xl w-full cursor-zoom-in"
+                        loading={index < 3 ? "eager" : "lazy"}
+                        decoding="async"
+                        style={{ aspectRatio: '3/2' }}
+                        onClick={() => { setCurrentIndex(index); setIsModalOpen(true); }}
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-black/20 backdrop-blur-md rounded-b-3xl">
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.2, duration: 0.5 }}
+                        >
+                          <h3 className="text-white text-lg font-bold truncate">{item.title}</h3>
+                          <p className="text-white/80 text-sm mt-1 truncate">{item.description}</p>
+                        </motion.div>
                       </div>
-                    </Slider>
-                  ))}
-                </SliderContainer>
-                <ThumsSlider />
-              </Carousel>
-            </div>
+                      {!rightCarouselPreloaded[index] && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-3xl">
+                          <motion.p
+                            className="text-lg font-semibold text-gray-800 dark:text-gray-200"
+                            initial={{ opacity: 0.5 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
+                          >
+                            Hare Krishna! Chant and Be Happy!
+                          </motion.p>
+                        </div>
+                      )}
+                    </div>
+                  </Slider>
+                ))}
+              </SliderContainer>
+              <ThumsSlider />
+            </Carousel>
           </div>
+
+          <motion.div
+            className="mt-8 max-w-4xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 20 }}
+            transition={{ delay: 0.3 }}
+          >
+            <div className="flex flex-col items-center gap-2">
+                <Badge variant="outline" className="text-sm sm:text-base py-1 px-3 rounded-full border-gray-400/50 dark:border-gray-600/50">
+                    <span className="font-semibold text-orange-500 dark:text-orange-400">Pudhuvai Vrindavanam</span> - <span className="font-semibold text-blue-500 dark:text-blue-400">Radha Krishna Temple</span>
+                </Badge>
+                <p className="text-xs text-muted-foreground max-w-2xl mx-auto">
+                Branch of <span className="font-semibold text-teal-600 dark:text-teal-400">International Sri Krishna Mandir</span> in Pondicherry, India. A spiritual sanctuary dedicated to <span className="font-semibold text-blue-600 dark:text-blue-400">Lord Krishna</span> and <span className="font-semibold text-pink-500 dark:text-pink-400">Radharani</span>.
+                </p>
+            </div>
+          </motion.div>
 
           {/* Buttons and other foreground elements */}
           <div className="mt-8">
             <HeroForeground
+              isMobile={isMobile}
               isInView={isInView}
               bankDetails={bankDetails}
               locationDetails={locationDetails}
               socialLinks={socialLinks}
-              rightCarouselImages={heroShowcaseImages}
               onCopyToClipboard={copyToClipboard}
               copiedValue={copiedValue}
-              showNewsletterInput={showNewsletterInput}
-              setShowNewsletterInput={setShowNewsletterInput}
               isNewsletterPending={isNewsletterPending}
               handleNewsletterSubmit={handleNewsletterSubmit}
               isNewsletterSuccess={isNewsletterSuccess}
               newsletterEmail={newsletterEmail}
               setNewsletterEmail={setNewsletterEmail}
-              currentRightCarouselIndex={currentIndex}
-              goToNextRightSlide={goToNextRightSlide}
-              goToPrevRightSlide={goToPrevRightSlide}
-              goToRightSlide={goToRightSlide}
-              isLightboxOpen={isModalOpen}
-              setIsLightboxOpen={setIsModalOpen}
-              lightboxIndex={currentIndex}
-              setLightboxIndex={setCurrentIndex}
               safePlayHover={safePlayHover}
               safePlayClick={safePlayClick}
               safePlayPopOn={safePlayPopOn}
               safePlayPopOff={safePlayPopOff}
-              safePlayFanfare={safePlayFanfare}
             />
           </div>
         </div>

@@ -2,8 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useState, type FC, type ReactNode } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Calendar, BookOpen, MapPin, Clock, Play, Share2, Heart, Feather, Copy, Check } from "lucide-react";
+import { Calendar, BookOpen, MapPin, Clock, Play, Share2, Feather, Copy, Check } from "lucide-react";
 import {
     IconBrandWhatsapp,
     IconBrandFacebook,
@@ -97,17 +96,17 @@ const CountdownTimer = () => {
 
     return (
         <div className="mt-8">
-            <div className="flex justify-center md:justify-start items-center gap-2 md:gap-4 p-4 bg-black/5 dark:bg-white/5 rounded-xl backdrop-blur-sm">
+            <div className="flex justify-center md:justify-start items-center gap-1.5 sm:gap-2 md:gap-4 p-3 sm:p-4 bg-black/5 dark:bg-white/5 rounded-xl backdrop-blur-sm">
                 <NumberFlowGroup>
                     {timeUnits.map(([unit, value], index) => (
-                        <div key={unit} className="flex items-center gap-2 md:gap-4">
+                        <div key={unit} className="flex items-center gap-1.5 sm:gap-2 md:gap-4">
                             <div className="flex flex-col items-center">
-                                <p style={{ fontVariantNumeric: 'tabular-nums' }} className="text-4xl md:text-5xl font-bold text-indigo-900 dark:text-white">
+                                <p style={{ fontVariantNumeric: 'tabular-nums' }} className="text-3xl sm:text-4xl md:text-5xl font-bold text-indigo-900 dark:text-white">
                                     <NumberFlow value={value} format={{ minimumIntegerDigits: 2 }} />
                                 </p>
-                                <p className="text-xs text-stone-600 dark:text-stone-400 uppercase tracking-wider">{unit}</p>
+                                <p className="text-[0.6rem] sm:text-xs text-stone-600 dark:text-stone-400 uppercase tracking-wider">{unit}</p>
                             </div>
-                            {index < timeUnits.length - 1 && <p className="text-4xl md:text-5xl font-bold text-indigo-900/50 dark:text-white/50">:</p>}
+                            {index < timeUnits.length - 1 && <p className="text-3xl sm:text-4xl md:text-5xl font-bold text-indigo-900/50 dark:text-white/50">:</p>}
                         </div>
                     ))}
                 </NumberFlowGroup>
@@ -132,13 +131,13 @@ const InviteHero = () => {
                     transition={{ duration: 0.8, delay: 0.2 }}
                     className="text-center md:text-left"
                 >
-                    <h1 className="text-5xl md:text-7xl font-extrabold font-serif text-indigo-900 dark:text-white leading-tight">
+                    <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold font-serif text-indigo-900 dark:text-white leading-tight">
                         <AuroraText colors={["#be185d", "#fb923c", "#fde047"]}>
-                            Śrī Kṛṣṇa <br/>Janmāṣṭamī
+                            Śrī Kṛṣṇa <br className="hidden sm:block" />Janmāṣṭamī
                         </AuroraText>
                     </h1>
-                    <p className="mt-4 text-2xl md:text-3xl text-orange-600 dark:text-orange-400 font-semibold">A Divine Invitation</p>
-                    <p className="mt-6 text-lg text-stone-700 dark:text-stone-300 max-w-lg mx-auto md:mx-0">
+                    <p className="mt-4 text-xl sm:text-2xl md:text-3xl text-orange-600 dark:text-orange-400 font-semibold">A Divine Invitation</p>
+                    <p className="mt-6 text-base sm:text-lg text-stone-700 dark:text-stone-300 max-w-lg mx-auto md:mx-0">
                         You are joyfully invited to celebrate the divine appearance of Lord Sri Krishna. Immerse yourself in a day of ecstatic kirtan, enlightening discourse, and transcendental festivities.
                     </p>
                     <CountdownTimer />
@@ -146,7 +145,7 @@ const InviteHero = () => {
                         onClick={() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' })}
                         className="mt-8 bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
                     >
-                        Reserve your spot
+                        RESERVE YOUR FREE SPOT
                     </Button>
                 </motion.div>
 
@@ -278,20 +277,27 @@ const DetailsAndRegistrationSection = () => {
 };
 
 const SevaSection = () => {
-  const GITA_COST = 250;
-  const [sponsorName, setSponsorName] = useState('');
-  const [gitaCount, setGitaCount] = useState(1);
-
-  const handleSponsorSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!sponsorName.trim() || gitaCount < 1) return;
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.id = 'razorpay-embed-btn-js';
+    script.defer = true;
+    script.src = 'https://cdn.razorpay.com/static/embed_btn/bundle.js';
     
-    const totalAmount = gitaCount * GITA_COST;
-    const sponsorshipId = `JANMA-${Date.now().toString().slice(-6)}`;
-    const message = `Hare Kṛṣṇa! Dandwat pranam, please accept my humble obeisances. All Glories to Śrīla Prabhupāda! My name is ${sponsorName} and I would like to sponsor ${gitaCount} Bhagavad Gita(s) for ₹${totalAmount} for the Janmashtami festival. My sponsorship ID is ${sponsorshipId}.`;
-    const whatsappUrl = `https://wa.me/918056513859?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  };
+    script.onload = () => {
+      if (window.__rzp__) {
+        window.__rzp__.init();
+      }
+    };
+
+    document.body.appendChild(script);
+
+    return () => {
+      const rzpScript = document.getElementById('razorpay-embed-btn-js');
+      if (rzpScript) {
+        document.body.removeChild(rzpScript);
+      }
+    };
+  }, []);
 
   return (
     <ScrollSection id="seva" className="bg-teal-500/5 dark:bg-teal-500/10">
@@ -306,31 +312,32 @@ const SevaSection = () => {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.7 }}
         >
-            <Card className="bg-white dark:bg-gray-800/30 shadow-xl border-t-4 border-teal-500 h-full">
-                <CardContent className="p-8 text-center flex flex-col justify-center h-full">
-                    <BookOpen className="h-12 w-12 mx-auto text-teal-600 dark:text-teal-400 mb-4" />
-                    <h3 className="text-2xl font-bold text-indigo-900 dark:text-indigo-200 mb-2">
-                        Sponsor Bhagavad-gitas
-                    </h3>
-                    <p className="text-lg text-stone-600 dark:text-stone-300 mb-6">
-                        Sponsor one for just <span className="font-bold text-teal-700 dark:text-teal-400">₹250</span> and share the light of knowledge.
-                    </p>
-                    <form onSubmit={handleSponsorSubmit} className="space-y-4 text-left">
-                        <div>
-                            <label htmlFor="sponsorName" className="font-semibold text-stone-700 dark:text-stone-200">Your Name</label>
-                            <Input id="sponsorName" type="text" value={sponsorName} onChange={(e) => setSponsorName(e.target.value)} placeholder="Enter your respected name" required className="mt-1" />
-                        </div>
-                        <div>
-                            <label htmlFor="gitaCount" className="font-semibold text-stone-700 dark:text-stone-200">Number of Gitas</label>
-                            <Input id="gitaCount" type="number" value={gitaCount} onChange={(e) => setGitaCount(Math.max(1, parseInt(e.target.value) || 1))} min="1" required className="mt-1" />
-                        </div>
-                        <div className="text-center font-bold text-xl text-indigo-900 dark:text-indigo-200 py-2">
-                            Total Seva: ₹{gitaCount * GITA_COST}
-                        </div>
-                        <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-white text-lg py-3">
-                            <Heart className="mr-2 h-5 w-5" /> Proceed on WhatsApp
-                        </Button>
-                    </form>
+            <Card className="h-full overflow-hidden shadow-2xl bg-gradient-to-br from-rose-100 via-purple-100 to-teal-100 dark:from-rose-900/30 dark:via-purple-900/30 dark:to-teal-900/30 flex flex-col">
+                <CardHeader className="text-center p-8 relative">
+                    <div className="absolute inset-0 bg-grid-rose-200/40 dark:bg-grid-rose-800/20 [mask-image:linear-gradient(to_bottom,white_20%,transparent_100%)]" />
+                    <div className="relative z-10">
+                        <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="64" height="64" className="mx-auto mb-4" />
+                        <CardTitle className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-purple-600 dark:from-rose-400 dark:to-purple-400">
+                            Sponsor Bhagavad-gitas
+                        </CardTitle>
+                        <CardDescription className="text-lg text-stone-700 dark:text-stone-300 pt-2">
+                            Help us share the timeless wisdom of the Bhagavad-gita with everyone.
+                        </CardDescription>
+                    </div>
+                </CardHeader>
+                <CardContent className="p-8 pt-0 text-center flex flex-col justify-center flex-grow">
+                    <div
+                        className="razorpay-embed-btn"
+                        data-url="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view"
+                        data-text="Sponsor Now"
+                        data-color="#B62F95"
+                        data-size="large"
+                    >
+                    </div>
+                    <blockquote className="mt-8 border-l-4 border-rose-500/50 pl-4 italic text-stone-600 dark:text-stone-400 text-left">
+                        <p>"These books are so potent that anyone who reads them is sure to become a Krishna conscious person."</p>
+                        <cite className="mt-2 block not-italic font-semibold text-stone-700 dark:text-stone-300">— Śrīla Prabhupāda</cite>
+                    </blockquote>
                 </CardContent>
             </Card>
         </motion.div>
@@ -519,5 +526,8 @@ function JanmashtamiPage() {
 declare global {
   interface Window {
     Tally?: { loadEmbeds: () => void; };
+    __rzp__?: {
+      init: () => void;
+    };
   }
 }
