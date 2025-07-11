@@ -427,7 +427,7 @@ const SocialShare = () => {
   const shareActions = [
     { name: "WhatsApp", icon: IconBrandWhatsapp, color: "bg-[#25D366] hover:bg-[#25D366]/90", action: () => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + '\n\n' + eventUrl)}`, '_blank') },
     { name: "Facebook", icon: IconBrandFacebook, color: "bg-[#1877F2] hover:bg-[#1877F2]/90", action: () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}`, '_blank') },
-    { name: "Twitter", icon: IconBrandX, color: "bg-black hover:bg-black/90", action: () => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent("Join us for the Grand Śrī Kṛṣṇa Janmāṣṭamī Festival! 🙏 #Janmashtami #Krishna #ISKCON")}&url=${encodeURIComponent(eventUrl)}`, '_blank') },
+    { name: "Twitter", icon: IconBrandX, color: "bg-black hover:bg-black/90", action: () => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent("Join us for the Grand Śrī Kṛṣṇa Janmāṣṭamī Festival! 🙏 #Janmashtami #Krishna #ISKM")}&url=${encodeURIComponent(eventUrl)}`, '_blank') },
     { name: "Telegram", icon: IconBrandTelegram, color: "bg-[#229ED9] hover:bg-[#229ED9]/90", action: () => window.open(`https://t.me/share/url?url=${encodeURIComponent(eventUrl)}&text=${encodeURIComponent(shareText)}`, '_blank') }
   ];
 
@@ -516,9 +516,7 @@ function JanmashtamiPage() {
             <OrnateDivider />
             <SocialShare />
         </main>
-        <footer className="text-center p-8 text-stone-500 dark:text-stone-400">
-            <p>&copy; {new Date().getFullYear()} ISKCON Puducherry. All Glories to Śrīla Prabhupāda!</p>
-        </footer>
+
     </div>
   );
 }

@@ -22,6 +22,6 @@ To serve as a comprehensive online platform for the ISKM Pudhuvai Temple, provid
 ## Target Audience
 
 -   Temple devotees (local and international).
--   General public interested in ISKCON, spirituality, and temple activities.
+-   General public interested in ISKM, spirituality, and temple activities.
 -   Potential donors and supporters.
 -   Visitors planning a temple tour.

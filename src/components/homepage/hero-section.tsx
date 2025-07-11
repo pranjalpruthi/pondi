@@ -41,7 +41,7 @@ import { addLead } from "@/integrations/nocodb-api";
 
 const heroShowcaseData = [
   { src: '/updates/s9.webp?w=1200&format=webp&quality=80', title: 'Janmashtami Festival Registration', description: 'Register now for the grand celebration of Lord Krishna\'s appearance on August 16th.' },
-  { src: '/updates/s8.webp?w=1200&format=webp&quality=80', title: 'Ratha Yatra Festival', description: 'The magnificent chariot festival on the streets of Pondicherry.' },
+  { src: '/updates/s8.webp?w=1200&format=webp&quality=80', title: 'Janmashtami Poaster', description: 'The Magnificent Festival  of Lord Krishna at ISKM Pondicherry.' },
   { src: '/updates/s10.webp?w=1200&format=webp&quality=80', title: 'Sponsor a Bhagavad Gita', description: 'Contribute ₹250 for one copy and be part of the 5108 Gita distribution yajna.' },
   { src: '/updates/s11.webp?w=1200&format=webp&quality=80', title: 'Janmashtami School Competition', description: 'Organized by the ISKM Janmashtami Team for young talents.' },
   { src: '/temple-building/1.webp?w=1200&format=webp&quality=80', title: 'A Glimpse Inside', description: 'An artist\'s 3D rendering of the temple\'s interior view.' },
