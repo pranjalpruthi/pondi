@@ -18,6 +18,9 @@ const LazyYouTubeMarquee = React.lazy(() =>
 const LazyQnASection = React.lazy(() => 
   import('@/components/homepage/qna-section').then(module => ({ default: module.QnASection }))
 );
+const LazySponsorshipSection = React.lazy(() =>
+  import('@/components/homepage/sponsorship-section').then(module => ({ default: module.SponsorshipSection }))
+);
 const LazyEventSection = React.lazy(() =>
   import('@/components/homepage/event-section').then(module => ({ default: module.EventSection }))
 );
@@ -115,6 +118,10 @@ function HomePage() {
               </div>
             </motion.div>
 
+            <SectionDivider />
+            <Suspense fallback={<SectionLoader />}>
+              <LazySponsorshipSection />
+            </Suspense>
             <SectionDivider />
             <Suspense fallback={<SectionLoader />}>
               <LazyQnASection />

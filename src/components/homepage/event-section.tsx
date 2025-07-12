@@ -951,12 +951,29 @@ export function EventSection() {
             <UpcomingEventsList />
           </div>
         </div>
-        <div className="mt-12 text-center">
+        <div className="mt-16 text-center">
           <Link to="/calender">
-            <Button variant="outline" className="group rounded-full">
-              View Full Calendar
-              <ArrowRight className="h-4 w-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
-            </Button>
+            {({ isTransitioning }) =>
+              isTransitioning ? (
+                <Button
+                  size="lg"
+                  disabled
+                  className="rounded-full px-8 py-4 text-lg font-bold shadow-lg transition-all duration-300 ease-in-out transform active:scale-95 cursor-wait"
+                >
+                  <Loader2 className="mr-3 h-6 w-6 animate-spin" />
+                  Loading Calendar...
+                </Button>
+              ) : (
+                <Button
+                  size="lg"
+                  variant="default"
+                  className="group rounded-full px-8 py-4 text-lg font-bold text-white bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-pink-300 dark:focus:ring-pink-800 active:scale-95"
+                >
+                  View Full Calendar
+                  <ArrowRight className="h-5 w-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+                </Button>
+              )
+            }
           </Link>
         </div>
       </div>

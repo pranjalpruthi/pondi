@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useRouterState } from '@tanstack/react-router';
 import { motion, MotionConfig, AnimatePresence, type Transition } from 'motion/react'; // Added AnimatePresence
 import * as React from 'react';
 import { cn } from '@/lib/utils';
@@ -843,6 +843,8 @@ function NavbarContent() {
   const queryClient = useQueryClient();
   const isMobile = useIsMobile();
   const templeStatus = useTempleStatus(); // Added
+  const router = useRouterState({ select: (s) => s.location });
+  const isInvitePage = router.pathname === '/fests/invite';
 
   // State for the new expandable dock (from snippet)
   const [activeDockItem, setActiveDockItem] = React.useState<number | null>(null); // For the main Menu's content panel
@@ -859,6 +861,7 @@ function NavbarContent() {
   const lastScrollYRef = React.useRef(0);
   const [isFooterVisible, setIsFooterVisible] = React.useState(false);
   const [clipsPanelCurrentIndex, setClipsPanelCurrentIndex] = React.useState(0); // Added state for clips panel
+  const [isBannerVisibleOnScroll, setIsBannerVisibleOnScroll] = React.useState(true);
 
   const aiPanelContent = React.useMemo(() => <AIPanel />, []);
   const clipsPanelContent = React.useMemo(() => <ClipsPanel currentIndex={clipsPanelCurrentIndex} setCurrentIndex={setClipsPanelCurrentIndex} />, [clipsPanelCurrentIndex, setClipsPanelCurrentIndex]); // Changed to use ClipsPanel
@@ -880,21 +883,29 @@ function NavbarContent() {
     }
   }, [widthContainer]);
 
-  // useEffect for dock visibility on scroll and footer intersection
+  // useEffect for dock and banner visibility on scroll and footer intersection
   React.useEffect(() => {
-    const controlDockVisibility = () => {
+    const controlVisibility = () => {
       const currentScrollY = window.scrollY;
+      
+      // Dock visibility logic
       if (isDockOpen) {
         setIsDockVisible(true);
-        lastScrollYRef.current = currentScrollY;
-        return;
-      }
-      // Hide dock if scrolling down past a certain point
-      if (currentScrollY > lastScrollYRef.current && currentScrollY > 80) {
-        setIsDockVisible(false);
       } else {
-        setIsDockVisible(true);
+        if (currentScrollY > lastScrollYRef.current && currentScrollY > 80) {
+          setIsDockVisible(false);
+        } else {
+          setIsDockVisible(true);
+        }
       }
+
+      // Banner visibility logic (hide on down, show on up)
+      if (currentScrollY > lastScrollYRef.current && currentScrollY > 80) {
+          setIsBannerVisibleOnScroll(false);
+      } else {
+          setIsBannerVisibleOnScroll(true);
+      }
+
       lastScrollYRef.current = currentScrollY;
     };
 
@@ -916,10 +927,10 @@ function NavbarContent() {
       observer.observe(footerElement);
     }
 
-    window.addEventListener('scroll', controlDockVisibility);
+    window.addEventListener('scroll', controlVisibility);
 
     return () => {
-      window.removeEventListener('scroll', controlDockVisibility);
+      window.removeEventListener('scroll', controlVisibility);
       if (footerElement && observer) {
         observer.unobserve(footerElement);
       }
@@ -1564,7 +1575,7 @@ function NavbarContent() {
         open={deitiesOpen}
         onOpenChange={setDeitiesOpen}
       />
-      <UpcomingEventBanner isOpen={isEventBannerOpen} onClose={() => setIsEventBannerOpen(false)} />
+      <UpcomingEventBanner isOpen={isEventBannerOpen && !isInvitePage && isBannerVisibleOnScroll} onClose={() => setIsEventBannerOpen(false)} />
     </MotionConfig>
   )
 }

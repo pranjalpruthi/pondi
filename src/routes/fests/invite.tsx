@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { useEffect, useState, type FC, type ReactNode } from 'react';
+import { useEffect, useState, useRef, type FC, type ReactNode, Fragment } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, BookOpen, MapPin, Clock, Play, Share2, Feather, Copy, Check } from "lucide-react";
@@ -10,11 +10,13 @@ import {
     IconBrandTelegram,
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
-import { Dialog, DialogContent, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { motion } from 'motion/react';
 import { AuroraText } from '@/components/magicui/aurora-text';
 import { MotionHighlight, MotionHighlightItem } from '@/components/animate-ui/effects/motion-highlight';
 import NumberFlow, { NumberFlowGroup } from '@number-flow/react';
+import { UpcomingEventBanner } from '@/components/homepage/UpcomingEventBanner';
+import TrailingImage from '@/components/ui/trailing-image';
+import { SponsorshipSection } from '@/components/homepage/sponsorship-section';
 
 // --- Reusable Components for the New Design ---
 
@@ -95,11 +97,11 @@ const CountdownTimer = () => {
     const timeUnits = Object.entries(timeLeft);
 
     return (
-        <div className="mt-8">
-            <div className="flex justify-center md:justify-start items-center gap-1.5 sm:gap-2 md:gap-4 p-3 sm:p-4 bg-black/5 dark:bg-white/5 rounded-xl backdrop-blur-sm">
+        <div className="mt-8 inline-block">
+            <div className="inline-flex justify-center md:justify-start items-center gap-1.5 sm:gap-2 md:gap-4 p-3 sm:p-4 bg-black/5 dark:bg-white/5 rounded-xl backdrop-blur-sm">
                 <NumberFlowGroup>
                     {timeUnits.map(([unit, value], index) => (
-                        <div key={unit} className="flex items-center gap-1.5 sm:gap-2 md:gap-4">
+                        <Fragment key={unit}>
                             <div className="flex flex-col items-center">
                                 <p style={{ fontVariantNumeric: 'tabular-nums' }} className="text-3xl sm:text-4xl md:text-5xl font-bold text-indigo-900 dark:text-white">
                                     <NumberFlow value={value} format={{ minimumIntegerDigits: 2 }} />
@@ -107,7 +109,7 @@ const CountdownTimer = () => {
                                 <p className="text-[0.6rem] sm:text-xs text-stone-600 dark:text-stone-400 uppercase tracking-wider">{unit}</p>
                             </div>
                             {index < timeUnits.length - 1 && <p className="text-3xl sm:text-4xl md:text-5xl font-bold text-indigo-900/50 dark:text-white/50">:</p>}
-                        </div>
+                        </Fragment>
                     ))}
                 </NumberFlowGroup>
             </div>
@@ -118,18 +120,34 @@ const CountdownTimer = () => {
 
 // --- Page Sections (Redesigned) ---
 
+import { useInView } from 'motion/react';
+
 const InviteHero = () => {
+    const [isInteracted, setIsInteracted] = useState(false);
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true, amount: 0.2 });
+
+    const videoId = "AuZtQraCBd4";
+    const silentUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1`;
+    const interactiveUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1`;
+
+    const handleInteraction = () => {
+        if (!isInteracted) {
+            setIsInteracted(true);
+        }
+    };
+
     return (
         <div className="relative min-h-screen flex items-center justify-center text-stone-800 dark:text-stone-200 bg-amber-50/50 dark:bg-gray-900 px-4 overflow-hidden">
             <div className="absolute -top-20 -left-20 w-64 h-64 bg-teal-500/10 rounded-full filter blur-3xl opacity-50 dark:opacity-30" />
             <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-orange-500/10 rounded-full filter blur-3xl opacity-50 dark:opacity-30" />
 
-            <div className="relative z-10 container mx-auto grid md:grid-cols-2 gap-12 items-center pt-24 md:pt-0">
-                <motion.div 
+            <div className="relative z-10 container mx-auto grid md:grid-cols-2 lg:grid-cols-5 gap-12 items-center pt-24 md:pt-0">
+                <motion.div
                     initial={{ opacity: 0, x: -50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    className="text-center md:text-left"
+                    className="text-center md:text-left lg:col-span-2"
                 >
                     <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold font-serif text-indigo-900 dark:text-white leading-tight">
                         <AuroraText colors={["#be185d", "#fb923c", "#fde047"]}>
@@ -141,37 +159,55 @@ const InviteHero = () => {
                         You are joyfully invited to celebrate the divine appearance of Lord Sri Krishna. Immerse yourself in a day of ecstatic kirtan, enlightening discourse, and transcendental festivities.
                     </p>
                     <CountdownTimer />
-                    <Button
-                        onClick={() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="mt-8 bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
-                        RESERVE YOUR FREE SPOT
-                    </Button>
+                    <div className="mt-8 flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
+                        <Button
+                            onClick={() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' })}
+                            size="lg"
+                            className="w-full sm:w-auto h-14 px-8 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 text-base"
+                        >
+                            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Ticket.png" alt="Ticket" width="24" height="24" />
+                            RESERVE YOUR FREE SPOT
+                        </Button>
+                        <Button
+                            asChild
+                            size="lg"
+                            className="w-full sm:w-auto h-14 px-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:from-green-500 hover:to-emerald-600 text-base"
+                        >
+                            <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
+                                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width="24" height="24" />
+                                Sponsor BG Seva
+                            </a>
+                        </Button>
+                    </div>
                 </motion.div>
 
                 <motion.div
+                    ref={ref}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8, delay: 0.4, type: 'spring', stiffness: 100 }}
-                    className="flex justify-center"
+                    className="flex justify-center lg:col-span-3"
                 >
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <img 
-                                src='/extra/bdayposter.jpeg'
-                                alt="Janmashtami Festival Poster" 
-                                className="w-full max-w-md rounded-2xl shadow-2xl cursor-pointer transition-transform hover:scale-105 border-8 border-white dark:border-gray-800 ring-4 ring-amber-300 dark:ring-amber-500"
-                            />
-                        </DialogTrigger>
-                        <DialogContent className="p-0 bg-transparent border-none shadow-none max-w-4xl w-auto">
-                            <img 
-                                src='/extra/bdayposter.jpeg'
-                                alt="Janmashtami Festival Poster" 
-                                className="max-h-[90vh] w-auto rounded-lg shadow-2xl"
-                            />
-                            <DialogClose className="absolute top-2 right-2 text-white bg-black/50 rounded-full p-2" />
-                        </DialogContent>
-                    </Dialog>
+                    <div className="w-full rounded-2xl shadow-2xl border-8 border-white dark:border-gray-800 ring-4 ring-amber-300 dark:ring-amber-500 overflow-hidden">
+                        <div className="aspect-video bg-black relative group" onClick={handleInteraction}>
+                            {isInView && (
+                                <iframe
+                                    key={isInteracted ? 'interactive' : 'silent'}
+                                    src={isInteracted ? interactiveUrl : silentUrl}
+                                    title="Janmashtami Festival Invitation"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                                    allowFullScreen
+                                    className="w-full h-full"
+                                />
+                            )}
+                            {!isInteracted && (
+                                <div className="absolute inset-0 flex items-center justify-center cursor-pointer bg-black/10 group-hover:bg-black/30 transition-colors duration-300">
+                                    <Play className="h-16 w-16 text-white/70 drop-shadow-lg transition-transform duration-300 group-hover:scale-110" />
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </motion.div>
             </div>
         </div>
@@ -272,88 +308,11 @@ const DetailsAndRegistrationSection = () => {
                     and confirm your presence at this auspicious event. We look forward to welcoming you.
                 </span>
             </div>
+            <SocialShare />
         </ScrollSection>
     );
 };
 
-const SevaSection = () => {
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.id = 'razorpay-embed-btn-js';
-    script.defer = true;
-    script.src = 'https://cdn.razorpay.com/static/embed_btn/bundle.js';
-    
-    script.onload = () => {
-      if (window.__rzp__) {
-        window.__rzp__.init();
-      }
-    };
-
-    document.body.appendChild(script);
-
-    return () => {
-      const rzpScript = document.getElementById('razorpay-embed-btn-js');
-      if (rzpScript) {
-        document.body.removeChild(rzpScript);
-      }
-    };
-  }, []);
-
-  return (
-    <ScrollSection id="seva" className="bg-teal-500/5 dark:bg-teal-500/10">
-      <ScrollSectionTitle 
-        title="A Glorious Janmashtami Seva"
-        subtitle="An unparalleled opportunity to serve Śrīla Prabhupāda and Lord Kṛṣṇa by distributing the eternal wisdom of Bhagavad-gita."
-      />
-      <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-        <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.7 }}
-        >
-            <Card className="h-full overflow-hidden shadow-2xl bg-gradient-to-br from-rose-100 via-purple-100 to-teal-100 dark:from-rose-900/30 dark:via-purple-900/30 dark:to-teal-900/30 flex flex-col">
-                <CardHeader className="text-center p-8 relative">
-                    <div className="absolute inset-0 bg-grid-rose-200/40 dark:bg-grid-rose-800/20 [mask-image:linear-gradient(to_bottom,white_20%,transparent_100%)]" />
-                    <div className="relative z-10">
-                        <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="64" height="64" className="mx-auto mb-4" />
-                        <CardTitle className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-purple-600 dark:from-rose-400 dark:to-purple-400">
-                            Sponsor Bhagavad-gitas
-                        </CardTitle>
-                        <CardDescription className="text-lg text-stone-700 dark:text-stone-300 pt-2">
-                            Help us share the timeless wisdom of the Bhagavad-gita with everyone.
-                        </CardDescription>
-                    </div>
-                </CardHeader>
-                <CardContent className="p-8 pt-0 text-center flex flex-col justify-center flex-grow">
-                    <div
-                        className="razorpay-embed-btn"
-                        data-url="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view"
-                        data-text="Sponsor Now"
-                        data-color="#B62F95"
-                        data-size="large"
-                    >
-                    </div>
-                    <blockquote className="mt-8 border-l-4 border-rose-500/50 pl-4 italic text-stone-600 dark:text-stone-400 text-left">
-                        <p>"These books are so potent that anyone who reads them is sure to become a Krishna conscious person."</p>
-                        <cite className="mt-2 block not-italic font-semibold text-stone-700 dark:text-stone-300">— Śrīla Prabhupāda</cite>
-                    </blockquote>
-                </CardContent>
-            </Card>
-        </motion.div>
-        <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.6 }}
-            className="w-full max-w-[300px] aspect-[9/16] bg-black dark:bg-gray-800 rounded-2xl overflow-hidden mx-auto shadow-2xl border-4 border-white dark:border-gray-700"
-        >
-            <iframe src="https://www.youtube.com/embed/8RePAEXjiDg" title="Bhagavad-gita Distribution Seva" className="w-full h-full" allowFullScreen />
-        </motion.div>
-      </div>
-    </ScrollSection>
-  );
-};
 
 const QuoteSection: FC<{ quote: { text: string; source: string }, index: number }> = ({ quote, index }) => {
     const [copied, setCopied] = useState(false);
@@ -422,26 +381,175 @@ const QuoteSection: FC<{ quote: { text: string; source: string }, index: number 
 };
 
 const SocialShare = () => {
-  const shareText = `🙌 Hare Kṛṣṇa! You are joyfully invited to the Grand Janmāṣṭamī Festival! 🙏\n\nJoin us to celebrate the divine appearance of Lord Krishna with ecstatic kirtan, enlightening discourses, and delicious prasadam.\n\n📅 Date: 16 AUG 2025\n⏰ Time: 3 PM - 12 MIDNIGHT\n📍 Venue: Jayamana Thirumana Nilayam, Puducherry\n\n"One who knows the transcendental nature of My appearance and activities...attains My eternal abode." - Gita 4.9`;
-  const eventUrl = "https://pondi.vercel.app/fests/invite";
-  const shareActions = [
-    { name: "WhatsApp", icon: IconBrandWhatsapp, color: "bg-[#25D366] hover:bg-[#25D366]/90", action: () => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + '\n\n' + eventUrl)}`, '_blank') },
-    { name: "Facebook", icon: IconBrandFacebook, color: "bg-[#1877F2] hover:bg-[#1877F2]/90", action: () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}`, '_blank') },
-    { name: "Twitter", icon: IconBrandX, color: "bg-black hover:bg-black/90", action: () => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent("Join us for the Grand Śrī Kṛṣṇa Janmāṣṭamī Festival! 🙏 #Janmashtami #Krishna #ISKM")}&url=${encodeURIComponent(eventUrl)}`, '_blank') },
-    { name: "Telegram", icon: IconBrandTelegram, color: "bg-[#229ED9] hover:bg-[#229ED9]/90", action: () => window.open(`https://t.me/share/url?url=${encodeURIComponent(eventUrl)}&text=${encodeURIComponent(shareText)}`, '_blank') }
-  ];
+    const shareText = `🙌 Hare Kṛṣṇa! You are joyfully invited to the Grand Janmāṣṭamī Festival! 🙏\n\nJoin us to celebrate the divine appearance of Lord Krishna with ecstatic kirtan, enlightening discourses, and delicious prasadam.\n\n📅 Date: 16 AUG 2025\n⏰ Time: 3 PM - 12 MIDNIGHT\n📍 Venue: Jayamana Thirumana Nilayam, Puducherry\n\n"One who knows the transcendental nature of My appearance and activities...attains My eternal abode." - Gita 4.9`;
+    const eventUrl = "https://pondi.vercel.app/fests/invite";
+    const shareActions = [
+        { name: "WhatsApp", icon: IconBrandWhatsapp, color: "bg-[#25D366] hover:bg-[#25D366]/90", action: () => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + '\n\n' + eventUrl)}`, '_blank') },
+        { name: "Facebook", icon: IconBrandFacebook, color: "bg-[#1877F2] hover:bg-[#1877F2]/90", action: () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}`, '_blank') },
+        { name: "Twitter", icon: IconBrandX, color: "bg-black hover:bg-black/90", action: () => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent("Join us for the Grand Śrī Kṛṣṇa Janmāṣṭamī Festival! 🙏 #Janmashtami #Krishna #ISKM")}&url=${encodeURIComponent(eventUrl)}`, '_blank') },
+        { name: "Telegram", icon: IconBrandTelegram, color: "bg-[#229ED9] hover:bg-[#229ED9]/90", action: () => window.open(`https://t.me/share/url?url=${encodeURIComponent(eventUrl)}&text=${encodeURIComponent(shareText)}`, '_blank') }
+    ];
 
-  return (
-    <ScrollSection id="share" className="bg-stone-100/70 dark:bg-gray-800/20">
-      <ScrollSectionTitle title="Share the Divine Invitation" subtitle="Invite your friends and family to partake in this ocean of transcendental bliss." />
-      <Card className="max-w-3xl mx-auto shadow-xl bg-white dark:bg-gray-800/50"><CardHeader className="text-center"><CardTitle className="text-2xl font-bold text-indigo-900 dark:text-indigo-200 flex items-center justify-center gap-3"><Share2 /> Spread the Joy</CardTitle></CardHeader><CardContent className="p-6"><div className="grid grid-cols-2 md:grid-cols-4 gap-4">{shareActions.map(action => (<Button key={action.name} onClick={action.action} className={cn("w-full h-24 p-2 flex flex-col items-center justify-center gap-2 text-white text-md shadow-lg", action.color)}><action.icon className="h-8 w-8" /><span>{action.name}</span></Button>))}</div></CardContent></Card>
-    </ScrollSection>
-  );
+    return (
+        <div className="mt-12 text-center">
+            <p className="text-lg font-semibold text-indigo-900 dark:text-indigo-200 mb-4">Share the Divine Invitation!</p>
+            <div className="flex justify-center items-center gap-3">
+                {shareActions.map(action => (
+                    <motion.button
+                        key={action.name}
+                        onClick={action.action}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={cn("w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg", action.color)}
+                        aria-label={`Share on ${action.name}`}
+                    >
+                        <action.icon className="h-7 w-7" />
+                    </motion.button>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+const Janmashtami2024Highlights = () => {
+    const [isInteracted, setIsInteracted] = useState(false);
+    const [copied, setCopied] = useState(false);
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true, amount: 0.3 });
+    const videoId = "DuZm2EPOPkI";
+    const silentUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1`;
+    const interactiveUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1`;
+
+    const handleInteraction = () => {
+        if (!isInteracted) {
+            setIsInteracted(true);
+        }
+    };
+
+    const verses = [
+        { text: "One who knows the transcendental nature of My appearance and activities does not, upon leaving the body, take his birth again in this material world, but attains My eternal abode, O Arjuna.", source: "Bhagavad-gita As It Is 4.9" },
+        { text: "My Lord, You are the well-wisher of the cows and the Brahmanas. You are the well-wisher of the entire human society and world.", source: "Vishnu Purana 1.19.65" },
+    ];
+
+    const combinedQuoteText = verses.map(q => `“${q.text}”\n— ${q.source}`).join('\n\n');
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(combinedQuoteText);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    const handleShare = () => {
+        const shareData = {
+            title: 'Sacred Wisdom from the Janmāṣṭamī Invitation',
+            text: `Beautiful verses from the scriptures:\n\n${combinedQuoteText}\n\n`,
+            url: 'https://pondi.vercel.app/fests/invite'
+        };
+        try {
+            if (navigator.share) {
+                navigator.share(shareData);
+            } else {
+                handleCopy();
+                alert("Quotes copied to clipboard! You can now paste them to share.");
+            }
+        } catch (error) {
+            console.error("Error sharing:", error);
+            handleCopy();
+            alert("Quotes copied to clipboard! You can now paste them to share.");
+        }
+    };
+
+    return (
+        <ScrollSection id="janmashtami-2024-highlights" className="bg-stone-100/70 dark:bg-gray-800/20">
+            <div className="grid md:grid-cols-3 gap-12 items-center">
+                <div className="md:col-span-2">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.5 }}
+                        transition={{ duration: 0.6 }}
+                        className="text-center md:text-left mb-8"
+                    >
+                        <h2 className="text-4xl md:text-5xl font-serif font-bold text-indigo-900 dark:text-indigo-200">
+                            Sri Krishna Janmashtami Celebration Highlights
+                        </h2>
+                    </motion.div>
+                    <motion.div
+                        ref={ref}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        transition={{ duration: 0.7 }}
+                    >
+                        <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border-8 border-white dark:border-gray-800 ring-4 ring-amber-300 dark:ring-amber-500 relative group" onClick={handleInteraction}>
+                            {isInView && (
+                                <iframe
+                                    key={isInteracted ? 'interactive' : 'silent'}
+                                    src={isInteracted ? interactiveUrl : silentUrl}
+                                    title="Sri Krishna Janmashtami Celebration Highlights"
+                                    className="w-full h-full"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                                    allowFullScreen
+                                />
+                            )}
+                            {!isInteracted && (
+                                <div className="absolute inset-0 flex items-center justify-center cursor-pointer bg-black/10 group-hover:bg-black/30 transition-colors duration-300">
+                                    <Play className="h-16 w-16 text-white/70 drop-shadow-lg transition-transform duration-300 group-hover:scale-110" />
+                                </div>
+                            )}
+                        </div>
+                    </motion.div>
+                </div>
+                <div className="md:col-span-1">
+                    <motion.div
+                        initial={{ opacity: 0, x: 50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        transition={{ duration: 0.7, delay: 0.2 }}
+                    >
+                        <Card className="shadow-lg bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm">
+                            <CardContent className="p-6">
+                                <div className="space-y-6">
+                                    {verses.map((quote, index) => (
+                                        <Fragment key={index}>
+                                            <blockquote className="text-center">
+                                                <p className="text-md font-serif text-stone-700 dark:text-stone-300 leading-relaxed italic">
+                                                    “{quote.text}”
+                                                </p>
+                                                <footer className="mt-2 text-sm font-semibold text-amber-700 dark:text-amber-500">
+                                                    — {quote.source}
+                                                </footer>
+                                            </blockquote>
+                                            {index < verses.length - 1 && (
+                                                <div className="flex items-center justify-center">
+                                                    <Feather className="h-5 w-5 text-amber-700/50 dark:text-amber-500/50" />
+                                                </div>
+                                            )}
+                                        </Fragment>
+                                    ))}
+                                </div>
+                                <div className="flex justify-center gap-4 mt-6 pt-6 border-t border-stone-200 dark:border-gray-700">
+                                    <Button variant="outline" size="sm" onClick={handleCopy}>
+                                        {copied ? <Check className="h-4 w-4 mr-2 text-green-500" /> : <Copy className="h-4 w-4 mr-2" />}
+                                        {copied ? 'Copied!' : 'Copy'}
+                                    </Button>
+                                    <Button variant="outline" size="sm" onClick={handleShare}>
+                                        <Share2 className="h-4 w-4 mr-2" />
+                                        Share
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
+                </div>
+            </div>
+        </ScrollSection>
+    );
 };
 
 const VideoHighlightsSection = () => {
     const videos = [
-        { icon: Play, title: "Srila Prabhupada on Janmashtami", subtitle: "Divine lecture on Sri Krishna's appearance", videoId: "rQNBQ3NXZ90?t=1988" },
+        { icon: Play, title: "Sri Krishna Janmashtami Celebration Highlights", subtitle: "Divine lecture on Sri Krishna's appearance", videoId: "rQNBQ3NXZ90?t=1988" },
         { icon: BookOpen, title: "Bhagavad-gita Distribution Seva", subtitle: "5,108 Gitas in a single day!", videoId: "8RePAEXjiDg" }
     ];
 
@@ -483,6 +591,9 @@ export const Route = createFileRoute('/fests/invite')({
 });
 
 function JanmashtamiPage() {
+    const [isBannerOpen, setIsBannerOpen] = useState(true);
+    const [isBannerVisible, setIsBannerVisible] = useState(false);
+    const lastScrollY = useRef(0);
     const quotes = [
         { text: "One who knows the transcendental nature of My appearance and activities does not, upon leaving the body, take his birth again in this material world, but attains My eternal abode, O Arjuna.", source: "Bhagavad-gita As It Is 4.9" },
         { text: "My Lord, You are the well-wisher of the cows and the Brahmanas. You are the well-wisher of the entire human society and world.", source: "Vishnu Purana 1.19.65" },
@@ -495,26 +606,66 @@ function JanmashtamiPage() {
     script.async = true;
     document.head.appendChild(script);
     script.onload = () => { if (window.Tally) window.Tally.loadEmbeds(); };
-    return () => { if (document.head.contains(script)) document.head.removeChild(script); };
+    
+    const handleScroll = () => {
+        const currentScrollY = window.scrollY;
+        const heroHeight = window.innerHeight * 0.8;
+
+        if (currentScrollY < heroHeight) {
+            setIsBannerVisible(false);
+        } else {
+            // Hide on scroll down, show on scroll up
+            if (currentScrollY > lastScrollY.current) {
+                setIsBannerVisible(false);
+            } else {
+                setIsBannerVisible(true);
+            }
+        }
+        lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => { 
+        if (document.head.contains(script)) document.head.removeChild(script); 
+        window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   return (
     <div className="min-h-screen bg-amber-50 dark:bg-gray-950 text-stone-800 font-sans">
         <InviteHero />
+        <UpcomingEventBanner isOpen={isBannerOpen && isBannerVisible} onClose={() => setIsBannerOpen(false)} />
         <main>
             <DetailsAndRegistrationSection />
             <OrnateDivider />
-            <QuoteSection quote={quotes[0]} index={0} />
+            <SponsorshipSection />
             <OrnateDivider />
-            <SevaSection />
+            <Janmashtami2024Highlights />
             <OrnateDivider />
-            <QuoteSection quote={quotes[1]} index={1} />
-            <OrnateDivider />
-            <VideoHighlightsSection />
-            <OrnateDivider />
-            <QuoteSection quote={quotes[2]} index={2} />
-            <OrnateDivider />
-            <SocialShare />
+            <TrailingImage
+                images={[
+                    "/fest/f1.jpeg",
+                    "/fest/f4.jpeg",
+                    "/fest/f6.jpeg",
+                    "/fest/f8.jpeg",
+                    "/fest/f9.jpeg",
+                    "/fest/f10.jpeg",
+                    "/fest/f11.jpeg",
+                    "/fest/f12.jpeg",
+                    "/fest/f13.jpeg",
+                    "/fest/f14.jpeg",
+                    "/fest/f15.jpeg",
+                    "/fest/f17.jpeg",
+                    "/fest/f18.jpeg",
+                    "/fest/f19.jpeg",
+                ]}
+                className="overflow-hidden"
+            >
+                <VideoHighlightsSection />
+                <OrnateDivider />
+                <QuoteSection quote={quotes[2]} index={2} />
+            </TrailingImage>
         </main>
 
     </div>

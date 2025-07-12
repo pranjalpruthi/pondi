@@ -7,7 +7,6 @@ import { Link } from "@tanstack/react-router";
 import { useState, useEffect, useTransition, useCallback, useRef } from "react";
 import { useSound } from 'use-sound';
 import { useSoundSettings } from '@/components/context/sound-context';
-import { ColorExtractor } from 'react-color-extractor';
 import Carousel, {
   Slider,
   SliderContainer,
@@ -86,50 +85,6 @@ const bankDetails = {
   bank: "UJJIVAN BANK, PONDICHERRY BRANCH"
 };
 
-interface BackgroundImageCarouselProps {
-  currentIndex: number;
-  images: string[];
-  onColorsExtracted: (colors: string[]) => void;
-  backgroundColors: string[];
-  isInView: boolean;
-}
-
-const BackgroundImageCarousel: React.FC<BackgroundImageCarouselProps> = ({
-  currentIndex,
-  images,
-  onColorsExtracted,
-  backgroundColors,
-  isInView,
-}) => (
-  <div className="absolute inset-0 z-0 overflow-hidden">
-    {/* This is hidden, only for color extraction */}
-    <ColorExtractor
-      src={images[currentIndex]}
-      getColors={onColorsExtracted}
-      maxColors={8}
-    />
-    <AnimatePresence mode="wait">
-      {isInView && (
-        <motion.div
-          key={`bg-${currentIndex}`}
-          className="absolute inset-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.5, ease: "easeInOut" }}
-          style={{
-            background: backgroundColors.length > 1
-              ? `linear-gradient(145deg, ${backgroundColors[0]}, ${backgroundColors[1]}, ${backgroundColors[2] || backgroundColors[0]})`
-              : backgroundColors.length === 1
-              ? backgroundColors[0]
-              : 'transparent',
-          }}
-        />
-      )}
-    </AnimatePresence>
-    <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/50 to-transparent dark:from-black/80 dark:via-black/60" />
-  </div>
-);
 
 interface HeroForegroundProps {
   isInView: boolean;
@@ -623,7 +578,7 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
                   <Mail className="absolute left-3 w-5 h-5 text-gray-400 dark:text-gray-500" />
                   <input
                     type="email"
-                    placeholder="your.email@example.com"
+                    placeholder="harekrsna@mail.com 🥺 no spam frfr"
                     value={props.newsletterEmail}
                     onChange={(e) => props.setNewsletterEmail(e.target.value)}
                     disabled={props.isNewsletterPending}
@@ -701,7 +656,6 @@ export function HeroSection() {
   const isMobile = useIsMobile();
   const [isInView, setIsInView] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [backgroundColors, setBackgroundColors] = useState<string[]>([]);
   const [copiedValue, setCopiedValue] = useState<string | null>(null);
   const [isNewsletterPending, startNewsletterTransition] = useTransition();
   const [isNewsletterSuccess, setIsNewsletterSuccess] = useState(false);
@@ -811,13 +765,8 @@ export function HeroSection() {
       ref={sectionRef}
       className="relative min-h-screen flex items-center pb-24 overflow-hidden -mt-16 sm:-mt-20" // Added negative margin, removed py-24, added pb-24
     >
-      <BackgroundImageCarousel
-        currentIndex={currentIndex}
-        images={heroShowcaseImages}
-        onColorsExtracted={setBackgroundColors}
-        backgroundColors={backgroundColors}
-        isInView={isInView}
-      />
+      <div className="absolute inset-0 z-0 overflow-hidden bg-white dark:bg-black" />
+      <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/50 to-transparent dark:from-black/80 dark:via-black/60" />
       <div className="container mx-auto px-0 xs:px-2 sm:px-4 z-10 relative pt-24 sm:pt-28 lg:pt-32"> {/* Increased top padding */}
         <div className="grid grid-cols-1 gap-8 md:gap-12 items-center text-center"> {/* Changed to grid-cols-1 and text-center */}
           {/* Heading */}
@@ -855,9 +804,7 @@ export function HeroSection() {
                       <div
                         className="h-full w-full rounded-3xl p-1 relative transition-colors duration-1000 overflow-hidden group"
                         style={{
-                          background: backgroundColors.length > 1
-                            ? `linear-gradient(145deg, ${backgroundColors[0]}, ${backgroundColors[1]}, ${backgroundColors[2] || backgroundColors[0]})`
-                            : 'linear-gradient(145deg, #FFEBCD, #FFB6C1)',
+                          background: 'transparent',
                         }}
                       >
                         {isPlaying && videoId ? (
@@ -880,30 +827,38 @@ export function HeroSection() {
                           </>
                         ) : (
                           <>
-                            <motion.img
-                              src={item.src}
-                              width={1200}
-                              height={800}
-                              alt={item.title}
-                              className={cn(
-                                "h-full w-full rounded-3xl object-contain",
-                                item.type === 'image' ? "cursor-zoom-in" : "cursor-pointer",
-                              )}
-                              loading={index < 3 ? "eager" : "lazy"}
-                              decoding="async"
-                              style={{ aspectRatio: '3/2' }}
-                              onClick={() => {
-                                if (item.type === 'image') {
-                                  const imageIndex = heroShowcaseImages.findIndex(imgSrc => imgSrc === item.src);
-                                  if (imageIndex !== -1) {
-                                    setCurrentIndex(imageIndex);
-                                    setIsModalOpen(true);
-                                  }
-                                } else if (item.type === 'video') {
-                                  setPlayingVideoId(item.id);
-                                }
-                              }}
-                            />
+                            <div className="absolute inset-0 h-full w-full">
+                                <img
+                                  src={item.src}
+                                  alt=""
+                                  className="absolute inset-0 h-full w-full object-cover blur-md"
+                                  aria-hidden="true"
+                                />
+                                <motion.img
+                                  src={item.src}
+                                  width={1200}
+                                  height={800}
+                                  alt={item.title}
+                                  className={cn(
+                                    "relative h-full w-full rounded-3xl object-contain",
+                                    item.type === 'image' ? "cursor-zoom-in" : "cursor-pointer",
+                                  )}
+                                  loading={index < 3 ? "eager" : "lazy"}
+                                  decoding="async"
+                                  style={{ aspectRatio: '3/2' }}
+                                  onClick={() => {
+                                    if (item.type === 'image') {
+                                      const imageIndex = heroShowcaseImages.findIndex(imgSrc => imgSrc === item.src);
+                                      if (imageIndex !== -1) {
+                                        setCurrentIndex(imageIndex);
+                                        setIsModalOpen(true);
+                                      }
+                                    } else if (item.type === 'video') {
+                                      setPlayingVideoId(item.id);
+                                    }
+                                  }}
+                                />
+                            </div>
                             {item.type === 'video' && (
                               <div className="absolute inset-0 flex items-center justify-center bg-black/30 pointer-events-none">
                                 <IconPlayerPlay className="h-16 w-16 text-white/80 drop-shadow-lg transition-transform duration-300 group-hover:scale-110" />
