@@ -130,16 +130,6 @@ export const FeaturedSection = () => {
           youtubeLink="https://youtu.be/kLzipOG-YZQ?si=_O-FsVsZZJgXpiku"
           videoPosition="right"
         />
-        <VideoFeature
-          videoId="8LSj6muQZ88"
-          badgeText="Temple Construction Update"
-          badgeColor="green"
-          title="Pondicherry Temple Project Progress"
-          description="Join us on this incredible journey as we vlog the heartwarming efforts of devoted souls coming together to build a temple for the pleasure of Krishna! By the boundless mercy of Prabhupada, we successfully completed the first slab of this divine project."
-          buttonText="Watch Update"
-          youtubeLink="https://youtu.be/8LSj6muQZ88?si=9V8ZK9aGHhB65_XQ"
-          videoPosition="left"
-        />
       </div>
     </section>
   );
