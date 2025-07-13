@@ -35,15 +35,15 @@ import {
       >
         <MorphingDialogTrigger
           style={{
-            borderRadius: '12px',
+            borderRadius: '16px',
           }}
-          className='flex w-full max-w-sm flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900 shadow-lg hover:shadow-xl transition-shadow duration-300'
+          className='flex w-full max-w-sm flex-row items-center gap-4 overflow-hidden border border-zinc-950/10 bg-white p-3 dark:border-zinc-50/10 dark:bg-zinc-900 shadow-lg hover:shadow-xl transition-shadow duration-300'
         >
-          <div className="relative h-56 w-full">
+          <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg">
             <img
               src={service.image}
               alt=""
-              className="absolute inset-0 h-full w-full object-cover blur-md"
+              className="absolute inset-0 h-full w-full object-cover blur-sm"
               aria-hidden="true"
             />
             <MorphingDialogImage
@@ -52,21 +52,19 @@ import {
               className='relative h-full w-full object-contain'
             />
           </div>
-          <div className='flex grow flex-row items-center justify-between p-4'>
-            <div>
-              <MorphingDialogTitle className='text-lg font-semibold text-zinc-950 dark:text-zinc-50'>
-                {service.title}
-              </MorphingDialogTitle>
-              <MorphingDialogSubtitle className='text-sm text-zinc-700 dark:text-zinc-400'>
-                Click to learn more & sponsor
-              </MorphingDialogSubtitle>
-            </div>
-            <div
-              className='relative ml-1 flex h-8 w-8 shrink-0 scale-100 select-none appearance-none items-center justify-center rounded-full bg-orange-500 text-white transition-colors focus-visible:ring-2 active:scale-[0.98]'
-              aria-label='Open dialog'
-            >
-              <PlusIcon size={16} />
-            </div>
+          <div className='flex grow flex-col'>
+            <MorphingDialogTitle className='text-base font-semibold text-zinc-950 dark:text-zinc-50'>
+              {service.title}
+            </MorphingDialogTitle>
+            <MorphingDialogSubtitle className='text-sm text-zinc-700 dark:text-zinc-400'>
+              Click to learn more
+            </MorphingDialogSubtitle>
+          </div>
+          <div
+            className='relative ml-auto flex h-8 w-8 shrink-0 scale-100 select-none appearance-none items-center justify-center rounded-full bg-orange-500 text-white transition-colors focus-visible:ring-2 active:scale-[0.98]'
+            aria-label='Open dialog'
+          >
+            <PlusIcon size={16} />
           </div>
         </MorphingDialogTrigger>
         <MorphingDialogContainer>
