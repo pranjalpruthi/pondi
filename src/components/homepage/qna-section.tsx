@@ -1,7 +1,10 @@
 import { motion } from "motion/react"
-import { ExternalLink, MessageCircleQuestion, Calendar, Clock, Youtube } from "lucide-react"
+import { ExternalLink, MessageCircleQuestion, Calendar, Clock, Youtube, Play, Pause } from "lucide-react"
 import { useQuery, keepPreviousData } from "@tanstack/react-query"
 import { XMLParser } from "fast-xml-parser"
+import { useState } from "react"
+import { Marquee } from "@/components/magicui/marquee"
+import { cn } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -65,6 +68,7 @@ const fetchPreviousSessions = async (channelId: string): Promise<YouTubeVideo[]>
 
 export function QnASection() {
   const FRIDAY_CHANNEL_ID = "UCA7bxZwd7dF3r8GWpShRqug";
+  const [isMarqueeManuallyPaused, setIsMarqueeManuallyPaused] = useState(false);
 
   const {
     data: previousSessions,
@@ -220,70 +224,85 @@ export function QnASection() {
           viewport={{ once: true }}
           className="mt-8"
         >
-          <h3 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-gray-200">
-            Previous Sessions
-          </h3>
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+              Previous Sessions
+            </h3>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setIsMarqueeManuallyPaused(!isMarqueeManuallyPaused)}
+              className="bg-white/20 hover:bg-white/30 dark:bg-black/20 dark:hover:bg-black/30 border-gray-300/50 dark:border-gray-700/50 backdrop-blur-sm rounded-full h-9 w-9"
+              aria-label={isMarqueeManuallyPaused ? "Play Marquee" : "Pause Marquee"}
+            >
+              {isMarqueeManuallyPaused ? <Play className="h-5 w-5" /> : <Pause className="h-5 w-5" />}
+            </Button>
+          </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5">
-            {isLoading && !previousSessions ? (
-              [...Array(10)].map((_, item) => (
-                <Card key={item} className="overflow-hidden border border-gray-200 dark:border-gray-800 rounded-2xl bg-gray-50/80 dark:bg-gray-900/60 backdrop-blur-sm shadow-sm">
-                  <Skeleton className="aspect-video w-full" />
-                  <div className="p-3 sm:p-4 space-y-2">
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-3 w-1/2" />
-                  </div>
-                </Card>
-              ))
-            ) : isError ? (
-              <div className="col-span-full text-center text-red-500 dark:text-red-400 py-8">
-                <p>Failed to load previous sessions.</p>
-                {error && <p className="text-sm">{error.message}</p>}
-              </div>
-            ) : previousSessions && previousSessions.length === 0 ? (
-              <div className="col-span-full text-center text-gray-500 dark:text-gray-400 py-8">
-                <p>No previous sessions found.</p>
-              </div>
-            ) : (
-              previousSessions?.slice(0, 10).map((video, index) => (
-                <motion.div
-                  key={video.id}
-                  className="group block"
-                  initial={{ opacity: 0, y: 40 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ type: 'spring', stiffness: 100, damping: 12, delay: index * 0.1 }}
-                >
-                  <a
-                    href={video.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block relative overflow-hidden rounded-2xl aspect-video shadow-lg transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1.5 border border-gray-200/50 dark:border-gray-800/50 group-hover:border-pink-500/50"
-                  >
-                    <img
-                      src={video.thumbnailUrl}
-                      alt={video.title}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      onError={(e) => (e.currentTarget.src = "/assets/qna_thumb_default.jpg")}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent transition-all duration-300 group-hover:from-black/90" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-pink-500/30 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="rounded-full bg-white/25 backdrop-blur-md p-3 border border-white/30">
-                        <Youtube className="h-8 w-8 text-white" />
+          <div className="relative">
+            <Marquee
+              pauseOnHover
+              className={cn(
+                "[--duration:90s] [--gap:1rem]",
+                isMarqueeManuallyPaused && "[animation-play-state:paused]"
+              )}
+            >
+              {isLoading && !previousSessions ? (
+                [...Array(10)].map((_, item) => (
+                  <Card key={item} className="w-[280px] flex-shrink-0 overflow-hidden border border-gray-200 dark:border-gray-800 rounded-2xl bg-gray-50/80 dark:bg-gray-900/60 backdrop-blur-sm shadow-sm">
+                    <Skeleton className="aspect-video w-full" />
+                    <div className="p-3 sm:p-4 space-y-2">
+                      <Skeleton className="h-4 w-3/4" />
+                      <Skeleton className="h-3 w-1/2" />
+                    </div>
+                  </Card>
+                ))
+              ) : isError ? (
+                <div className="col-span-full text-center text-red-500 dark:text-red-400 py-8">
+                  <p>Failed to load previous sessions.</p>
+                  {error && <p className="text-sm">{error.message}</p>}
+                </div>
+              ) : previousSessions && previousSessions.length === 0 ? (
+                <div className="col-span-full text-center text-gray-500 dark:text-gray-400 py-8">
+                  <p>No previous sessions found.</p>
+                </div>
+              ) : (
+                previousSessions?.slice(0, 15).map((video) => (
+                  <div key={video.id} className="w-[280px] flex-shrink-0">
+                    <a
+                      href={video.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group block relative overflow-hidden rounded-2xl aspect-video shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 border border-gray-200/50 dark:border-gray-800/50 hover:border-pink-500/50"
+                    >
+                      <img
+                        src={video.thumbnailUrl}
+                        alt={video.title}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        onError={(e) => (e.currentTarget.src = "/assets/qna_thumb_default.jpg")}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent transition-all duration-300 group-hover:from-black/90" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-pink-500/30 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="rounded-full bg-white/25 backdrop-blur-md p-3 border border-white/30">
+                          <Youtube className="h-8 w-8 text-white" />
+                        </div>
                       </div>
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                      <h4 className="font-bold text-white drop-shadow-sm line-clamp-2 text-sm sm:text-base leading-tight">
-                        {video.title}
-                      </h4>
-                      <p className="text-xs sm:text-sm text-white/80 mt-1.5 drop-shadow-sm">
-                        {video.publishedDate}
-                      </p>
-                    </div>
-                  </a>
-                </motion.div>
-              ))
-            )}
+                      <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                        <h4 className="font-bold text-white drop-shadow-sm line-clamp-2 text-sm sm:text-base leading-tight">
+                          {video.title}
+                        </h4>
+                        <p className="text-xs sm:text-sm text-white/80 mt-1.5 drop-shadow-sm">
+                          {video.publishedDate}
+                        </p>
+                      </div>
+                    </a>
+                  </div>
+                ))
+              )}
+            </Marquee>
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-1/12 bg-gradient-to-r from-gray-100/50 dark:from-gray-950/95 to-transparent z-10"></div>
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-1/12 bg-gradient-to-l from-gray-100/50 dark:from-gray-950/95 to-transparent z-10"></div>
           </div>
           
           <div className="mt-10 text-center">

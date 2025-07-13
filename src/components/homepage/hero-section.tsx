@@ -3,7 +3,7 @@ import { AnimatePresence, type PanInfo, motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect, useTransition, useCallback, useRef } from "react";
 import { useSound } from 'use-sound';
 import { useSoundSettings } from '@/components/context/sound-context';
@@ -41,10 +41,9 @@ import { IconPlayerPlay } from "@tabler/icons-react";
 import { AuroraText } from "@/components/magicui/aurora-text";
 
 const heroShowcaseData = [
-  { type: 'image', src: '/updates/s9.webp?w=1200&format=webp&quality=80', title: 'Janmashtami Festival Registration', description: 'Register now for the grand celebration of Lord Krishna\'s appearance on August 16th.' },
-  { type: 'image', src: '/updates/s10.webp?w=1200&format=webp&quality=80', title: 'Sponsor a Bhagavad Gita', description: 'Contribute ₹250 for one copy and be part of the 5108 Gita distribution yajna.' },
-  { type: 'image', src: '/updates/s11.webp?w=1200&format=webp&quality=80', title: 'Janmashtami School Competition', description: 'Organized by the ISKM Janmashtami Team for young talents.' },
-  { type: 'image', src: '/updates/s8.webp?w=1200&format=webp&quality=80', title: 'Janmashtami Poster', description: 'The Magnificent Festival of Lord Krishna at ISKM Pondicherry.' },
+  { type: 'image', src: '/updates/s9.webp?w=1200&format=webp&quality=80', title: 'Janmashtami Festival Registration', description: 'Register now for the grand celebration of Lord Krishna\'s appearance on August 16th.', link: '/fests/invite' },
+  { type: 'image', src: '/updates/s10.webp?w=1200&format=webp&quality=80', title: 'Sponsor a Bhagavad Gita', description: 'Contribute ₹250 for one copy and be part of the 5108 Gita distribution yajna.', link: '/fests/invite' },
+  { type: 'image', src: '/updates/s8.webp?w=1200&format=webp&quality=80', title: 'Janmashtami Poster', description: 'The Magnificent Festival of Lord Krishna at ISKM Pondicherry.', link: '/fests/invite' },
   { type: 'video', src: 'https://img.youtube.com/vi/pI0_TXhDBmU/hqdefault.jpg', videoUrl: 'https://www.youtube.com/watch?v=pI0_TXhDBmU', title: 'One Day In Pudhuvai Vrindavanam', description: 'A glimpse into the daily activities at our temple. Come experience the spiritual vibrancy.' },
   { type: 'video', src: 'https://img.youtube.com/vi/E0kbzl0_9qk/hqdefault.jpg', videoUrl: 'https://youtu.be/E0kbzl0_9qk', title: 'New Calf "Sita" at our Goshala', description: 'A new calf, Sita, was born on the auspicious day of Sita Navami at our Gokulam Goshala.' },
   { type: 'video', src: 'https://img.youtube.com/vi/L13exiAC9bA/hqdefault.jpg', videoUrl: 'https://youtu.be/L13exiAC9bA', title: 'Daily Prasadam Distribution', description: 'Every Saturday and Wednesday, devotees distribute prasadam at Goubert Market, the largest market in Pondicherry.' },
@@ -52,7 +51,7 @@ const heroShowcaseData = [
   { type: 'image', src: '/temple-building/2.webp?w=1200&format=webp&quality=80', title: 'The Grand Vision', description: 'A 3D projection of the magnificent temple exterior.' },
   { type: 'image', src: '/temple-building/3.webp?w=1200&format=webp&quality=80', title: 'Welcoming Façade', description: 'The stunning front view of the proposed temple design.' },
   { type: 'image', src: '/temple-building/4.webp?w=1200&format=webp&quality=80', title: 'Architectural Splendor', description: 'A detailed rear view of the temple\'s 3D model.' },
-  { type: 'image', src: '/temple-building/5.webp?w=1200&format=webp&quality=80', title: 'A 108-ft Marvel', description: 'Top-down view of the temple, featuring three majestic vimanas inspired by ISKCON Vrindavan.' },
+  { type: 'image', src: '/temple-building/5.webp?w=1200&format=webp&quality=80', title: 'A 108-ft Marvel', description: 'Top-down view of the temple, featuring three majestic vimanas inspired by Vrindavan.' },
 ];
 
 const heroShowcaseImages = heroShowcaseData.filter(item => item.type === 'image').map(item => item.src);
@@ -652,6 +651,7 @@ function getYouTubeId(url: string): string | null {
 }
 
 export function HeroSection() {
+  const navigate = useNavigate();
   const sectionRef = useRef<HTMLElement>(null);
   const isMobile = useIsMobile();
   const [isInView, setIsInView] = useState(true);
@@ -841,12 +841,16 @@ export function HeroSection() {
                                   alt={item.title}
                                   className={cn(
                                     "relative h-full w-full rounded-3xl object-contain",
-                                    item.type === 'image' ? "cursor-zoom-in" : "cursor-pointer",
+                                    item.link ? "cursor-pointer" : item.type === 'image' ? "cursor-zoom-in" : "cursor-pointer",
                                   )}
                                   loading={index < 3 ? "eager" : "lazy"}
                                   decoding="async"
                                   style={{ aspectRatio: '3/2' }}
                                   onClick={() => {
+                                    if (item.link) {
+                                      navigate({ to: item.link });
+                                      return;
+                                    }
                                     if (item.type === 'image') {
                                       const imageIndex = heroShowcaseImages.findIndex(imgSrc => imgSrc === item.src);
                                       if (imageIndex !== -1) {

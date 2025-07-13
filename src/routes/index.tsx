@@ -107,6 +107,10 @@ function HomePage() {
             </Suspense>
             <SectionDivider />
             <Suspense fallback={<SectionLoader />}>
+              <LazyFeaturedSection />
+            </Suspense>
+            <SectionDivider />
+            <Suspense fallback={<SectionLoader />}>
               <LazyQnASection />
             </Suspense>
           </div>
@@ -140,11 +144,6 @@ function HomePage() {
           <Suspense fallback={<SectionLoader />}>
             <LazyMilestoneTimeline />
           </Suspense>
-
-            <Suspense fallback={<SectionLoader />}>
-              <LazyFeaturedSection />
-            </Suspense>
-            <SectionDivider />
 
           <SideBySide /> {/* Render SideBySide without props */}
           <Suspense fallback={<SectionLoader />}>

@@ -191,7 +191,6 @@ export const UpcomingEventBanner: React.FC<UpcomingEventBannerProps> = ({ isOpen
                       <span className="relative flex items-center">
                         <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width="20" height="20" className="mr-1.5" />
                         Sponsor Bhagavad Gītā Seva
-                        <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Pleading%20Face.png" alt="Pleading Face" width="20" height="20" className="ml-1.5" />
                       </span>
                     </a>
                   </Button>

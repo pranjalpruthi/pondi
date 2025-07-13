@@ -2,13 +2,12 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {useInfiniteQuery } from '@tanstack/react-query';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion, AnimatePresence, type PanInfo } from 'motion/react';
-import { Calendar, ChevronRight, Info, Loader2, X, ArrowRight, ArrowLeft, Youtube, MapPin, CheckCircle, Heart } from 'lucide-react';
-import { IconCar, IconPhone, IconClock, IconPigMoney, IconCopy, IconCheck } from '@tabler/icons-react';
+import { Calendar, ChevronRight, Info, Loader2, X, ArrowRight, ArrowLeft, Youtube, MapPin, CheckCircle } from 'lucide-react';
+import { IconCar, IconPhone, IconClock } from '@tabler/icons-react';
 import { Link } from '@tanstack/react-router';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSound } from 'use-sound';
 import { useSoundSettings } from '@/components/context/sound-context';
-import { toast } from "sonner";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -131,14 +130,6 @@ const filterAndSortUpcomingEvents = (data: CalendarDay[]): UpcomingEvent[] => {
 };
 
 
-// --- MOCK DATA FOR NEW CAROUSEL ---
-const bankDetails = {
-  name: "ISKM PONDICHERRY",
-  type: "SAVINGS ACCOUNT",
-  accountNo: "1197110110052583",
-  ifsc: "UJVN0001197",
-  bank: "UJJIVAN BANK, PONDICHERRY BRANCH"
-};
 
 const locationDetails = {
   address: "International Sri Krishna Mandir, RS No:54/3, Koodappakam Village, (Near POGO Land), Pathukkannu Main Road, Pondicherry, India",
@@ -762,26 +753,11 @@ const UpcomingEventsList = () => {
 };
 
 interface SpecialEventBannerProps {
-  safePlayHover: () => void;
-  safePlayClick: () => void;
   safePlayPopOn: () => void;
 }
 
-const SpecialEventBanner = ({ safePlayHover, safePlayClick, safePlayPopOn }: SpecialEventBannerProps) => {
+const SpecialEventBanner = ({ safePlayPopOn: _ }: SpecialEventBannerProps) => {
   const [isVisible, setIsVisible] = useState(true);
-  const [copiedValue, setCopiedValue] = useState<string | null>(null);
-
-  const copyToClipboard = useCallback((text: string, type: string) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopiedValue(type);
-      safePlayPopOn();
-      toast.success("Copied to clipboard!", { description: `${type} copied successfully.`, duration: 2000 });
-      setTimeout(() => setCopiedValue(null), 2000);
-    }).catch(err => {
-      console.error('Failed to copy: ', err);
-      toast.error("Copy Failed", { description: "Could not copy text to clipboard." });
-    });
-  }, [safePlayPopOn]);
 
   if (!isVisible) return null;
 
@@ -815,68 +791,6 @@ const SpecialEventBanner = ({ safePlayHover, safePlayClick, safePlayPopOn }: Spe
             </div>
           </div>
           <div className="flex items-center justify-center md:justify-end mt-4 md:mt-0 flex-wrap gap-2">
-            <Popover onOpenChange={(open) => open && safePlayPopOn()}>
-              <PopoverTrigger asChild>
-                <EventCtaButton
-                  icon={<Heart className="h-4 w-4" />}
-                  defaultText="Support Us"
-                  hoverText="with a donation"
-                  emoji="🙏"
-                  className="bg-white hover:bg-gray-100 text-gray-900 text-xs px-3 py-1.5 mr-2 rounded-full"
-                  pulseColor="rgba(236, 72, 153, 0.4)"
-                  onClick={safePlayClick} onMouseEnter={safePlayHover}
-                />
-              </PopoverTrigger>
-              <PopoverContent className="w-80 text-black dark:text-white">
-                <div className="space-y-3">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <IconPigMoney className="h-5 w-5 text-primary" /> Bank Transfer Details
-                  </h3>
-                  <div className="text-sm space-y-1 text-muted-foreground">
-                    <p className="font-medium text-foreground">{bankDetails.name}</p>
-                    <p>{bankDetails.type}</p>
-                    <div className="flex items-center justify-between">
-                      <span>AC NO: {bankDetails.accountNo}</span>
-                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { copyToClipboard(bankDetails.accountNo, 'Account No'); }} onMouseEnter={safePlayHover} aria-label="Copy Account Number">
-                        {copiedValue === 'Account No' ? <IconCheck className="h-4 w-4 text-green-500" /> : <IconCopy className="h-4 w-4" />}
-                      </Button>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>IFSC: {bankDetails.ifsc}</span>
-                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { copyToClipboard(bankDetails.ifsc, 'IFSC Code'); }} onMouseEnter={safePlayHover} aria-label="Copy IFSC Code">
-                        {copiedValue === 'IFSC Code' ? <IconCheck className="h-4 w-4 text-green-500" /> : <IconCopy className="h-4 w-4" />}
-                      </Button>
-                    </div>
-                    <p>{bankDetails.bank}</p>
-                  </div>
-                  {/* UPI QR Code Section */}
-                  <div className="border-t pt-3 mt-3 space-y-2">
-                    <h3 className="font-semibold flex items-center gap-2 text-sm">
-                      <img src="/assets/extra/miniqr.png" alt="UPI Icon" className="h-5 w-5 rounded" /> Scan to Pay with UPI
-                    </h3>
-                    <div className="flex justify-center items-center p-1 bg-gray-50 dark:bg-gray-800/50 rounded-md">
-                      <img 
-                        src="/assets/extra/miniqr.png" 
-                        alt="UPI QR Code" 
-                        className="w-28 h-auto object-contain rounded" 
-                      />
-                    </div>
-                    <div className="text-center">
-                      <p className="text-xs text-muted-foreground mb-0.5">Or use UPI ID:</p>
-                      <div className="flex items-center justify-center gap-1 bg-gray-100 dark:bg-gray-700/60 px-2 py-1 rounded-md max-w-xs mx-auto">
-                        <span className="text-xs font-mono text-purple-600 dark:text-purple-400">ISKM.04@idfcbank</span>
-                        <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => { copyToClipboard("ISKM.04@idfcbank", 'UPI ID'); }} onMouseEnter={safePlayHover} aria-label="Copy UPI ID">
-                          {copiedValue === 'UPI ID' ? <IconCheck className="h-3 w-3 text-green-500" /> : <IconCopy className="h-3 w-3" />}
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                  <Link to="/donate" onClick={safePlayClick} onMouseEnter={safePlayHover}>
-                    <Button className="w-full mt-3" size="sm">More Donation Methods</Button>
-                  </Link>
-                </div>
-              </PopoverContent>
-            </Popover>
             <Link to="/fests/invite">
               <EventCtaButton
                 icon={<CheckCircle className="h-4 w-4" />}
@@ -901,12 +815,8 @@ const SpecialEventBanner = ({ safePlayHover, safePlayClick, safePlayPopOn }: Spe
 // --- Main Component ---
 export function EventSection() {
   const { isSoundEnabled } = useSoundSettings();
-  const [playHover] = useSound('/sounds/hover.mp3', { volume: 0.3, soundEnabled: isSoundEnabled });
-  const [playClick] = useSound('/sounds/click.wav', { volume: 0.25, soundEnabled: isSoundEnabled });
   const [playPopOn] = useSound('/sounds/pop-on.wav', { volume: 0.25, soundEnabled: isSoundEnabled });
 
-  const safePlayHover = useCallback(() => { if (isSoundEnabled) playHover(); }, [isSoundEnabled, playHover]);
-  const safePlayClick = useCallback(() => { if (isSoundEnabled) playClick(); }, [isSoundEnabled, playClick]);
   const safePlayPopOn = useCallback(() => { if (isSoundEnabled) playPopOn(); }, [isSoundEnabled, playPopOn]);
 
   return (
@@ -938,8 +848,6 @@ export function EventSection() {
         </motion.div>
 
         <SpecialEventBanner 
-          safePlayHover={safePlayHover}
-          safePlayClick={safePlayClick}
           safePlayPopOn={safePlayPopOn}
         />
 
