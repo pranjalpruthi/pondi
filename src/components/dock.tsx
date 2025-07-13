@@ -1347,7 +1347,7 @@ function NavbarContent() {
     };
 
     return (
-      <div className="flex flex-col items-center justify-center gap-1.5 h-14 sm:h-16 w-14 sm:w-16">
+      <div className="flex flex-col items-center justify-center gap-1.5 h-14 sm:h-16">
         <motion.button
           onClick={handleEventsClick}
           onMouseEnter={safePlayHover}
@@ -1455,7 +1455,7 @@ function NavbarContent() {
                       {/* Bottom row of 4 icons */}
                       <div className="flex w-full justify-between items-end">
                         {/* Left 2 items */}
-                        <div className="flex justify-evenly w-[calc(50%-36px)]">
+                        <div className="flex justify-center gap-2 w-[calc(50%-36px)]">
                           {DOCK_ITEMS.filter(item => item.id === 1).map(item => item && (
                             <DockItemComponent
                               key={item.id}
@@ -1474,7 +1474,7 @@ function NavbarContent() {
                           <SplitButton />
                         </div>
                         {/* Right 2 items */}
-                        <div className="flex justify-evenly w-[calc(50%-36px)]">
+                        <div className="flex justify-center gap-2 w-[calc(50%-36px)]">
                           {[9, 5].map(id => DOCK_ITEMS.find(item => item.id === id)).map(item => item && (
                             <DockItemComponent
                               key={item.id}

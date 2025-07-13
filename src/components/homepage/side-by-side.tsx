@@ -8,7 +8,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { SHLOKAS, ShlokaCard, ShlokaModal, type Shloka } from './shokla'
 import { useQuery } from '@tanstack/react-query';
 import { getShlokas } from '@/integrations/nocodb-api';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 // Hook to check if the component has mounted
 const useHasMounted = () => {
@@ -28,9 +28,6 @@ function SideBySide() {
   const isMobile = useIsMobile();
   const hasMounted = useHasMounted();
   
-  // Virtualization state for the "All Shlokas" modal
-  const [visibleShlokas, setVisibleShlokas] = useState<Shloka[]>([]);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
 
   // Fetch shlokas from NocoDB
@@ -70,34 +67,6 @@ function SideBySide() {
   };
   
   const todayShloka = getDailyShloka();
-
-  // Virtualization logic for the "All Shlokas" modal
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-
-    const updateVisibleShlokas = () => {
-      if (!container) return;
-
-      const { scrollTop, clientHeight } = container;
-      const itemHeight = 150; // Approximate height of a shloka item
-      const startIndex = Math.floor(scrollTop / itemHeight);
-      const endIndex = Math.min(
-        shlokas.length - 1,
-        Math.ceil((scrollTop + clientHeight) / itemHeight)
-      );
-
-      setVisibleShlokas(shlokas.slice(startIndex, endIndex + 1));
-    };
-
-    if (showAllShlokas) {
-      updateVisibleShlokas();
-      container?.addEventListener('scroll', updateVisibleShlokas);
-    }
-
-    return () => {
-      container?.removeEventListener('scroll', updateVisibleShlokas);
-    };
-  }, [showAllShlokas, shlokas]);
 
 
   return (
@@ -302,7 +271,6 @@ function SideBySide() {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 15 }}
-            ref={scrollContainerRef}
           >
             <div className="sticky top-0 bg-[rgba(255,255,250,0.98)] dark:bg-[rgba(45,40,25,0.95)] backdrop-blur-sm z-10 p-4 border-b border-amber-700/20 dark:border-amber-500/20 flex justify-between items-center rounded-t-xl">
               <h2 className="text-2xl font-bold text-amber-900 dark:text-amber-300">All Shlokas (108)</h2>
@@ -322,16 +290,12 @@ function SideBySide() {
                 </button>
               </div>
             </div>
-            <div className="py-4 grid grid-cols-1 gap-6" style={{ height: shlokas.length * 150 }}>
-              {visibleShlokas.map((shloka: Shloka) => (
-                <div 
-                  key={shloka.id} 
-                  className="border-b border-amber-700/20 dark:border-amber-500/20 pb-4 absolute"
-                  style={{ top: (shlokas.indexOf(shloka)) * 150, width: '100%' }}
-                >
-                  <p className="text-xl font-semibold text-amber-800 dark:text-amber-200">{shloka.title}</p>
-                  <p className="text-lg font-bold text-amber-900 dark:text-amber-100">{shloka.sanskrit}</p>
-                  <p className="text-lg font-bold text-amber-700 dark:text-amber-200 italic">{shloka.translation}</p>
+            <div className="py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {shlokas.map((shloka: Shloka) => (
+                <div key={shloka.id} className="border-b border-amber-700/20 dark:border-amber-500/20 pb-4">
+                  <p className="text-lg font-semibold text-amber-800 dark:text-amber-200">{shloka.title}</p>
+                  <p className="text-md font-bold text-amber-900 dark:text-amber-100">{shloka.sanskrit}</p>
+                  <p className="text-md font-bold text-amber-700 dark:text-amber-200 italic">{shloka.translation}</p>
                   <div className="flex justify-start gap-2 mt-2 flex-wrap">
                     <button
                       className="inline-flex items-center gap-1 py-1 px-3 rounded-full text-xs font-medium bg-amber-500/30 hover:bg-amber-500/40 dark:bg-amber-400/20 dark:hover:bg-amber-400/30 text-amber-900 dark:text-amber-200 cursor-pointer"
@@ -349,25 +313,6 @@ function SideBySide() {
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path><circle cx="12" cy="12" r="1"></circle><circle cx="16" cy="12" r="1"></circle><circle cx="8" cy="12" r="1"></circle></svg>
                       Share on WhatsApp
-                    </button>
-                    <button
-                      className="inline-flex items-center gap-1 py-1 px-3 rounded-full text-xs font-medium bg-[#1877F2]/30 hover:bg-[#1877F2]/40 dark:bg-[#1877F2]/20 dark:hover:bg-[#1877F2]/30 text-[#1877F2] dark:text-[#1877F2] cursor-pointer"
-                      onClick={() => {
-                        const text = `Shloka (${shloka.title}):\n${shloka.sanskrit}\n\nTranslation: ${shloka.translation}\n\nCitation: Bhagavad Gita\n\nVisit ISKM Pondicherry: https://pudhuvai.vrindavanam.org.in/\nFollow us on Instagram: https://instagram.com/iskm_pondy\nFollow us on Facebook: https://facebook.com/iskm.pondy\nSubscribe on YouTube: https://www.youtube.com/@ISKMPondy`;
-                        navigator.clipboard.writeText(text);
-                        alert('Shloka content copied to clipboard! Paste it into the Facebook post.');
-                        window.open(`https://www.facebook.com/sharer/sharer.php?u=`, '_blank');
-                      }}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-                      Share on Facebook
-                    </button>
-                    <button
-                      className="inline-flex items-center gap-1 py-1 px-3 rounded-full text-xs font-medium bg-[#E1306C]/30 hover:bg-[#E1306C]/40 dark:bg-[#E1306C]/20 dark:hover:bg-[#E1306C]/30 text-[#E1306C] dark:text-[#E1306C] cursor-pointer"
-                      onClick={() => window.open(`https://www.instagram.com/iskm_pondy/`, '_blank')}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                      Follow on Instagram
                     </button>
                   </div>
                 </div>
