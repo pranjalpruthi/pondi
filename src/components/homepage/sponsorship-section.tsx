@@ -69,8 +69,25 @@ export const SponsorshipSection = () => {
                     subtitle="Seize this golden opportunity to render direct service to Lord Krishna on His divine appearance day and receive unlimited blessings."
                 />
             </div>
-            <div className="max-w-6xl mx-auto px-4 sm:px-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Mobile: Vertical Grid */}
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 gap-8 md:hidden">
+                {services.map((service, index) => (
+                    <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.2 }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                        className="flex justify-center"
+                    >
+                        <SponsorshipCard service={service} />
+                    </motion.div>
+                ))}
+            </div>
+
+            {/* Desktop: Horizontal Scroll */}
+            <div className="hidden md:block overflow-x-auto pb-4" style={{ scrollbarWidth: 'none' }}>
+                <div className="flex gap-8 px-4 sm:px-6">
                     {services.map((service, index) => (
                         <motion.div
                             key={index}
@@ -78,7 +95,7 @@ export const SponsorshipSection = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.2 }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="flex"
+                            className="w-96 flex-shrink-0"
                         >
                             <SponsorshipCard service={service} />
                         </motion.div>
