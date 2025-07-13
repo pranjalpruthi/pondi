@@ -8,6 +8,16 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { SHLOKAS, ShlokaCard, ShlokaModal, type Shloka } from './shokla'
 import { useQuery } from '@tanstack/react-query';
 import { getShlokas } from '@/integrations/nocodb-api';
+import { useEffect, useRef } from 'react';
+
+// Hook to check if the component has mounted
+const useHasMounted = () => {
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+  return hasMounted;
+};
 
 
 function SideBySide() {
@@ -16,7 +26,13 @@ function SideBySide() {
   const [showBhagavadGitaPreview, setShowBhagavadGitaPreview] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const isMobile = useIsMobile();
+  const hasMounted = useHasMounted();
   
+  // Virtualization state for the "All Shlokas" modal
+  const [visibleShlokas, setVisibleShlokas] = useState<Shloka[]>([]);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+
   // Fetch shlokas from NocoDB
   const { data: allShlokas = [] } = useQuery({
     queryKey: ['shlokas'],
@@ -54,6 +70,35 @@ function SideBySide() {
   };
   
   const todayShloka = getDailyShloka();
+
+  // Virtualization logic for the "All Shlokas" modal
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+
+    const updateVisibleShlokas = () => {
+      if (!container) return;
+
+      const { scrollTop, clientHeight } = container;
+      const itemHeight = 150; // Approximate height of a shloka item
+      const startIndex = Math.floor(scrollTop / itemHeight);
+      const endIndex = Math.min(
+        shlokas.length - 1,
+        Math.ceil((scrollTop + clientHeight) / itemHeight)
+      );
+
+      setVisibleShlokas(shlokas.slice(startIndex, endIndex + 1));
+    };
+
+    if (showAllShlokas) {
+      updateVisibleShlokas();
+      container?.addEventListener('scroll', updateVisibleShlokas);
+    }
+
+    return () => {
+      container?.removeEventListener('scroll', updateVisibleShlokas);
+    };
+  }, [showAllShlokas, shlokas]);
+
 
   return (
     <div className="overflow-hidden select-none">
@@ -257,6 +302,7 @@ function SideBySide() {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 15 }}
+            ref={scrollContainerRef}
           >
             <div className="sticky top-0 bg-[rgba(255,255,250,0.98)] dark:bg-[rgba(45,40,25,0.95)] backdrop-blur-sm z-10 p-4 border-b border-amber-700/20 dark:border-amber-500/20 flex justify-between items-center rounded-t-xl">
               <h2 className="text-2xl font-bold text-amber-900 dark:text-amber-300">All Shlokas (108)</h2>
@@ -276,9 +322,13 @@ function SideBySide() {
                 </button>
               </div>
             </div>
-            <div className="py-4 grid grid-cols-1 gap-6">
-              {shlokas.map((shloka: Shloka) => (
-                <div key={shloka.id} className="border-b border-amber-700/20 dark:border-amber-500/20 pb-4">
+            <div className="py-4 grid grid-cols-1 gap-6" style={{ height: shlokas.length * 150 }}>
+              {visibleShlokas.map((shloka: Shloka) => (
+                <div 
+                  key={shloka.id} 
+                  className="border-b border-amber-700/20 dark:border-amber-500/20 pb-4 absolute"
+                  style={{ top: (shlokas.indexOf(shloka)) * 150, width: '100%' }}
+                >
                   <p className="text-xl font-semibold text-amber-800 dark:text-amber-200">{shloka.title}</p>
                   <p className="text-lg font-bold text-amber-900 dark:text-amber-100">{shloka.sanskrit}</p>
                   <p className="text-lg font-bold text-amber-700 dark:text-amber-200 italic">{shloka.translation}</p>
@@ -336,7 +386,7 @@ function SideBySide() {
       )}
 
       {/* Modal for displaying Bhagavad Gita PDF Preview */}
-      {showBhagavadGitaPreview && (
+      {showBhagavadGitaPreview && hasMounted && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-1000 flex items-center justify-center p-4 overflow-y-auto">
           <motion.div 
             className="bg-background rounded-lg max-w-5xl w-full max-h-[90vh] overflow-y-auto p-6 flex flex-col relative z-1000 before:absolute before:inset-0 before:rounded-lg before:bg-[#FF69B4]/30 before:blur-2xl before:animate-pulse"
