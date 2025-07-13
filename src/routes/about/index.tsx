@@ -27,7 +27,7 @@ const templeDetails = {
   shortName: "ISKM Pondicherry",
   address: "Pudhuvai Vrindavanam, RS No-54/3, koodappakkam, main road, near pogo land, Pathukannu, Puducherry 605502",
   mapsLink: "https://maps.app.goo.gl/8CGJUsGp4Vt8fLdN7",
-  phone: "+91 90426 42103", // Assuming this is the correct phone from VisitUs
+  phone: "+91 80565 13859", // Assuming this is the correct phone from VisitUs
   email: "info@iskmpondicherry.org",
   timings: [
     { period: "Mangal Aarati", time: "4:30 AM" },

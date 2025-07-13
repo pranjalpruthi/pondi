@@ -142,7 +142,7 @@ const bankDetails = {
 
 const locationDetails = {
   address: "International Sri Krishna Mandir, RS No:54/3, Koodappakam Village, (Near POGO Land), Pathukkannu Main Road, Pondicherry, India",
-  tourPhone: "+91 90426 42103",
+  tourPhone: "+91 80565 13859",
   hours: ["Monday - Sunday:", "5 am–12:30 pm", "4–8:45 pm"],
   mapsLink: "https://maps.app.goo.gl/EoqakWfAySKhQWPi9"
 };

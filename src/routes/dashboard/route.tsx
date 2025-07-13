@@ -57,7 +57,7 @@ function DashboardBreadcrumbs() {
 
 function DashboardLayout() {
   return (
-    <ThemeProvider defaultTheme="system" storageKey="ui-theme">
+    <ThemeProvider storageKey="ui-theme">
       <SidebarProvider>
         <div className="flex min-h-screen w-full">
           <DashNav />
@@ -78,4 +78,4 @@ function DashboardLayout() {
       </SidebarProvider>
     </ThemeProvider>
   );
-} 
+}

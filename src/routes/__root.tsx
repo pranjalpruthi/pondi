@@ -21,7 +21,7 @@ export const Route = createRootRoute({
         signInFallbackRedirectUrl="/dashboard"
         signUpFallbackRedirectUrl="/dashboard"
       >
-        <ThemeProvider defaultTheme="system">
+        <ThemeProvider defaultTheme="light">
           <SoundProvider> {/* Wrap with SoundProvider */}
             {/* <TanstackQueryProvider> */}
               <div className="relative min-h-screen flex flex-col bg-background">

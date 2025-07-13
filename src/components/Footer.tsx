@@ -78,7 +78,7 @@ export default function Footer() {
               <div className="flex items-center gap-2">
                 <Phone className="h-3.5 w-3.5 text-[#ffc547]" />
                 <a href="tel:+919042642103" className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:text-[#0a84ff] dark:hover:text-[#0a84ff] transition-colors">
-                  +91 90426 42103
+                  +91 80565 13859
                 </a>
               </div>
               <a
@@ -209,12 +209,12 @@ export default function Footer() {
                   <div>
                     <div className="flex justify-between items-center mb-2">
                       <h4 className="text-sm font-semibold text-green-600 dark:text-green-400">Contact Us</h4>
-                      <CopyButton size="sm" variant="ghost" content="+91 90426 42103\niskm.pondicherry@gmail.com" className="text-green-600 dark:text-green-400" />
+                      <CopyButton size="sm" variant="ghost" content="+91 80565 13859\niskm.pondicherry@gmail.com" className="text-green-600 dark:text-green-400" />
                     </div>
                     <div className="space-y-2 text-xs text-gray-700 dark:text-gray-300">
                       <div className="flex items-center gap-2">
                         <Phone className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
-                        <a href="tel:+919042642103" className="hover:text-green-600 dark:hover:text-green-400 transition-colors">+91 90426 42103</a>
+                        <a href="tel:+919042642103" className="hover:text-green-600 dark:hover:text-green-400 transition-colors">+91 80565 13859</a>
                       </div>
                       <div className="flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-envelope text-green-600 dark:text-green-400" viewBox="0 0 16 16">

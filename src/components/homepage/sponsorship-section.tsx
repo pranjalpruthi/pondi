@@ -20,39 +20,44 @@ const ScrollSectionTitle: FC<{ title: string; subtitle: ReactNode }> = ({ title,
 export const SponsorshipSection = () => {
     const services = [
         {
-            title: "Kalasa Abhishekam Seva",
-            image: "/services/1ka.jpg",
+            title: "Kalasa Abhisekam Seva",
+            image: "/services/1.webp",
             description: "Participate in the sacred bathing ceremony of the Lord. Your contribution helps procure auspicious items for the abhishekam, bringing immense spiritual benefit.",
             quote: "One who performs the bathing ceremony of the Lord is glorified in Vaikuntha.",
-            quoteAuthor: "Śrīla Prabhupāda"
+            quoteAuthor: "Śrīla Prabhupāda",
+            url: "https://rzp.io/rzp/ISKMKAS"
         },
         {
-            title: "Bhagavad Gita Seva",
-            image: "/services/4bg.jpg",
+            title: "Bhagavad Gītā seva",
+            image: "/services/4.webp",
             description: "Sponsor the distribution of Bhagavad-gita, the essence of all Vedic knowledge. This is the highest form of charity, giving spiritual enlightenment to others.",
             quote: "For one who explains this supreme secret to the devotees, pure devotional service is guaranteed, and in the end he will come back to Me.",
-            quoteAuthor: "Lord Krishna, Bhagavad-gita 18.68"
+            quoteAuthor: "Lord Krishna, Bhagavad-gita 18.68",
+            url: "https://rzp.io/rzp/ISKMBGS"
         },
         {
             title: "Milk Abhishekam Seva",
-            image: "/services/2milk.jpg",
+            image: "/services/2.webp",
             description: "Offer a loving milk bath to the deities. This seva is a beautiful expression of devotion and helps in the grand worship of the Lord on His appearance day.",
             quote: "By bathing the Lord with milk, one gets relief from all kinds of tribulations.",
-            quoteAuthor: "Śrīla Prabhupāda"
+            quoteAuthor: "Śrīla Prabhupāda",
+            url: "https://rzp.io/rzp/ISKMMAS"
         },
         {
-            title: "Archana Seva",
-            image: "/services/5pa.jpg",
+            title: "Archana seva",
+            image: "/services/5.webp",
             description: "Contribute towards the articles of worship, such as flowers, incense, lamps, and other paraphernalia required for the daily archana (worship) of the deities.",
             quote: "If one offers Me with love and devotion a leaf, a flower, a fruit or water, I will accept it.",
-            quoteAuthor: "Lord Krishna, Bhagavad-gita 9.26"
+            quoteAuthor: "Lord Krishna, Bhagavad-gita 9.26",
+            url: "https://rzp.io/rzp/ISKMArchanaseva"
         },
         {
-            title: "Annadanam Seva",
-            image: "/services/3anna.jpg",
+            title: "Annadanam seva",
+            image: "/services/3.webp",
             description: "Sponsor the distribution of delicious Krishna prasadam to all the devotees and visitors. There is no greater service than feeding the Lord's devotees.",
             quote: "By feeding the devotees, one gets the results of feeding the Supreme Lord Himself.",
-            quoteAuthor: "Śrīla Prabhupāda"
+            quoteAuthor: "Śrīla Prabhupāda",
+            url: "https://rzp.io/rzp/ISKMAnnadanam"
         }
     ];
 

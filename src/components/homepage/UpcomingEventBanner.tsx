@@ -1,43 +1,10 @@
 import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { motion, AnimatePresence, type Transition } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { X, Sparkles, Calendar, MapPin, CalendarPlus } from 'lucide-react';
 import React, { useState, useEffect, useMemo } from 'react';
 import { Badge } from '@/components/ui/badge';
 import NumberFlow, { NumberFlowGroup } from '@number-flow/react';
-// --- FestivalToggleButton Component ---
-interface FestivalToggleButtonProps {
-  isEventBannerOpen: boolean;
-  setIsEventBannerOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  mainDockAppearanceTransition: Transition;
-  isMobile: boolean;
-}
-
-export const FestivalToggleButton: React.FC<FestivalToggleButtonProps> = ({
-  isEventBannerOpen,
-  setIsEventBannerOpen,
-  mainDockAppearanceTransition,
-  isMobile,
-}) => {
-  // This button is now mobile-only.
-  if (!isMobile) return null;
-
-  const buttonContent = isEventBannerOpen ? 'Close' : 'Festivals';
-  
-  return (
-    <motion.button
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ ...mainDockAppearanceTransition, delay: 0.6 }}
-      onClick={() => setIsEventBannerOpen(prev => !prev)}
-      className="absolute right-4 -top-10 z-10 pointer-events-auto flex items-center justify-center h-8 px-5 rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold shadow-lg transition-transform duration-200 transform-gpu hover:scale-105 active:scale-95"
-      aria-label={isEventBannerOpen ? "Close Upcoming Event Banner" : "Open Upcoming Event Banner"}
-    >
-      {buttonContent}
-    </motion.button>
-  );
-};
-// --- End FestivalToggleButton Component ---
 
 const eventDate = new Date("2025-08-16T15:00:00");
 
@@ -210,7 +177,7 @@ export const UpcomingEventBanner: React.FC<UpcomingEventBannerProps> = ({ isOpen
                 </p>
                 <div className="flex flex-col items-center gap-2">
                   <Button asChild size="sm" className="relative group w-full h-9 rounded-full text-white font-bold transition-transform duration-300 ease-in-out hover:-translate-y-0.5">
-                    <Link to="/fests/invite" onClick={onClose} className="relative flex items-center justify-center">
+                    <Link to="/fests/invite" hash="register" onClick={onClose} className="relative flex items-center justify-center">
                       <span className="absolute inset-0 rounded-full bg-orange-500 shadow-md transition-all duration-300 ease-in-out group-hover:bg-orange-600 group-hover:shadow-lg"></span>
                       <span className="relative flex items-center">
                         <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Ticket.png" alt="Ticket" width="20" height="20" className="mr-1.5" />
@@ -223,7 +190,7 @@ export const UpcomingEventBanner: React.FC<UpcomingEventBannerProps> = ({ isOpen
                       <span className="absolute inset-0 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 shadow-md transition-all duration-300 ease-in-out group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-lg"></span>
                       <span className="relative flex items-center">
                         <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width="20" height="20" className="mr-1.5" />
-                        Sponsor BG Seva
+                        Sponsor Bhagavad Gītā Seva
                         <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Pleading%20Face.png" alt="Pleading Face" width="20" height="20" className="ml-1.5" />
                       </span>
                     </a>

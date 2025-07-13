@@ -15,7 +15,6 @@ import { AuroraText } from '@/components/magicui/aurora-text';
 import { MotionHighlight, MotionHighlightItem } from '@/components/animate-ui/effects/motion-highlight';
 import NumberFlow, { NumberFlowGroup } from '@number-flow/react';
 import { UpcomingEventBanner } from '@/components/homepage/UpcomingEventBanner';
-import TrailingImage from '@/components/ui/trailing-image';
 import { SponsorshipSection } from '@/components/homepage/sponsorship-section';
 
 // --- Reusable Components for the New Design ---
@@ -175,7 +174,7 @@ const InviteHero = () => {
                         >
                             <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
                                 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width="24" height="24" />
-                                Sponsor BG Seva
+                                Sponsor Bhagavad Gītā Seva
                             </a>
                         </Button>
                     </div>
@@ -643,29 +642,9 @@ function JanmashtamiPage() {
             <OrnateDivider />
             <Janmashtami2024Highlights />
             <OrnateDivider />
-            <TrailingImage
-                images={[
-                    "/fest/f1.jpeg",
-                    "/fest/f4.jpeg",
-                    "/fest/f6.jpeg",
-                    "/fest/f8.jpeg",
-                    "/fest/f9.jpeg",
-                    "/fest/f10.jpeg",
-                    "/fest/f11.jpeg",
-                    "/fest/f12.jpeg",
-                    "/fest/f13.jpeg",
-                    "/fest/f14.jpeg",
-                    "/fest/f15.jpeg",
-                    "/fest/f17.jpeg",
-                    "/fest/f18.jpeg",
-                    "/fest/f19.jpeg",
-                ]}
-                className="overflow-hidden"
-            >
                 <VideoHighlightsSection />
                 <OrnateDivider />
                 <QuoteSection quote={quotes[2]} index={2} />
-            </TrailingImage>
         </main>
 
     </div>

@@ -72,7 +72,7 @@ const socialLinks = [
 
 const locationDetails = {
   address: "International Sri Krishna Mandir, RS No:54/3, Koodappakam Village, (Near POGO Land), Pathukkannu Main Road, Pondicherry, India",
-  tourPhone: "+91 90426 42103",
+  tourPhone: "+91 80565 13859",
   hours: ["Monday - Sunday:", "5 am–12:30 pm", "4–8:45 pm"],
   mapsLink: "https://maps.app.goo.gl/EoqakWfAySKhQWPi9"
 };
@@ -529,14 +529,14 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
                   <div>
                     <div className="flex justify-between items-center mb-2">
                       <h4 className="text-sm font-semibold text-green-600 dark:text-green-400">Contact Us</h4>
-                      <Button size="sm" variant="ghost" onClick={() => props.onCopyToClipboard('+91 90426 42103\niskm.pondicherry@gmail.com', 'Contact Info')} className="text-green-600 dark:text-green-400">
+                      <Button size="sm" variant="ghost" onClick={() => props.onCopyToClipboard('+91 80565 13859\niskm.pondicherry@gmail.com', 'Contact Info')} className="text-green-600 dark:text-green-400">
                         {props.copiedValue === 'Contact Info' ? <IconCheck className="h-4 w-4" /> : <IconCopy className="h-4 w-4" />}
                       </Button>
                     </div>
                     <div className="space-y-2 text-xs text-gray-700 dark:text-gray-300">
                       <div className="flex items-center gap-2">
                         <IconPhone className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
-                        <a href="tel:+919042642103" className="hover:text-green-600 dark:hover:text-green-400 transition-colors">+91 90426 42103</a>
+                        <a href="tel:+919042642103" className="hover:text-green-600 dark:hover:text-green-400 transition-colors">+91 80565 13859</a>
                       </div>
                       <div className="flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-envelope text-green-600 dark:text-green-400" viewBox="0 0 16 16">

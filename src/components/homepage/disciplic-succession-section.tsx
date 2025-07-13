@@ -188,7 +188,7 @@ const DisciplicSuccessionSection: React.FC = () => {
   const activeMaster = spiritualMasters.find(m => m.id === selectedMasterId);
 
   const handleCopyVerse = (verse: Verse) => {
-    const verseText = `${verse.reference}\n\n${verse.transliteration.join('\n')}\n\nTranslation:\n${verse.translation}\n\nShared from ISKM Pondicherry\nWebsite: http://pudhuvai.vrindavanam.org.in\nContact: +91 90426 42103\nYouTube: https://www.youtube.com/@ISKMPondy`;
+    const verseText = `${verse.reference}\n\n${verse.transliteration.join('\n')}\n\nTranslation:\n${verse.translation}\n\nShared from ISKM Pondicherry\nWebsite: http://pudhuvai.vrindavanam.org.in\nContact: +91 80565 13859\nYouTube: https://www.youtube.com/@ISKMPondy`;
     navigator.clipboard.writeText(verseText).then(() => {
       setCopiedVerse(verse.reference);
       setTimeout(() => setCopiedVerse(null), 2000);

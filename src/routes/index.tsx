@@ -100,23 +100,6 @@ function HomePage() {
               <LazyEventSection />
             </Suspense>
             
-            {/* New section for the relocated and improved text */}
-            <motion.div
-              className="mt-8 text-center px-4" // Adjusted margin-top, text-center, and horizontal padding
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }} // Simplified animation
-            >
-              <div className="bg-white dark:bg-pink-900/20 rounded-2xl shadow-md p-6 max-w-3xl mx-auto border border-gray-200 dark:border-pink-700/30">
-                <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white leading-relaxed tracking-tight">
-                Join our sacred calling
-                <Badge variant="secondary" className="mx-2 p-1 align-middle inline-block bg-white/50 dark:bg-black/20 border-primary/50">
-                  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Telephone%20Receiver.png" alt="Telephone Receiver" width="25" height="25" />
-                </Badge>
-                spread Śrīla Prabhupāda's wisdom and guide souls back home, back to Godhead.
-                </p>
-              </div>
-            </motion.div>
 
             <SectionDivider />
             <Suspense fallback={<SectionLoader />}>
@@ -167,6 +150,24 @@ function HomePage() {
           <Suspense fallback={<SectionLoader />}>
             <LazyVisitUs />
           </Suspense>
+
+                      {/* New section for the relocated and improved text */}
+          <motion.div
+              className="mt-8 mb-12 text-center px-4" // Adjusted margin-top, text-center, and horizontal padding
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.8 }} // Simplified animation
+            >
+              <div className="bg-white dark:bg-pink-900/20 rounded-2xl shadow-md p-6 max-w-3xl mx-auto border border-gray-200 dark:border-pink-700/30">
+                <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white leading-relaxed tracking-tight">
+                Join our sacred calling
+                <Badge variant="secondary" className="mx-3 p-1 align-middle inline-block bg-white/50 dark:bg-black/20 border-primary/50">
+                  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Telephone%20Receiver.png" alt="Telephone Receiver" width="25" height="25" />
+                </Badge>
+                spread Śrīla Prabhupāda's wisdom and guide souls back home, back to Godhead.
+                </p>
+              </div>
+            </motion.div>
 
         </div>
       </main>

@@ -24,13 +24,47 @@ import { LayoutDashboard, LogIn, LogOut } from 'lucide-react';
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Suspense } from 'react'; // Added Suspense import
 import { addLead } from '@/integrations/nocodb-api';
-import { UpcomingEventBanner, FestivalToggleButton } from '@/components/homepage/UpcomingEventBanner';
+import { UpcomingEventBanner } from '@/components/homepage/UpcomingEventBanner';
 
 import ShimmerText from '@/components/ui/shimmer-text'; // Added
 import { AppleChatInput } from '@/components/ui/apple-chat-input';
 import { ThreeDotSimpleLoader } from '@/components/ui/three-dot-loader';
 import useAutoScroll from '@/hooks/use-auto-scroll';
 import { ClipsPanel } from '@/components/homepage/clips-panel'; // Changed to import ClipsPanel
+
+// --- FestivalToggleButton Component ---
+interface FestivalToggleButtonProps {
+  isEventBannerOpen: boolean;
+  setIsEventBannerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  mainDockAppearanceTransition: Transition;
+  isMobile: boolean;
+}
+
+const FestivalToggleButton: React.FC<FestivalToggleButtonProps> = ({
+  isEventBannerOpen,
+  setIsEventBannerOpen,
+  mainDockAppearanceTransition,
+  isMobile,
+}) => {
+  // This button is now mobile-only.
+  if (!isMobile) return null;
+
+  const buttonContent = isEventBannerOpen ? 'Close' : 'Festivals';
+  
+  return (
+    <motion.button
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ ...mainDockAppearanceTransition, delay: 0.6 }}
+      onClick={() => setIsEventBannerOpen(prev => !prev)}
+      className="absolute right-4 -top-10 z-10 pointer-events-auto flex items-center justify-center h-8 px-5 rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold shadow-lg transition-transform duration-200 transform-gpu hover:scale-105 active:scale-95"
+      aria-label={isEventBannerOpen ? "Close Upcoming Event Banner" : "Open Upcoming Event Banner"}
+    >
+      {buttonContent}
+    </motion.button>
+  );
+};
+// --- End FestivalToggleButton Component ---
 
 // Define types for DockItem and its props
 interface DockItemData {
@@ -620,12 +654,12 @@ const nextMessageId = React.useRef(2); // Start IDs from 2
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <h4 className="text-sm font-semibold text-green-600 dark:text-green-400">Contact Us</h4>
-                    <CopyButton size="sm" variant="ghost" content="+91 90426 42103\niskm.pondicherry@gmail.com" className="text-green-600 dark:text-green-400" />
+                    <CopyButton size="sm" variant="ghost" content="+91 80565 13859\niskm.pondicherry@gmail.com" className="text-green-600 dark:text-green-400" />
                   </div>
                   <div className="space-y-2 text-xs text-gray-700 dark:text-gray-300">
                     <div className="flex items-center gap-2">
                       <Phone className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
-                      <a href="tel:+919042642103" className="text-green-700 dark:text-green-400 hover:text-green-600 dark:hover:text-green-300 transition-colors">+91 90426 42103</a>
+                      <a href="tel:+919042642103" className="text-green-700 dark:text-green-400 hover:text-green-600 dark:hover:text-green-300 transition-colors">+91 80565 13859</a>
                     </div>
                     <div className="flex items-center gap-2">
                       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-envelope text-green-600 dark:text-green-400" viewBox="0 0 16 16">

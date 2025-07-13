@@ -46,7 +46,7 @@ const colors = {
 // Temple location data
 const templeInfo = {
   address: "ISKM Pondicherry, RS No-54/3, Koodappakkam, Main Road, Near Pogo Land, Pathukannu, Puducherry 605502",
-  phone: "+91 90426 42103",
+  phone: "+91 80565 13859",
   email: "info@iskmpondicherry.org",
   mapsLink: "https://maps.google.com/maps?q=ISKM+Pondicherry,RS+No-54/3,Koodappakkam,Main+Road,Near+Pogo+Land,Pathukannu,Puducherry+605502",
   hours: [
