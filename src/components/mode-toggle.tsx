@@ -13,7 +13,7 @@ interface ModeToggleProps {
 const ModeToggleComponent = ({ className }: ModeToggleProps) => {
   const { theme, setTheme } = useTheme()
   const { isSoundEnabled } = useSoundSettings();
-  const [playHaribol] = useSound('/sounds/haribol.mp3', {
+  const [playToggleSoundEffect] = useSound('/extra/miniclip.mp3', {
     volume: 0.75,
     soundEnabled: isSoundEnabled
   });
@@ -22,18 +22,16 @@ const ModeToggleComponent = ({ className }: ModeToggleProps) => {
 
   React.useEffect(() => setMounted(true), [])
 
-  const playToggleSound = React.useCallback(() => {
+  const playSound = React.useCallback(() => {
     if (isSoundEnabled) {
-      // Consider stopping sound if you want it to retrigger cleanly on rapid clicks
-      // stopHaribol(); // if you had a stop function from useSound
-      playHaribol();
+      playToggleSoundEffect();
     }
-  }, [isSoundEnabled, playHaribol]);
+  }, [isSoundEnabled, playToggleSoundEffect]);
 
   const toggleTheme = React.useCallback(() => {
     setTheme(theme === "dark" ? "light" : "dark")
-    playToggleSound();
-  }, [theme, setTheme, playToggleSound])
+    playSound();
+  }, [theme, setTheme, playSound])
 
   const handlePointerDown = React.useCallback(() => setIsPressed(true), [])
   const handlePointerUp = React.useCallback(() => setIsPressed(false), [])
