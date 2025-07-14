@@ -1,0 +1,55 @@
+/* Hide the default Google Translate branding and the top banner */
+.goog-te-banner-frame.skiptranslate, .goog-te-gadget-simple {
+    display: none !important;
+}
+
+body {
+    top: 0px !important;
+    position: relative !important; /* Added to help override Google's styles */
+}
+
+/* A more aggressive way to hide the banner if the class name fails */
+iframe.goog-te-banner-frame {
+    display: none !important;
+}
+
+/* Style the main container */
+#google_translate_element {
+    border: none;
+    background: transparent;
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 50;
+}
+
+/* Style the language dropdown */
+.goog-te-combo {
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid hsl(var(--border));
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.goog-te-combo:hover {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
+}
+
+.goog-te-combo:focus {
+    outline: none;
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.3);
+}
+
+/* Hide the Google icon within the dropdown */
+.goog-te-gadget-icon {
+    display: none !important;
+}

@@ -9,6 +9,7 @@ import Footer from '../components/Footer';
 import { Toaster } from 'sonner'; // Import Toaster from sonner
 import { ClerkProvider } from '@clerk/tanstack-react-start'
 import { CookieToast } from '@/components/cookie-toast';
+import GoogleTranslate from '../components/google-translate';
 
 export const Route = createRootRoute({
   pendingComponent: InitialPageLoader,
@@ -36,6 +37,7 @@ export const Route = createRootRoute({
                 {/* <TanstackQueryLayout /> */}
                 <Toaster richColors position="top-right" /> {/* Add Toaster component */}
                 {!isDashboardPage && <CookieToast />} {/* Conditionally render CookieToast */}
+                {!isDashboardPage && <GoogleTranslate />}
               </div>
             {/* </TanstackQueryProvider> */}
           </SoundProvider>

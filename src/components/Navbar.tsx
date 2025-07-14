@@ -22,6 +22,7 @@ import { useTempleStatus } from "@/hooks/useTempleStatus"; // Added
 import { useIsMobile } from "@/hooks/use-mobile";
 import { TempleWeatherPopover } from "./homepage/status"; // Import the new component
 import { useNavbarVisibility } from "@/hooks/use-navbar-visibility";
+import { LanguageSwitcher } from "./language-switcher";
 
 interface NavItemType {
   icon: React.ReactNode;
@@ -237,21 +238,22 @@ function NavBarComponent({ className }: NavBarProps) {
                         {/* Temple Status Indicator removed, functionality merged into Notification Bell */}
 
                         <Link to="/donate" className="sm:hidden" onClick={safePlayClick} onMouseEnter={safePlayHover}>
-                            <Button 
+                            <Button
                                 variant="default"
                                 className="bg-white text-[#b5387d] rounded-full hover:bg-white/90 w-9 h-9 p-0 flex items-center justify-center" // Adjusted padding and flex for image
                             >
-                                <img 
-                                    src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Beating%20Heart.png" 
-                                    alt="Beating Heart" 
-                                    width="20" 
-                                    height="20" 
+                                <img
+                                    src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Beating%20Heart.png"
+                                    alt="Beating Heart"
+                                    width="20"
+                                    height="20"
                                 />
                             </Button>
                         </Link>
-                        <Button 
-                            size="icon" 
-                            variant="ghost" 
+                        <LanguageSwitcher />
+                        <Button
+                            size="icon"
+                            variant="ghost"
                             className="w-9 h-9 xl:hidden text-foreground"
                             onClick={toggleMobileMenu}
                             onMouseEnter={safePlayHover}
@@ -354,6 +356,9 @@ function NavBarComponent({ className }: NavBarProps) {
                                 <User className="text-primary w-5 h-5" />
                                 <span className="font-medium">Sign In / Sign Up</span>
                             </a>
+                            <div className="flex justify-center pt-4">
+                                <LanguageSwitcher />
+                            </div>
                         </div>
                     </motion.div>
                 )}
