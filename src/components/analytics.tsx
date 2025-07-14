@@ -71,6 +71,14 @@ export function Analytics() {
           height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         `
       }} />
+
+      {/* Umami Analytics */}
+      <script
+        defer
+        src="https://find.vrindavanam.org.in/script.js"
+        data-website-id="0dcacdb8-08a4-4b62-9fe1-0f97312a84d4"
+      ></script>
+      {/* End Umami Analytics */}
     </Helmet>
   );
 }
@@ -81,5 +89,8 @@ declare global {
     fbq?: (...args: any[]) => void;
     _fbq?: any;
     dataLayer?: any[];
+    umami?: {
+      track: (event_name: string, event_data?: any) => void;
+    };
   }
 }

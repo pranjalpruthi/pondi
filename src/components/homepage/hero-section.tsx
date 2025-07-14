@@ -42,6 +42,7 @@ import { AuroraText } from "@/components/magicui/aurora-text";
 
 const heroShowcaseData = [
   { type: 'image', src: '/updates/s9.webp?w=1200&format=webp&quality=80', title: 'Janmashtami Festival Registration', description: 'Register now for the grand celebration of Lord Krishna\'s appearance on August 16th.', link: '/fests/invite' },
+  { type: 'video', src: 'https://img.youtube.com/vi/AuZtQraCBd4/hqdefault.jpg', videoUrl: 'https://www.youtube.com/watch?v=AuZtQraCBd4', title: 'A Divine Invitation', description: 'You are joyfully invited to celebrate the divine appearance of Lord Sri Krishna.' },
   { type: 'image', src: '/updates/s10.webp?w=1200&format=webp&quality=80', title: 'Sponsor a Bhagavad Gita', description: 'Contribute ₹250 for one copy and be part of the 5108 Gita distribution yajna.', link: '/fests/invite' },
   { type: 'image', src: '/updates/s8.webp?w=1200&format=webp&quality=80', title: 'Janmashtami Poster', description: 'The Magnificent Festival of Lord Krishna at ISKM Pondicherry.', link: '/fests/invite' },
   { type: 'video', src: 'https://img.youtube.com/vi/8LSj6muQZ88/hqdefault.jpg', videoUrl: 'https://youtu.be/8LSj6muQZ88?si=9V8ZK9aGHhB65_XQ', title: 'Pondicherry Temple Project Progress', description: 'Join us on this incredible journey as we vlog the heartwarming efforts of devoted souls coming together to build a temple for the pleasure of Krishna! By the boundless mercy of Prabhupada, we successfully completed the first slab of this divine project.' },
@@ -865,12 +866,12 @@ export function HeroSection() {
                                 />
                             </div>
                             {item.type === 'video' && (
-                              <div className="absolute inset-0 flex items-center justify-center bg-black/30 pointer-events-none">
+                              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                                 <IconPlayerPlay className="h-16 w-16 text-white/80 drop-shadow-lg transition-transform duration-300 group-hover:scale-110" />
                               </div>
                             )}
                             {!isPlaying && (
-                              <div className="absolute bottom-0 left-0 right-0 p-4 bg-black/20 backdrop-blur-md rounded-b-3xl">
+                              <div className="absolute bottom-0 left-0 right-0 p-4 backdrop-blur-md rounded-b-3xl">
                                 <motion.div
                                   initial={{ opacity: 0, y: 10 }}
                                   animate={{ opacity: 1, y: 0 }}

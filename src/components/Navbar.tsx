@@ -22,7 +22,6 @@ import { useTempleStatus } from "@/hooks/useTempleStatus"; // Added
 import { useIsMobile } from "@/hooks/use-mobile";
 import { TempleWeatherPopover } from "./homepage/status"; // Import the new component
 import { useNavbarVisibility } from "@/hooks/use-navbar-visibility";
-import { LanguageSwitcher } from "./language-switcher";
 
 interface NavItemType {
   icon: React.ReactNode;
@@ -250,7 +249,6 @@ function NavBarComponent({ className }: NavBarProps) {
                                 />
                             </Button>
                         </Link>
-                        <LanguageSwitcher />
                         <Button
                             size="icon"
                             variant="ghost"
@@ -356,9 +354,6 @@ function NavBarComponent({ className }: NavBarProps) {
                                 <User className="text-primary w-5 h-5" />
                                 <span className="font-medium">Sign In / Sign Up</span>
                             </a>
-                            <div className="flex justify-center pt-4">
-                                <LanguageSwitcher />
-                            </div>
                         </div>
                     </motion.div>
                 )}

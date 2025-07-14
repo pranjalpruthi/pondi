@@ -67,7 +67,7 @@ export const UpcomingEventBanner: React.FC<UpcomingEventBannerProps> = ({ isOpen
     start: "20250816T150000",
     end: "20250817T000000",
     description: `Join us for the divine appearance day of Lord Sri Krishna. Event details: https://pondi.vercel.app/fests/invite`,
-    location: "Jayaramna Thirumana Nilayam, Puducherry"
+    location: "Jayaram Thirumana Nilayam, Puducherry"
   }), []);
 
   const googleCalendarUrl = useMemo(() =>
@@ -131,7 +131,7 @@ export const UpcomingEventBanner: React.FC<UpcomingEventBannerProps> = ({ isOpen
                     </div>
                     <a href="https://maps.app.goo.gl/k5wX9LMEtFX7UraEA" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group">
                         <MapPin className="h-4 w-4 text-orange-500" />
-                        <span className="group-hover:underline">Jayaramna Thirumana Nilayam</span>
+                        <span className="group-hover:underline">Jayaram Thirumana Nilayam</span>
                     </a>
                 </div>
 

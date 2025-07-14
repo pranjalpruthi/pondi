@@ -18,7 +18,7 @@ const ThemeProviderContext = createContext<ThemeProviderState | null>(null)
 export function ThemeProvider({
   children,
   defaultTheme = "light",
-  storageKey = "vite-ui-theme",
+  storageKey = "pondi-ui-theme",
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(
