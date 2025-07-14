@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider } from '@tanstack/react-router';
 import { ConvexProvider } from "convex/react"; // Import ConvexProvider
+import { HelmetProvider } from 'react-helmet-async';
 import convex from "./lib/convex/convexClient"; // Import your Convex client instance
 import { router } from './router';
 
@@ -16,11 +17,13 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <ConvexProvider client={convex}> {/* Wrap with ConvexProvider */}
-        <TanstackQuery.Provider>
-          <RouterProvider router={router} />
-        </TanstackQuery.Provider>
-      </ConvexProvider>
+      <HelmetProvider>
+        <ConvexProvider client={convex}> {/* Wrap with ConvexProvider */}
+          <TanstackQuery.Provider>
+            <RouterProvider router={router} />
+          </TanstackQuery.Provider>
+        </ConvexProvider>
+      </HelmetProvider>
     </StrictMode>,
   )
 }

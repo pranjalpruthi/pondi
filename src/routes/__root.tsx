@@ -2,6 +2,7 @@ import { createRootRoute, Outlet, useRouterState } from '@tanstack/react-router'
 import { ThemeProvider } from '@/components/theme-provider'
 import { SoundProvider } from '@/components/context/sound-context' // Import SoundProvider
 import { InitialPageLoader } from '@/components/ui/initial-page-loader'; // Import InitialPageLoader
+import { Analytics } from '@/components/analytics';
 import Navbar from '../components/dock'
 import { NavBar } from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -29,6 +30,7 @@ export const Route = createRootRoute({
                 <main className={`flex-1 ${!isDashboardPage ? 'pt-16 sm:pt-20' : ''}`}> {/* Adjust padding based on NavBar visibility */}
                   <Outlet />
                 </main>
+                <Analytics />
                 {!isDashboardPage && <Navbar />} {/* Conditionally render Navbar/Dock */}
                 {!isDashboardPage && <Footer />} {/* Conditionally render Footer */}
                 {/* <TanstackQueryLayout /> */}
