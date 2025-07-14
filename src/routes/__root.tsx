@@ -3,6 +3,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { SoundProvider } from '@/components/context/sound-context' // Import SoundProvider
 import { InitialPageLoader } from '@/components/ui/initial-page-loader'; // Import InitialPageLoader
 import { Analytics } from '@/components/analytics';
+import { Analytics as VercelAnalytics } from "@vercel/analytics/react"
 import Navbar from '../components/dock'
 import { NavBar } from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -32,6 +33,7 @@ export const Route = createRootRoute({
                   <Outlet />
                 </main>
                 <Analytics />
+                <VercelAnalytics />
                 {!isDashboardPage && <Navbar />} {/* Conditionally render Navbar/Dock */}
                 {!isDashboardPage && <Footer />} {/* Conditionally render Footer */}
                 {/* <TanstackQueryLayout /> */}
