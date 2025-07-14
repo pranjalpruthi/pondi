@@ -220,7 +220,7 @@ const DetailsAndRegistrationSection = () => {
             start: "20250816T150000",
             end: "20250817T000000",
             description: `Join us for the divine appearance day of Lord Sri Krishna. Event details: http://pudhuvai.vrindavanam.org.in`,
-            location: "Jayamana Thirumana Nilayam, Puducherry"
+            location: "Jayaramna Thirumana Nilayam, Puducherry"
         };
         const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${event.start}/${event.end}&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}`;
         window.open(googleCalendarUrl, '_blank');
@@ -233,7 +233,7 @@ const DetailsAndRegistrationSection = () => {
     const detailItems = [
         { icon: Calendar, title: "16 AUG 2025", subtitle: "Mark your calendar", buttonText: "Add to Calendar", action: handleAddToCalendar },
         { icon: Clock, title: "3 PM - 12 MIDNIGHT", subtitle: "Festival hours" },
-        { icon: MapPin, title: "Jayamana Thirumana Nilayam", subtitle: "Sacred venue", buttonText: "View on Maps", action: handleViewLocation }
+        { icon: MapPin, title: "Jayaramna Thirumana Nilayam", subtitle: "Sacred venue", buttonText: "View on Maps", action: handleViewLocation }
     ];
 
     return (
@@ -380,7 +380,7 @@ const QuoteSection: FC<{ quote: { text: string; source: string }, index: number 
 };
 
 const SocialShare = () => {
-    const shareText = `🙌 Hare Kṛṣṇa! You are joyfully invited to the Grand Janmāṣṭamī Festival! 🙏\n\nJoin us to celebrate the divine appearance of Lord Krishna with ecstatic kirtan, enlightening discourses, and delicious prasadam.\n\n📅 Date: 16 AUG 2025\n⏰ Time: 3 PM - 12 MIDNIGHT\n📍 Venue: Jayamana Thirumana Nilayam, Puducherry\n\n"One who knows the transcendental nature of My appearance and activities...attains My eternal abode." - Gita 4.9`;
+    const shareText = `🙌 Hare Kṛṣṇa! You are joyfully invited to the Grand Janmāṣṭamī Festival! 🙏\n\nJoin us to celebrate the divine appearance of Lord Krishna with ecstatic kirtan, enlightening discourses, and delicious prasadam.\n\n📅 Date: 16 AUG 2025\n⏰ Time: 3 PM - 12 MIDNIGHT\n📍 Venue: Jayaramna Thirumana Nilayam, Puducherry\n\n"One who knows the transcendental nature of My appearance and activities...attains My eternal abode." - Gita 4.9`;
     const eventUrl = "https://pondi.vercel.app/fests/invite";
     const shareActions = [
         { name: "WhatsApp", icon: IconBrandWhatsapp, color: "bg-[#25D366] hover:bg-[#25D366]/90", action: () => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + '\n\n' + eventUrl)}`, '_blank') },
