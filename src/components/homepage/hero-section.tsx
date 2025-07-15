@@ -765,7 +765,7 @@ export function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen flex items-center pb-24 overflow-hidden -mt-16 sm:-mt-20" // Added negative margin, removed py-24, added pb-24
+      className="relative min-h-screen flex items-center pb-24 overflow-hidden -mt-16 sm:-mt-20 select-none" // Added negative margin, removed py-24, added pb-24
     >
       <div className="absolute inset-0 z-0 overflow-hidden bg-white dark:bg-black" />
       <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/50 to-transparent dark:from-black/80 dark:via-black/60" />

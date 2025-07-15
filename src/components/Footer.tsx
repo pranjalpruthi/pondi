@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link, useLocation } from '@tanstack/react-router';
-import { Heart, MapPin, Phone, ExternalLink, Sparkles, Clock, Calendar } from 'lucide-react';
+import { Heart, MapPin, Phone, ExternalLink, Sparkles, Clock, Calendar, Globe } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { useSound } from 'use-sound';
 import { useSoundSettings } from '@/components/context/sound-context';
@@ -40,8 +40,9 @@ const formatBankDetailsForCopy = () => {
 export default function Footer() {
   const location = useLocation();
   const onCalendarPage = location.pathname === '/calender';
+  const onCentersPage = location.pathname === '/centers';
   const { isSoundEnabled } = useSoundSettings();
-  const [playHaribolSound, { stop: stopHaribolSound }] = useSound('/sounds/haribol.mp3', {
+  const [playHaribolSound, { stop: stopHaribolSound }] = useSound('/extra/miniclip.mp3', {
     volume: 0.75,
     soundEnabled: isSoundEnabled,
   });
@@ -171,6 +172,28 @@ export default function Footer() {
                 </div>
               </PopoverContent>
             </Popover>
+
+            {/* Centers Button */}
+            {onCentersPage ? (
+              <Button
+                variant="outline"
+                className="w-16 h-16 p-1.5 rounded-xl shadow-lg bg-teal-200 dark:bg-teal-700 border-teal-500/70 text-teal-700 dark:text-teal-300"
+              >
+                <div className="flex flex-col items-center justify-center gap-0.5">
+                  <Globe className="h-6 w-6" />
+                  <span className="text-[10px] font-semibold">Here!</span>
+                </div>
+              </Button>
+            ) : (
+              <Link to="/centers" className="inline-block w-16 h-16">
+                <Button variant="outline" className="w-16 h-16 p-1.5 rounded-xl shadow-lg bg-teal-100 hover:bg-teal-200 dark:bg-teal-800 dark:hover:bg-teal-700 border-teal-500/70 text-teal-700 dark:text-teal-300">
+                  <div className="flex flex-col items-center justify-center gap-0.5">
+                    <Globe className="h-6 w-6" />
+                    <span className="text-[10px] font-semibold">Centers</span>
+                  </div>
+                </Button>
+              </Link>
+            )}
 
             {/* Vaishnava Calendar Button */}
             {onCalendarPage ? (
@@ -309,7 +332,7 @@ export default function Footer() {
                 "shadow-sm hover:shadow-md active:scale-95"
               )}
             >
-              Haribol ! <Sparkles className="ml-1 h-3.5 w-3.5 sm:h-4 sm:w-4 text-yellow-500" /> {/* Adjusted sparkle size */}
+              Hare Kṛṣṇa! <Sparkles className="ml-1 h-3.5 w-3.5 sm:h-4 sm:w-4 text-yellow-500" /> {/* Adjusted sparkle size */}
             </Badge>
             
             {/* Social Links */}

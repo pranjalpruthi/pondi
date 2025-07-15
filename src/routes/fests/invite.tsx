@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useState, useRef, type FC, type ReactNode, Fragment } from 'react';
+import Confetti from 'react-confetti';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, BookOpen, MapPin, Clock, Play, Share2, Feather, Copy, Check } from "lucide-react";
@@ -14,7 +15,6 @@ import { motion } from 'motion/react';
 import { AuroraText } from '@/components/magicui/aurora-text';
 import { MotionHighlight, MotionHighlightItem } from '@/components/animate-ui/effects/motion-highlight';
 import NumberFlow, { NumberFlowGroup } from '@number-flow/react';
-import { UpcomingEventBanner } from '@/components/homepage/UpcomingEventBanner';
 import { SponsorshipSection } from '@/components/homepage/sponsorship-section';
 
 // --- Reusable Components for the New Design ---
@@ -87,8 +87,8 @@ const CountdownTimer = () => {
 
     if (isExpired) {
         return (
-            <div className="mt-8 text-center md:text-left">
-                <p className="text-2xl font-bold text-green-500 animate-pulse">The auspicious day has arrived!</p>
+            <div className="text-center">
+                <p className="text-lg font-bold text-green-500 animate-pulse">The auspicious day has arrived!</p>
             </div>
         );
     }
@@ -96,18 +96,18 @@ const CountdownTimer = () => {
     const timeUnits = Object.entries(timeLeft);
 
     return (
-        <div className="mt-8 inline-block">
-            <div className="inline-flex justify-center md:justify-start items-center gap-1.5 sm:gap-2 md:gap-4 p-3 sm:p-4 bg-black/5 dark:bg-white/5 rounded-xl backdrop-blur-sm">
+        <div className="inline-block">
+            <div className="inline-flex justify-center items-center gap-1 sm:gap-1.5 p-2 bg-black/5 dark:bg-white/5 rounded-lg backdrop-blur-sm">
                 <NumberFlowGroup>
                     {timeUnits.map(([unit, value], index) => (
                         <Fragment key={unit}>
                             <div className="flex flex-col items-center">
-                                <p style={{ fontVariantNumeric: 'tabular-nums' }} className="text-3xl sm:text-4xl md:text-5xl font-bold text-indigo-900 dark:text-white">
+                                <p style={{ fontVariantNumeric: 'tabular-nums' }} className="text-xl sm:text-2xl font-bold text-indigo-900 dark:text-white">
                                     <NumberFlow value={value} format={{ minimumIntegerDigits: 2 }} />
                                 </p>
-                                <p className="text-[0.6rem] sm:text-xs text-stone-600 dark:text-stone-400 uppercase tracking-wider">{unit}</p>
+                                <p className="text-[0.5rem] sm:text-[0.6rem] text-stone-600 dark:text-stone-400 uppercase tracking-wider">{unit}</p>
                             </div>
-                            {index < timeUnits.length - 1 && <p className="text-3xl sm:text-4xl md:text-5xl font-bold text-indigo-900/50 dark:text-white/50">:</p>}
+                            {index < timeUnits.length - 1 && <p className="text-xl sm:text-2xl font-bold text-indigo-900/50 dark:text-white/50">:</p>}
                         </Fragment>
                     ))}
                 </NumberFlowGroup>
@@ -121,8 +121,37 @@ const CountdownTimer = () => {
 
 import { useInView } from 'motion/react';
 
+const SponsorshipProgress: FC<{ sponsored: number; total: number }> = ({ sponsored, total }) => {
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true, amount: 0.5 });
+    const percentage = (sponsored / total) * 100;
+
+    return (
+        <div ref={ref} className="w-full">
+            <div className="text-center mb-2">
+                <p className="text-sm text-stone-600 dark:text-stone-400">
+                    <span className="font-bold text-indigo-800 dark:text-indigo-300">{sponsored.toLocaleString()}</span> books have already been sponsored out of <span className="font-bold text-indigo-800 dark:text-indigo-300">{total.toLocaleString()}</span>.
+                </p>
+            </div>
+            <div className="w-full bg-black/10 dark:bg-white/10 rounded-full h-3 overflow-hidden">
+                <motion.div
+                    className="bg-gradient-to-r from-amber-400 to-orange-500 h-full rounded-full"
+                    initial={{ width: '0%' }}
+                    animate={{ width: isInView ? `${percentage}%` : '0%' }}
+                    transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
+                />
+            </div>
+            <p style={{ fontVariantNumeric: 'tabular-nums' }} className="text-right text-xs font-semibold text-orange-600 dark:text-orange-400 mt-1">
+                <NumberFlow value={isInView ? percentage : 0} format={{ maximumFractionDigits: 1, minimumFractionDigits: 1 }} />% Progress
+            </p>
+        </div>
+    );
+};
+
+
 const InviteHero = () => {
     const [isInteracted, setIsInteracted] = useState(false);
+    const [showConfetti, setShowConfetti] = useState(false);
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.2 });
 
@@ -136,62 +165,122 @@ const InviteHero = () => {
         }
     };
 
+    const handleSponsorClick = () => {
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 5000); // Confetti lasts for 5 seconds
+    };
+
     return (
         <div className="relative min-h-screen flex items-center justify-center text-stone-800 dark:text-stone-200 bg-amber-50/50 dark:bg-gray-900 px-4 overflow-hidden">
+            {showConfetti && <Confetti recycle={false} numberOfPieces={400} />}
             <div className="absolute -top-20 -left-20 w-64 h-64 bg-teal-500/10 rounded-full filter blur-3xl opacity-50 dark:opacity-30" />
             <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-orange-500/10 rounded-full filter blur-3xl opacity-50 dark:opacity-30" />
 
-            <div className="relative z-10 container mx-auto grid md:grid-cols-2 lg:grid-cols-5 gap-12 items-center pt-24 md:pt-0">
-                <motion.div
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                    className="text-center md:text-left lg:col-span-2"
-                >
-                    <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold font-serif text-indigo-900 dark:text-white leading-tight">
-                        <AuroraText colors={["#be185d", "#fb923c", "#fde047"]}>
-                            Śrī Kṛṣṇa <br className="hidden sm:block" />Janmāṣṭamī
-                        </AuroraText>
-                    </h1>
-                    <p className="mt-4 text-xl sm:text-2xl md:text-3xl text-orange-600 dark:text-orange-400 font-semibold">A Divine Invitation</p>
-                    <p className="mt-6 text-base sm:text-lg text-stone-700 dark:text-stone-300 max-w-lg mx-auto md:mx-0">
-                        You are joyfully invited to celebrate the divine appearance of Lord Sri Krishna. Immerse yourself in a day of ecstatic kirtan, enlightening discourse, and transcendental festivities.
-                    </p>
-                    <CountdownTimer />
-                    <div className="mt-8 flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
-                        <Button
-                            onClick={() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' })}
-                            size="lg"
-                            className="w-full sm:w-auto h-14 px-8 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 text-base"
-                        >
-                            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Ticket.png" alt="Ticket" width="24" height="24" />
-                            RESERVE YOUR FREE SPOT
-                        </Button>
-                        <Button
-                            asChild
-                            size="lg"
-                            className="w-full sm:w-auto h-14 px-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:from-green-500 hover:to-emerald-600 text-base"
-                        >
-                            <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
-                                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width="24" height="24" />
-                                Sponsor Bhagavad Gītā Seva
-                            </a>
-                        </Button>
-                    </div>
-                </motion.div>
+            <div className="relative z-10 container mx-auto flex flex-col lg:grid lg:grid-cols-2 lg:gap-16 items-center justify-center min-h-screen pt-24 pb-32 md:pt-12">
+                
+                {/* Content Column (Left on Desktop) */}
+                <div className="lg:col-span-1 flex flex-col items-center lg:items-start text-center lg:text-left order-2 lg:order-1 w-full">
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                        className="w-full"
+                    >
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold font-serif text-indigo-900 dark:text-white leading-tight">
+                            <AuroraText colors={["#be185d", "#fb923c", "#fde047"]}>
+                                Śrī Kṛṣṇa Janmāṣṭamī
+                            </AuroraText>
+                        </h1>
+                        <p className="mt-4 text-xl sm:text-2xl md:text-3xl text-orange-600 dark:text-orange-400 font-semibold">A Divine Invitation</p>
+                    </motion.div>
 
+                    {/* Video for Mobile/Tablet */}
+                    <motion.div
+                        ref={ref}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.8, delay: 0.4, type: 'spring', stiffness: 100 }}
+                        className="w-full max-w-3xl lg:hidden my-8"
+                    >
+                        <div className="w-full mx-auto rounded-3xl shadow-2xl border-8 border-white dark:border-gray-800 ring-4 ring-amber-300 dark:ring-amber-500 overflow-hidden">
+                            <div className="aspect-video bg-black relative group" onClick={handleInteraction}>
+                                {isInView && (
+                                    <iframe
+                                        key={isInteracted ? 'interactive-mobile' : 'silent-mobile'}
+                                        src={isInteracted ? interactiveUrl : silentUrl}
+                                        title="Janmashtami Festival Invitation"
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                                        allowFullScreen
+                                        className="w-full h-full"
+                                    />
+                                )}
+                                {!isInteracted && (
+                                    <div className="absolute inset-0 flex items-center justify-center cursor-pointer bg-black/10 group-hover:bg-black/30 transition-colors duration-300">
+                                        <Play className="h-16 w-16 text-white/70 drop-shadow-lg transition-transform duration-300 group-hover:scale-110" />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.6 }}
+                        className="w-full flex flex-col items-center lg:items-start mt-8 lg:mt-8"
+                    >
+                        <CountdownTimer />
+                        <div className="my-8 flex flex-col sm:flex-row sm:justify-center lg:justify-start items-center gap-x-6 gap-y-3 text-stone-700 dark:text-stone-300">
+                            <div className="flex items-center gap-2">
+                                <Calendar className="h-5 w-5 text-orange-500" />
+                                <span className="font-medium">16 AUG 2025</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Clock className="h-5 w-5 text-orange-500" />
+                                <span className="font-medium">3 PM - 12 MIDNIGHT</span>
+                            </div>
+                            <a href="https://maps.app.goo.gl/k5wX9LMEtFX7UraEA" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group">
+                                <MapPin className="h-5 w-5 text-orange-500" />
+                                <span className="font-medium group-hover:underline">Jayaram Thirumana Nilayam</span>
+                            </a>
+                        </div>
+                        <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 w-full max-w-lg">
+                            <Button
+                                onClick={() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' })}
+                                size="lg"
+                                className="w-full sm:w-auto h-14 px-8 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 text-base"
+                            >
+                                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Ticket.png" alt="Ticket" width="24" height="24" />
+                                RESERVE YOUR FREE SPOT
+                            </Button>
+                            <Button
+                                asChild
+                                size="lg"
+                                className="w-full sm:w-auto h-14 px-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:from-green-500 hover:to-emerald-600 text-base"
+                            >
+                                <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" onClick={handleSponsorClick} className="flex items-center justify-center gap-2">
+                                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width="24" height="24" />
+                                    Sponsor Bhagavad Gītā Seva
+                                </a>
+                            </Button>
+                        </div>
+                    </motion.div>
+                </div>
+
+                {/* Video Column (Right on Desktop) */}
                 <motion.div
                     ref={ref}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8, delay: 0.4, type: 'spring', stiffness: 100 }}
-                    className="flex justify-center lg:col-span-3"
+                    className="w-full lg:col-span-1 order-1 lg:order-2 hidden lg:block"
                 >
-                    <div className="w-full rounded-2xl shadow-2xl border-8 border-white dark:border-gray-800 ring-4 ring-amber-300 dark:ring-amber-500 overflow-hidden">
+                    <div className="w-full mx-auto rounded-3xl shadow-2xl border-8 border-white dark:border-gray-800 ring-4 ring-amber-300 dark:ring-amber-500 overflow-hidden">
                         <div className="aspect-video bg-black relative group" onClick={handleInteraction}>
                             {isInView && (
                                 <iframe
-                                    key={isInteracted ? 'interactive' : 'silent'}
+                                    key={isInteracted ? 'interactive-desktop' : 'silent-desktop'}
                                     src={isInteracted ? interactiveUrl : silentUrl}
                                     title="Janmashtami Festival Invitation"
                                     frameBorder="0"
@@ -207,6 +296,16 @@ const InviteHero = () => {
                             )}
                         </div>
                     </div>
+                </motion.div>
+                
+                {/* Bottom Progress Bar */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.8 }}
+                    className="lg:col-span-2 w-full absolute bottom-4 left-0 right-0 px-4 sm:px-6 lg:px-8 order-3"
+                >
+                    <SponsorshipProgress sponsored={403} total={5108} />
                 </motion.div>
             </div>
         </div>
@@ -276,7 +375,7 @@ const DetailsAndRegistrationSection = () => {
                     <Card className="max-w-4xl mx-auto shadow-2xl border-amber-200 dark:border-amber-800 border-2 overflow-hidden bg-white dark:bg-gray-900">
                         <CardContent className="p-2 bg-white">
                             <iframe
-                                data-tally-src="https://tally.so/embed/mDoRD5?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+                                data-tally-src="https://tally.so/embed/mDoRD5?alignLeft=1&transparentBackground=1&dynamicHeight=1"
                                 loading="lazy"
                                 width="100%"
                                 height="685"
@@ -590,9 +689,6 @@ export const Route = createFileRoute('/fests/invite')({
 });
 
 function JanmashtamiPage() {
-    const [isBannerOpen, setIsBannerOpen] = useState(true);
-    const [isBannerVisible, setIsBannerVisible] = useState(false);
-    const lastScrollY = useRef(0);
     const quotes = [
         { text: "One who knows the transcendental nature of My appearance and activities does not, upon leaving the body, take his birth again in this material world, but attains My eternal abode, O Arjuna.", source: "Bhagavad-gita As It Is 4.9" },
         { text: "My Lord, You are the well-wisher of the cows and the Brahmanas. You are the well-wisher of the entire human society and world.", source: "Vishnu Purana 1.19.65" },
@@ -606,35 +702,14 @@ function JanmashtamiPage() {
     document.head.appendChild(script);
     script.onload = () => { if (window.Tally) window.Tally.loadEmbeds(); };
     
-    const handleScroll = () => {
-        const currentScrollY = window.scrollY;
-        const heroHeight = window.innerHeight * 0.8;
-
-        if (currentScrollY < heroHeight) {
-            setIsBannerVisible(false);
-        } else {
-            // Hide on scroll down, show on scroll up
-            if (currentScrollY > lastScrollY.current) {
-                setIsBannerVisible(false);
-            } else {
-                setIsBannerVisible(true);
-            }
-        }
-        lastScrollY.current = currentScrollY;
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
     return () => { 
         if (document.head.contains(script)) document.head.removeChild(script); 
-        window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   return (
-    <div className="min-h-screen bg-amber-50 dark:bg-gray-950 text-stone-800 font-sans">
+    <div className="min-h-screen bg-amber-50 dark:bg-gray-950 text-stone-800 font-sans overflow-hidden">
         <InviteHero />
-        <UpcomingEventBanner isOpen={isBannerOpen && isBannerVisible} onClose={() => setIsBannerOpen(false)} />
         <main>
             <DetailsAndRegistrationSection />
             <OrnateDivider />

@@ -1,4 +1,4 @@
-import { Link, useRouterState } from '@tanstack/react-router';
+import { Link } from '@tanstack/react-router';
 import { motion, MotionConfig, AnimatePresence, type Transition } from 'motion/react'; // Added AnimatePresence
 import * as React from 'react';
 import { cn } from '@/lib/utils';
@@ -24,47 +24,16 @@ import { LayoutDashboard, LogIn, LogOut } from 'lucide-react';
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Suspense } from 'react'; // Added Suspense import
 import { addLead } from '@/integrations/nocodb-api';
-import { UpcomingEventBanner } from '@/components/homepage/UpcomingEventBanner';
+import { UpcomingEventPanel } from '@/components/homepage/UpcomingEventPanel';
+import TallyTracker from '@/components/tally-tracker';
 
 import ShimmerText from '@/components/ui/shimmer-text'; // Added
 import { AppleChatInput } from '@/components/ui/apple-chat-input';
 import { ThreeDotSimpleLoader } from '@/components/ui/three-dot-loader';
 import useAutoScroll from '@/hooks/use-auto-scroll';
 import { ClipsPanel } from '@/components/homepage/clips-panel'; // Changed to import ClipsPanel
-
-// --- FestivalToggleButton Component ---
-interface FestivalToggleButtonProps {
-  isEventBannerOpen: boolean;
-  setIsEventBannerOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  mainDockAppearanceTransition: Transition;
-  isMobile: boolean;
-}
-
-const FestivalToggleButton: React.FC<FestivalToggleButtonProps> = ({
-  isEventBannerOpen,
-  setIsEventBannerOpen,
-  mainDockAppearanceTransition,
-  isMobile,
-}) => {
-  // This button is now mobile-only.
-  if (!isMobile) return null;
-
-  const buttonContent = isEventBannerOpen ? 'Close' : 'Festivals';
-  
-  return (
-    <motion.button
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ ...mainDockAppearanceTransition, delay: 0.6 }}
-      onClick={() => setIsEventBannerOpen(prev => !prev)}
-      className="absolute right-4 -top-10 z-10 pointer-events-auto flex items-center justify-center h-8 px-5 rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold shadow-lg transition-transform duration-200 transform-gpu hover:scale-105 active:scale-95"
-      aria-label={isEventBannerOpen ? "Close Upcoming Event Banner" : "Open Upcoming Event Banner"}
-    >
-      {buttonContent}
-    </motion.button>
-  );
-};
-// --- End FestivalToggleButton Component ---
+import Marquee from '@/components/ui/marquee';
+// --- FestivalToggleButton Component has been removed ---
 
 // Define types for DockItem and its props
 interface DockItemData {
@@ -205,7 +174,7 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
     if (isMainMenuPanelActive) { // Clips Panel is open
       itemSpecificStyling = "bg-gradient-to-br from-red-500 to-red-600 text-white shadow-lg ring-2 ring-white/50 rounded-full aspect-square scale-110 transform transition-all duration-300"; // Active Clips style
     } else { // Clips Panel is closed - default highlighted state
-      itemSpecificStyling = "bg-gradient-to-br from-red-500 to-pink-500 text-white hover:from-red-600 hover:to-pink-600 shadow-md hover:shadow-lg ring-1 ring-white/20 hover:ring-white/40 rounded-full aspect-square transition-all duration-200 transform hover:scale-105"; // Default Highlighted Clips style
+      itemSpecificStyling = "bg-gradient-to-br from-red-500 to-pink-500 text-white hover:from-red-600 hover:to-pink-600 shadow-md ring-1 ring-white/20 hover:ring-white/40 rounded-full aspect-square transition-all duration-200 transform hover:scale-105"; // Default Highlighted Clips style
     }
   } else if (isAiBotButton) {
     if (isMainMenuPanelActive) { // AI Panel is open
@@ -215,20 +184,20 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
     } else { // AI Panel is closed - default highlighted state
       // Default Highlighted AI style: Gold/Yellow gradient, subtle shadow, hover effects
       // Dark mode: More muted gold/amber, softer text and hover
-      itemSpecificStyling = "bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-400 text-yellow-900 dark:text-amber-200 dark:from-amber-600/80 dark:via-yellow-700/80 dark:to-orange-700/80 hover:from-yellow-400 hover:to-orange-500 dark:hover:from-amber-500 dark:hover:to-orange-600 shadow-md hover:shadow-lg ring-1 ring-amber-500/30 dark:ring-amber-700/50 hover:ring-amber-500/50 dark:hover:ring-amber-500/70 transition-all duration-200 transform hover:scale-105 rounded-xl";
+      itemSpecificStyling = "bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-400 text-yellow-900 dark:text-amber-200 dark:from-amber-600/80 dark:via-yellow-700/80 dark:to-orange-700/80 hover:from-yellow-400 hover:to-orange-500 dark:hover:from-amber-500 dark:hover:to-orange-600 shadow-md ring-1 ring-amber-500/30 dark:ring-amber-700/50 hover:ring-amber-500/50 dark:hover:ring-amber-500/70 transition-all duration-200 transform hover:scale-105 rounded-xl";
     }
   } else if (isDonateButton) {
     // Style for the Donate button
-    itemSpecificStyling = "bg-gradient-to-br from-green-300 to-emerald-400 text-green-900 dark:from-green-500 dark:to-emerald-600 dark:text-white hover:from-green-400 hover:to-emerald-500 shadow-md hover:shadow-lg ring-1 ring-white/20 hover:ring-white/40 transition-all duration-200 rounded-xl";
+    itemSpecificStyling = "bg-gradient-to-br from-green-300 to-emerald-400 text-green-900 dark:from-green-500 dark:to-emerald-600 dark:text-white hover:from-green-400 hover:to-emerald-500 shadow-md ring-1 ring-white/20 hover:ring-white/40 transition-all duration-200 rounded-xl";
   } else if (isFestivalsButton) {
     // Style for the Festivals button - using a vibrant blue gradient
-    itemSpecificStyling = "bg-gradient-to-br from-blue-400 to-cyan-500 text-white hover:from-blue-500 hover:to-cyan-600 dark:from-blue-500 dark:to-cyan-600 shadow-md hover:shadow-lg ring-1 ring-white/20 hover:ring-white/40 transition-all duration-200 rounded-xl";
+    itemSpecificStyling = "bg-gradient-to-br from-blue-400 to-cyan-500 text-white hover:from-blue-500 hover:to-cyan-600 dark:from-blue-500 dark:to-cyan-600 shadow-md ring-1 ring-white/20 hover:ring-white/40 transition-all duration-200 rounded-xl";
   } else if (isDeityButton) {
     itemSpecificStyling = deityButtonSpecificStyles;
   } else if (isMainMenuPanelActive || isLabelVisible) { // For other items (like Menu button or regular hovered/clicked items)
     itemSpecificStyling = "bg-pink-100/70 dark:bg-pink-700/70 text-primary";
   } else { // Default hover for other non-active, non-deity, non-AI, non-Shorts buttons
-    itemSpecificStyling = "hover:bg-pink-100/50 dark:hover:bg-amber-500/30 hover:text-amber-400";
+    itemSpecificStyling = isMobile ? "" : "hover:bg-pink-100/50 dark:hover:bg-amber-500/30 hover:text-amber-400";
   }
 
   const combinedItemClasses = cn(baseItemClasses, itemSpecificStyling);
@@ -870,15 +839,47 @@ function NavbarContent() {
   // const [open, setOpen] = React.useState(false); // Command Dialog state - REMOVED
   const [eventsOpen, setEventsOpen] = React.useState(false); // Events Dialog state
   const [deitiesOpen, setDeitiesOpen] = React.useState(false); // Deities Dialog state
-  const [isEventBannerOpen, setIsEventBannerOpen] = React.useState(true); // Changed: Banner is open by default
 
   // --- Hooks ---
   const { isSoundEnabled, toggleSound } = useSoundSettings();
   const queryClient = useQueryClient();
   const isMobile = useIsMobile();
   const templeStatus = useTempleStatus(); // Added
-  const router = useRouterState({ select: (s) => s.location });
-  const isInvitePage = router.pathname === '/fests/invite';
+
+  // Countdown Logic
+  const [timeLeft, setTimeLeft] = React.useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+    isExpired: true,
+  });
+
+  React.useEffect(() => {
+    const eventDate = new Date("2025-08-16T15:00:00");
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const difference = eventDate.getTime() - now.getTime();
+
+      if (difference <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, isExpired: true });
+        return;
+      }
+
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      setTimeLeft({ days, hours, minutes, seconds, isExpired: false });
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
 
   // State for the new expandable dock (from snippet)
   const [activeDockItem, setActiveDockItem] = React.useState<number | null>(null); // For the main Menu's content panel
@@ -895,11 +896,16 @@ function NavbarContent() {
   const lastScrollYRef = React.useRef(0);
   const [isFooterVisible, setIsFooterVisible] = React.useState(false);
   const [clipsPanelCurrentIndex, setClipsPanelCurrentIndex] = React.useState(0); // Added state for clips panel
-  const [isBannerVisibleOnScroll, setIsBannerVisibleOnScroll] = React.useState(true);
 
   const aiPanelContent = React.useMemo(() => <AIPanel />, []);
   const clipsPanelContent = React.useMemo(() => <ClipsPanel currentIndex={clipsPanelCurrentIndex} setCurrentIndex={setClipsPanelCurrentIndex} />, [clipsPanelCurrentIndex, setClipsPanelCurrentIndex]); // Changed to use ClipsPanel
+  const handleClosePanel = React.useCallback(() => {
+    setIsDockOpen(false);
+    setActiveDockItem(null);
+  }, [setActiveDockItem, setIsDockOpen]);
+
   const eventsPanelContent = React.useMemo(() => <TempleEventsPanel />, []);
+  const upcomingEventPanelContent = React.useMemo(() => <UpcomingEventPanel onClose={handleClosePanel} />, [handleClosePanel]);
 
   // useClickOutside hook (from snippet, adapted path)
   useClickOutside(dockWrapperRef, () => {
@@ -931,13 +937,6 @@ function NavbarContent() {
         } else {
           setIsDockVisible(true);
         }
-      }
-
-      // Banner visibility logic (hide on down, show on up)
-      if (currentScrollY > lastScrollYRef.current && currentScrollY > 80) {
-          setIsBannerVisibleOnScroll(false);
-      } else {
-          setIsBannerVisibleOnScroll(true);
       }
 
       lastScrollYRef.current = currentScrollY;
@@ -1020,6 +1019,11 @@ function NavbarContent() {
   const handleNavClick = React.useCallback((to: string) => {
     if (to === '/deities' && isSoundEnabled) playTempleBell(); else safePlayClick();
   }, [isSoundEnabled, playTempleBell, safePlayClick]);
+
+  const handleGetPassClick = React.useCallback(() => {
+    handleNavClick('/fests/invite');
+    window.scrollTo(0, 0);
+  }, [handleNavClick]);
 
   // useEffect for Cmd+K/Ctrl+K to open CommandDialog - REMOVED
 
@@ -1249,13 +1253,14 @@ function NavbarContent() {
       content: clipsPanelContent, // Use the new ClipsPanel
     },
     {
-      id: 10, // New ID for the event banner toggle
-      label: isEventBannerOpen ? 'Close' : 'Events',
+      id: 10,
+      label: 'Festivals',
       title: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Party%20Popper.png" alt="Party Popper" width="25" height="25" />,
       subtitle: 'Festival',
-      action: () => setIsEventBannerOpen(prev => !prev),
+      isExpandable: true,
+      content: upcomingEventPanelContent,
     }
-  ], [isMobile, isSoundEnabled, handleNavClick, handleSoundToggle, playTempleBell, safePlayClick, safePlayHover, setDeitiesOpen, navItems, templeStatus, setActiveDockItem, setIsDockOpen, aiPanelContent, clipsPanelContent, clipsPanelCurrentIndex, setClipsPanelCurrentIndex, eventsPanelContent, isEventBannerOpen, setIsEventBannerOpen]); // Updated to clipsPanelContent
+  ], [isMobile, isSoundEnabled, handleNavClick, handleSoundToggle, playTempleBell, safePlayClick, safePlayHover, setDeitiesOpen, navItems, templeStatus, setActiveDockItem, setIsDockOpen, aiPanelContent, clipsPanelContent, clipsPanelCurrentIndex, setClipsPanelCurrentIndex, eventsPanelContent, upcomingEventPanelContent]);
 
 
   const handleDockItemClick = React.useCallback((item: DockItemData) => {
@@ -1351,7 +1356,10 @@ function NavbarContent() {
         <motion.button
           onClick={handleEventsClick}
           onMouseEnter={safePlayHover}
-          className="h-6 px-4 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 text-white text-xs font-semibold whitespace-nowrap transition-all hover:from-blue-500 hover:to-cyan-600 active:scale-95 shadow-md hover:shadow-lg"
+          className={cn(
+            "h-6 px-4 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 text-white text-xs font-semibold whitespace-nowrap transition-all active:scale-95 shadow-md",
+            !isMobile && "hover:from-blue-500 hover:to-cyan-600 hover:shadow-lg"
+          )}
           whileTap={{ scale: 0.95 }}
           aria-label="Open Calendar"
         >
@@ -1364,7 +1372,7 @@ function NavbarContent() {
             "h-6 px-4 rounded-full text-xs font-semibold whitespace-nowrap transition-colors active:scale-95",
             darshanBg,
             darshanText,
-            darshanHoverBg
+            !isMobile && darshanHoverBg
           )}
           whileTap={{ scale: 0.95 }}
         >
@@ -1377,7 +1385,7 @@ function NavbarContent() {
   return (
     <MotionConfig transition={{ layout: { duration: 0.35, type: 'spring', bounce: 0.1 } }}>
       <motion.nav 
-        className="fixed bottom-0 left-0 w-full pb-safe pointer-events-none transform-gpu"
+        className="fixed bottom-0 left-0 w-full pb-safe pointer-events-none transform-gpu flex flex-col-reverse" // Added flex flex-col-reverse
         initial={{ y: 0 }}
         // Adjust z-index based on visibility to ensure it's below footer when hidden
         animate={{
@@ -1386,22 +1394,66 @@ function NavbarContent() {
         }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
       >
+        <AnimatePresence>
+          {isMobile && !isDockOpen && !isClipsPanelActive && !timeLeft.isExpired && (
+            <motion.div
+              className="w-full container px-2 sm:px-4 pointer-events-auto relative group"
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 50, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            >
+              <div className="relative flex items-center justify-between w-full py-1 px-2 rounded-full bg-gradient-to-r from-orange-400/95 to-amber-500/95 backdrop-blur-sm text-white shadow-lg gap-2 overflow-hidden">
+                <button
+                  onClick={() => {
+                    const festivalItem = DOCK_ITEMS.find(item => item.id === 10);
+                    if (festivalItem) handleDockItemClick(festivalItem);
+                  }}
+                  className="font-bold text-sm pl-1 text-left flex-grow overflow-hidden"
+                >
+                  <Marquee pauseOnHover className="text-xs font-bold" speed={80}>
+                    <span className="mx-4">Upcoming Festival: Śrī Kṛṣṇa Janmāṣṭamī 2025</span>
+                  </Marquee>
+                </button>
+                
+                <div className="flex-shrink-0 flex items-center gap-1.5">
+                  <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" className="flex-shrink-0 group">
+                    <span className="relative px-2 py-0.5 text-[0.65rem] rounded-full font-bold shadow-md select-none bg-green-500 text-white transition-all duration-200 ring-1 ring-transparent group-hover:ring-green-400 flex items-center gap-1">
+                      <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width="12" height="12" />
+                      Sponsor
+                    </span>
+                  </a>
+                  <motion.div
+                    className="relative group"
+                    animate={{ scale: [1, 1.05, 1] }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <Link to="/fests/invite" onClick={handleGetPassClick}>
+                      <span className="relative px-2 py-0.5 text-[0.65rem] rounded-full font-bold shadow-md select-none bg-gradient-to-r from-blue-500 to-indigo-600 text-white transition-all duration-200 ring-1 ring-transparent group-hover:ring-blue-400 flex items-center gap-1">
+                          <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Diya%20Lamp.png" alt="Diya Lamp" width="12" height="12" />
+                          Register Free
+                      </span>
+                    </Link>
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <div className={cn(
             "relative mx-auto flex justify-center",
-            isClipsPanelActive ? "w-full h-full p-0" : "container px-2 pb-2 sm:px-4"
+            isClipsPanelActive ? "w-full h-full p-0" : "container px-2 sm:px-4"
           )}>
-          <FestivalToggleButton
-            isEventBannerOpen={isEventBannerOpen}
-            setIsEventBannerOpen={setIsEventBannerOpen}
-            mainDockAppearanceTransition={mainDockAppearanceTransition}
-            isMobile={isMobile}
-          />
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={mainDockAppearanceTransition}
             className={cn(
-              "relative pointer-events-auto mb-2",
+              "relative pointer-events-auto",
               isClipsPanelActive
                 ? "w-full h-full max-w-full rounded-none border-none bg-black shadow-none" // Ensure full width and height
                 : "w-full sm:max-w-fit max-w-md rounded-3xl bg-pink-50/60 backdrop-blur-sm dark:bg-pink-900/50 border border-pink-200/30 dark:border-pink-700/30 shadow-[0_0_10px_rgba(255,182,193,0.3)] dark:shadow-[0_0_10px_rgba(255,105,180,0.3)] transform-gpu",
@@ -1411,6 +1463,62 @@ function NavbarContent() {
             onMouseLeave={() => setHoveredLabelItemId(null)} >
             <MotionConfig transition={dockSpringTransition}>
               <div className={cn('h-full w-full', isClipsPanelActive ? 'p-0' : 'p-2')}>
+                <AnimatePresence>
+                  {!isMobile && !timeLeft.isExpired && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className={'pb-1.5 px-1.5'}
+                    >
+                      <div className={cn(
+                        "flex items-center justify-between w-full bg-gradient-to-r from-orange-400 to-amber-500 text-white shadow-md transition-all duration-200 gap-2",
+                        "p-1.5 rounded-xl"
+                      )}>
+                        <button
+                          onClick={() => {
+                            const festivalItem = DOCK_ITEMS.find(item => item.id === 10);
+                            if (festivalItem) handleDockItemClick(festivalItem);
+                          }}
+                          className="font-bold text-sm pl-1 text-left flex-grow overflow-hidden"
+                        >
+                          🎉 Upcoming Festival: Śrī Kṛṣṇa Janmāṣṭamī
+                        </button>
+                        
+                        <div className="flex-shrink-0 flex items-center gap-1.5">
+                          <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" className="flex-shrink-0 relative group">
+                            <span className={cn(
+                              "relative rounded-full font-bold shadow-lg select-none bg-green-500 text-white transition-all duration-200 ring-2 ring-transparent group-hover:ring-green-400 flex items-center gap-1",
+                              "px-4 py-2 text-sm"
+                            )}>
+                              <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width={16} height={16} />
+                              Sponsor
+                            </span>
+                          </a>
+                          <motion.div
+                            className="flex-shrink-0 relative group"
+                            animate={{ scale: [1, 1.05, 1] }}
+                            transition={{
+                              duration: 1.5,
+                              repeat: Infinity,
+                              ease: "easeInOut",
+                            }}
+                          >
+                            <Link to="/fests/invite" onClick={handleGetPassClick}>
+                              <span className={cn(
+                                "relative rounded-full font-bold shadow-lg select-none bg-gradient-to-r from-blue-500 to-indigo-600 text-white transition-all duration-200 ring-2 ring-transparent group-hover:ring-blue-400 flex items-center gap-1",
+                                "px-4 py-2 text-sm"
+                              )}>
+                                  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Diya%20Lamp.png" alt="Diya Lamp" width={18} height={18} />
+                                  Secure your Free Spot
+                              </span>
+                            </Link>
+                          </motion.div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 <div className={cn(isClipsPanelActive ? 'rounded-none h-full w-full' : 'overflow-hidden rounded-t-2xl')}> {/* Ensure full height/width for clips panel content area */}
                   <AnimatePresence initial={false} mode='sync'>
                     {isDockOpen && activeItem?.isExpandable && (
@@ -1543,13 +1651,14 @@ function NavbarContent() {
                   ) : (
                     <>
                       {/* Desktop Layout */}
-                      <div className={cn('flex space-x-2 sm:space-x-3', isClipsPanelActive ? 'text-white' : '')}>
+                      <div className={cn('flex flex-nowrap space-x-2 sm:space-x-3', isClipsPanelActive ? 'text-white' : '')}>
                         {DOCK_ITEMS.filter(item => {
-                          // Desktop: show all except AI Bot (7), Clips (8), and the new Events (10) in the main group
+                          // Desktop: show all except AI Bot (7), Clips (8), and Festivals (10) in the main group
                           if (!isMobile) {
-                            return ![7, 8, 10].includes(item.id)
+                            return ![7, 8, 10].includes(item.id);
                           }
-                          return false; // Should not be reached
+                           // Mobile: Hide the Festivals button (id: 10) as it's replaced by the banner.
+                          return item.id !== 10;
                         }).map((item) => (
                           <DockItemComponent
                             key={item.id}
@@ -1569,7 +1678,7 @@ function NavbarContent() {
                       {!isMobile && (
                         <>
                           <div className="h-8 w-px bg-border self-center" />
-                          {[10, 8, 7].map(id => DOCK_ITEMS.find(item => item.id === id)).map(item => item && (
+                          {[8, 7].map(id => DOCK_ITEMS.find(item => item.id === id)).map(item => item && (
                             <DockItemComponent
                               key={item.id}
                               item={item}
@@ -1605,11 +1714,10 @@ function NavbarContent() {
         _onSoundPlay={safePlayClick}
       />
       
-      <DeityDarshan
+        <DeityDarshan
         open={deitiesOpen}
         onOpenChange={setDeitiesOpen}
       />
-      <UpcomingEventBanner isOpen={isEventBannerOpen && !isInvitePage && isBannerVisibleOnScroll} onClose={() => setIsEventBannerOpen(false)} />
     </MotionConfig>
   )
 }
@@ -1628,6 +1736,7 @@ export default function Navbar() {
   return (
     <SoundProvider>
       <Suspense fallback={loadingFallback}>
+        <TallyTracker />
         <NavbarContent />
       </Suspense>
     </SoundProvider>
