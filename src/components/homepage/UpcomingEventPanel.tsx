@@ -117,8 +117,14 @@ WhatsApp: https://wa.me/918056626108`;
               Upcoming Grand Festival
             </h2>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close panel">
-            <X className="h-5 w-5 text-muted-foreground" />
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={onClose} 
+            aria-label="Close panel"
+            className="w-9 h-9 rounded-full hover:bg-red-100 dark:hover:bg-red-900/50 group"
+          >
+            <X className="h-5 w-5 text-muted-foreground group-hover:text-red-500 transition-colors" />
           </Button>
         </div>
       </div>
@@ -143,63 +149,36 @@ WhatsApp: https://wa.me/918056626108`;
                 </a>
             </div>
 
-            <div className="flex items-center justify-center gap-8 mb-5">
-                <div className="text-center">
-                    <p className="text-sm text-muted-foreground mb-2">Countdown to the divine appearance</p>
-                    <NumberFlowGroup>
-                        <div
-                            style={{ fontVariantNumeric: 'tabular-nums' }}
-                            className="flex items-baseline justify-center font-bold text-3xl text-gray-800 dark:text-white"
-                        >
-                            {timeLeft.days > 0 && (
-                                <>
-                                    <NumberFlow trend={-1} value={timeLeft.days} />
-                                    <span className="text-lg font-normal mx-1.5">d</span>
-                                </>
-                            )}
-                            <NumberFlow trend={-1} value={timeLeft.hours} format={{ minimumIntegerDigits: 2 }} />
-                            <span className="text-lg font-normal mx-1">:</span>
-                            <NumberFlow
-                                trend={-1}
-                                value={timeLeft.minutes}
-                                digits={{ 1: { max: 5 } }}
-                                format={{ minimumIntegerDigits: 2 }}
-                            />
-                            <span className="text-lg font-normal mx-1">:</span>
-                            <NumberFlow
-                                trend={-1}
-                                value={timeLeft.seconds}
-                                digits={{ 1: { max: 5 } }}
-                                format={{ minimumIntegerDigits: 2 }}
-                            />
-                        </div>
-                    </NumberFlowGroup>
-                </div>
-                <a href="https://maps.app.goo.gl/k5wX9LMEtFX7UraEA" target="_blank" rel="noopener noreferrer" className="flex-shrink-0">
-                    <FlipButton
-                        frontContent={
-                            <div className="flex flex-col items-center justify-center gap-1">
-                                <MapPin className="h-8 w-8" />
-                                <span className="text-xs font-semibold">Directions</span>
-                            </div>
-                        }
-                        backContent={
-                            <div className="flex items-center justify-center text-center">
-                                <span className="text-sm font-bold">Google Maps</span>
-                            </div>
-                        }
-                        className="w-24 h-24 rounded-2xl shadow-lg select-none"
-                        frontClassName="bg-lime-100 hover:bg-lime-200 text-lime-700 dark:bg-lime-800 dark:hover:bg-lime-700 border border-lime-500/70 dark:text-lime-300"
-                        backClassName="bg-lime-500 text-white"
-                        from="right"
-                    />
-                </a>
+            <div className="flex flex-col items-center justify-center gap-2 mb-5">
+                <NumberFlowGroup>
+                    <div
+                        style={{ fontVariantNumeric: 'tabular-nums' }}
+                        className="flex items-baseline justify-center font-bold text-3xl sm:text-4xl text-gray-800 dark:text-white"
+                    >
+                        {timeLeft.days > 0 && (
+                            <>
+                                <NumberFlow trend={-1} value={timeLeft.days} />
+                                <span className="text-lg sm:text-xl font-normal mx-1.5 sm:mx-2">d</span>
+                            </>
+                        )}
+                        <NumberFlow trend={-1} value={timeLeft.hours} format={{ minimumIntegerDigits: 2 }} />
+                        <span className="text-lg sm:text-xl font-normal mx-1 sm:mx-1.5">:</span>
+                        <NumberFlow
+                            trend={-1}
+                            value={timeLeft.minutes}
+                            digits={{ 1: { max: 5 } }}
+                            format={{ minimumIntegerDigits: 2 }}
+                        />
+                        <span className="text-lg sm:text-xl font-normal mx-1 sm:mx-1.5">:</span>
+                        <NumberFlow
+                            trend={-1}
+                            value={timeLeft.seconds}
+                            digits={{ 1: { max: 5 } }}
+                            format={{ minimumIntegerDigits: 2 }}
+                        />
+                    </div>
+                </NumberFlowGroup>
             </div>
-
-            <p className="text-xs text-center text-stone-600 dark:text-stone-400 mb-5 italic">
-                "The holy name... is the incarnation of Lord Kṛṣṇa."
-                <span className="opacity-80 ml-1">— CC, Ādi 17.22</span>
-            </p>
 
             <div className="flex flex-col items-center gap-2">
                 <div className="grid grid-cols-2 gap-2 w-full">
@@ -257,6 +236,10 @@ WhatsApp: https://wa.me/918056626108`;
                     </span>
                 </a>
                 </Button>
+                <p className="text-xs text-center text-stone-600 dark:text-stone-400 mt-3 italic">
+                    "The holy name... is the incarnation of Lord Kṛṣṇa."
+                    <span className="opacity-80 ml-1">— CC, Ādi 17.22</span>
+                </p>
             </div>
         </div>
       </div>
