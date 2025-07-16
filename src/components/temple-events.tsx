@@ -4,11 +4,12 @@ import { Calendar, Clock, X, ExternalLink, Loader2, ListChecks, Sparkles, GitCom
 import { FlipButton } from "@/components/animate-ui/buttons/flip"
 import { Badge } from "@/components/ui/badge"
 import { useQuery } from '@tanstack/react-query'
-import { useState, useEffect, memo } from "react"
-import { Link } from "@tanstack/react-router"
+import { useState, useEffect, memo, useMemo } from "react"
+import { useNavigate } from "@tanstack/react-router"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { useMediaQuery } from "@uidotdev/usehooks";
+import ShimmerText from "@/components/ui/shimmer-text";
 
 // Types
 interface AstroDetailInfo {
@@ -70,6 +71,18 @@ const dailySchedule: DailySchedule[] = [
   { time: '6:30 PM', activity: 'Darshan Closes', description: 'Darshan of the Deities concludes; temple may remain open for other activities.' }
 ];
 
+const prabhupadaQuotes = [
+  "Chanting is the waxing of the moon that spreads the white lotus of good fortune for all living entities.",
+  "A grain of devotion is more valuable than tons of faithlessness.",
+  "Religion without philosophy is sentiment, or sometimes fanaticism, while philosophy without religion is mental speculation.",
+  "You are not your body. You are the spiritual soul, part and parcel of God.",
+  "The purpose of our life is to go back home, back to Godhead.",
+  "When you are confused, chant Hare Krishna and you will get the answer.",
+  "Our only business is to love God, not to ask God for our daily bread."
+];
+
+const getRandomQuote = () => prabhupadaQuotes[Math.floor(Math.random() * prabhupadaQuotes.length)];
+
 const parseLocalDateStr = (dateStr: string): Date => {
   const [year, month, day] = dateStr.split('-').map(Number);
   return new Date(year, month - 1, day, 12, 0, 0, 0);
@@ -87,18 +100,21 @@ const formatDateDisplay = (dateStr: string, options?: Intl.DateTimeFormatOptions
   return date.toLocaleDateString('en-US', options || { weekday: 'short', month: 'short', day: 'numeric' });
 };
 
-const getEventStyle = (event: RawEvent): { dot: string, text: string } => {
+const getEventStyle = (event: RawEvent, isFastingDay: boolean): { dot: string, text: string } => {
+    const lightText = isFastingDay ? 'text-rose-900/90' : 'text-sky-900/90';
+    const darkText = isFastingDay ? 'dark:text-rose-300' : 'dark:text-sky-300';
+
     if (event.fasttype > 0 || event.text.toLowerCase().includes('ekadasi')) {
-      return { dot: 'bg-pink-500', text: 'text-pink-600 dark:text-pink-400' };
+      return { dot: 'bg-rose-500/80 dark:bg-rose-400/80', text: `${lightText} ${darkText}` };
     }
     if (event.dispItem === 17 && event.text.toLowerCase().includes('break fast')) {
-        return { dot: 'bg-green-500', text: 'text-green-600 dark:text-green-400' };
+        return { dot: 'bg-green-500', text: `text-green-900/90 dark:text-green-300` };
     }
     if (event.dispItem === 17) { 
-        return { dot: 'bg-rose-500', text: 'text-rose-600 dark:text-rose-400' };
+        return { dot: 'bg-red-500', text: `text-red-900/90 dark:text-red-300` };
     }
-    if (event.prio <= 100) return { dot: 'bg-purple-500', text: 'text-purple-600 dark:text-purple-400' };
-    return { dot: 'bg-gray-400', text: 'text-gray-500 dark:text-gray-400' };
+    if (event.prio <= 100) return { dot: 'bg-sky-500/80 dark:bg-sky-400/80', text: `${lightText} ${darkText}` };
+    return { dot: 'bg-gray-500', text: 'text-gray-800/70 dark:text-gray-400' };
 };
 
 const getFastBreakingTimeDetails = (day: CalendarDay): string | null => {
@@ -112,6 +128,81 @@ const getFastBreakingTimeDetails = (day: CalendarDay): string | null => {
 // Use the function to display additional information if available
 const getAdditionalFastingInfo = (day: CalendarDay): string | null => {
   return getFastBreakingTimeDetails(day);
+};
+
+const generateCalendarLinks = (day: CalendarDay | null, prevDay?: CalendarDay, nextDay?: CalendarDay) => {
+  if (!day) return { google: '#', apple: '#' };
+
+  const title = day.fasting_info.is_fasting_day 
+    ? day.fasting_info.description 
+    : day.raw_events.map(e => e.text).join(', ');
+
+  if (!title) return { google: '#', apple: '#' };
+
+  const description = `Events for ${formatDateDisplay(day.date_str)}:\n\n` +
+    day.raw_events.map(e => `- ${e.text}`).join('\n') +
+    `\n\nAstro Details: ${day.astro_details.tithi_name}, ${day.astro_details.masa_name} Masa.`;
+  
+  const location = 'ISKCON Pondicherry';
+
+  let startTimeISO: string | null = null;
+  let endTimeISO: string | null = null;
+  let startTimeForICS: string | null = null;
+  let endTimeForICS: string | null = null;
+  let isAllDay = true;
+
+  const fastingWindow = /ekadasi/i.test(day.fasting_info.description) 
+    ? getFastingWindow(prevDay, day, nextDay) 
+    : null;
+
+  if (fastingWindow) {
+    startTimeISO = fastingWindow.start.toISOString().replace(/[:-]|\.\d{3}/g, '');
+    endTimeISO = fastingWindow.end.toISOString().replace(/[:-]|\.\d{3}/g, '');
+    startTimeForICS = startTimeISO.substring(0, 15) + 'Z';
+    endTimeForICS = endTimeISO.substring(0, 15) + 'Z';
+    isAllDay = false;
+  } else {
+    const date = day.date_str.replace(/-/g, '');
+    startTimeISO = date;
+    const nextDate = new Date(day.date_str);
+    nextDate.setDate(nextDate.getDate() + 1);
+    const nextDateStr = getLocalDateStringYYYYMMDD(nextDate).replace(/-/g, '');
+    endTimeISO = nextDateStr;
+    startTimeForICS = date;
+    endTimeForICS = nextDateStr;
+  }
+
+  // Google Calendar Link
+  const googleParams = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: title,
+    dates: `${startTimeISO}/${endTimeISO}`,
+    details: description,
+    location: location,
+    ctz: 'Asia/Kolkata'
+  });
+  const googleLink = `https://www.google.com/calendar/render?${googleParams.toString()}`;
+
+  // Apple Calendar Link (.ics file)
+  const icsStartTime = isAllDay ? `DTSTART;VALUE=DATE:${startTimeForICS}` : `DTSTART:${startTimeForICS}`;
+  const icsEndTime = isAllDay ? `DTEND;VALUE=DATE:${endTimeForICS}` : `DTEND:${endTimeForICS}`;
+  
+  const icsContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'BEGIN:VEVENT',
+    `SUMMARY:${title}`,
+    icsStartTime,
+    icsEndTime,
+    `DESCRIPTION:${description.replace(/\n/g, '\\n')}`,
+    `LOCATION:${location}`,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\n');
+
+  const appleLink = `data:text/calendar;charset=utf8,${encodeURIComponent(icsContent)}`;
+
+  return { google: googleLink, apple: appleLink };
 };
 
 /**
@@ -221,15 +312,29 @@ const getFastingProgress = (window: { start: Date, end: Date }): { progress: num
 };
 
 // Main Panel Component
-export const TempleEventsPanel = memo(() => {
+export const TempleEventsPanel = memo(({ onOpenChange }: { onOpenChange: (open: boolean) => void }) => {
   const [selectedDayOfMonth, setSelectedDayOfMonth] = useState(new Date().getDate())
   const [activeMonthDate, setActiveMonthDate] = useState(new Date())
   const [monthCalendarData, setMonthCalendarData] = useState<CalendarDay[]>([]);
   const [calendarLoading, setCalendarLoading] = useState(false);
   const [calendarError, setCalendarError] = useState<string | null>(null);
+  const [displayQuote, setDisplayQuote] = useState(getRandomQuote());
   const [selectedDayForPopover, setSelectedDayForPopover] = useState<CalendarDay | null>(null);
-  const [popoverOpenStates, setPopoverOpenStates] = useState<Record<string, boolean>>({});
   const [todayCalendarData, setTodayCalendarData] = useState<CalendarDay | null>(null); // For today's fasting bar
+  const [expandedActivity, setExpandedActivity] = useState<string | null>(null);
+  const navigate = useNavigate({ from: '/' });
+
+  const calendarLinks = useMemo(() => {
+    if (!selectedDayForPopover) return { google: '#', apple: '#' };
+    
+    const dayIndex = monthCalendarData.findIndex(d => d.date_str === selectedDayForPopover.date_str);
+    if (dayIndex === -1) return { google: '#', apple: '#' };
+
+    const prevDay = dayIndex > 0 ? monthCalendarData[dayIndex - 1] : undefined;
+    const nextDay = dayIndex < monthCalendarData.length - 1 ? monthCalendarData[dayIndex + 1] : undefined;
+
+    return generateCalendarLinks(selectedDayForPopover, prevDay, nextDay);
+  }, [selectedDayForPopover, monthCalendarData]);
 
   const { data: schedule } = useQuery({
     queryKey: ['templeSchedule'],
@@ -240,6 +345,7 @@ export const TempleEventsPanel = memo(() => {
   useEffect(() => {
     const fetchMonthData = async () => {
       setCalendarLoading(true);
+      setDisplayQuote(getRandomQuote());
       setCalendarError(null);
       const year = activeMonthDate.getFullYear();
       const month = activeMonthDate.getMonth() + 1;
@@ -263,7 +369,7 @@ export const TempleEventsPanel = memo(() => {
         }
         
       } catch (err) {
-        setCalendarError("🦚 The Lord's plans are mysterious. We couldn't retrieve the calendar at this moment. Please try again later. Hare Krishna!");
+        setCalendarError("We couldn't retrieve the calendar at this moment. Please try again later.");
         setMonthCalendarData([]);
         setTodayCalendarData(null);
       } finally {
@@ -300,30 +406,33 @@ export const TempleEventsPanel = memo(() => {
   const firstDayOfMonthWeekday = new Date(activeMonthDate.getFullYear(), activeMonthDate.getMonth(), 1).getDay();
 
   const handleDayClick = (dayNumber: number) => {
-    setSelectedDayOfMonth(dayNumber);
     const clickedDate = new Date(activeMonthDate.getFullYear(), activeMonthDate.getMonth(), dayNumber);
     const dateStr = getLocalDateStringYYYYMMDD(clickedDate);
     const dayData = monthCalendarData.find(d => d.date_str === dateStr);
+    
+    setSelectedDayOfMonth(dayNumber);
+
     if (dayData) {
-      setSelectedDayForPopover(dayData);
-      setPopoverOpenStates(prev => ({ ...prev, [dateStr]: !prev[dateStr] }));
+      if (selectedDayForPopover?.date_str === dateStr) {
+        setSelectedDayForPopover(null); // Toggle off if same day is clicked
+      } else {
+        setSelectedDayForPopover(dayData);
+      }
     } else {
       setSelectedDayForPopover(null);
-      setPopoverOpenStates(prev => ({ ...prev, [dateStr]: false }));
     }
   };
   
-  const handlePopoverOpenChange = (dateStr: string, isOpen: boolean) => {
-    setPopoverOpenStates(prev => ({ ...prev, [dateStr]: isOpen }));
-    if (!isOpen && selectedDayForPopover?.date_str === dateStr) {
-      setSelectedDayForPopover(null);
-    }
+  const handleNavigate = () => {
+    onOpenChange(false);
+    navigate({ to: '/calender' });
+    window.scrollTo(0, 0);
   };
 
   return (
-    <div className="flex flex-col min-h-[420px] max-h-[calc(100vh-180px)] bg-gray-50 dark:bg-black">
+    <div className="flex flex-col min-h-[420px] max-h-[calc(100vh-180px)] bg-gradient-to-br from-gray-50 to-slate-100 dark:bg-gradient-to-br dark:from-indigo-950/50 dark:via-black dark:to-purple-950/50">
       {/* Header */}
-      <div className="p-3 border-b dark:border-zinc-700 border-gray-200 flex-shrink-0 space-y-2">
+      <div className="p-3 border-b dark:border-zinc-800 border-gray-200 flex-shrink-0 space-y-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="bg-gradient-to-r from-[#e94a9c] via-[#ffc547] to-[#0a84ff] p-0.5 rounded-full shadow-md">
@@ -490,8 +599,24 @@ export const TempleEventsPanel = memo(() => {
           <div className="grid grid-cols-7 gap-2 text-sm font-medium text-center text-muted-foreground">
             {daysOfWeek.map(day => <div key={day} className="py-2">{day.substring(0,2)}</div>)}
           </div>
-          {calendarLoading && <div className="flex justify-center items-center h-20"><Loader2 className="h-5 w-5 animate-spin text-sky-500"/></div>}
-          {calendarError && <div className="text-yellow-600 dark:text-yellow-400 text-sm p-4 text-center rounded-md bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/30">{calendarError}</div>}
+          {calendarLoading && (
+            <div className="flex flex-col justify-center items-center h-20 space-y-2 rounded-lg bg-gradient-to-r from-sky-500 to-blue-500 p-4">
+              <Loader2 className="h-5 w-5 animate-spin text-white"/>
+              <ShimmerText 
+                text={displayQuote} 
+                className="text-xs text-center text-white bg-[linear-gradient(110deg,theme(colors.slate.50),45%,theme(colors.white),55%,theme(colors.slate.50))] dark:bg-[linear-gradient(110deg,theme(colors.slate.400),45%,theme(colors.slate.200),55%,theme(colors.slate.400))]"
+              />
+            </div>
+          )}
+          {calendarError && (
+            <div className="text-white text-sm p-4 text-center rounded-md bg-gradient-to-r from-red-500 to-orange-500">
+              <p className="font-semibold mb-2">🦚 The Lord's plans are mysterious.</p>
+              <ShimmerText 
+                text={displayQuote} 
+                className="text-xs bg-[linear-gradient(110deg,theme(colors.slate.50),45%,theme(colors.white),55%,theme(colors.slate.50))] dark:bg-[linear-gradient(110deg,theme(colors.slate.400),45%,theme(colors.slate.200),55%,theme(colors.slate.400))]" 
+              />
+            </div>
+          )}
           {!calendarLoading && !calendarError && (
             <div className="grid grid-cols-7 gap-1">
               {Array.from({ length: firstDayOfMonthWeekday }).map((_, i) => <div key={`empty-panel-${i}`} />)}
@@ -502,147 +627,191 @@ export const TempleEventsPanel = memo(() => {
                 const dayData = monthCalendarData.find(d => d.date_str === dateStr);
                 const hasEventsOrFasting = dayData && (dayData.events.length > 0 || dayData.raw_events.length > 0 || dayData.fasting_info.is_fasting_day || dayData.ekadasi_parana_details);
                 return (
-                  <Popover key={`panel-${dateStr}`} open={popoverOpenStates[dateStr]} onOpenChange={(isOpen: boolean) => handlePopoverOpenChange(dateStr, isOpen)}>
-                    <PopoverTrigger asChild>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleDayClick(dayNumber)}
-                        className={cn(
-                          "h-8 text-sm rounded flex items-center justify-center relative transition-all duration-150 ease-out select-none",
-                          selectedDayOfMonth === dayNumber
-                            ? "bg-gradient-to-r from-sky-500 to-blue-500 text-white font-semibold shadow-sm ring-1 ring-offset-0 ring-blue-500"
-                            : "bg-gray-100 hover:bg-gray-200 dark:bg-zinc-700/60 dark:hover:bg-zinc-600/80",
-                          dayData?.fasting_info.is_fasting_day && selectedDayOfMonth !== dayNumber && "ring-1 ring-pink-400/70 dark:ring-pink-600/70",
-                          new Date().getFullYear() === activeMonthDate.getFullYear() && new Date().getMonth() === activeMonthDate.getMonth() && dayNumber === new Date().getDate() && "font-bold ring-1 ring-amber-500"
-                        )}
-                      >
-                        {dayNumber}
-                        {hasEventsOrFasting && (
-                          <span className={cn("absolute bottom-0.5 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full", dayData?.fasting_info.is_fasting_day ? "bg-pink-500" : "bg-sky-500")}/>
-                        )}
-                      </motion.button>
-                    </PopoverTrigger>
-                    {selectedDayForPopover && selectedDayForPopover.date_str === dateStr && (
-                      <PopoverContent
-                        side="bottom"
-                        align="center"
-                        className={cn(
-                          "w-80 p-0 z-50",
-                          selectedDayForPopover.fasting_info.is_fasting_day
-                            ? "bg-pink-50/50 dark:bg-pink-900/20"
-                            : (selectedDayForPopover.events.length > 0 || selectedDayForPopover.raw_events.length > 0)
-                            ? "bg-sky-50/50 dark:bg-sky-900/20"
-                            : ""
-                        )}
-                      >
-                        <div className={cn("p-2 border-b", "border-gray-200 dark:border-zinc-700")}>
-                          <h4 className="font-semibold text-xs">{formatDateDisplay(selectedDayForPopover.date_str)}</h4>
-                          <p className="text-xs text-muted-foreground">{selectedDayForPopover.astro_details.tithi_name}, {selectedDayForPopover.astro_details.masa_name} Masa</p>
-                        </div>
-                        <div className="p-3 max-h-64 overflow-y-auto space-y-2 text-sm styled-scrollbar"> {/* Adjusted max-h */}
-                          {selectedDayForPopover.fasting_info.is_fasting_day && (
-                            <Alert variant="default" className={cn("p-2 text-sm", "bg-pink-50/80 border-pink-200/70 text-pink-700 dark:bg-pink-900/60 dark:border-pink-700/50 dark:text-pink-300")}><Sparkles className="h-4 w-4 text-pink-500" /><AlertTitle className="font-semibold text-sm">{selectedDayForPopover.fasting_info.description}</AlertTitle></Alert>
-                          )}
-                          {selectedDayForPopover.ekadasi_parana_details && (
-                            <Alert variant="default" className={cn("p-2 text-sm mt-2", "bg-green-50/80 border-green-200/70 text-green-700 dark:bg-green-900/60 dark:border-green-700/50 dark:text-green-300")}><ListChecks className="h-4 w-4 text-green-500" /><AlertTitle className="font-semibold text-sm">Ekadasi Parana</AlertTitle><AlertDescription className="text-sm">{selectedDayForPopover.ekadasi_parana_details}</AlertDescription></Alert>
-                          )}
-                          {getAdditionalFastingInfo(selectedDayForPopover) && !selectedDayForPopover.ekadasi_parana_details && (
-                            <Alert variant="default" className={cn("p-2 text-sm mt-2", "bg-green-50/80 border-green-200/70 text-green-700 dark:bg-green-900/60 dark:border-green-700/50 dark:text-green-300")}><ListChecks className="h-4 w-4 text-green-500" /><AlertTitle className="font-semibold text-sm">Fasting Info</AlertTitle><AlertDescription className="text-sm">{getAdditionalFastingInfo(selectedDayForPopover)}</AlertDescription></Alert>
-                          )}
-                          {/* Fasting Progress Bar REMOVED from here */}
-                          
-                          {(selectedDayForPopover.events.length > 0 || selectedDayForPopover.raw_events.length > 0) && (
-                            <div className="space-y-1 pt-1">
-                              <h5 className="text-sm font-medium text-muted-foreground">Events:</h5>
-                              {selectedDayForPopover.raw_events.map((event, idx) => (
-                                <div key={`dre-panel-${idx}`} className="flex items-start gap-2">
-                                  <div className={cn("h-2 w-2 rounded-full mt-1 flex-shrink-0", getEventStyle(event).dot)}></div>
-                                  <Badge variant="outline" className={cn("text-sm px-2 py-0.5 leading-tight", getEventStyle(event).text, "bg-opacity-20 dark:bg-opacity-10")}>
-                                    {event.text}
-                                  </Badge>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                         {/* Daily Astro Events Timeline REMOVED from here */}
-                         
-                         {!selectedDayForPopover.fasting_info.is_fasting_day &&
-                          !selectedDayForPopover.ekadasi_parana_details &&
-                          selectedDayForPopover.events.length === 0 &&
-                          selectedDayForPopover.raw_events.length === 0 &&
-                          (!selectedDayForPopover.core_events_detailed || selectedDayForPopover.core_events_detailed.length === 0) &&
-                          ( <p className="text-muted-foreground text-center py-2 text-sm">A day for serene contemplation and chanting. Hare Krishna!</p> )}
-                        </div>
-                      </PopoverContent>
+                  <motion.button
+                    key={`panel-${dateStr}`}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95, transition: { type: 'spring', stiffness: 400, damping: 15 } }}
+                    onClick={() => handleDayClick(dayNumber)}
+                    className={cn(
+                      "h-8 text-sm rounded flex items-center justify-center relative transition-all duration-150 ease-out select-none",
+                      selectedDayOfMonth === dayNumber
+                        ? dayData?.fasting_info.is_fasting_day
+                          ? "bg-gradient-to-br from-red-500 via-rose-500 to-pink-500 text-white font-semibold shadow-md"
+                          : "bg-gradient-to-br from-sky-500 via-cyan-500 to-blue-500 text-white font-semibold shadow-md"
+                        : "bg-gray-100 hover:bg-gray-200 dark:bg-zinc-700/60 dark:hover:bg-zinc-600/80",
+                      dayData?.fasting_info.is_fasting_day && selectedDayOfMonth !== dayNumber && "ring-1 ring-pink-400/70 dark:ring-pink-600/70",
+                      new Date().getFullYear() === activeMonthDate.getFullYear() && new Date().getMonth() === activeMonthDate.getMonth() && dayNumber === new Date().getDate() && selectedDayOfMonth !== dayNumber && "font-bold ring-1 ring-amber-500"
                     )}
-                  </Popover>
+                  >
+                    {dayNumber}
+                    {hasEventsOrFasting && (
+                      <span className={cn("absolute bottom-0.5 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full", dayData?.fasting_info.is_fasting_day ? "bg-pink-500" : "bg-sky-500")}/>
+                    )}
+                  </motion.button>
                 );
               })}
             </div>
           )}
+          <AnimatePresence mode="wait">
+            {selectedDayForPopover && (
+              <motion.div
+                key={selectedDayForPopover.date_str}
+                initial={{ opacity: 0, y: 20, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -20, scale: 0.98 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                className={cn(
+                  "mt-2 rounded-lg border p-3 relative overflow-hidden",
+                  selectedDayForPopover.fasting_info.is_fasting_day
+                    ? "bg-rose-50 border-rose-200 dark:bg-zinc-900 dark:border-rose-700/50"
+                    : "bg-sky-50 border-sky-200 dark:bg-zinc-900 dark:border-sky-700/50"
+                )}
+              >
+                <div className={cn(
+                  "p-2 border-b flex justify-between items-start", 
+                  selectedDayForPopover.fasting_info.is_fasting_day 
+                    ? "border-rose-200/30 dark:border-rose-700/40" 
+                    : "border-sky-200/30 dark:border-sky-700/40"
+                )}>
+                  <div>
+                    <h4 className={cn(
+                      "font-semibold text-sm",
+                      selectedDayForPopover.fasting_info.is_fasting_day ? "text-rose-900 dark:text-rose-200" : "text-sky-900 dark:text-sky-200"
+                    )}>
+                      {formatDateDisplay(selectedDayForPopover.date_str)}
+                    </h4>
+                    <p className={cn(
+                      "text-xs",
+                      selectedDayForPopover.fasting_info.is_fasting_day ? "text-rose-700/90 dark:text-rose-300/80" : "text-sky-700/90 dark:text-sky-300/80"
+                    )}>
+                      {selectedDayForPopover.astro_details.tithi_name}, {selectedDayForPopover.astro_details.masa_name} Masa
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge asChild variant="outline" className="cursor-pointer bg-black/5 hover:bg-black/10 border-black/10 text-gray-700 dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/20 dark:text-gray-300 transition-colors">
+                      <a href={calendarLinks.google} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-2 py-0.5">
+                        <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M10 14h4"/><path d="M10 18h4"/><path d="M14 14v4"/></svg>
+                        <span className="hidden sm:inline">Google</span>
+                      </a>
+                    </Badge>
+                    <Badge asChild variant="outline" className="cursor-pointer bg-black/5 hover:bg-black/10 border-black/10 text-gray-700 dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/20 dark:text-gray-300 transition-colors">
+                      <a href={calendarLinks.apple} download={`${selectedDayForPopover?.date_str}-event.ics`} className="flex items-center gap-1.5 px-2 py-0.5">
+                        <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M10 14h4"/><path d="M10 18h4"/><path d="M14 14v4"/></svg>
+                        <span className="hidden sm:inline">Apple</span>
+                      </a>
+                    </Badge>
+                  </div>
+                </div>
+                <div className="p-3 max-h-64 overflow-y-auto space-y-3 text-sm styled-scrollbar">
+                  {selectedDayForPopover.fasting_info.is_fasting_day && (
+                    <Alert variant="default" className="p-2 text-sm bg-rose-100/50 border-rose-200/50 text-rose-900 dark:bg-rose-900/40 dark:border-rose-700/30 dark:text-rose-300"><Sparkles className="h-4 w-4 text-rose-600 dark:text-rose-400" /><AlertTitle className="font-semibold text-sm">{selectedDayForPopover.fasting_info.description}</AlertTitle></Alert>
+                  )}
+                  {selectedDayForPopover.ekadasi_parana_details && (
+                    <Alert variant="default" className="p-2 text-sm mt-2 bg-green-100/50 border-green-200/50 text-green-900 dark:bg-green-900/40 dark:border-green-700/30 dark:text-green-300"><ListChecks className="h-4 w-4 text-green-600 dark:text-green-300" /><AlertTitle className="font-semibold text-sm">Ekadasi Parana</AlertTitle><AlertDescription className="text-sm text-green-800/90 dark:text-green-300/90">{selectedDayForPopover.ekadasi_parana_details}</AlertDescription></Alert>
+                  )}
+                  {getAdditionalFastingInfo(selectedDayForPopover) && !selectedDayForPopover.ekadasi_parana_details && (
+                    <Alert variant="default" className="p-2 text-sm mt-2 bg-green-100/50 border-green-200/50 text-green-900 dark:bg-green-900/40 dark:border-green-700/30 dark:text-green-300"><ListChecks className="h-4 w-4 text-green-600 dark:text-green-300" /><AlertTitle className="font-semibold text-sm">Fasting Info</AlertTitle><AlertDescription className="text-sm text-green-800/90 dark:text-green-300/90">{getAdditionalFastingInfo(selectedDayForPopover)}</AlertDescription></Alert>
+                  )}
+                  {(selectedDayForPopover.raw_events && selectedDayForPopover.raw_events.length > 0) ? (
+                    <div className="space-y-2 pt-1">
+                      <h5 className={cn("text-sm font-medium", selectedDayForPopover.fasting_info.is_fasting_day ? "text-rose-800 dark:text-rose-300" : "text-sky-800 dark:text-sky-300")}>Events:</h5>
+                      {selectedDayForPopover.raw_events.map((event, idx) => (
+                        <div key={`dre-panel-${idx}`} className="flex items-center gap-2">
+                          <div className={cn("h-2 w-2 rounded-full flex-shrink-0", getEventStyle(event, selectedDayForPopover.fasting_info.is_fasting_day).dot)}></div>
+                          <span className={cn("font-medium text-sm", getEventStyle(event, selectedDayForPopover.fasting_info.is_fasting_day).text)}>
+                            {event.text}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : !selectedDayForPopover.fasting_info.is_fasting_day && !selectedDayForPopover.ekadasi_parana_details && (
+                    <p className="text-gray-700 dark:text-gray-300 text-center py-2 text-sm">A day for serene contemplation and chanting. Hare Krishna!</p>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Daily Schedule Section */}
         <div className={cn("p-3 rounded-lg shadow-inner space-y-3", "bg-slate-100/50 dark:bg-zinc-800/50")}>
           <h3 className="text-sm font-semibold text-[#ffc547] dark:text-[#ffc547]">Daily Activities</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[220px] overflow-y-auto pr-1.5 styled-scrollbar-thin">
-            {schedule?.map((item, index) => (
-              <motion.div
-                key={`panel-${item.time}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0, transition: { delay: index * 0.05, type: 'spring', stiffness: 200, damping: 20 } }}
-                className={cn(
-                  "flex gap-3 p-3 rounded-lg border transition-all duration-200 bg-gradient-to-r",
-                  "border-gray-200 hover:border-gray-300 hover:shadow-lg dark:border-zinc-700 dark:hover:bg-zinc-700 dark:hover:border-zinc-600 dark:hover:shadow-lg",
-                  item.time.includes('4:30 AM') ? "from-purple-100 to-indigo-100 text-purple-700 dark:from-purple-900/20 dark:to-indigo-900/20 dark:text-purple-300" : '',
-                  item.time.includes('7:15 AM') || item.time.includes('7:20 AM') ? "from-orange-100 to-amber-100 text-orange-700 dark:from-orange-900/20 dark:to-amber-900/20 dark:text-orange-300" : '',
-                  item.time.includes('8:00 AM') ? "from-amber-100 to-yellow-100 text-amber-700 dark:from-amber-900/20 dark:to-yellow-900/20 dark:text-amber-300" : '',
-                  item.time.includes('12:00 PM') ? "from-yellow-100 to-green-100 text-green-700 dark:from-yellow-900/20 dark:to-green-900/20 dark:text-yellow-300" : '',
-                  item.time.includes('5:30 PM') ? "from-pink-100 to-rose-100 text-pink-700 dark:from-pink-900/20 dark:to-rose-900/20 dark:text-pink-300" : '',
-                  item.time.includes('6:30 PM') ? "from-indigo-100 to-purple-100 text-indigo-700 dark:from-indigo-900/20 dark:to-purple-900/20 dark:text-indigo-300" : ''
-                )}
-              >
-                <div className="flex items-center gap-2 min-w-[80px] text-gray-800 dark:text-[#ffc547]">
-                  <Clock className="h-4 w-4 flex-shrink-0" />
-                  <span className="text-sm font-semibold tabular-nums">{item.time}</span>
-                </div>
-                <div className="flex-1 overflow-hidden">
-                  <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">{item.activity}</h4>
-                  {item.description && (
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5 line-clamp-2">{item.description}</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-[220px] overflow-y-auto pr-1.5 styled-scrollbar-thin">
+            {schedule?.map((item) => {
+              const isExpanded = expandedActivity === item.time;
+              return (
+                <motion.div
+                  key={`panel-${item.time}`}
+                  layout
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                  onClick={() => setExpandedActivity(isExpanded ? null : item.time)}
+                  className={cn(
+                    "p-3 rounded-lg border transition-all duration-200 bg-gradient-to-br cursor-pointer overflow-hidden flex flex-col justify-center items-center",
+                    "hover:shadow-lg dark:hover:shadow-lg",
+                    item.time.includes('4:30 AM') ? "from-purple-50 to-indigo-100 border-purple-200 dark:from-purple-900/20 dark:to-indigo-900/20 dark:border-purple-700/50" : '',
+                    item.time.includes('7:15 AM') || item.time.includes('7:20 AM') ? "from-orange-50 to-amber-100 border-orange-200 dark:from-orange-900/20 dark:to-amber-900/20 dark:border-orange-700/50" : '',
+                    item.time.includes('8:00 AM') ? "from-amber-50 to-yellow-100 border-amber-200 dark:from-amber-900/20 dark:to-yellow-900/20 dark:border-amber-700/50" : '',
+                    item.time.includes('12:00 PM') ? "from-yellow-50 to-lime-100 border-yellow-200 dark:from-yellow-900/20 dark:to-lime-900/20 dark:border-yellow-700/50" : '',
+                    item.time.includes('5:30 PM') ? "from-pink-50 to-rose-100 border-pink-200 dark:from-pink-900/20 dark:to-rose-900/20 dark:border-pink-700/50" : '',
+                    item.time.includes('6:30 PM') ? "from-indigo-50 to-violet-100 border-indigo-200 dark:from-indigo-900/20 dark:to-violet-900/20 dark:border-indigo-700/50" : ''
                   )}
-                </div>
-              </motion.div>
-            ))}
+                >
+                  <motion.div layout="position" className="text-center">
+                    <div className={cn(
+                      "flex items-center justify-center gap-1.5",
+                      item.time.includes('4:30 AM') ? "text-purple-800 dark:text-purple-300" : '',
+                      item.time.includes('7:15 AM') || item.time.includes('7:20 AM') ? "text-orange-800 dark:text-orange-300" : '',
+                      item.time.includes('8:00 AM') ? "text-amber-800 dark:text-amber-300" : '',
+                      item.time.includes('12:00 PM') ? "text-lime-800 dark:text-lime-300" : '',
+                      item.time.includes('5:30 PM') ? "text-pink-800 dark:text-pink-300" : '',
+                      item.time.includes('6:30 PM') ? "text-indigo-800 dark:text-indigo-300" : ''
+                    )}>
+                      <Clock className="h-3.5 w-3.5 flex-shrink-0" />
+                      <span className="text-base font-bold tabular-nums">{item.time}</span>
+                    </div>
+                    <h4 className="text-xs font-semibold text-gray-800 dark:text-gray-200 mt-1 truncate">{item.activity}</h4>
+                  </motion.div>
+                  <AnimatePresence>
+                    {isExpanded && item.description && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto', marginTop: '8px' }}
+                        exit={{ opacity: 0, height: 0, marginTop: '0px' }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                      >
+                        <p className="text-xs text-center text-gray-600 dark:text-gray-400">{item.description}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </div>
       <div className="flex-shrink-0 p-2 border-t border-border/50">
-        <Link 
-          to="/calender" 
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           className="w-full"
+          onClick={handleNavigate}
         >
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full"
-          >
-            <FlipButton
-              frontContent={
-                <div className="flex items-center justify-center gap-1.5">
-                  <ExternalLink className="h-3.5 w-3.5" />
-                  View Full Vaishnava Calendar
-                </div>
-              }
-              backContent={<span className="text-xs font-bold">Open Calendar</span>}
-              className="w-full px-4 text-xs h-8 rounded-full font-semibold shadow-md select-none"
-              frontClassName="bg-outline text-foreground"
-              backClassName="bg-primary text-primary-foreground"
-              from="bottom"
-            />
-          </motion.div>
-        </Link>
+          <FlipButton
+            frontContent={
+              <div className="flex items-center justify-center gap-1.5">
+                <ExternalLink className="h-3.5 w-3.5" />
+                View Full Vaishnava Calendar
+              </div>
+            }
+            backContent={<span className="text-xs font-bold">Open Calendar</span>}
+            className="w-full px-4 text-xs h-8 rounded-full font-semibold shadow-md select-none"
+            frontClassName="bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+            backClassName="bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+            from="bottom"
+          />
+        </motion.div>
       </div>
     </div>
   );
@@ -686,7 +855,7 @@ export function TempleEvents({ open, onOpenChange }: TempleEventsProps) {
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto">
-                <TempleEventsPanel />
+                <TempleEventsPanel onOpenChange={onOpenChange} />
               </div>
             </motion.div>
           )}
@@ -735,7 +904,7 @@ export function TempleEvents({ open, onOpenChange }: TempleEventsProps) {
                   </button>
                 </div>
                 <div className="overflow-y-auto">
-                    <TempleEventsPanel />
+                    <TempleEventsPanel onOpenChange={onOpenChange} />
                 </div>
               </motion.div>
             </motion.div>

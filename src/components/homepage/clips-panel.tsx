@@ -8,6 +8,7 @@ import {
 } from './youtube-marquee';
 import type { YouTubeVideo } from './youtube-marquee';
 import { cn } from '@/lib/utils';
+import { useMediaQuery } from '@uidotdev/usehooks';
 // import { AspectRatio } from '@/components/ui/aspect-ratio'; // Removed AspectRatio
 
 const staticVideos: YouTubeVideo[] = [
@@ -293,6 +294,7 @@ const ClipPlayerCardSkeleton = () => (
 export function ClipsPanel({ currentIndex, setCurrentIndex }: { currentIndex: number; setCurrentIndex: (index: number | ((prevIndex: number) => number)) => void; }) {
   const videos = staticVideos;
   const isLoading = false;
+  const isMobile = useMediaQuery('(max-width: 767px)');
 
   // const [currentIndex, setCurrentIndex] = useState(0); // Managed by parent
   const [direction, setDirection] = useState(0);
@@ -352,7 +354,7 @@ export function ClipsPanel({ currentIndex, setCurrentIndex }: { currentIndex: nu
   };
 
   return (
-    <div className="relative w-full h-full bg-black overflow-visible cursor-grab active:cursor-grabbing flex flex-col">
+    <div className={cn("relative w-full h-full bg-black overflow-visible flex flex-col", !isMobile && "cursor-grab active:cursor-grabbing")}>
       <AnimatePresence initial={false} custom={direction}>
         <motion.div
           key={currentIndex}
@@ -362,11 +364,11 @@ export function ClipsPanel({ currentIndex, setCurrentIndex }: { currentIndex: nu
           animate="center"
           exit="exit"
           drag="y"
-          dragConstraints={{ top: -100, bottom: 100 }}
-          dragElastic={0.5}
+          dragConstraints={{ top: 0, bottom: 0 }}
+          dragElastic={0.2}
           onDragStart={() => setIsDragging(true)}
           onDragEnd={handleDragEnd}
-          transition={{ y: { type: "spring", stiffness: 260, damping: 20, mass: 0.8 }, opacity: { duration: 0.2 }, scale: { duration: 0.2 } }}
+          transition={{ y: { type: "spring", stiffness: 300, damping: 30 }, opacity: { duration: 0.2 }, scale: { duration: 0.2 } }}
           className="w-full h-full absolute top-0 left-0"
         >
           <ClipPlayerCard
@@ -383,26 +385,28 @@ export function ClipsPanel({ currentIndex, setCurrentIndex }: { currentIndex: nu
       <div className="absolute top-2 right-2 z-20 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
         {currentIndex + 1} / {videos.length}
       </div>
-      <div className="absolute left-4 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-4">
-        <motion.button 
-          onClick={() => paginate(-1)} 
-          className="text-white bg-black/70 p-3 rounded-full pointer-events-auto hover:bg-black/90 transition-all" 
-          disabled={currentIndex === 0}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <ChevronUp size={28} className={currentIndex === 0 ? "text-gray-500" : "text-white"} />
-        </motion.button>
-        <motion.button 
-          onClick={() => paginate(1)} 
-          className="text-white bg-black/70 p-3 rounded-full pointer-events-auto hover:bg-black/90 transition-all" 
-          disabled={currentIndex === videos.length - 1}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <ChevronDown size={28} className={currentIndex === videos.length - 1 ? "text-gray-500" : "text-white"} />
-        </motion.button>
-      </div>
+      {!isMobile && (
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-4">
+          <motion.button 
+            onClick={() => paginate(-1)} 
+            className="text-white bg-black/70 p-3 rounded-full pointer-events-auto hover:bg-black/90 transition-all" 
+            disabled={currentIndex === 0}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <ChevronUp size={28} className={currentIndex === 0 ? "text-gray-500" : "text-white"} />
+          </motion.button>
+          <motion.button 
+            onClick={() => paginate(1)} 
+            className="text-white bg-black/70 p-3 rounded-full pointer-events-auto hover:bg-black/90 transition-all" 
+            disabled={currentIndex === videos.length - 1}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <ChevronDown size={28} className={currentIndex === videos.length - 1 ? "text-gray-500" : "text-white"} />
+          </motion.button>
+        </div>
+      )}
     </div>
   );
 }

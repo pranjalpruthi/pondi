@@ -28,10 +28,10 @@ import { SponsorshipSection } from '@/components/homepage/sponsorship-section';
 // --- Reusable Components for the New Design ---
 
 const OrnateDivider: FC = () => (
-    <div className="flex items-center justify-center my-4 md:my-6">
-        <div className="w-1/4 h-px bg-gradient-to-r from-transparent to-amber-700/50 dark:to-amber-500/50" />
-        <Feather className="h-5 w-5 mx-2 text-amber-700/80 dark:text-amber-500/80" />
-        <div className="w-1/4 h-px bg-gradient-to-l from-transparent to-amber-700/50 dark:to-amber-500/50" />
+    <div className="flex items-center justify-center my-2 md:my-4">
+        <div className="w-1/5 h-px bg-gradient-to-r from-transparent to-amber-700/50 dark:to-amber-500/50" />
+        <Feather className="h-4 w-4 mx-2 text-amber-700/80 dark:text-amber-500/80" />
+        <div className="w-1/5 h-px bg-gradient-to-l from-transparent to-amber-700/50 dark:to-amber-500/50" />
     </div>
 );
 

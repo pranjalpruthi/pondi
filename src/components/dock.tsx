@@ -904,7 +904,7 @@ function NavbarContent() {
     setActiveDockItem(null);
   }, [setActiveDockItem, setIsDockOpen]);
 
-  const eventsPanelContent = React.useMemo(() => <TempleEventsPanel />, []);
+  const eventsPanelContent = React.useMemo(() => <TempleEventsPanel onOpenChange={handleClosePanel} />, [handleClosePanel]);
   const upcomingEventPanelContent = React.useMemo(() => <UpcomingEventPanel onClose={handleClosePanel} />, [handleClosePanel]);
 
   // useClickOutside hook (from snippet, adapted path)
