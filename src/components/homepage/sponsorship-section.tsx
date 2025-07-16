@@ -1,6 +1,7 @@
 import { type FC, type ReactNode } from 'react';
 import { motion } from 'motion/react';
 import { SponsorshipCard } from '@/components/fests/sponsorship-card';
+import { HighlightText } from '@/components/animate-ui/text/highlight';
 
 const ScrollSectionTitle: FC<{ title: string; subtitle: ReactNode }> = ({ title, subtitle }) => (
     <motion.div 
@@ -69,6 +70,34 @@ export const SponsorshipSection = () => {
                     title="Sponsorship Opportunities"
                     subtitle="Seize this golden opportunity to render direct service to Lord Krishna on His divine appearance day and receive unlimited blessings."
                 />
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.5 }}
+                    transition={{ duration: 0.6, delay: 0.1 }}
+                    className="max-w-4xl mx-auto px-4 sm:px-6 mb-12"
+                >
+                    <div className="bg-gradient-to-br from-indigo-900 to-gray-900 dark:from-amber-50 dark:to-stone-100 rounded-2xl p-6 shadow-lg border border-indigo-700 dark:border-amber-200 text-center">
+                        <h3 className="text-2xl font-bold font-serif text-white dark:text-indigo-900 mb-3">
+                            Can't Attend? You Can Still Receive Blessings!
+                        </h3>
+                        <p className="text-stone-200 dark:text-stone-700 mb-4">
+                            We'll miss you at the divine festival and the delicious free prasadam buffet! 
+                            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Smiling%20Face%20with%20Tear.png" alt="Smiling Face with Tear" width="25" height="25" className="inline-block mx-1" />
+                            Though you can't be here in person, your devotion can still reach Lord Krishna through a heartfelt seva sponsorship.
+                        </p>
+                        <blockquote className="border-l-4 border-amber-400 pl-4 italic text-stone-300 dark:text-stone-600">
+                            <p>"It is not the quantity of the offering that matters, but the quality of devotion. A small flower offered with love is more valuable to Kṛṣṇa than a mountain of gold offered with pride."</p>
+                            <footer className="text-sm mt-2 not-italic">— Teachings of Śrīla Prabhupāda, based on Bhagavad-gītā 9.26</footer>
+                        </blockquote>
+                        <p className="mt-4 font-semibold">
+                            <HighlightText 
+                                text="Even the smallest contribution made with a sincere heart is a great service." 
+                                className="bg-gradient-to-r from-amber-400/20 to-orange-400/20 dark:from-amber-100 dark:to-orange-100 text-amber-300 dark:text-orange-800"
+                            />
+                        </p>
+                    </div>
+                </motion.div>
             </div>
             {/* Mobile: Vertical Grid */}
             <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 gap-8 md:hidden">
