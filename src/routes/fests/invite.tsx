@@ -884,7 +884,7 @@ const GalleryMarquee = ({ images, from_bg }: { images: string[], from_bg: string
 const EventActivitiesSection = () => (
     <ScrollSection id="activities" className="bg-stone-100/70 dark:bg-gray-800/20">
         <ScrollSectionTitle 
-            title="A Day of Divine Celebration" 
+            title="Claim Your Free Pass to a Divine Celebration" 
             subtitle={
                 <span>
                     Immerse yourself in a variety of spiritual and cultural activities. Here’s a glimpse of what awaits you at <HighlightText text="Śrī Kṛṣṇa Janmāṣṭamī 2025" className="bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-500/30 dark:to-orange-500/30 text-orange-800 dark:text-orange-200" />.
