@@ -1,6 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useLocation } from '@tanstack/react-router';
 import { useEffect, useState, useRef, type FC, type ReactNode, Fragment } from 'react';
-import Confetti from 'react-confetti';
+import { Confetti, type ConfettiRef } from '@/components/magicui/confetti';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, BookOpen, MapPin, Clock, Play, Share2, Feather, Copy, Check } from "lucide-react";
@@ -150,14 +150,13 @@ const SponsorshipProgress: FC<{ sponsored: number; total: number }> = ({ sponsor
 };
 
 
-const InviteHero = () => {
+const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
     const [isInteracted, setIsInteracted] = useState(false);
-    const [showConfetti, setShowConfetti] = useState(false);
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.2 });
 
     const videoId = "AuZtQraCBd4";
-    const silentUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1`;
+    const silentUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1`;
     const interactiveUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1`;
 
     const handleInteraction = () => {
@@ -166,14 +165,8 @@ const InviteHero = () => {
         }
     };
 
-    const handleSponsorClick = () => {
-        setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 5000); // Confetti lasts for 5 seconds
-    };
-
     return (
         <div className="relative min-h-screen flex items-center justify-center text-stone-800 dark:text-stone-200 bg-amber-50/50 dark:bg-gray-900 px-4 overflow-hidden">
-            {showConfetti && <Confetti recycle={false} numberOfPieces={400} />}
             <div className="absolute -top-20 -left-20 w-64 h-64 bg-teal-500/10 rounded-full filter blur-3xl opacity-50 dark:opacity-30" />
             <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-orange-500/10 rounded-full filter blur-3xl opacity-50 dark:opacity-30" />
 
@@ -205,17 +198,15 @@ const InviteHero = () => {
                     >
                         <div className="w-full mx-auto rounded-3xl shadow-2xl border-8 border-white dark:border-gray-800 ring-4 ring-amber-300 dark:ring-amber-500 overflow-hidden">
                             <div className="aspect-video bg-black relative group" onClick={handleInteraction}>
-                                {isInView && (
-                                    <iframe
-                                        key={isInteracted ? 'interactive-mobile' : 'silent-mobile'}
-                                        src={isInteracted ? interactiveUrl : silentUrl}
-                                        title="Janmashtami Festival Invitation"
-                                        frameBorder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-                                        allowFullScreen
-                                        className="w-full h-full"
-                                    />
-                                )}
+                                <iframe
+                                    key={isInteracted ? 'interactive-mobile' : 'silent-mobile'}
+                                    src={isInteracted ? interactiveUrl : silentUrl}
+                                    title="Janmashtami Festival Invitation"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                                    allowFullScreen
+                                    className="w-full h-full"
+                                />
                                 {!isInteracted && (
                                     <div className="absolute inset-0 flex items-center justify-center cursor-pointer bg-black/10 group-hover:bg-black/30 transition-colors duration-300">
                                         <Play className="h-16 w-16 text-white/70 drop-shadow-lg transition-transform duration-300 group-hover:scale-110" />
@@ -232,19 +223,23 @@ const InviteHero = () => {
                         className="w-full flex flex-col items-center lg:items-start mt-8 lg:mt-8"
                     >
                         <CountdownTimer />
-                        <div className="my-8 flex flex-col sm:flex-row sm:justify-center lg:justify-start items-center gap-x-6 gap-y-3 text-stone-700 dark:text-stone-300">
-                            <div className="flex items-center gap-2">
-                                <Calendar className="h-5 w-5 text-orange-500" />
-                                <span className="font-medium">16 AUG 2025</span>
+                        <div className="my-8 w-full max-w-md lg:max-w-none">
+                            <div className="flex flex-col gap-4">
+                                <div className="grid grid-cols-2 gap-4 text-center">
+                                    <div className="flex items-center justify-center gap-2 p-3 bg-black/5 dark:bg-white/5 rounded-lg">
+                                        <Calendar className="h-5 w-5 text-orange-500 flex-shrink-0" />
+                                        <span className="font-medium text-sm sm:text-base">16 AUG 2025</span>
+                                    </div>
+                                    <div className="flex items-center justify-center gap-2 p-3 bg-black/5 dark:bg-white/5 rounded-lg">
+                                        <Clock className="h-5 w-5 text-orange-500 flex-shrink-0" />
+                                        <span className="font-medium text-sm sm:text-base">3 PM - 12 MIDNIGHT</span>
+                                    </div>
+                                </div>
+                                <a href="https://maps.app.goo.gl/k5wX9LMEtFX7UraEA" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center lg:justify-start gap-2 p-3 bg-black/5 dark:bg-white/5 rounded-lg group text-center lg:text-left">
+                                    <MapPin className="h-5 w-5 text-orange-500 flex-shrink-0" />
+                                    <span className="font-medium text-sm sm:text-base group-hover:underline">Jayaram Thirumana Nilayam, Puducherry</span>
+                                </a>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <Clock className="h-5 w-5 text-orange-500" />
-                                <span className="font-medium">3 PM - 12 MIDNIGHT</span>
-                            </div>
-                            <a href="https://maps.app.goo.gl/k5wX9LMEtFX7UraEA" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group">
-                                <MapPin className="h-5 w-5 text-orange-500" />
-                                <span className="font-medium group-hover:underline">Jayaram Thirumana Nilayam</span>
-                            </a>
                         </div>
                         <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 w-full max-w-lg">
                             <Button
@@ -260,7 +255,7 @@ const InviteHero = () => {
                                 size="lg"
                                 className="w-full sm:w-auto h-14 px-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:from-green-500 hover:to-emerald-600 text-base"
                             >
-                                <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" onClick={handleSponsorClick} className="flex items-center justify-center gap-2">
+                                <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" onClick={onSponsorClick} className="flex items-center justify-center gap-2">
                                     <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width="24" height="24" />
                                     Sponsor Bhagavad Gītā Seva
                                 </a>
@@ -354,17 +349,13 @@ WhatsApp: https://wa.me/918056626108`;
 
     const detailItems = [
         { icon: Calendar, title: "16 AUG 2025", subtitle: "Mark your calendar", buttonText: "Add to Calendar", action: handleAddToCalendar },
-        { icon: Clock, title: "3 PM - 12 MIDNIGHT", subtitle: "Festival hours" },
+        { icon: Clock, title: "3 PM - 12 MIDNIGHT", subtitle: "Festival hours", buttonText: "Set Reminder", action: handleAddToCalendar },
         { icon: MapPin, title: "Jayaram Thirumana Nilayam", subtitle: "Sacred venue", buttonText: "View on Maps", action: handleViewLocation }
     ];
 
     return (
         <ScrollSection id="register" className="bg-stone-100/70 dark:bg-gray-800/20">
-            <ScrollSectionTitle
-                title="Join the Celebration"
-                subtitle={<></>}
-            />
-            <div className="grid lg:grid-cols-3 gap-12 items-start">
+            <div className="grid lg:grid-cols-3 gap-12 items-start pt-12">
                 {/* Form Section - Appears first on mobile */}
                 <div className="lg:col-span-2 lg:order-2">
                     <Card className="max-w-4xl mx-auto shadow-2xl border-amber-200 dark:border-amber-800 border-2 overflow-hidden bg-white dark:bg-gray-900">
@@ -378,7 +369,7 @@ WhatsApp: https://wa.me/918056626108`;
                                 data-tally-src="https://tally.so/embed/mDoRD5?alignLeft=1&transparentBackground=1&dynamicHeight=1"
                                 loading="lazy"
                                 width="100%"
-                                height="685"
+                                height="600"
                                 frameBorder="0"
                                 marginHeight={0}
                                 marginWidth={0}
@@ -391,33 +382,65 @@ WhatsApp: https://wa.me/918056626108`;
                 </div>
 
                 {/* Details Section - Appears below form on mobile */}
-                <div className="lg:col-span-1 lg:order-1 grid sm:grid-cols-3 lg:grid-cols-1 gap-8">
-                    {detailItems.map((item, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.5 }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="p-4 sm:p-6 rounded-xl bg-white dark:bg-gray-800/50 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col items-center justify-between text-center h-full"
-                        >
-                            <div>
-                                <div className="p-3 sm:p-4 bg-orange-100 dark:bg-orange-500/10 rounded-full mb-3 sm:mb-4 inline-block">
-                                    <item.icon className="h-8 w-8 sm:h-10 sm:w-10 text-orange-600 dark:text-orange-400" />
+                <div className="lg:col-span-1 lg:order-1 flex flex-col gap-8">
+                    <div className="grid grid-cols-2 gap-4">
+                        {detailItems.slice(0, 2).map((item, index) => (
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, amount: 0.5 }}
+                                transition={{ duration: 0.5, delay: index * 0.1 }}
+                                className="p-3 sm:p-4 rounded-xl bg-white dark:bg-gray-800/50 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center justify-between h-full"
+                            >
+                                <div>
+                                    <div className="p-2 sm:p-3 bg-orange-100 dark:bg-orange-500/10 rounded-full mb-2 sm:mb-3 inline-block">
+                                        <item.icon className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600 dark:text-orange-400" />
+                                    </div>
+                                    <p className="text-base sm:text-lg font-bold text-indigo-900 dark:text-indigo-200 leading-tight">{item.title}</p>
+                                    <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400">{item.subtitle}</p>
                                 </div>
-                                <p className="text-lg sm:text-2xl font-bold text-indigo-900 dark:text-indigo-200">{item.title}</p>
-                                <p className="text-sm sm:text-md text-stone-500 dark:text-stone-400">{item.subtitle}</p>
-                            </div>
-                            {item.action && (
-                                <Button
-                                    onClick={item.action}
-                                    className="mt-4 sm:mt-6 w-full rounded-full py-2 sm:py-3 px-4 sm:px-6 text-sm sm:text-lg font-semibold transition-all duration-300 bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/50 dark:text-orange-300 dark:hover:bg-orange-900/80 dark:hover:shadow-[0_0_15px_rgba(251,146,60,0.5)]"
-                                >
-                                    {item.buttonText}
-                                </Button>
-                            )}
-                        </motion.div>
-                    ))}
+                                {item.action && (
+                                    <Button
+                                        onClick={item.action}
+                                        size="sm"
+                                        className="mt-3 sm:mt-4 w-full rounded-full font-semibold transition-all duration-300 bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/50 dark:text-orange-300 dark:hover:bg-orange-900/80 text-xs sm:text-sm"
+                                    >
+                                        {item.buttonText}
+                                    </Button>
+                                )}
+                            </motion.div>
+                        ))}
+                    </div>
+                    {(() => {
+                        const item = detailItems[2];
+                        return (
+                            <motion.div
+                                key={2}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, amount: 0.5 }}
+                                transition={{ duration: 0.5, delay: 0.2 }}
+                                className="p-4 sm:p-6 rounded-xl bg-white dark:bg-gray-800/50 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col items-center justify-between text-center h-full"
+                            >
+                                <div>
+                                    <div className="p-3 sm:p-4 bg-orange-100 dark:bg-orange-500/10 rounded-full mb-3 sm:mb-4 inline-block">
+                                        <item.icon className="h-8 w-8 sm:h-10 sm:w-10 text-orange-600 dark:text-orange-400" />
+                                    </div>
+                                    <p className="text-lg sm:text-2xl font-bold text-indigo-900 dark:text-indigo-200">{item.title}</p>
+                                    <p className="text-sm sm:text-md text-stone-500 dark:text-stone-400">{item.subtitle}</p>
+                                </div>
+                                {item.action && (
+                                    <Button
+                                        onClick={item.action}
+                                        className="mt-4 sm:mt-6 w-full rounded-full py-2 sm:py-3 px-4 sm:px-6 text-sm sm:text-lg font-semibold transition-all duration-300 bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/50 dark:text-orange-300 dark:hover:bg-orange-900/80 dark:hover:shadow-[0_0_15px_rgba(251,146,60,0.5)]"
+                                    >
+                                        {item.buttonText}
+                                    </Button>
+                                )}
+                            </motion.div>
+                        );
+                    })()}
                 </div>
             </div>
             <div className="text-lg md:text-xl text-stone-600 dark:text-stone-400 max-w-3xl mx-auto text-center mt-12">
@@ -546,7 +569,7 @@ const Janmashtami2024Highlights = () => {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.3 });
     const videoId = "DuZm2EPOPkI";
-    const silentUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1`;
+    const silentUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1`;
     const interactiveUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1`;
 
     const handleInteraction = () => {
@@ -720,11 +743,56 @@ export const Route = createFileRoute('/fests/invite')({
 });
 
 function JanmashtamiPage() {
+    const location = useLocation();
+    const confettiRef = useRef<ConfettiRef>(null);
+
+    const handleSponsorConfetti = () => {
+        confettiRef.current?.fire({
+            particleCount: 400,
+            spread: 100,
+            origin: { y: 0.5 }
+        });
+    };
+
     const quotes = [
         { text: "One who knows the transcendental nature of My appearance and activities does not, upon leaving the body, take his birth again in this material world, but attains My eternal abode, O Arjuna.", source: "Bhagavad-gita As It Is 4.9" },
         { text: "My Lord, You are the well-wisher of the cows and the Brahmanas. You are the well-wisher of the entire human society and world.", source: "Vishnu Purana 1.19.65" },
         { text: "O Krsna, appearing on the eighth day of the dark moon... You spread auspiciousness over the earth's surface, and You pleased and pacified the minds and hearts of saintly devotees.", source: "Sri Krsna Lila Stava" }
     ];
+
+    useEffect(() => {
+        const handleTallySubmission = (event: MessageEvent) => {
+            if (
+                event.origin === "https://tally.so" &&
+                event.data &&
+                event.data.event === "Tally.FormSubmitted"
+            ) {
+                confettiRef.current?.fire({
+                    particleCount: 200,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        };
+
+        window.addEventListener("message", handleTallySubmission);
+
+        return () => {
+            window.removeEventListener("message", handleTallySubmission);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (location.hash === '#register') {
+            const element = document.getElementById('register');
+            if (element) {
+                // Add a small delay to ensure the layout is stable
+                setTimeout(() => {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
+        }
+    }, [location.hash]);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -740,7 +808,12 @@ function JanmashtamiPage() {
 
   return (
     <div className="min-h-screen bg-amber-50 dark:bg-gray-950 text-stone-800 font-sans overflow-hidden">
-        <InviteHero />
+        <Confetti
+            ref={confettiRef}
+            manualstart
+            className="fixed top-0 left-0 w-full h-full pointer-events-none z-[100]"
+        />
+        <InviteHero onSponsorClick={handleSponsorConfetti} />
         <main>
             <DetailsAndRegistrationSection />
             <OrnateDivider />

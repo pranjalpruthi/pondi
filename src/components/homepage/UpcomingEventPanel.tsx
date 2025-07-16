@@ -182,7 +182,7 @@ WhatsApp: https://wa.me/918056626108`;
 
             <div className="flex flex-col items-center gap-2">
                 <div className="grid grid-cols-2 gap-2 w-full">
-                    <Link to="/fests/invite" className="w-full">
+                    <Link to="/fests/invite" onClick={onClose} className="w-full">
                         <FlipButton
                           frontContent={
                             <div className="flex items-center justify-center gap-1.5 text-xs">
@@ -246,7 +246,7 @@ WhatsApp: https://wa.me/918056626108`;
 
       {/* Footer */}
       <div className="flex-shrink-0 p-2 border-t border-border/50">
-        <a href="https://tally.so/r/mDoRD5" target="_blank" rel="noopener noreferrer" className="w-full">
+        <Link to="/fests/invite" hash="register" onClick={onClose} className="w-full">
             <Button className="w-full h-12 rounded-full font-semibold shadow-md select-none bg-yellow-400 text-gray-900 hover:bg-yellow-500 relative text-base group">
                 <span className="animate-ping [animation-duration:1.5s] absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75 group-hover:bg-orange-500"></span>
                 <span className="relative flex items-center justify-center gap-2">
@@ -254,7 +254,7 @@ WhatsApp: https://wa.me/918056626108`;
                     Secure your Free Spot
                 </span>
             </Button>
-        </a>
+        </Link>
       </div>
     </div>
   );
