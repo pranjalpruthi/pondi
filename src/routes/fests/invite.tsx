@@ -10,26 +10,33 @@ import {
     IconBrandX,
     IconBrandTelegram,
 } from '@tabler/icons-react';
+import {
+    MorphingDialog,
+    MorphingDialogContainer,
+    MorphingDialogContent,
+    MorphingDialogClose,
+    MorphingDialogTitle,
+    useMorphingDialog
+} from '@/components/motion-primitives/morphing-dialog';
 import { cn } from '@/lib/utils';
 import { motion } from 'motion/react';
 import ShimmerText from '@/components/ui/shimmer-text';
 import { AuroraText } from '@/components/magicui/aurora-text';
-import { MotionHighlight, MotionHighlightItem } from '@/components/animate-ui/effects/motion-highlight';
 import NumberFlow, { NumberFlowGroup } from '@number-flow/react';
 import { SponsorshipSection } from '@/components/homepage/sponsorship-section';
 
 // --- Reusable Components for the New Design ---
 
 const OrnateDivider: FC = () => (
-    <div className="flex items-center justify-center my-12 md:my-16">
-        <div className="w-1/3 h-px bg-gradient-to-r from-transparent to-amber-700/50 dark:to-amber-500/50" />
-        <Feather className="h-8 w-8 mx-4 text-amber-700/80 dark:text-amber-500/80" />
-        <div className="w-1/3 h-px bg-gradient-to-l from-transparent to-amber-700/50 dark:to-amber-500/50" />
+    <div className="flex items-center justify-center my-4 md:my-6">
+        <div className="w-1/4 h-px bg-gradient-to-r from-transparent to-amber-700/50 dark:to-amber-500/50" />
+        <Feather className="h-5 w-5 mx-2 text-amber-700/80 dark:text-amber-500/80" />
+        <div className="w-1/4 h-px bg-gradient-to-l from-transparent to-amber-700/50 dark:to-amber-500/50" />
     </div>
 );
 
 const ScrollSection: FC<{ children: ReactNode; className?: string; id?: string }> = ({ children, className, id }) => (
-    <section id={id} className={cn("py-16 px-4 sm:px-6 md:py-20", className)}>
+    <section id={id} className={cn("py-12 px-4 sm:px-6 md:py-16", className)}>
         <div className="max-w-6xl mx-auto">
             {children}
         </div>
@@ -42,7 +49,7 @@ const ScrollSectionTitle: FC<{ title: string; subtitle: ReactNode }> = ({ title,
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 0.6 }}
-        className="text-center mb-12"
+        className="text-center mb-10"
     >
         <h2 className="text-4xl md:text-5xl font-serif font-bold text-indigo-900 dark:text-indigo-200 mb-4">
             {title}
@@ -223,21 +230,19 @@ const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
                         className="w-full flex flex-col items-center lg:items-start mt-8 lg:mt-8"
                     >
                         <CountdownTimer />
-                        <div className="my-8 w-full max-w-md lg:max-w-none">
-                            <div className="flex flex-col gap-4">
-                                <div className="grid grid-cols-2 gap-4 text-center">
-                                    <div className="flex items-center justify-center gap-2 p-3 bg-black/5 dark:bg-white/5 rounded-lg">
-                                        <Calendar className="h-5 w-5 text-orange-500 flex-shrink-0" />
-                                        <span className="font-medium text-sm sm:text-base">16 AUG 2025</span>
-                                    </div>
-                                    <div className="flex items-center justify-center gap-2 p-3 bg-black/5 dark:bg-white/5 rounded-lg">
-                                        <Clock className="h-5 w-5 text-orange-500 flex-shrink-0" />
-                                        <span className="font-medium text-sm sm:text-base">3 PM - 12 MIDNIGHT</span>
-                                    </div>
+                        <div className="my-6 w-full max-w-md lg:max-w-none">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-center">
+                                <div className="flex items-center justify-center gap-2 p-2.5 bg-black/5 dark:bg-white/5 rounded-lg">
+                                    <Calendar className="h-4 w-4 text-orange-500 flex-shrink-0" />
+                                    <span className="font-medium text-xs sm:text-sm">16 AUG 2025</span>
                                 </div>
-                                <a href="https://maps.app.goo.gl/k5wX9LMEtFX7UraEA" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center lg:justify-start gap-2 p-3 bg-black/5 dark:bg-white/5 rounded-lg group text-center lg:text-left">
-                                    <MapPin className="h-5 w-5 text-orange-500 flex-shrink-0" />
-                                    <span className="font-medium text-sm sm:text-base group-hover:underline">Jayaram Thirumana Nilayam, Puducherry</span>
+                                <div className="flex items-center justify-center gap-2 p-2.5 bg-black/5 dark:bg-white/5 rounded-lg">
+                                    <Clock className="h-4 w-4 text-orange-500 flex-shrink-0" />
+                                    <span className="font-medium text-xs sm:text-sm">3 PM - 12 MIDNIGHT</span>
+                                </div>
+                                <a href="https://maps.app.goo.gl/k5wX9LMEtFX7UraEA" target="_blank" rel="noopener noreferrer" className="md:col-span-1 flex items-center justify-center gap-2 p-2.5 bg-black/5 dark:bg-white/5 rounded-lg group">
+                                    <MapPin className="h-4 w-4 text-orange-500 flex-shrink-0" />
+                                    <span className="font-medium text-xs sm:text-sm group-hover:underline">Jayaram Thirumana Nilayam</span>
                                 </a>
                             </div>
                         </div>
@@ -443,24 +448,6 @@ WhatsApp: https://wa.me/918056626108`;
                     })()}
                 </div>
             </div>
-            <div className="text-lg md:text-xl text-stone-600 dark:text-stone-400 max-w-3xl mx-auto text-center mt-12">
-                <span>
-                    Register online to get a{' '}
-                    <MotionHighlight
-                        hover
-                        mode="children"
-                        className="bg-amber-200/50 dark:bg-amber-500/20 rounded-md px-1 py-0.5"
-                    >
-                        <MotionHighlightItem asChild>
-                            <span className="font-bold text-amber-700 dark:text-amber-400">
-                                Special Entry Pass
-                            </span>
-                        </MotionHighlightItem>
-                    </MotionHighlight>{' '}
-                    and confirm your presence at this auspicious event. We look forward to welcoming you.
-                </span>
-            </div>
-            <SocialShare />
         </ScrollSection>
     );
 };
@@ -543,7 +530,7 @@ const SocialShare = () => {
     ];
 
     return (
-        <div className="mt-12 text-center">
+        <div className="text-center">
             <p className="text-lg font-semibold text-indigo-900 dark:text-indigo-200 mb-4">Share the Divine Invitation!</p>
             <div className="flex justify-center items-center gap-3">
                 {shareActions.map(action => (
@@ -742,9 +729,10 @@ export const Route = createFileRoute('/fests/invite')({
   component: JanmashtamiPage,
 });
 
-function JanmashtamiPage() {
+function JanmashtamiContent() {
     const location = useLocation();
     const confettiRef = useRef<ConfettiRef>(null);
+    const { setIsOpen } = useMorphingDialog();
 
     const handleSponsorConfetti = () => {
         confettiRef.current?.fire({
@@ -762,31 +750,41 @@ function JanmashtamiPage() {
 
     useEffect(() => {
         const handleTallySubmission = (event: MessageEvent) => {
-            if (
-                event.origin === "https://tally.so" &&
-                event.data &&
-                event.data.event === "Tally.FormSubmitted"
-            ) {
+            if (event.data?.event === "Tally.FormSubmitted" && event.origin === "https://tally.so") {
+                console.log("Tally form submitted!", event.data);
                 confettiRef.current?.fire({
                     particleCount: 200,
                     spread: 70,
                     origin: { y: 0.6 }
                 });
+                setIsOpen(true);
             }
         };
 
         window.addEventListener("message", handleTallySubmission);
 
+        const script = document.createElement("script");
+        script.src = "https://tally.so/widgets/embed.js";
+        script.async = true;
+        document.body.appendChild(script);
+        script.onload = () => {
+            if (window.Tally) {
+                window.Tally.loadEmbeds();
+            }
+        };
+
         return () => {
             window.removeEventListener("message", handleTallySubmission);
+            if (document.body.contains(script)) {
+                document.body.removeChild(script);
+            }
         };
-    }, []);
+    }, [setIsOpen]);
 
     useEffect(() => {
         if (location.hash === '#register') {
             const element = document.getElementById('register');
             if (element) {
-                // Add a small delay to ensure the layout is stable
                 setTimeout(() => {
                     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 100);
@@ -794,40 +792,76 @@ function JanmashtamiPage() {
         }
     }, [location.hash]);
 
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://tally.so/widgets/embed.js";
-    script.async = true;
-    document.head.appendChild(script);
-    script.onload = () => { if (window.Tally) window.Tally.loadEmbeds(); };
-    
-    return () => { 
-        if (document.head.contains(script)) document.head.removeChild(script); 
-    };
-  }, []);
-
-  return (
-    <div className="min-h-screen bg-amber-50 dark:bg-gray-950 text-stone-800 font-sans overflow-hidden">
-        <Confetti
-            ref={confettiRef}
-            manualstart
-            className="fixed top-0 left-0 w-full h-full pointer-events-none z-[100]"
-        />
-        <InviteHero onSponsorClick={handleSponsorConfetti} />
-        <main>
-            <DetailsAndRegistrationSection />
-            <OrnateDivider />
-            <SponsorshipSection />
-            <OrnateDivider />
-            <Janmashtami2024Highlights />
-            <OrnateDivider />
+    return (
+        <div className="min-h-screen bg-amber-50 dark:bg-gray-950 text-stone-800 font-sans overflow-hidden">
+            <Confetti
+                ref={confettiRef}
+                manualstart
+                className="fixed top-0 left-0 w-full h-full pointer-events-none z-[100]"
+            />
+            <InviteHero onSponsorClick={handleSponsorConfetti} />
+            <main>
+                <DetailsAndRegistrationSection />
+                <OrnateDivider />
+                <div id="sponsor-seva">
+                    <SponsorshipSection />
+                </div>
+                <OrnateDivider />
+                <Janmashtami2024Highlights />
+                <OrnateDivider />
                 <VideoHighlightsSection />
                 <OrnateDivider />
                 <QuoteSection quote={quotes[2]} index={2} />
-        </main>
+            </main>
+        </div>
+    );
+}
 
-    </div>
-  );
+function JanmashtamiDialog() {
+    const { setIsOpen } = useMorphingDialog();
+
+    const handleSponsorClick = () => {
+        setIsOpen(false);
+        setTimeout(() => {
+            document.getElementById('sponsor-seva')?.scrollIntoView({ behavior: 'smooth' });
+        }, 150); // Delay to allow dialog to close
+    };
+
+    return (
+        <MorphingDialogContainer>
+            <MorphingDialogContent className="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-2xl max-w-md w-full">
+                <MorphingDialogTitle>
+                    <h2 className="text-2xl font-bold text-center text-indigo-900 dark:text-indigo-200">
+                        Thank you for registering!
+                    </h2>
+                </MorphingDialogTitle>
+                <p className="text-center text-stone-600 dark:text-stone-400 mt-2">
+                    Your presence is a gift. You can now share the joy or consider sponsoring this divine event.
+                </p>
+                <div className="mt-6 flex flex-col gap-4">
+                    <Button
+                        onClick={handleSponsorClick}
+                        size="lg"
+                        className="w-full h-14 px-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:from-green-500 hover:to-emerald-600 text-base flex items-center justify-center gap-2"
+                    >
+                        <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width="24" height="24" />
+                        Sponsor Seva
+                    </Button>
+                    <SocialShare />
+                </div>
+                <MorphingDialogClose />
+            </MorphingDialogContent>
+        </MorphingDialogContainer>
+    );
+}
+
+function JanmashtamiPage() {
+    return (
+        <MorphingDialog>
+            <JanmashtamiContent />
+            <JanmashtamiDialog />
+        </MorphingDialog>
+    );
 }
 
 declare global {
