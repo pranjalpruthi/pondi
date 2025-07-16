@@ -1022,7 +1022,6 @@ function NavbarContent() {
 
   const handleGetPassClick = React.useCallback(() => {
     handleNavClick('/fests/invite');
-    window.scrollTo(0, 0);
   }, [handleNavClick]);
 
   // useEffect for Cmd+K/Ctrl+K to open CommandDialog - REMOVED
@@ -1432,7 +1431,7 @@ function NavbarContent() {
                       ease: "easeInOut",
                     }}
                   >
-                    <Link to="/fests/invite" onClick={handleGetPassClick}>
+                    <Link to="/fests/invite" hash="register" onClick={handleGetPassClick}>
                       <span className="relative px-2 py-0.5 text-[0.65rem] rounded-full font-bold shadow-md select-none bg-gradient-to-r from-blue-500 to-indigo-600 text-white transition-all duration-200 ring-1 ring-transparent group-hover:ring-blue-400 flex items-center gap-1">
                           <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Diya%20Lamp.png" alt="Diya Lamp" width="12" height="12" />
                           Register Free
@@ -1504,7 +1503,7 @@ function NavbarContent() {
                               ease: "easeInOut",
                             }}
                           >
-                            <Link to="/fests/invite" onClick={handleGetPassClick}>
+                            <Link to="/fests/invite" hash="register" onClick={handleGetPassClick}>
                               <span className={cn(
                                 "relative rounded-full font-bold shadow-lg select-none bg-gradient-to-r from-blue-500 to-indigo-600 text-white transition-all duration-200 ring-2 ring-transparent group-hover:ring-blue-400 flex items-center gap-1",
                                 "px-4 py-2 text-sm"
