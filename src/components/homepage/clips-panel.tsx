@@ -2,14 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import type { PanInfo } from 'motion/react';
 import { ChevronUp, ChevronDown, Youtube, Heart, Share2 } from 'lucide-react';
-// import ReactPlayer from 'react-player/youtube'; // Removed ReactPlayer
 import {
   YOUTUBE_CHANNEL_ID
 } from './youtube-marquee';
 import type { YouTubeVideo } from './youtube-marquee';
 import { cn } from '@/lib/utils';
 import { useMediaQuery } from '@uidotdev/usehooks';
-// import { AspectRatio } from '@/components/ui/aspect-ratio'; // Removed AspectRatio
 
 const staticVideos: YouTubeVideo[] = [
   { id: 'L13exiAC9bA', title: 'Clip 1', description: '', thumbnail: 'https://i.ytimg.com/vi/L13exiAC9bA/hqdefault.jpg', link: 'https://youtube.com/shorts/L13exiAC9bA' },
@@ -43,96 +41,57 @@ const getYouTubeEmbedUrl = (url: string, autoplay: boolean, muted: boolean): str
   } else if (url.includes('youtube.com/shorts/')) {
     videoId = url.split('/shorts/')[1].split('?')[0];
   }
-  // Enable JS API for event handling, use modest branding, disable related videos, set initial mute state
   return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=${autoplay ? 1 : 0}&controls=1&modestbranding=1&rel=0&enablejsapi=1&mute=${muted ? 1 : 0}` : null;
 };
 
-const ClipPlayerCard = ({ video, isActive, paginate, currentIndex, totalVideos, isDragging }: { video: YouTubeVideo; isActive: boolean; paginate: (dir: number) => void; currentIndex: number; totalVideos: number; isDragging?: boolean; }) => {
-  const iframeRef = useRef<HTMLIFrameElement>(null); // Changed playerRef to iframeRef
+const ClipPlayerCard = ({ video, isActive, paginate, currentIndex, totalVideos, muted, userHasInteracted }: { video: YouTubeVideo; isActive: boolean; paginate: (dir: number) => void; currentIndex: number; totalVideos: number; muted: boolean; userHasInteracted: boolean; }) => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const playerWrapperRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
-  const [userHasInteracted, setUserHasInteracted] = useState(false);
-  const [muted, setMuted] = useState(false);
-  // const [played, setPlayed] = useState(0); // Removed for native controls
-  // const [seeking, setSeeking] = useState(false); // Removed for native controls
-  const [showControls, setShowControls] = useState(true);
   const controlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [liked, setLiked] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
 
   const toggleFullDescription = () => {
     setShowFullDescription(prev => !prev);
-    resetControlsTimeout(); // Keep controls visible when interacting
+    resetControlsTimeout();
   };
 
   useEffect(() => {
-    if (isActive) {
-      setUserHasInteracted(true);
-      setPlaying(true); // Ensure video autoplays when it becomes active
-    }
+    setPlaying(isActive);
   }, [isActive]);
 
   useEffect(() => {
-    if (!isActive && iframeRef.current && iframeRef.current.contentWindow) {
+    if (!isActive && iframeRef.current?.contentWindow) {
       iframeRef.current.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
     }
   }, [isActive]);
 
   const resetControlsTimeout = () => {
     if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
-    setShowControls(true);
     controlsTimeoutRef.current = setTimeout(() => {
-      if (playing) setShowControls(false); // This might need adjustment based on how 'playing' is determined with iframe
+      // UI controls timeout logic was here
     }, 3000);
   };
-
-
-  // handleSeekChange, handleSeekMouseDown, handleSeekMouseUp, handleProgress, handleDuration, handleSeekAmount are removed
-  // as we rely on YouTube's native controls.
-
-  const handleTap = () => {
-    if (!userHasInteracted) {
-      setUserHasInteracted(true);
-      setMuted(false); // Unmute on first interaction
-    } else {
-      setMuted(prev => !prev); // Toggle mute on subsequent taps
-    }
-    resetControlsTimeout();
-  };
-
-
-  // const handleEnded = () => { // This needs to be handled by YouTube Iframe API event listener
-  //   if (currentIndex < totalVideos - 1) {
-  //     paginate(1);
-  //   } else {
-  //     setPlaying(false);
-  //   }
-  // };
 
   useEffect(() => {
     const player = iframeRef.current;
     if (!player) return;
 
     const onPlayerStateChange = (event: MessageEvent) => {
-      // Ensure the message is from YouTube and is a player state change
-      if (event.source !== player.contentWindow || typeof event.data !== 'string') {
-        return;
-      }
+      if (event.source !== player.contentWindow || typeof event.data !== 'string') return;
       try {
         const data = JSON.parse(event.data);
         if (data.event === 'onStateChange') {
-          if (data.info === 0) { // 0 indicates video ended
-            if (currentIndex < totalVideos - 1) {
-              paginate(1);
-            } else {
-              setPlaying(false); // Or loop, or show end screen
-            }
+          if (data.info === 0) { // Video ended
+            if (currentIndex < totalVideos - 1) paginate(1);
+            else setPlaying(false);
           } else if (data.info === 1) { // Playing
             setPlaying(true);
             resetControlsTimeout();
           } else if (data.info === 2) { // Paused
             setPlaying(false);
-            resetControlsTimeout(); // Keep controls visible when paused
+            resetControlsTimeout();
           }
         }
       } catch (e) {
@@ -141,100 +100,51 @@ const ClipPlayerCard = ({ video, isActive, paginate, currentIndex, totalVideos, 
     };
 
     window.addEventListener('message', onPlayerStateChange);
-    return () => {
-      window.removeEventListener('message', onPlayerStateChange);
-    };
+    return () => window.removeEventListener('message', onPlayerStateChange);
   }, [currentIndex, totalVideos, paginate]);
-
 
   const handleShare = () => {
     if (!video.link) return;
     if (navigator.share) {
-      navigator.share({
-        title: video.title,
-        text: video.description,
-        url: video.link,
-      }).catch(console.error);
+      navigator.share({ title: video.title, text: video.description, url: video.link }).catch(console.error);
     } else {
       navigator.clipboard.writeText(video.link);
       alert('Link copied to clipboard!');
     }
   };
 
-  // const formatTime = (seconds: number) => {
-  //   if (isNaN(seconds) || !isFinite(seconds)) return '00:00';
-  //   const date = new Date(seconds * 1000);
-  //   const hh = date.getUTCHours();
-  //   const mm = date.getUTCMinutes();
-  //   const ss = date.getUTCSeconds().toString().padStart(2, '0');
-  //   if (hh) {
-  //     return `${hh}:${mm.toString().padStart(2, '0')}:${ss}`;
-  //   }
-  //   return `${mm}:${ss}`;
-  // };
-
   return (
     <motion.div
       ref={playerWrapperRef}
-      className={cn("w-full h-full flex bg-black")} // Removed absolute, inset-0, overflow-hidden. Adjusted fullscreen.
+      className={cn("w-full h-full flex bg-black")}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.8 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       onMouseMove={resetControlsTimeout}
     >
-      <div className='w-full h-full relative flex items-center justify-center' onClick={handleTap}>
+      <div className='w-full h-full relative flex items-center justify-center'>
         {isActive && video.link ? (
-          <div className="w-full h-full flex items-center justify-center"> {/* Removed max-w-7xl and px-6 for iframe to take full space */}
-            <iframe
-              ref={iframeRef}
-              src={getYouTubeEmbedUrl(video.link, playing && userHasInteracted, muted) || ''}
-              title={video.title}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-              className="w-full h-full" // Ensure iframe takes full space of its container
-              style={{ pointerEvents: isDragging ? 'none' : 'auto' }}
-              onLoad={() => {
-                // Optional: Send 'playVideo' command if isActive and playing is true,
-                // though autoplay in URL should handle it.
-                // if (playing && iframeRef.current && iframeRef.current.contentWindow) {
-                //   iframeRef.current.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-                // }
-              }}
-            />
-          </div>
+          <iframe
+            ref={iframeRef}
+            src={getYouTubeEmbedUrl(video.link, playing && userHasInteracted, muted) || ''}
+            title={video.title}
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            className="w-full h-full"
+            style={{ pointerEvents: 'none' }} // Disable pointer events on iframe
+          />
         ) : (
           <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" loading="lazy" />
         )}
 
-        {/* Overlay for title, description, and custom controls if any are kept */}
         <div className="absolute inset-0 pointer-events-none">
-          {/* Gradient overlays */}
           <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/60 to-transparent" />
         </div>
 
-        {/* Play button overlay has been removed as it's redundant with the native YouTube player controls. */}
-
-        {/* Custom controls (volume, fullscreen) - YouTube's native controls will provide these. */}
-        {/* If we want to keep these custom buttons, they need to interact with the iframe API. */}
-        <AnimatePresence>
-          {showControls && isActive && ( // Only show if active
-            <motion.div
-              className="absolute top-4 right-4 flex items-center gap-4 pointer-events-auto" // Ensure pointer-events-auto for buttons
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              {/* Mute and Fullscreen buttons removed as per requirement */}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Video title and description overlay - MOVED TO TOP */}
-        <div className="absolute top-0 left-0 right-0 p-4 text-white pointer-events-auto z-10"> {/* pointer-events-auto for button */}
-          <div className="flex items-start justify-end"> {/* Adjusted to justify-end as title is removed */}
-            {/* <h3 className="text-lg font-bold line-clamp-2 mr-2 flex-grow">{video.title}</h3> Removed title */}
+        <div className="absolute top-0 left-0 right-0 p-4 text-white pointer-events-auto z-10">
+          <div className="flex items-start justify-end">
             <button
               onClick={toggleFullDescription}
               className="p-1 bg-black/30 rounded-full hover:bg-black/50 transition-colors"
@@ -256,12 +166,9 @@ const ClipPlayerCard = ({ video, isActive, paginate, currentIndex, totalVideos, 
               </motion.div>
             )}
           </AnimatePresence>
-          {/* Seek bar and time displays are removed as YouTube's native controls will provide them. */}
-          {/* Custom play/pause and seek buttons are removed. */}
         </div>
       </div>
 
-      {/* Side action buttons (Like, Share, Subscribe) */}
       <div className="absolute right-2 top-1/2 -translate-y-1/2 z-10 flex flex-col items-center space-y-3 pr-2 pointer-events-auto">
         <button onClick={() => setLiked(!liked)} className="flex flex-col items-center text-white">
           <Heart size={24} className={cn("transition-colors", liked ? "text-red-500 fill-red-500" : "text-white")} />
@@ -280,7 +187,6 @@ const ClipPlayerCard = ({ video, isActive, paginate, currentIndex, totalVideos, 
   );
 };
 
-// Skeleton loader for the clip card
 const ClipPlayerCardSkeleton = () => (
   <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-black overflow-hidden animate-pulse">
     <div className="w-full h-full bg-gray-800/50" />
@@ -295,13 +201,25 @@ export function ClipsPanel({ currentIndex, setCurrentIndex }: { currentIndex: nu
   const videos = staticVideos;
   const isLoading = false;
   const isMobile = useMediaQuery('(max-width: 767px)');
-
-  // const [currentIndex, setCurrentIndex] = useState(0); // Managed by parent
   const [direction, setDirection] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
+  const [muted, setMuted] = useState(true);
+  const [userHasInteracted, setUserHasInteracted] = useState(false);
+
+  const handleTap = () => {
+    if (!userHasInteracted) {
+      setUserHasInteracted(true);
+      setMuted(false);
+    } else {
+      setMuted(prev => !prev);
+    }
+  };
 
   const paginate = (newDirection: number) => {
     if (!videos || videos.length === 0) return;
+    if (!userHasInteracted) {
+      setUserHasInteracted(true);
+      setMuted(false);
+    }
     setDirection(newDirection);
     setCurrentIndex((prevIndex) => {
       const nextIndex = prevIndex + newDirection;
@@ -312,10 +230,8 @@ export function ClipsPanel({ currentIndex, setCurrentIndex }: { currentIndex: nu
   };
 
   const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    setIsDragging(false);
     const swipeThreshold = 30;
     const { offset, velocity } = info;
-
     if (Math.abs(offset.y) > swipeThreshold || Math.abs(velocity.y) > 200) {
       paginate(offset.y < 0 ? 1 : -1);
     }
@@ -366,8 +282,8 @@ export function ClipsPanel({ currentIndex, setCurrentIndex }: { currentIndex: nu
           drag="y"
           dragConstraints={{ top: 0, bottom: 0 }}
           dragElastic={0.2}
-          onDragStart={() => setIsDragging(true)}
           onDragEnd={handleDragEnd}
+          onTap={handleTap}
           transition={{ y: { type: "spring", stiffness: 300, damping: 30 }, opacity: { duration: 0.2 }, scale: { duration: 0.2 } }}
           className="w-full h-full absolute top-0 left-0"
         >
@@ -377,7 +293,8 @@ export function ClipsPanel({ currentIndex, setCurrentIndex }: { currentIndex: nu
             paginate={paginate}
             currentIndex={currentIndex}
             totalVideos={videos.length}
-            isDragging={isDragging}
+            muted={muted}
+            userHasInteracted={userHasInteracted}
           />
         </motion.div>
       </AnimatePresence>
@@ -385,28 +302,26 @@ export function ClipsPanel({ currentIndex, setCurrentIndex }: { currentIndex: nu
       <div className="absolute top-2 right-2 z-20 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
         {currentIndex + 1} / {videos.length}
       </div>
-      {!isMobile && (
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-4">
-          <motion.button 
-            onClick={() => paginate(-1)} 
-            className="text-white bg-black/70 p-3 rounded-full pointer-events-auto hover:bg-black/90 transition-all" 
-            disabled={currentIndex === 0}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <ChevronUp size={28} className={currentIndex === 0 ? "text-gray-500" : "text-white"} />
-          </motion.button>
-          <motion.button 
-            onClick={() => paginate(1)} 
-            className="text-white bg-black/70 p-3 rounded-full pointer-events-auto hover:bg-black/90 transition-all" 
-            disabled={currentIndex === videos.length - 1}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <ChevronDown size={28} className={currentIndex === videos.length - 1 ? "text-gray-500" : "text-white"} />
-          </motion.button>
-        </div>
-      )}
+      <div className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-2 md:gap-4">
+        <motion.button
+          onClick={() => paginate(-1)}
+          className="text-white bg-black/50 backdrop-blur-sm border border-white/20 p-2 md:p-3 rounded-full pointer-events-auto hover:bg-black/70 transition-all"
+          disabled={currentIndex === 0}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <ChevronUp className={cn("w-5 h-5 md:w-7 md:h-7", currentIndex === 0 ? "text-gray-500" : "text-white")} />
+        </motion.button>
+        <motion.button
+          onClick={() => paginate(1)}
+          className="text-white bg-black/50 backdrop-blur-sm border border-white/20 p-2 md:p-3 rounded-full pointer-events-auto hover:bg-black/70 transition-all"
+          disabled={currentIndex === videos.length - 1}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <ChevronDown className={cn("w-5 h-5 md:w-7 md:h-7", currentIndex === videos.length - 1 ? "text-gray-500" : "text-white")} />
+        </motion.button>
+      </div>
     </div>
   );
 }

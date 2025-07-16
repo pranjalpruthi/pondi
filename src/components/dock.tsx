@@ -60,6 +60,7 @@ interface DockItemComponentProps {
   dockSpringTransition: object;
   onItemClick: (item: DockItemData) => void;
   onItemMouseEnter: (item: DockItemData) => void;
+  isDeitiesOpen?: boolean;
 }
 
 const DockItemComponent = React.memo<DockItemComponentProps>(({
@@ -73,6 +74,7 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
   dockSpringTransition,
   onItemClick,
   onItemMouseEnter,
+  isDeitiesOpen,
 }) => {
   const isLabelClickedActive = activeLabelItemId === item.id && !item.isExpandable;
   const isLabelHoveredActive = hoveredLabelItemId === item.id && !item.isExpandable;
@@ -81,10 +83,13 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
   const isMainMenuPanelActive = item.isExpandable && activeDockItem === item.id && isDockOpen;
 
   const isDeityButton = item.label === 'Deities';
+  const isPanelOpen = isMainMenuPanelActive || (isDeityButton && isDeitiesOpen);
+  const currentSubtitle = isPanelOpen ? 'Close' : item.subtitle;
   const isAiBotButton = item.label === 'AI Bot';
   const isClipsButton = item.label === 'Clips';
   const isDonateButton = item.label === 'Donate';
   const isFestivalsButton = item.id === 10; // Added for the Festivals button
+  const isEventsButton = item.id === 3;
   let deityButtonSpecificStyles = "";
   if (isDeityButton) {
       const statusColorClass = templeStatus.colorClass;
@@ -140,7 +145,7 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
             isDeityButton && templeStatus.colorClass.includes('orange') ? "text-orange-600 dark:text-orange-400" :
             "text-foreground/70"
           )}>
-            {item.subtitle}
+            {currentSubtitle}
           </span>
         )}
       </div>
@@ -192,6 +197,9 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
   } else if (isFestivalsButton) {
     // Style for the Festivals button - using a vibrant blue gradient
     itemSpecificStyling = "bg-gradient-to-br from-blue-400 to-cyan-500 text-white hover:from-blue-500 hover:to-cyan-600 dark:from-blue-500 dark:to-cyan-600 shadow-md ring-1 ring-white/20 hover:ring-white/40 transition-all duration-200 rounded-xl";
+  } else if (isEventsButton && isMainMenuPanelActive) {
+    // Active style for the Events/Calendar button when its panel is open
+    itemSpecificStyling = "bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-lg ring-2 ring-white/30 scale-105 transform transition-all duration-300 rounded-xl";
   } else if (isDeityButton) {
     itemSpecificStyling = deityButtonSpecificStyles;
   } else if (isMainMenuPanelActive || isLabelVisible) { // For other items (like Menu button or regular hovered/clicked items)
@@ -1350,19 +1358,24 @@ function NavbarContent() {
       handleDockItemClick(eventsItem);
     };
 
+    const isEventsPanelOpen = activeDockItem === eventsItem.id && isDockOpen;
+
     return (
       <div className="flex flex-col items-center justify-center gap-1.5 h-14 sm:h-16">
         <motion.button
           onClick={handleEventsClick}
           onMouseEnter={safePlayHover}
           className={cn(
-            "h-6 px-4 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 text-white text-xs font-semibold whitespace-nowrap transition-all active:scale-95 shadow-md",
-            !isMobile && "hover:from-blue-500 hover:to-cyan-600 hover:shadow-lg"
+            "h-6 px-4 rounded-full text-xs font-semibold whitespace-nowrap transition-all active:scale-95 shadow-md",
+            isEventsPanelOpen
+              ? "bg-gradient-to-br from-purple-500 to-indigo-600 text-white"
+              : "bg-gradient-to-br from-blue-400 to-cyan-500 text-white",
+            !isMobile && !isEventsPanelOpen && "hover:from-blue-500 hover:to-cyan-600 hover:shadow-lg"
           )}
           whileTap={{ scale: 0.95 }}
-          aria-label="Open Calendar"
+          aria-label={isEventsPanelOpen ? "Close Calendar" : "Open Calendar"}
         >
-          Calendar
+          {isEventsPanelOpen ? 'Close' : 'Calendar'}
         </motion.button>
         <motion.button
           onClick={handleDarshanClick}
@@ -1576,6 +1589,7 @@ function NavbarContent() {
                               dockSpringTransition={dockSpringTransition}
                               onItemClick={handleDockItemClick}
                               onItemMouseEnter={handleDockItemMouseEnter}
+                              isDeitiesOpen={deitiesOpen}
                             />
                           ))}
                           <SplitButton />
@@ -1595,6 +1609,7 @@ function NavbarContent() {
                               dockSpringTransition={dockSpringTransition}
                               onItemClick={handleDockItemClick}
                               onItemMouseEnter={handleDockItemMouseEnter}
+                              isDeitiesOpen={deitiesOpen}
                             />
                           ))}
                         </div>
@@ -1616,6 +1631,7 @@ function NavbarContent() {
                             dockSpringTransition={dockSpringTransition}
                             onItemClick={handleDockItemClick}
                             onItemMouseEnter={handleDockItemMouseEnter}
+                            isDeitiesOpen={deitiesOpen}
                           />
                         ))}
                         {/* AI Pill Button */}
@@ -1671,6 +1687,7 @@ function NavbarContent() {
                             dockSpringTransition={dockSpringTransition}
                             onItemClick={handleDockItemClick}
                             onItemMouseEnter={handleDockItemMouseEnter}
+                            isDeitiesOpen={deitiesOpen}
                           />
                         ))}
                       </div>
@@ -1690,6 +1707,7 @@ function NavbarContent() {
                               dockSpringTransition={dockSpringTransition}
                               onItemClick={handleDockItemClick}
                               onItemMouseEnter={handleDockItemMouseEnter}
+                              isDeitiesOpen={deitiesOpen}
                             />
                           ))}
                         </>

@@ -10,7 +10,8 @@ const ScrollSectionTitle: FC<{ title: string; subtitle: ReactNode }> = ({ title,
         transition={{ duration: 0.6 }}
         className="text-center mb-12"
     >
-        <h2 className="text-4xl md:text-5xl font-serif font-bold text-indigo-900 dark:text-indigo-200 mb-4">
+        <h2 className="text-4xl md:text-5xl font-serif font-bold text-indigo-900 dark:text-indigo-200 mb-4 flex items-center justify-center gap-4">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="60" height="60" />
             {title}
         </h2>
         <div className="text-lg md:text-xl text-stone-600 dark:text-stone-400 max-w-3xl mx-auto">{subtitle}</div>

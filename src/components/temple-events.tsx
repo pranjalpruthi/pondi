@@ -640,7 +640,7 @@ export const TempleEventsPanel = memo(({ onOpenChange }: { onOpenChange: (open: 
                           : "bg-gradient-to-br from-sky-500 via-cyan-500 to-blue-500 text-white font-semibold shadow-md"
                         : "bg-gray-100 hover:bg-gray-200 dark:bg-zinc-700/60 dark:hover:bg-zinc-600/80",
                       dayData?.fasting_info.is_fasting_day && selectedDayOfMonth !== dayNumber && "ring-1 ring-pink-400/70 dark:ring-pink-600/70",
-                      new Date().getFullYear() === activeMonthDate.getFullYear() && new Date().getMonth() === activeMonthDate.getMonth() && dayNumber === new Date().getDate() && selectedDayOfMonth !== dayNumber && "font-bold ring-1 ring-amber-500"
+                      new Date().getFullYear() === activeMonthDate.getFullYear() && new Date().getMonth() === activeMonthDate.getMonth() && dayNumber === new Date().getDate() && selectedDayOfMonth !== dayNumber && "font-bold bg-gradient-to-br from-orange-400 to-amber-500 text-white shadow-sm"
                     )}
                   >
                     {dayNumber}
