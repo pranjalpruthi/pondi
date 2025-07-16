@@ -12,6 +12,7 @@ import {
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'motion/react';
+import ShimmerText from '@/components/ui/shimmer-text';
 import { AuroraText } from '@/components/magicui/aurora-text';
 import { MotionHighlight, MotionHighlightItem } from '@/components/animate-ui/effects/motion-highlight';
 import NumberFlow, { NumberFlowGroup } from '@number-flow/react';
@@ -313,6 +314,7 @@ const InviteHero = () => {
 };
 
 const DetailsAndRegistrationSection = () => {
+    const [isFormLoading, setIsFormLoading] = useState(true);
     const handleAddToCalendar = () => {
         const eventDateStr = "Saturday, 16th August 2025";
         const eventTimeStr = "3:00 PM onwards";
@@ -366,7 +368,12 @@ WhatsApp: https://wa.me/918056626108`;
                 {/* Form Section - Appears first on mobile */}
                 <div className="lg:col-span-2 lg:order-2">
                     <Card className="max-w-4xl mx-auto shadow-2xl border-amber-200 dark:border-amber-800 border-2 overflow-hidden bg-white dark:bg-gray-900">
-                        <CardContent className="p-2 bg-white">
+                        <CardContent className="p-2 bg-white relative">
+                            {isFormLoading && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-white dark:bg-gray-900 z-10 p-4">
+                                    <ShimmerText className="text-lg sm:text-xl md:text-2xl leading-loose" text="Hare Kṛṣṇa, Hare Kṛṣṇa, Kṛṣṇa Kṛṣṇa, Hare Hare, Hare Rāma, Hare Rāma, Rāma Rāma, Hare Hare" />
+                                </div>
+                            )}
                             <iframe
                                 data-tally-src="https://tally.so/embed/mDoRD5?alignLeft=1&transparentBackground=1&dynamicHeight=1"
                                 loading="lazy"
@@ -376,7 +383,8 @@ WhatsApp: https://wa.me/918056626108`;
                                 marginHeight={0}
                                 marginWidth={0}
                                 title="Join Us for Śrī Kṛṣṇa Janmāṣṭamī !"
-                                className="rounded-lg"
+                                className={cn("rounded-lg transition-opacity duration-500", isFormLoading ? 'opacity-0' : 'opacity-100')}
+                                onLoad={() => setIsFormLoading(false)}
                             />
                         </CardContent>
                     </Card>
