@@ -314,12 +314,33 @@ const InviteHero = () => {
 
 const DetailsAndRegistrationSection = () => {
     const handleAddToCalendar = () => {
+        const eventDateStr = "Saturday, 16th August 2025";
+        const eventTimeStr = "3:00 PM onwards";
+        const venueName = "Jayaram Thirumana Nilayam, Puducherry";
+        const venueMapLink = "https://maps.app.goo.gl/8CGJUsGp4Vt8fLdN7";
+
+        const fullDescription = `Join us for the divine appearance day of Lord Sri Krishna.
+
+Date: ${eventDateStr}
+Time: ${eventTimeStr}
+Venue: ${venueName}
+Google Maps: ${venueMapLink}
+
+Event details: https://pudhuvai.vrindavanam.org.in/fests/invite
+
+Stay connected with us:
+Facebook: https://facebook.com/iskm.pondy
+Telegram: https://t.me/ISKMVaishnavasanga
+Instagram: https://instagram.com/iskm_pondy
+YouTube: https://www.youtube.com/@ISKMPondy
+WhatsApp: https://wa.me/918056626108`;
+
         const event = {
             title: "Śrī Kṛṣṇa Janmāṣṭamī Grand Festival",
             start: "20250816T150000",
             end: "20250817T000000",
-            description: `Join us for the divine appearance day of Lord Sri Krishna. Event details: http://pudhuvai.vrindavanam.org.in`,
-            location: "Jayaram Thirumana Nilayam, Puducherry"
+            description: fullDescription,
+            location: venueName
         };
         const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${event.start}/${event.end}&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}`;
         window.open(googleCalendarUrl, '_blank');
@@ -342,36 +363,8 @@ const DetailsAndRegistrationSection = () => {
                 subtitle={<></>}
             />
             <div className="grid lg:grid-cols-3 gap-12 items-start">
-                <div className="lg:col-span-1 flex flex-col gap-8">
-                    {detailItems.map((item, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.5 }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="p-6 rounded-xl bg-white dark:bg-gray-800/50 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col items-center justify-between text-center h-full"
-                        >
-                            <div>
-                                <div className="p-4 bg-orange-100 dark:bg-orange-500/10 rounded-full mb-4 inline-block">
-                                    <item.icon className="h-10 w-10 text-orange-600 dark:text-orange-400" />
-                                </div>
-                                <p className="text-2xl font-bold text-indigo-900 dark:text-indigo-200">{item.title}</p>
-                                <p className="text-md text-stone-500 dark:text-stone-400">{item.subtitle}</p>
-                            </div>
-                            {item.action && (
-                                <Button
-                                    onClick={item.action}
-                                    className="mt-6 w-full rounded-full py-3 px-6 text-lg font-semibold transition-all duration-300 bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/50 dark:text-orange-300 dark:hover:bg-orange-900/80 dark:hover:shadow-[0_0_15px_rgba(251,146,60,0.5)]"
-                                >
-                                    {item.buttonText}
-                                </Button>
-                            )}
-                        </motion.div>
-                    ))}
-                </div>
-
-                <div className="lg:col-span-2">
+                {/* Form Section - Appears first on mobile */}
+                <div className="lg:col-span-2 lg:order-2">
                     <Card className="max-w-4xl mx-auto shadow-2xl border-amber-200 dark:border-amber-800 border-2 overflow-hidden bg-white dark:bg-gray-900">
                         <CardContent className="p-2 bg-white">
                             <iframe
@@ -387,6 +380,36 @@ const DetailsAndRegistrationSection = () => {
                             />
                         </CardContent>
                     </Card>
+                </div>
+
+                {/* Details Section - Appears below form on mobile */}
+                <div className="lg:col-span-1 lg:order-1 grid sm:grid-cols-3 lg:grid-cols-1 gap-8">
+                    {detailItems.map((item, index) => (
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.5 }}
+                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                            className="p-4 sm:p-6 rounded-xl bg-white dark:bg-gray-800/50 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col items-center justify-between text-center h-full"
+                        >
+                            <div>
+                                <div className="p-3 sm:p-4 bg-orange-100 dark:bg-orange-500/10 rounded-full mb-3 sm:mb-4 inline-block">
+                                    <item.icon className="h-8 w-8 sm:h-10 sm:w-10 text-orange-600 dark:text-orange-400" />
+                                </div>
+                                <p className="text-lg sm:text-2xl font-bold text-indigo-900 dark:text-indigo-200">{item.title}</p>
+                                <p className="text-sm sm:text-md text-stone-500 dark:text-stone-400">{item.subtitle}</p>
+                            </div>
+                            {item.action && (
+                                <Button
+                                    onClick={item.action}
+                                    className="mt-4 sm:mt-6 w-full rounded-full py-2 sm:py-3 px-4 sm:px-6 text-sm sm:text-lg font-semibold transition-all duration-300 bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/50 dark:text-orange-300 dark:hover:bg-orange-900/80 dark:hover:shadow-[0_0_15px_rgba(251,146,60,0.5)]"
+                                >
+                                    {item.buttonText}
+                                </Button>
+                            )}
+                        </motion.div>
+                    ))}
                 </div>
             </div>
             <div className="text-lg md:text-xl text-stone-600 dark:text-stone-400 max-w-3xl mx-auto text-center mt-12">
@@ -480,7 +503,7 @@ const QuoteSection: FC<{ quote: { text: string; source: string }, index: number 
 
 const SocialShare = () => {
     const shareText = `🙌 Hare Kṛṣṇa! You are joyfully invited to the Grand Janmāṣṭamī Festival! 🙏\n\nJoin us to celebrate the divine appearance of Lord Krishna with ecstatic kirtan, enlightening discourses, and delicious prasadam.\n\n📅 Date: 16 AUG 2025\n⏰ Time: 3 PM - 12 MIDNIGHT\n📍 Venue: Jayaram Thirumana Nilayam, Puducherry\n\n"One who knows the transcendental nature of My appearance and activities...attains My eternal abode." - Gita 4.9`;
-    const eventUrl = "https://pondi.vercel.app/fests/invite";
+    const eventUrl = "https://pudhuvai.vrindavanam.org.in/fests/invite";
     const shareActions = [
         { name: "WhatsApp", icon: IconBrandWhatsapp, color: "bg-[#25D366] hover:bg-[#25D366]/90", action: () => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + '\n\n' + eventUrl)}`, '_blank') },
         { name: "Facebook", icon: IconBrandFacebook, color: "bg-[#1877F2] hover:bg-[#1877F2]/90", action: () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}`, '_blank') },
