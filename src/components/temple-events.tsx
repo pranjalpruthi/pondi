@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils"
 import { AnimatePresence, motion } from "motion/react"
 import { Calendar, Clock, X, ExternalLink, Loader2, ListChecks, Sparkles, GitCompareArrows } from "lucide-react"
+import { IconBrandGoogle, IconBrandApple } from '@tabler/icons-react';
 import { FlipButton } from "@/components/animate-ui/buttons/flip"
 import { Badge } from "@/components/ui/badge"
 import { useQuery } from '@tanstack/react-query'
@@ -323,6 +324,7 @@ export const TempleEventsPanel = memo(({ onOpenChange }: { onOpenChange: (open: 
   const [todayCalendarData, setTodayCalendarData] = useState<CalendarDay | null>(null); // For today's fasting bar
   const [expandedActivity, setExpandedActivity] = useState<string | null>(null);
   const navigate = useNavigate({ from: '/' });
+  const isMobile = useMediaQuery('(max-width: 767px)');
 
   const calendarLinks = useMemo(() => {
     if (!selectedDayForPopover) return { google: '#', apple: '#' };
@@ -687,19 +689,18 @@ export const TempleEventsPanel = memo(({ onOpenChange }: { onOpenChange: (open: 
                       {selectedDayForPopover.astro_details.tithi_name}, {selectedDayForPopover.astro_details.masa_name} Masa
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge asChild variant="outline" className="cursor-pointer bg-black/5 hover:bg-black/10 border-black/10 text-gray-700 dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/20 dark:text-gray-300 transition-colors">
-                      <a href={calendarLinks.google} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-2 py-0.5">
-                        <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M10 14h4"/><path d="M10 18h4"/><path d="M14 14v4"/></svg>
-                        <span className="hidden sm:inline">Google</span>
-                      </a>
+                  <div className="flex flex-col items-end gap-1.5">
+                    <Badge variant="outline" className="cursor-pointer bg-amber-100/80 dark:bg-amber-900/50 border-amber-300/70 dark:border-amber-700/50 text-amber-800 dark:text-amber-300 font-semibold px-3 py-1 text-xs flex items-center gap-1.5">
+                      <Sparkles className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" /> Remind Me
                     </Badge>
-                    <Badge asChild variant="outline" className="cursor-pointer bg-black/5 hover:bg-black/10 border-black/10 text-gray-700 dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/20 dark:text-gray-300 transition-colors">
-                      <a href={calendarLinks.apple} download={`${selectedDayForPopover?.date_str}-event.ics`} className="flex items-center gap-1.5 px-2 py-0.5">
-                        <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M10 14h4"/><path d="M10 18h4"/><path d="M14 14v4"/></svg>
-                        <span className="hidden sm:inline">Apple</span>
+                    <div className="flex items-center gap-1.5">
+                      <a href={calendarLinks.google} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-full bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
+                        <IconBrandGoogle className="h-4 w-4 text-[#4285F4]" />
                       </a>
-                    </Badge>
+                      <a href={calendarLinks.apple} download={`${selectedDayForPopover?.date_str}-event.ics`} className="p-1.5 rounded-full bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
+                        <IconBrandApple className="h-4 w-4 text-black dark:text-white" />
+                      </a>
+                    </div>
                   </div>
                 </div>
                 <div className="p-3 max-h-64 overflow-y-auto space-y-3 text-sm styled-scrollbar">

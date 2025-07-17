@@ -1409,11 +1409,11 @@ function NavbarContent() {
         <AnimatePresence>
           {isMobile && !isDockOpen && !isClipsPanelActive && !timeLeft.isExpired && (
             <motion.div
+              layout
               className="w-full container px-2 sm:px-4 pointer-events-auto relative group"
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 50, opacity: 0 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 30, delay: 0.2 } }}
+              exit={{ height: 0, opacity: 0, transition: { duration: 0.4, ease: 'easeInOut' } }}
             >
               <div className="relative flex items-center justify-between w-full py-1 px-2 rounded-full bg-gradient-to-r from-orange-400/95 to-amber-500/95 backdrop-blur-sm text-white shadow-lg gap-2 overflow-hidden">
                 <button
@@ -1456,7 +1456,10 @@ function NavbarContent() {
             </motion.div>
           )}
         </AnimatePresence>
-        <div className={cn(
+        <motion.div
+          layout
+          transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+          className={cn(
             "relative mx-auto flex justify-center",
             isClipsPanelActive ? "w-full h-full p-0" : "container px-2 sm:px-4"
           )}>
@@ -1718,7 +1721,7 @@ function NavbarContent() {
               </div>
             </MotionConfig>
           </motion.div>
-        </div>
+        </motion.div>
 
         {/* CommandDialog and related components are REMOVED */}
 
