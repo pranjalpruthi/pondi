@@ -50,6 +50,7 @@ type EventPost = {
   description: string;
   media: MediaItem[];
   registrationUrl?: string;
+  registrationHash?: string;
 };
 
 type UpcomingEvent = {
@@ -147,7 +148,8 @@ const eventPosts: EventPost[] = [
       { type: 'image', src: '/updates/s8.webp', alt: 'Janmashtami Grand Celebration Poster' },
       { type: 'image', src: '/gallery/temple-2.webp', alt: 'Devotees celebrating Janmashtami' },
     ],
-    registrationUrl: 'https://tally.so/r/mDoRD5',
+    registrationUrl: '/fests/invite',
+    registrationHash: 'register',
   },
   {
     id: 'event-2',
@@ -350,16 +352,29 @@ const EventCarousel = () => {
                   </div>
                   <div className="flex items-center justify-center md:justify-end gap-2 w-full md:w-auto flex-wrap">
                       {event.registrationUrl && (
-                        <a href={event.registrationUrl} target="_blank" rel="noopener noreferrer">
-                          <EventCtaButton
-                            icon={<CheckCircle className="h-6 w-6" />}
-                            defaultText="Register Now!"
-                            hoverText="for this event"
-                            emoji="✨"
-                            className="bg-green-500 hover:bg-green-600"
-                            pulseColor="rgba(34, 197, 94, 0.4)"
-                          />
-                        </a>
+                        event.registrationUrl.startsWith('/') ? (
+                          <Link to={event.registrationUrl} hash={event.registrationHash}>
+                            <EventCtaButton
+                              icon={<CheckCircle className="h-6 w-6" />}
+                              defaultText="Register Now!"
+                              hoverText="for this event"
+                              emoji="✨"
+                              className="bg-green-500 hover:bg-green-600"
+                              pulseColor="rgba(34, 197, 94, 0.4)"
+                            />
+                          </Link>
+                        ) : (
+                          <a href={event.registrationUrl} target="_blank" rel="noopener noreferrer">
+                            <EventCtaButton
+                              icon={<CheckCircle className="h-6 w-6" />}
+                              defaultText="Register Now!"
+                              hoverText="for this event"
+                              emoji="✨"
+                              className="bg-green-500 hover:bg-green-600"
+                              pulseColor="rgba(34, 197, 94, 0.4)"
+                            />
+                          </a>
+                        )
                       )}
                       <Popover>
                         <PopoverTrigger asChild>
@@ -424,16 +439,29 @@ const EventCarousel = () => {
                 </div>
                 <div className="flex items-center justify-end gap-2">
                   {event.registrationUrl && (
-                    <a href={event.registrationUrl} target="_blank" rel="noopener noreferrer">
-                      <EventCtaButton
-                        icon={<CheckCircle className="h-6 w-6" />}
-                        defaultText="Register Now!"
-                        hoverText="for this event"
-                        emoji="✨"
-                        className="bg-green-500 hover:bg-green-600"
-                        pulseColor="rgba(34, 197, 94, 0.4)"
-                      />
-                    </a>
+                    event.registrationUrl.startsWith('/') ? (
+                      <Link to={event.registrationUrl} hash={event.registrationHash}>
+                        <EventCtaButton
+                          icon={<CheckCircle className="h-6 w-6" />}
+                          defaultText="Register Now!"
+                          hoverText="for this event"
+                          emoji="✨"
+                          className="bg-green-500 hover:bg-green-600"
+                          pulseColor="rgba(34, 197, 94, 0.4)"
+                        />
+                      </Link>
+                    ) : (
+                      <a href={event.registrationUrl} target="_blank" rel="noopener noreferrer">
+                        <EventCtaButton
+                          icon={<CheckCircle className="h-6 w-6" />}
+                          defaultText="Register Now!"
+                          hoverText="for this event"
+                          emoji="✨"
+                          className="bg-green-500 hover:bg-green-600"
+                          pulseColor="rgba(34, 197, 94, 0.4)"
+                        />
+                      </a>
+                    )
                   )}
                   <Popover>
                     <PopoverTrigger asChild>
@@ -791,7 +819,7 @@ const SpecialEventBanner = ({ safePlayPopOn: _ }: SpecialEventBannerProps) => {
             </div>
           </div>
           <div className="flex items-center justify-center md:justify-end mt-4 md:mt-0 flex-wrap gap-2">
-            <Link to="/fests/invite">
+            <Link to="/fests/invite" hash="register">
               <EventCtaButton
                 icon={<CheckCircle className="h-4 w-4" />}
                 defaultText="Register Now"

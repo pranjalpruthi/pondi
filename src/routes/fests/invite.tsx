@@ -891,7 +891,8 @@ const EventActivitiesSection = () => (
                 </span>
             }
         />
-        <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]">
+        {/* Responsive Grid: 3 columns on mobile, auto-fit on desktop */}
+        <div className="grid grid-cols-3 gap-2 md:gap-6 md:[grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]">
             {eventActivities.map((category, index) => (
                 <motion.div
                     key={category.category}
@@ -899,6 +900,7 @@ const EventActivitiesSection = () => (
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="aspect-square md:aspect-auto"
                 >
                     <MorphingDialog
                         transition={{
@@ -908,19 +910,23 @@ const EventActivitiesSection = () => (
                         }}
                     >
                         <MorphingDialogTrigger className="w-full h-full group">
-                            <Card className="h-36 flex flex-col justify-center shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gradient-to-br from-white to-amber-50 dark:from-gray-800 dark:to-gray-900 border border-stone-200 dark:border-gray-700 cursor-pointer p-2">
-                                <CardHeader className="flex flex-row items-center justify-between w-full gap-4 p-4">
-                                    <div className="flex items-center gap-4">
+                            {/* Responsive Card Layout */}
+                            <Card className="h-full md:h-36 flex flex-col justify-center shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gradient-to-br from-white to-amber-50 dark:from-gray-800 dark:to-gray-900 border border-stone-200 dark:border-gray-700 cursor-pointer p-2 relative md:p-0">
+                                {/* Use flex-col for mobile, flex-row for desktop */}
+                                <CardHeader className="flex flex-col md:flex-row items-center justify-center md:justify-between w-full h-full md:h-auto gap-2 md:gap-4 p-0 md:p-4">
+                                    {/* Icon and Title container */}
+                                    <div className="flex flex-col md:flex-row items-center justify-center text-center md:text-left gap-2 md:gap-4 flex-grow md:flex-grow-0">
                                         {category.isCustom ? (
-                                            <category.icon className="h-16 w-16" />
+                                            <category.icon className="h-10 w-10 md:h-16 md:w-16" />
                                         ) : (
-                                            <div className="p-3 bg-orange-100 dark:bg-orange-900/50 rounded-full">
-                                                <category.icon className="h-12 w-12 text-orange-600 dark:text-orange-400" />
+                                            <div className="p-2 md:p-3 bg-orange-100 dark:bg-orange-900/50 rounded-full">
+                                                <category.icon className="h-6 w-6 md:h-12 md:w-12 text-orange-600 dark:text-orange-400" />
                                             </div>
                                         )}
-                                        <MorphingDialogTitle className="text-lg font-semibold text-indigo-900 dark:text-indigo-200 text-left">{category.category}</MorphingDialogTitle>
+                                        <MorphingDialogTitle className="text-[10px] leading-tight mt-1 md:text-lg font-semibold text-indigo-900 dark:text-indigo-200">{category.category}</MorphingDialogTitle>
                                     </div>
-                                    <div className='relative flex h-8 w-8 shrink-0 scale-100 select-none appearance-none items-center justify-center rounded-full bg-orange-500 text-white transition-all duration-300 group-hover:bg-orange-600 group-hover:scale-110 active:scale-[0.98]'>
+                                    {/* Plus Icon */}
+                                    <div className='absolute bottom-1 right-1 md:relative md:bottom-auto md:right-auto flex h-5 w-5 md:h-8 md:w-8 shrink-0 scale-100 select-none appearance-none items-center justify-center rounded-full bg-orange-500 text-white transition-all duration-300 group-hover:bg-orange-600 group-hover:scale-110 active:scale-[0.98]'>
                                         <PlusIcon size={16} />
                                     </div>
                                 </CardHeader>
@@ -963,7 +969,6 @@ const EventActivitiesSection = () => (
                 </motion.div>
             ))}
         </div>
-        
     </ScrollSection>
 );
 
