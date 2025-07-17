@@ -1,23 +1,27 @@
 {
   "rewrites": [
     {
-      "source": "/api/calendar((?:\\?.*)?)",
-      "destination": "https://gcal.pranjal.work/calendar$1"
+      "source": "/youtube-feed/:path*",
+      "destination": "https://www.youtube.com/:path*"
     },
     {
-      "source": "/api/search-locations((?:\\?.*)?)",
-      "destination": "https://gcal.pranjal.work/search-locations$1"
+      "source": "/api/calendar/:path*",
+      "destination": "https://gcal.pranjal.work/calendar/:path*"
     },
     {
-      "source": "/api/calendar-by-coordinates((?:\\?.*)?)",
-      "destination": "https://gcal.pranjal.work/calendar-by-coordinates$1"
+      "source": "/api/search-locations/:path*",
+      "destination": "https://gcal.pranjal.work/search-locations/:path*"
     },
     {
-      "source": "/youtube-feed(/.*)?",
-      "destination": "https://www.youtube.com$1"
+      "source": "/api/calendar-by-coordinates/:path*",
+      "destination": "https://gcal.pranjal.work/calendar-by-coordinates/:path*"
     },
     {
-      "source": "/(.*)",
+      "source": "/api/nocodb/:path*",
+      "destination": "https://db.vrindavanam.org.in/:path*"
+    },
+    {
+      "source": "/:path((?!api/|youtube-feed/|.*\\.).*)",
       "destination": "/index.html"
     }
   ]

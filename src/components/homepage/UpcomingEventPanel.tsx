@@ -219,8 +219,8 @@ WhatsApp: https://wa.me/918056626108`;
                           }
                           backContent={<span className="font-bold">Open Google</span>}
                           className="w-full px-4 text-xs h-9 rounded-full font-bold shadow-md select-none"
-                          frontClassName="bg-primary text-primary-foreground"
-                          backClassName="bg-primary/90 text-primary-foreground"
+                          frontClassName="bg-primary text-primary-foreground dark:bg-secondary dark:text-secondary-foreground"
+                          backClassName="bg-primary/90 text-primary-foreground dark:bg-secondary/90 dark:text-secondary-foreground"
                           from="top"
                         />
                       </motion.div>

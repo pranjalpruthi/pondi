@@ -324,7 +324,6 @@ export const TempleEventsPanel = memo(({ onOpenChange }: { onOpenChange: (open: 
   const [todayCalendarData, setTodayCalendarData] = useState<CalendarDay | null>(null); // For today's fasting bar
   const [expandedActivity, setExpandedActivity] = useState<string | null>(null);
   const navigate = useNavigate({ from: '/' });
-  const isMobile = useMediaQuery('(max-width: 767px)');
 
   const calendarLinks = useMemo(() => {
     if (!selectedDayForPopover) return { google: '#', apple: '#' };
@@ -690,17 +689,25 @@ export const TempleEventsPanel = memo(({ onOpenChange }: { onOpenChange: (open: 
                     </p>
                   </div>
                   <div className="flex flex-col items-end gap-1.5">
-                    <Badge variant="outline" className="cursor-pointer bg-amber-100/80 dark:bg-amber-900/50 border-amber-300/70 dark:border-amber-700/50 text-amber-800 dark:text-amber-300 font-semibold px-3 py-1 text-xs flex items-center gap-1.5">
-                      <Sparkles className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" /> Remind Me
-                    </Badge>
-                    <div className="flex items-center gap-1.5">
-                      <a href={calendarLinks.google} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-full bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
-                        <IconBrandGoogle className="h-4 w-4 text-[#4285F4]" />
-                      </a>
-                      <a href={calendarLinks.apple} download={`${selectedDayForPopover?.date_str}-event.ics`} className="p-1.5 rounded-full bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
-                        <IconBrandApple className="h-4 w-4 text-black dark:text-white" />
-                      </a>
-                    </div>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Badge variant="outline" className="cursor-pointer bg-amber-100/80 dark:bg-amber-900/50 border-amber-300/70 dark:border-amber-700/50 text-amber-800 dark:text-amber-300 font-semibold px-3 py-1 text-xs flex items-center gap-1.5">
+                          <Sparkles className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" /> Add to Calendar
+                        </Badge>
+                      </PopoverTrigger>
+                      <PopoverContent side="bottom" align="end" className="w-auto p-2 z-50">
+                        <div className="flex items-center gap-2">
+                          <a href={calendarLinks.google} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-2 rounded-md bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
+                            <IconBrandGoogle className="h-4 w-4 text-[#4285F4] dark:text-white" />
+                            <span className="text-xs font-medium text-gray-800 dark:text-gray-200">Google</span>
+                          </a>
+                          <a href={calendarLinks.apple} download={`${selectedDayForPopover?.date_str}-event.ics`} className="flex items-center gap-2 p-2 rounded-md bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
+                            <IconBrandApple className="h-4 w-4 text-black dark:text-white" />
+                            <span className="text-xs font-medium text-gray-800 dark:text-gray-200">Apple</span>
+                          </a>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </div>
                 <div className="p-3 max-h-64 overflow-y-auto space-y-3 text-sm styled-scrollbar">
