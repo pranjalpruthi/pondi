@@ -5,6 +5,10 @@
       "destination": "https://www.youtube.com/:path*"
     },
     {
+      "source": "/api/calendar",
+      "destination": "https://gcal.pranjal.work/calendar"
+    },
+    {
       "source": "/api/calendar/:path*",
       "destination": "https://gcal.pranjal.work/calendar/:path*"
     },
