@@ -345,14 +345,14 @@ function QuoteSlider({ quotes = prabhupadaQuotes, additionalWaitAfterTyping = 90
                     delay={200}   // Delay before typing starts after block animates in
                     cursor={true}
                     loop={false}
-                    className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 italic text-center leading-relaxed px-2 sm:px-6 block whitespace-pre-line"
+                    className="text-lg sm:text-xl md:text-2xl text-gray-700 dark:text-gray-300 italic text-center leading-relaxed px-2 sm:px-6 block whitespace-pre-line"
                   />
                 </motion.div>
               </AnimatePresence>
             </div>
             
             <div className="flex flex-col sm:flex-row items-center mb-6 bg-gradient-to-r from-[#e94a9c]/5 to-[#ffc547]/5 p-4 rounded-xl w-full max-w-lg mx-auto">
-              <div className="h-16 w-16 rounded-full overflow-hidden mr-4 shadow-md border-2 border-white/50 mb-3 sm:mb-0">
+              <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-full overflow-hidden mr-0 sm:mr-4 shadow-md border-2 border-white/50 mb-3 sm:mb-0 flex-shrink-0">
                 <img 
                   src="/pp/pp1.webp"
                   alt="Srila Prabhupada" 
@@ -364,8 +364,8 @@ function QuoteSlider({ quotes = prabhupadaQuotes, additionalWaitAfterTyping = 90
                 />
               </div>
               <div className="text-center sm:text-left">
-                <p className="font-medium text-gray-900 dark:text-white">His Divine Grace A.C. Bhaktivedanta Swami Prabhupada</p>
-                <p className="text-sm text-[#0a84ff] mt-1 flex items-center justify-center sm:justify-start">
+                <p className="font-medium text-gray-900 dark:text-white text-base sm:text-lg">His Divine Grace A.C. Bhaktivedanta Swami Prabhupada</p>
+                <p className="text-xs sm:text-sm text-[#0a84ff] mt-1 flex items-center justify-center sm:justify-start">
                   <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#0a84ff] mr-2"></span>
                   {quotes[currentQuoteIndex].source}
                 </p>
@@ -514,24 +514,24 @@ export function VisitUs() {
       >
         <div className="container mx-auto z-10 relative px-4 md:px-6">
           {/* Section Header */}
-          <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-16 text-center">
+          <div className="mb-8 md:mb-12 text-center">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-[#ffc547] via-[#0a84ff] to-[#e94a9c] text-transparent bg-clip-text flex items-center justify-center" // Adjusted font sizes and added flex for icon
+              className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#ffc547] via-[#0a84ff] to-[#e94a9c] text-transparent bg-clip-text flex items-center justify-center"
             >
               <motion.div 
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
                 viewport={{ once: true }}
-                className="mr-3" // Add margin-right for spacing
+                className="mr-2 sm:mr-3"
               >
                 <div className="bg-gradient-to-r from-[#e94a9c] via-[#ffc547] to-[#0a84ff] p-0.5 rounded-full shadow-lg">
-                  <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-full p-3">
-                    <MapPin className="h-7 w-7 text-[#ffc547] dark:text-[#ffc547]" />
+                  <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-full p-2 sm:p-3">
+                    <MapPin className="h-6 w-6 sm:h-7 sm:w-7 text-[#ffc547] dark:text-[#ffc547]" />
                   </div>
                 </div>
               </motion.div>
@@ -543,7 +543,7 @@ export function VisitUs() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto"
+              className="text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto"
             >
               <TypingText
                 text="We invite you to visit our temple and experience spiritual bliss."
@@ -560,10 +560,10 @@ export function VisitUs() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-[-60px] mb-8"
+            className="mt-[-40px] sm:mt-[-60px] mb-8"
           >
-            <div className="p-5 md:p-8">
-                <h3 className="text-xl font-semibold text-center mb-6 bg-gradient-to-r from-[#e94a9c] via-[#0a84ff] to-[#ffc547] text-transparent bg-clip-text">
+            <div className="p-2 sm:p-5 md:p-8">
+                <h3 className="text-xl sm:text-2xl font-semibold text-center mb-6 bg-gradient-to-r from-[#e94a9c] via-[#0a84ff] to-[#ffc547] text-transparent bg-clip-text">
                   <WritingText
                     text="Plan Your Visit"
                     inView={true}
@@ -584,63 +584,63 @@ export function VisitUs() {
                   >
                     <TabsTrigger 
                       value="temple" 
-                      className="flex flex-col items-center justify-center gap-2 py-5 px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      className="flex flex-col items-center justify-center gap-1 sm:gap-2 py-3 sm:py-5 px-2 sm:px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[90px] sm:min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
                       onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="pink">
-                        <Home className="h-7 w-7 text-[#e94a9c]" />
+                        <Home className="h-6 w-6 sm:h-7 sm:w-7 text-[#e94a9c]" />
                       </IconWrapper>
-                      <span className="text-sm font-medium">Temple</span>
+                      <span className="text-xs sm:text-sm font-medium text-center">Temple</span>
                     </TabsTrigger>
                     <TabsTrigger 
                       value="info" 
-                      className="flex flex-col items-center justify-center gap-2 py-5 px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      className="flex flex-col items-center justify-center gap-1 sm:gap-2 py-3 sm:py-5 px-2 sm:px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[90px] sm:min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
                       onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="gold">
-                        <Bookmark className="h-7 w-7 text-[#ffc547]" />
+                        <Bookmark className="h-6 w-6 sm:h-7 sm:w-7 text-[#ffc547]" />
                       </IconWrapper>
-                      <span className="text-sm font-medium">Info</span>
+                      <span className="text-xs sm:text-sm font-medium text-center">Info</span>
                     </TabsTrigger>
                     <TabsTrigger 
                       value="car" 
-                      className="flex flex-col items-center justify-center gap-2 py-5 px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      className="flex flex-col items-center justify-center gap-1 sm:gap-2 py-3 sm:py-5 px-2 sm:px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[90px] sm:min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
                       onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="blue">
-                        <Car className="h-7 w-7 text-[#0a84ff]" />
+                        <Car className="h-6 w-6 sm:h-7 sm:w-7 text-[#0a84ff]" />
                       </IconWrapper>
-                      <span className="text-sm font-medium">By Car</span>
+                      <span className="text-xs sm:text-sm font-medium text-center">By Car</span>
                     </TabsTrigger>
                     <TabsTrigger 
                       value="plane" 
-                      className="flex flex-col items-center justify-center gap-2 py-5 px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      className="flex flex-col items-center justify-center gap-1 sm:gap-2 py-3 sm:py-5 px-2 sm:px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[90px] sm:min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
                       onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="pink">
-                        <Plane className="h-7 w-7 text-[#e94a9c]" />
+                        <Plane className="h-6 w-6 sm:h-7 sm:w-7 text-[#e94a9c]" />
                       </IconWrapper>
-                      <span className="text-sm font-medium">By Plane</span>
+                      <span className="text-xs sm:text-sm font-medium text-center">By Plane</span>
                     </TabsTrigger>
                     <TabsTrigger 
                       value="bus" 
-                      className="flex flex-col items-center justify-center gap-2 py-5 px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      className="flex flex-col items-center justify-center gap-1 sm:gap-2 py-3 sm:py-5 px-2 sm:px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[90px] sm:min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
                       onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="gold">
-                        <Bus className="h-7 w-7 text-[#ffc547]" />
+                        <Bus className="h-6 w-6 sm:h-7 sm:w-7 text-[#ffc547]" />
                       </IconWrapper>
-                      <span className="text-sm font-medium">By Bus</span>
+                      <span className="text-xs sm:text-sm font-medium text-center">By Bus</span>
                     </TabsTrigger>
                     <TabsTrigger 
                       value="train" 
-                      className="flex flex-col items-center justify-center gap-2 py-5 px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
+                      className="flex flex-col items-center justify-center gap-1 sm:gap-2 py-3 sm:py-5 px-2 sm:px-4 rounded-xl transition-all duration-300 touch-manipulation min-h-[90px] sm:min-h-[110px] hover:bg-white/30 dark:hover:bg-gray-700/30"
                       onMouseEnter={safePlayHover}
                     >
                       <IconWrapper color="blue">
-                        <Train className="h-7 w-7 text-[#0a84ff]" />
+                        <Train className="h-6 w-6 sm:h-7 sm:w-7 text-[#0a84ff]" />
                       </IconWrapper>
-                      <span className="text-sm font-medium">By Train</span>
+                      <span className="text-xs sm:text-sm font-medium text-center">By Train</span>
                     </TabsTrigger>
                   </TabsList>
                   

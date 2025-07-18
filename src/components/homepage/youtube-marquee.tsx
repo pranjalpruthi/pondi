@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Marquee } from "@/components/magicui/marquee";
-import { MagicCard } from "@/components/ui/magic-card";
 import { XMLParser } from "fast-xml-parser";
+import { cn } from '@/lib/utils';
 
 export interface YouTubeVideo { // Added export
   id: string;
@@ -117,25 +117,44 @@ const PulsingDotButton = ({ text }: { text: string }) => (
   </button>
 );
 
-const VideoCard = ({ id, title, thumbnail, link }: YouTubeVideo) => {
+const VideoMarqueeCard = ({
+  title,
+  thumbnail,
+  publishedDate,
+  link,
+  id,
+}: YouTubeVideo) => {
   return (
-    <MagicCard 
-      className="w-72 mx-2 overflow-hidden h-64 flex flex-col border-none shadow-lg rounded-xl bg-neutral-800/90" 
-      gradientColor="#f3b1ef"
-      gradientOpacity={0.5}
+    <a
+      href={link || `https://www.youtube.com/watch?v=${id}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={cn(
+        "relative h-36 w-64 cursor-pointer overflow-hidden rounded-xl border p-4",
+        // light styles
+        "border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.05]",
+        // dark styles
+        "dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]",
+      )}
     >
-      <a
-        href={link || `https://www.youtube.com/watch?v=${id}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex flex-col items-center h-full w-full no-underline"
-      >
-        <img src={thumbnail} alt={title} className="w-full h-40 object-cover rounded-t-xl" loading="lazy" />
-        <p className="px-3 py-4 text-sm font-semibold text-center text-gray-100 flex-grow flex items-center justify-center">
-          {title}
-        </p>
-      </a>
-    </MagicCard>
+      <div className="flex flex-row items-center gap-3">
+        <img
+          className="rounded-full"
+          width="40"
+          height="40"
+          alt={title}
+          src={thumbnail}
+        />
+        <div className="flex flex-col">
+          <span className="text-xs font-semibold text-white/80 rounded-full bg-white/10 px-2 py-0.5">
+            {publishedDate}
+          </span>
+        </div>
+      </div>
+      <blockquote className="mt-3 text-sm font-medium dark:text-white line-clamp-2">
+        {title}
+      </blockquote>
+    </a>
   );
 };
 
@@ -154,36 +173,24 @@ export function YouTubeMarquee() {
   const renderMarqueeContent = () => {
     if (!videos || !Array.isArray(videos) || videos.length === 0) return null;
 
-    const rowClass = "relative flex h-[250px] sm:h-[300px] w-full overflow-hidden items-center";
     const videosFirstHalf = videos.slice(0, Math.ceil(videos.length / 2));
     const videosSecondHalf = videos.slice(Math.ceil(videos.length / 2));
-    const marqueeRepeatCount = (vids: YouTubeVideo[]) => Math.max(2, Math.ceil(10 / Math.max(1, vids.length)));
 
     return (
-      <>
-        {videosFirstHalf.length > 0 && (
-          <div className={rowClass}>
-            <Marquee className="py-0 [--gap:0.25rem]" pauseOnHover={true} repeat={marqueeRepeatCount(videosFirstHalf)}>
-              {videosFirstHalf.map((video) => (
-                <VideoCard key={video.id} {...video} />
-              ))}
-            </Marquee>
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-background to-transparent"></div>
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-background to-transparent"></div>
-          </div>
-        )}
-        {videosSecondHalf.length > 0 && (
-          <div className={rowClass}>
-            <Marquee reverse className="py-0 [--gap:0.25rem]" pauseOnHover={true} repeat={marqueeRepeatCount(videosSecondHalf)}>
-              {videosSecondHalf.map((video) => (
-                <VideoCard key={video.id} {...video} />
-              ))}
-            </Marquee>
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-background to-transparent"></div>
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-background to-transparent"></div>
-          </div>
-        )}
-      </>
+      <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
+        <Marquee pauseOnHover className="[--duration:40s]">
+          {videosFirstHalf.map((video) => (
+            <VideoMarqueeCard key={`first-${video.id}`} {...video} />
+          ))}
+        </Marquee>
+        <Marquee reverse pauseOnHover className="[--duration:40s]">
+          {videosSecondHalf.map((video) => (
+            <VideoMarqueeCard key={`second-${video.id}`} {...video} />
+          ))}
+        </Marquee>
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-background"></div>
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-background"></div>
+      </div>
     );
   }
   
@@ -207,7 +214,7 @@ export function YouTubeMarquee() {
     <section className="relative flex flex-col space-y-8 py-12 sm:py-16 lg:py-24 w-full px-0 mx-0">
       <div className="absolute inset-0 bg-gradient-to-r from-[#a7417b]/5 via-transparent to-[#a7417b]/5 pointer-events-none dark:from-[#a7417b]/10 dark:via-transparent dark:to-[#a7417b]/10"></div>
       <PulsingDotButton text="Latest ISKM Vlogs" />
-      <div className="w-full flex flex-col items-center min-h-[300px] justify-center px-0 mx-0">
+      <div className="w-full flex flex-col items-center justify-center px-0 mx-0">
         {content}
       </div>
     </section>

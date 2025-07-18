@@ -4,10 +4,11 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion, AnimatePresence, type PanInfo } from 'motion/react';
 import { Calendar, ChevronRight, Info, Loader2, X, ArrowRight, ArrowLeft, Youtube, MapPin, CheckCircle } from 'lucide-react';
 import { IconCar, IconPhone, IconClock } from '@tabler/icons-react';
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSound } from 'use-sound';
 import { useSoundSettings } from '@/components/context/sound-context';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -786,55 +787,73 @@ interface SpecialEventBannerProps {
 
 const SpecialEventBanner = ({ safePlayPopOn: _ }: SpecialEventBannerProps) => {
   const [isVisible, setIsVisible] = useState(true);
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
-  if (!isVisible) return null;
+  const handleClick = () => {
+    if (isMobile) {
+      navigate({ to: '/fests/invite', hash: 'register' });
+    }
+  };
+
+  const handleClose = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsVisible(false);
+  };
 
   return (
     <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20, height: 0, padding: 0, margin: 0 }}
+      {isVisible && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, height: 0, padding: 0, margin: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="relative bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white p-4 rounded-xl shadow-lg mb-6 md:mb-12 overflow-hidden"
-      >
-        <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full" />
-        <div className="absolute -left-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full" />
-        <div className="relative flex items-center justify-between">
-          <div className="flex items-center flex-col md:flex-row gap-4 md:gap-0 text-center md:text-left">
-            <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="mr-0 md:mr-4"
-            >
-              <Info className="h-6 w-6" />
-            </motion.div>
-            <div>
-              <h4 className="font-bold text-base md:text-xl">Special Announcement</h4>
-              <p className="text-sm md:text-base">Janmashtami Grand Celebration: Join us on August 16th!</p>
-              <blockquote className="border-l-2 border-white/50 pl-3 italic text-white/80 text-xs mt-2">
-                "In this age of Kali, the holy name of the Lord, the Hare Kṛṣṇa mahā-mantra, is the incarnation of Lord Kṛṣṇa."
-              </blockquote>
-              <cite className="mt-1 block text-right text-xs text-white/90 not-italic">— CC, Ādi 17.22</cite>
+          className="relative bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white p-2 md:p-4 rounded-xl shadow-lg mb-4 md:mb-12 overflow-hidden"
+          onClick={handleClick}
+          style={{ cursor: isMobile ? 'pointer' : 'default' }}
+        >
+          <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full" />
+          <div className="absolute -left-8 -bottom-8 w-28 h-28 bg-white/10 rounded-full" />
+          <div className="relative flex flex-col md:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-3 text-center md:text-left w-full">
+              <motion.div
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                className="flex-shrink-0"
+              >
+                <Info className="h-5 w-5 md:h-8 md:w-8" />
+              </motion.div>
+              <div className="flex-grow text-left">
+                <h4 className="font-bold text-sm md:text-lg">Special Announcement</h4>
+                <p className="text-xs md:text-base">Janmashtami Grand Celebration: Join us on August 16th!</p>
+                <blockquote className="border-l-2 border-white/50 pl-2 italic text-white/80 text-[10px] leading-tight mt-1 md:text-base md:mt-3">
+                  "In this age of Kali, the holy name of the Lord, the Hare Kṛṣṇa mahā-mantra, is the incarnation of Lord Kṛṣṇa."
+                </blockquote>
+                <cite className="mt-1 block text-right text-[9px] text-white/90 not-italic md:text-sm">— CC, Ādi 17.22</cite>
+              </div>
+            </div>
+            <div className="flex items-center justify-center flex-shrink-0 gap-2 w-full md:w-auto mt-2 md:mt-0">
+              <Link to="/fests/invite" hash="register" className="hidden md:block" onClick={(e) => e.stopPropagation()}>
+                <EventCtaButton
+                  icon={<CheckCircle className="h-4 w-4" />}
+                  defaultText="Register Now"
+                  hoverText="for this event"
+                  emoji="✨"
+                  className="bg-green-500 hover:bg-green-600 text-sm px-4 py-2 rounded-lg"
+                  pulseColor="rgba(34, 197, 94, 0.4)"
+                />
+              </Link>
             </div>
           </div>
-          <div className="flex items-center justify-center md:justify-end mt-4 md:mt-0 flex-wrap gap-2">
-            <Link to="/fests/invite" hash="register">
-              <EventCtaButton
-                icon={<CheckCircle className="h-4 w-4" />}
-                defaultText="Register Now"
-                hoverText="for this event"
-                emoji="✨"
-                className="bg-green-500 hover:bg-green-600 text-xs px-3 py-1.5 mr-2 rounded-full"
-                pulseColor="rgba(34, 197, 94, 0.4)"
-              />
-            </Link>
-            <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={() => setIsVisible(false)}>
+          {/* Close button, absolutely positioned at the top right */}
+          <div className="absolute top-2 right-2 pointer-events-auto">
+            <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 h-6 w-6" onClick={handleClose}>
               <X className="h-4 w-4" />
             </Button>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      )}
     </AnimatePresence>
   );
 };
@@ -857,20 +876,20 @@ export function EventSection() {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center text-center md:text-left">
             <div className="md:col-span-1">
-              <Badge variant="secondary" className="bg-purple-100 text-purple-800 dark:bg-purple-800/70 dark:text-purple-100 text-sm font-medium mb-4">
+              <Badge variant="secondary" className="bg-purple-100 text-purple-800 dark:bg-purple-800/70 dark:text-purple-100 text-xs md:text-sm font-medium mb-2 md:mb-4">
                 Festivals & Events
               </Badge>
-              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-transparent bg-clip-text">
+              <h2 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-transparent bg-clip-text">
                 Join Our Celebrations 💫
               </h2>
             </div>
             <div className="md:col-span-1">
-              <blockquote className="border-l-4 border-primary pl-4 italic text-muted-foreground">
+              <blockquote className="border-l-4 border-primary pl-3 md:pl-4 italic text-muted-foreground text-xs md:text-base">
                 "A temple means a place where one can learn the science of God."
               </blockquote>
-              <cite className="mt-2 block text-right text-sm text-muted-foreground not-italic">— Srila Prabhupada, The Science of Self-Realization</cite>
+              <cite className="mt-2 block text-right text-[10px] md:text-sm text-muted-foreground not-italic">— Srila Prabhupada, The Science of Self-Realization</cite>
             </div>
           </div>
         </motion.div>

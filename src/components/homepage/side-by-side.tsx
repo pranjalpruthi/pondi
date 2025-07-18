@@ -96,7 +96,7 @@ function SideBySide() {
       {/* Logo Container */}
       <div className="mx-auto -mt-64 w-full max-w-3xl relative z-10">
         <motion.div 
-          className="bg-white/10 backdrop-blur-lg border border-amber-500/30 p-6 w-32 h-32 mx-auto grid place-content-center rounded-full
+          className="bg-white/10 backdrop-blur-lg border border-amber-500/30 p-4 md:p-6 w-28 h-28 md:w-32 md:h-32 mx-auto grid place-content-center rounded-full
           before:absolute before:inset-0 before:rounded-full before:bg-[#FF69B4]/30 before:blur-2xl before:animate-pulse"
           animate={{ scale: [1, 1.05, 1] }}
           transition={{ 
@@ -105,7 +105,7 @@ function SideBySide() {
             ease: "easeInOut"
           }}
         >
-          <div className="relative w-24 h-24">
+          <div className="relative w-20 h-20 md:w-24 md:h-24">
             <img
               src="/assets/iskm-d.svg"
               alt="ISKM Logo"
@@ -119,16 +119,16 @@ function SideBySide() {
       </div>
 
       {/* Featured Shloka */}
-      <article className="text-center pt-6 w-4/5 md:w-2/3 mx-auto relative z-10 space-y-6">
+      <article className="text-center pt-6 w-11/12 md:w-2/3 mx-auto relative z-10 space-y-6">
         <div className="space-y-4">
           <div className="inline-flex flex-col items-center gap-2">
-            <h1 className="text-4xl font-semibold py-2 px-6 rounded-full 
+            <h1 className="text-3xl md:text-4xl font-semibold py-2 px-4 md:px-6 rounded-full 
               bg-gradient-to-r dark:from-amber-500/10 dark:to-amber-300/10 from-pink-500/10 to-indigo-500/10
               dark:text-amber-300 text-pink-600"
             >
               Take Your Daily Shloka Pill
             </h1>
-            <div className="flex items-center gap-2 text-lg">
+            <div className="flex flex-col sm:flex-row items-center gap-2 text-base md:text-lg">
               <span className="py-1 px-4 rounded-full font-medium
                 dark:bg-amber-400/10 bg-pink-500/10
                 dark:text-amber-300 text-pink-600"
@@ -146,17 +146,17 @@ function SideBySide() {
         </div>
 
         {/* Today's Prescription */}
-        <div className="space-y-4 mt-12">
+        <div className="space-y-4 mt-8 md:mt-12">
           <p className="inline-flex py-1 px-4 rounded-full text-sm font-medium
             dark:bg-amber-400/10 bg-pink-500/10
             dark:text-amber-300 text-pink-600"
           >
             Today's Prescribed Shloka
           </p>
-          <p className="text-xl font-medium dark:text-amber-200/90 text-amber-700">
+          <p className="text-lg md:text-xl font-medium dark:text-amber-200/90 text-amber-700">
             {todayShloka.sanskrit}
           </p>
-          <p className="text-lg dark:text-muted-foreground text-zinc-700 italic">
+          <p className="text-base md:text-lg dark:text-muted-foreground text-zinc-700 italic">
             {todayShloka.translation}
           </p>
             <div className="flex justify-center gap-2 flex-wrap">
@@ -207,7 +207,7 @@ function SideBySide() {
       </article>
 
       {/* Updated Shloka Cards Section with Single Lane */}
-      <div className="mt-20 pb-0">
+      <div className="mt-12 md:mt-20 pb-0">
         <div className="relative w-full overflow-hidden">
           <div className="flex overflow-hidden [--duration:40s] [--gap:1rem]">
             {/* Single Lane for better performance */}
@@ -272,15 +272,15 @@ function SideBySide() {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 15 }}
           >
-            <div className="sticky top-0 bg-[rgba(255,255,250,0.98)] dark:bg-[rgba(45,40,25,0.95)] backdrop-blur-sm z-10 p-4 border-b border-amber-700/20 dark:border-amber-500/20 flex justify-between items-center rounded-t-xl">
-              <h2 className="text-2xl font-bold text-amber-900 dark:text-amber-300">All Shlokas (108)</h2>
-              <div className="flex items-center gap-2">
+            <div className="sticky top-0 bg-[rgba(255,255,250,0.98)] dark:bg-[rgba(45,40,25,0.95)] backdrop-blur-sm z-10 p-4 border-b border-amber-700/20 dark:border-amber-500/20 flex flex-col sm:flex-row justify-between items-center gap-4 rounded-t-xl">
+              <h2 className="text-xl sm:text-2xl font-bold text-amber-900 dark:text-amber-300">All Shlokas (108)</h2>
+              <div className="flex items-center gap-2 w-full sm:w-auto">
                 <input
                   type="text"
                   placeholder="Search Shlokas..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="p-2 rounded-md border border-amber-700/20 dark:border-amber-500/20 bg-[rgba(255,255,255,0.5)] dark:bg-[rgba(35,30,15,0.5)] text-amber-900 dark:text-amber-300 placeholder:text-amber-700/50 dark:placeholder:text-amber-300/50 focus:outline-none focus:ring-2 focus:ring-amber-700/50 dark:focus:ring-amber-500/50 w-48 md:w-64 text-lg"
+                  className="p-2 rounded-md border border-amber-700/20 dark:border-amber-500/20 bg-[rgba(255,255,255,0.5)] dark:bg-[rgba(35,30,15,0.5)] text-amber-900 dark:text-amber-300 placeholder:text-amber-700/50 dark:placeholder:text-amber-300/50 focus:outline-none focus:ring-2 focus:ring-amber-700/50 dark:focus:ring-amber-500/50 w-full sm:w-48 md:w-64 text-base"
                 />
                 <button
                   className="text-amber-900 hover:text-amber-700 dark:text-amber-300 dark:hover:text-amber-200 cursor-pointer text-2xl"
@@ -293,9 +293,9 @@ function SideBySide() {
             <div className="py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {shlokas.map((shloka: Shloka) => (
                 <div key={shloka.id} className="border-b border-amber-700/20 dark:border-amber-500/20 pb-4">
-                  <p className="text-lg font-semibold text-amber-800 dark:text-amber-200">{shloka.title}</p>
-                  <p className="text-md font-bold text-amber-900 dark:text-amber-100">{shloka.sanskrit}</p>
-                  <p className="text-md font-bold text-amber-700 dark:text-amber-200 italic">{shloka.translation}</p>
+                  <p className="text-base md:text-lg font-semibold text-amber-800 dark:text-amber-200">{shloka.title}</p>
+                  <p className="text-sm md:text-base font-bold text-amber-900 dark:text-amber-100">{shloka.sanskrit}</p>
+                  <p className="text-sm md:text-base font-bold text-amber-700 dark:text-amber-200 italic">{shloka.translation}</p>
                   <div className="flex justify-start gap-2 mt-2 flex-wrap">
                     <button
                       className="inline-flex items-center gap-1 py-1 px-3 rounded-full text-xs font-medium bg-amber-500/30 hover:bg-amber-500/40 dark:bg-amber-400/20 dark:hover:bg-amber-400/30 text-amber-900 dark:text-amber-200 cursor-pointer"

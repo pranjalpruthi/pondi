@@ -105,7 +105,7 @@ export default function MilestoneTimeline() {
 
   return (
     <motion.section
-      className="py-16 md:py-24 overflow-hidden"
+      className="py-12 md:py-24 overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.1 }}
@@ -113,20 +113,20 @@ export default function MilestoneTimeline() {
     >
       <div className="container mx-auto px-4">
         <motion.div
-          className="text-center mb-10 md:mb-16"
+          className="text-center mb-8 md:mb-16"
           variants={titleVariants}
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-3">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-2 md:mb-3">
             Our Journey So Far
           </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto">
             Key milestones in establishing ISKM Pondicherry.
           </p>
         </motion.div>
 
         <motion.div variants={cardContainerParentVariants}>
           <div
-            className="flex overflow-x-auto space-x-4 md:space-x-6 lg:space-x-8 pb-8"
+            className="flex overflow-x-auto space-x-4 md:space-x-6 lg:space-x-8 pb-6 md:pb-8"
           >
             {items.map((item, index) => {
               const color = cardColors[index % cardColors.length];
@@ -134,7 +134,7 @@ export default function MilestoneTimeline() {
                 <motion.div
                   key={index}
                   variants={cardItemVariants}
-                  className="flex-shrink-0 w-72 md:w-80 lg:w-96 snap-start group relative rounded-3xl overflow-hidden"
+                  className="flex-shrink-0 w-64 sm:w-72 md:w-80 lg:w-96 snap-start group relative rounded-3xl overflow-hidden"
                   onMouseMove={handleCardMove}
                   style={
                     {
@@ -152,16 +152,16 @@ export default function MilestoneTimeline() {
                     }}
                   />
                   <Card className="h-full flex flex-col shadow-xl hover:shadow-2xl transition-shadow duration-300 ease-in-out bg-card/80 dark:bg-neutral-800/80 border border-border/30 rounded-3xl backdrop-blur-sm relative z-10">
-                    <CardHeader className="pb-3">
-                      <p className="text-sm md:text-base font-medium text-muted-foreground tracking-wider uppercase">
+                    <CardHeader className="p-4 md:p-6 pb-2 md:pb-3">
+                      <p className="text-xs sm:text-sm font-medium text-muted-foreground tracking-wider uppercase">
                         {item.date}
                       </p>
-                      <CardTitle className="text-lg md:text-xl font-semibold leading-tight text-card-foreground">
+                      <CardTitle className="text-base sm:text-lg md:text-xl font-semibold leading-tight text-card-foreground">
                         {item.title}
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="flex-grow pt-0">
-                      <CardDescription className="text-base md:text-lg text-muted-foreground/90">
+                    <CardContent className="flex-grow pt-0 p-4 md:p-6">
+                      <CardDescription className="text-sm sm:text-base text-muted-foreground/90">
                         {item.description}
                       </CardDescription>
                     </CardContent>
