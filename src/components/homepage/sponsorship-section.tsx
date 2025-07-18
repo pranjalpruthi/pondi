@@ -1,5 +1,6 @@
 import { type FC, type ReactNode } from 'react';
 import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import { SponsorshipCard } from '@/components/fests/sponsorship-card';
 import { HighlightText } from '@/components/animate-ui/text/highlight';
 
@@ -11,54 +12,55 @@ const ScrollSectionTitle: FC<{ title: string; subtitle: ReactNode }> = ({ title,
         transition={{ duration: 0.6 }}
         className="text-center mb-12"
     >
-        <h2 className="text-4xl md:text-5xl font-serif font-bold text-indigo-900 dark:text-indigo-200 mb-4 flex items-center justify-center gap-4">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="60" height="60" />
+        <h2 className="text-3xl md:text-5xl font-serif font-bold text-indigo-900 dark:text-indigo-200 mb-4 flex items-center justify-center gap-4">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" className="w-12 h-12 md:w-[60px] md:h-[60px]" />
             {title}
         </h2>
-        <div className="text-lg md:text-xl text-stone-600 dark:text-stone-400 max-w-3xl mx-auto">{subtitle}</div>
+        <div className="text-base md:text-xl text-stone-600 dark:text-stone-400 max-w-3xl mx-auto">{subtitle}</div>
     </motion.div>
 );
 
 export const SponsorshipSection = () => {
+    const { t } = useTranslation();
     const services = [
         {
-            title: "Kalasa Abhisekam Seva",
+            title: t('sponsorship.services.kalasa.title'),
             image: "/services/1.webp",
-            description: "Participate in the sacred bathing ceremony of the Lord. Your contribution helps procure auspicious items for the abhishekam, bringing immense spiritual benefit.",
-            quote: "One who performs the bathing ceremony of the Lord is glorified in Vaikuntha.",
-            quoteAuthor: "Śrīla Prabhupāda",
+            description: t('sponsorship.services.kalasa.description'),
+            quote: t('sponsorship.services.kalasa.quote'),
+            quoteAuthor: t('sponsorship.services.kalasa.quoteAuthor'),
             url: "https://rzp.io/rzp/ISKMKAS"
         },
         {
-            title: "Bhagavad Gītā seva",
+            title: t('sponsorship.services.gita.title'),
             image: "/services/4.webp",
-            description: "Sponsor the distribution of Bhagavad-gita, the essence of all Vedic knowledge. This is the highest form of charity, giving spiritual enlightenment to others.",
-            quote: "For one who explains this supreme secret to the devotees, pure devotional service is guaranteed, and in the end he will come back to Me.",
-            quoteAuthor: "Lord Krishna, Bhagavad-gita 18.68",
+            description: t('sponsorship.services.gita.description'),
+            quote: t('sponsorship.services.gita.quote'),
+            quoteAuthor: t('sponsorship.services.gita.quoteAuthor'),
             url: "https://rzp.io/rzp/ISKMBGS"
         },
         {
-            title: "Milk Abhishekam Seva",
+            title: t('sponsorship.services.milk.title'),
             image: "/services/2.webp",
-            description: "Offer a loving milk bath to the deities. This seva is a beautiful expression of devotion and helps in the grand worship of the Lord on His appearance day.",
-            quote: "By bathing the Lord with milk, one gets relief from all kinds of tribulations.",
-            quoteAuthor: "Śrīla Prabhupāda",
+            description: t('sponsorship.services.milk.description'),
+            quote: t('sponsorship.services.milk.quote'),
+            quoteAuthor: t('sponsorship.services.milk.quoteAuthor'),
             url: "https://rzp.io/rzp/ISKMMAS"
         },
         {
-            title: "Archana seva",
+            title: t('sponsorship.services.archana.title'),
             image: "/services/5.webp",
-            description: "Contribute towards the articles of worship, such as flowers, incense, lamps, and other paraphernalia required for the daily archana (worship) of the deities.",
-            quote: "If one offers Me with love and devotion a leaf, a flower, a fruit or water, I will accept it.",
-            quoteAuthor: "Lord Krishna, Bhagavad-gita 9.26",
+            description: t('sponsorship.services.archana.description'),
+            quote: t('sponsorship.services.archana.quote'),
+            quoteAuthor: t('sponsorship.services.archana.quoteAuthor'),
             url: "https://rzp.io/rzp/ISKMArchanaseva"
         },
         {
-            title: "Annadanam seva",
+            title: t('sponsorship.services.annadanam.title'),
             image: "/services/3.webp",
-            description: "Sponsor the distribution of delicious Krishna prasadam to all the devotees and visitors. There is no greater service than feeding the Lord's devotees.",
-            quote: "By feeding the devotees, one gets the results of feeding the Supreme Lord Himself.",
-            quoteAuthor: "Śrīla Prabhupāda",
+            description: t('sponsorship.services.annadanam.description'),
+            quote: t('sponsorship.services.annadanam.quote'),
+            quoteAuthor: t('sponsorship.services.annadanam.quoteAuthor'),
             url: "https://rzp.io/rzp/ISKMAnnadanam"
         }
     ];
@@ -67,8 +69,8 @@ export const SponsorshipSection = () => {
         <section id="sponsorship" className="bg-stone-100/70 dark:bg-gray-800/20 py-16 md:py-20">
             <div className="max-w-6xl mx-auto px-4 sm:px-6">
                 <ScrollSectionTitle
-                    title="Sponsorship Opportunities"
-                    subtitle="Seize this golden opportunity to render direct service to Lord Krishna on His divine appearance day and receive unlimited blessings."
+                    title={t('sponsorship.title')}
+                    subtitle={t('sponsorship.subtitle')}
                 />
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -78,21 +80,20 @@ export const SponsorshipSection = () => {
                     className="max-w-4xl mx-auto px-4 sm:px-6 mb-12"
                 >
                     <div className="bg-gradient-to-br from-indigo-900 to-gray-900 dark:from-amber-50 dark:to-stone-100 rounded-2xl p-6 shadow-lg border border-indigo-700 dark:border-amber-200 text-center">
-                        <h3 className="text-2xl font-bold font-serif text-white dark:text-indigo-900 mb-3">
-                            Can't Attend? You Can Still Receive Blessings!
+                        <h3 className="text-xl md:text-2xl font-bold font-serif text-white dark:text-indigo-900 mb-3">
+                            {t('sponsorship.cantAttendTitle')}
                         </h3>
-                        <p className="text-stone-200 dark:text-stone-700 mb-4">
-                            We'll miss you at the divine festival and the delicious free prasadam buffet! 
+                        <p className="text-sm md:text-base text-stone-200 dark:text-stone-700 mb-4">
+                            {t('sponsorship.cantAttendBody')}
                             <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Smiling%20Face%20with%20Tear.png" alt="Smiling Face with Tear" width="25" height="25" className="inline-block mx-1" />
-                            Though you can't be here in person, your devotion can still reach Lord Krishna through a heartfelt seva sponsorship.
                         </p>
-                        <blockquote className="border-l-4 border-amber-400 pl-4 italic text-stone-300 dark:text-stone-600">
-                            <p>"It is not the quantity of the offering that matters, but the quality of devotion. A small flower offered with love is more valuable to Kṛṣṇa than a mountain of gold offered with pride."</p>
-                            <footer className="text-sm mt-2 not-italic">— Teachings of Śrīla Prabhupāda, based on Bhagavad-gītā 9.26</footer>
+                        <blockquote className="text-sm md:text-base border-l-4 border-amber-400 pl-4 italic text-stone-300 dark:text-stone-600">
+                            <p>"{t('sponsorship.cantAttendQuote')}"</p>
+                            <footer className="text-xs md:text-sm mt-2 not-italic">{t('sponsorship.cantAttendQuoteAuthor')}</footer>
                         </blockquote>
-                        <p className="mt-4 font-semibold">
+                        <p className="mt-4 font-semibold text-sm md:text-base">
                             <HighlightText 
-                                text="Even the smallest contribution made with a sincere heart is a great service." 
+                                text={t('sponsorship.sincereHeart')}
                                 className="bg-gradient-to-r from-amber-400/20 to-orange-400/20 dark:from-amber-100 dark:to-orange-100 text-amber-300 dark:text-orange-800"
                             />
                         </p>

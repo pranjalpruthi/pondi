@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Link } from '@tanstack/react-router';
+import { useTranslation } from 'react-i18next';
 import { useSound } from 'use-sound';
 import { useSoundSettings, SoundProvider } from "@/components/context/sound-context";
 import { Button } from "./ui/button";
@@ -21,6 +22,7 @@ import { RainbowButton } from "./ui/rainbow-button";
 import { useTempleStatus } from "@/hooks/useTempleStatus"; // Added
 import { useIsMobile } from "@/hooks/use-mobile";
 import { TempleWeatherPopover } from "./homepage/status"; // Import the new component
+import { LanguageSwitcher } from "./language-switcher";
 import { useNavbarVisibility } from "@/hooks/use-navbar-visibility";
 
 interface NavItemType {
@@ -57,6 +59,7 @@ interface NavBarProps {
 }
 
 function NavBarComponent({ className }: NavBarProps) {
+    const { t } = useTranslation();
     const isMobile = useIsMobile();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
     const [activeMenu, setActiveMenu] = React.useState<string | null>(null);
@@ -149,11 +152,11 @@ function NavBarComponent({ className }: NavBarProps) {
                             onMouseEnter={safePlayHover}
                         >
                             <h1 className="text-sm md:text-base font-semibold text-foreground flex flex-col sm:block">
-                                <span>Pudhuvai</span>
-                                <span className="sm:ml-1">Vrindavanam</span>
+                                <span>{t('navbar.templeName1')}</span>
+                                <span className="sm:ml-1">{t('navbar.templeName2')}</span>
                             </h1>
                             <p className="text-xs text-muted-foreground hidden sm:block truncate">
-                                Radha Krishna Temple
+                                {t('navbar.templeSubtitle')}
                             </p>
                         </Link>
                     </div>
@@ -176,7 +179,7 @@ function NavBarComponent({ className }: NavBarProps) {
                                                         rounded-full transition-all duration-200"
                                         >
                                             {item.icon}
-                                            <span className="ml-1.5">{item.title}</span>
+                                            <span className="ml-1.5">{t(item.title)}</span>
                                         </button>
                                         <AnimatePresence>
                                             {activeMenu === item.title && (
@@ -196,7 +199,7 @@ function NavBarComponent({ className }: NavBarProps) {
                                                                 onMouseEnter={safePlayHover}
                                                                 className="flex items-center gap-2 w-full px-3 py-2 text-sm text-left text-foreground hover:bg-accent rounded-md"
                                                             >
-                                                                {subItem.title}
+                                                                {t(subItem.title)}
                                                             </Link>
                                                         ))}
                                                     </div>
@@ -216,7 +219,7 @@ function NavBarComponent({ className }: NavBarProps) {
                                             rounded-full transition-all duration-200"
                                     >
                                         {item.icon}
-                                        <span className="ml-1.5">{item.title}</span>
+                                        <span className="ml-1.5">{t(item.title)}</span>
                                     </Link>
                                 )
                             )
@@ -227,7 +230,7 @@ function NavBarComponent({ className }: NavBarProps) {
                                     src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Beating%20Heart.png" 
                                     alt="Beating Heart" width="20" height="20" 
                                 />
-                                <span>Donate</span>
+                                <span>{t('navbar.donate')}</span>
                             </RainbowButton>
                         </Link>
                     </div>
@@ -267,6 +270,7 @@ function NavBarComponent({ className }: NavBarProps) {
                             safePlayClick={safePlayClick}
                             safePlayHover={safePlayHover}
                         />
+                        <LanguageSwitcher />
                         <a href="/sign-in" className="hidden sm:inline-block" onClick={safePlayClick} onMouseEnter={safePlayHover}>
                             <Button size="icon" variant="outline" className="rounded-full w-9 h-9 text-foreground">
                                 <User className="w-4 h-4" />
@@ -301,7 +305,7 @@ function NavBarComponent({ className }: NavBarProps) {
                                         >
                                             <div className="flex items-center gap-3">
                                                 <div className="text-primary">{item.icon}</div>
-                                                <span className="font-medium">{item.title}</span>
+                                                <span className="font-medium">{t(item.title)}</span>
                                             </div>
                                             <ChevronDown className={`w-5 h-5 transition-transform ${openMobileSubMenu === item.title ? 'rotate-180' : ''}`} />
                                         </button>
@@ -325,7 +329,7 @@ function NavBarComponent({ className }: NavBarProps) {
                                                                 }}
                                                                 className="w-full p-2 flex items-center gap-3 text-muted-foreground hover:text-foreground rounded-md transition-colors text-base"
                                                             >
-                                                                {subItem.title}
+                                                                {t(subItem.title)}
                                                             </Link>
                                                         ))}
                                                     </div>
@@ -346,13 +350,13 @@ function NavBarComponent({ className }: NavBarProps) {
                                         className="w-full p-3 flex items-center gap-3 text-foreground hover:bg-accent rounded-md transition-colors text-base"
                                     >
                                         <div className="text-primary">{item.icon}</div>
-                                        <span className="font-medium">{item.title}</span>
+                                        <span className="font-medium">{t(item.title)}</span>
                                     </Link>
                                 )
                             ))}
                             <a href="/sign-in" className="sm:hidden w-full p-3 flex items-center gap-3 text-foreground hover:bg-accent rounded-md transition-colors text-base" onClick={() => { setIsMobileMenuOpen(false); safePlayClick(); safePlayMenuClose(); }} onMouseEnter={safePlayHover}>
                                 <User className="text-primary w-5 h-5" />
-                                <span className="font-medium">Sign In / Sign Up</span>
+                                <span className="font-medium">{t('navbar.signIn')}</span>
                             </a>
                         </div>
                     </motion.div>
@@ -375,47 +379,47 @@ export function NavBar({ className }: NavBarProps) {
 const navItems: Record<string, NavItemType> = {
   home: {
     icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Love%20Hotel.png" alt="Home" width="22" height="22" fallback={<Home className="w-4 h-4" />} />,
-    title: "Home",
+    title: "navbar.home",
     to: "/"
   },
   services: {
     icon: <Menu className="w-4 h-4" />,
-    title: "Services",
+    title: "navbar.services",
     subItems: [
-      { title: 'Annadamn (Food Distribution)', to: '/coming-soon' },
-      { title: 'Goshala (Cow Protection)', to: '/coming-soon' },
-      { title: 'Youth Preaching', to: '/coming-soon' },
-      { title: 'Temple Construction', to: '/coming-soon' },
+      { title: 'navbar.annadanam', to: '/coming-soon' },
+      { title: 'navbar.goshala', to: '/coming-soon' },
+      { title: 'navbar.youth', to: '/coming-soon' },
+      { title: 'navbar.construction', to: '/coming-soon' },
     ]
   },
   contribute: {
     icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Handshake.png" alt="Contribute" width="22" height="22" fallback={<Handshake className="w-4 h-4" />} />,
-    title: "Contribute",
+    title: "navbar.contribute",
     to: "/contribute"
   },
   blog: {
     icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Writing%20Hand.png" alt="Blog" width="22" height="22" fallback={<PenSquare className="w-4 h-4" />} />,
-    title: "Blog",
+    title: "navbar.blog",
     to: "/coming-soon"
   },
   shop: {
     icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png" alt="Shop" width="22" height="22" fallback={<ShoppingCart className="w-4 h-4" />} />,
-    title: "Shop",
+    title: "navbar.shop",
     to: "/shop"
   },
   about: {
     icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Globe%20with%20Meridians.png" alt="About" width="22" height="22" fallback={<Info className="w-4 h-4" />} />,
-    title: "About",
+    title: "navbar.about",
     to: "/about"
   },
   centers: {
     icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/World%20Map.png" alt="Centers" width="22" height="22" fallback={<Globe className="w-4 h-4" />} />,
-    title: "Centers",
+    title: "navbar.centers",
     to: "/centers"
   },
   donate: {
     icon: <GiftIcon className="w-4 h-4" />,
-    title: "Donate",
+    title: "navbar.donate",
     to: "/donate"
   },
 };

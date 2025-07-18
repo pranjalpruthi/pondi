@@ -6,6 +6,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import convex from "./lib/convex/convexClient"; // Import your Convex client instance
 import { router } from './router';
 
+import './lib/i18n';
 import * as TanstackQuery from './integrations/tanstack-query/provider.tsx';
 
 import './styles.css'

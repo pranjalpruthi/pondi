@@ -1,5 +1,6 @@
 import { createFileRoute, useLocation } from '@tanstack/react-router';
 import { useEffect, useState, useRef, type FC, type ReactNode, Fragment } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Confetti, type ConfettiRef } from '@/components/magicui/confetti';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -67,6 +68,7 @@ const ScrollSectionTitle: FC<{ title: string; subtitle: ReactNode }> = ({ title,
 );
 
 const CountdownTimer = () => {
+    const { t } = useTranslation();
     const eventDate = new Date("2025-08-16T15:00:00");
     const [timeLeft, setTimeLeft] = useState({
         days: 0,
@@ -104,7 +106,7 @@ const CountdownTimer = () => {
     if (isExpired) {
         return (
             <div className="text-center">
-                <p className="text-lg font-bold text-green-500 animate-pulse">The auspicious day has arrived!</p>
+                <p className="text-lg font-bold text-green-500 animate-pulse">{t('countdown.expired')}</p>
             </div>
         );
     }
@@ -121,7 +123,7 @@ const CountdownTimer = () => {
                                 <p style={{ fontVariantNumeric: 'tabular-nums' }} className="text-xl sm:text-2xl font-bold text-indigo-900 dark:text-white">
                                     <NumberFlow value={value} format={{ minimumIntegerDigits: 2 }} />
                                 </p>
-                                <p className="text-[0.5rem] sm:text-[0.6rem] text-stone-600 dark:text-stone-400 uppercase tracking-wider">{unit}</p>
+                                <p className="text-[0.5rem] sm:text-[0.6rem] text-stone-600 dark:text-stone-400 uppercase tracking-wider">{t(`countdown.${unit}`)}</p>
                             </div>
                             {index < timeUnits.length - 1 && <p className="text-xl sm:text-2xl font-bold text-indigo-900/50 dark:text-white/50">:</p>}
                         </Fragment>
@@ -138,6 +140,7 @@ const CountdownTimer = () => {
 import { useInView } from 'motion/react';
 
 const SponsorshipProgress: FC<{ sponsored: number; total: number }> = ({ sponsored, total }) => {
+    const { t } = useTranslation();
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.5 });
     const percentage = (sponsored / total) * 100;
@@ -145,9 +148,9 @@ const SponsorshipProgress: FC<{ sponsored: number; total: number }> = ({ sponsor
     return (
         <div ref={ref} className="w-full">
             <div className="text-center mb-2">
-                <p className="text-sm text-stone-600 dark:text-stone-400">
-                    <span className="font-bold text-indigo-800 dark:text-indigo-300">{sponsored.toLocaleString()}</span> books have already been sponsored out of <span className="font-bold text-indigo-800 dark:text-indigo-300">{total.toLocaleString()}</span>.
-                </p>
+                <p className="text-sm text-stone-600 dark:text-stone-400" dangerouslySetInnerHTML={{
+                    __html: t('sponsorshipProgress.sponsored', { sponsored: `<span class="font-bold text-indigo-800 dark:text-indigo-300">${sponsored.toLocaleString()}</span>`, total: `<span class="font-bold text-indigo-800 dark:text-indigo-300">${total.toLocaleString()}</span>` })
+                }} />
             </div>
             <div className="w-full bg-black/10 dark:bg-white/10 rounded-full h-3 overflow-hidden">
                 <motion.div
@@ -158,7 +161,7 @@ const SponsorshipProgress: FC<{ sponsored: number; total: number }> = ({ sponsor
                 />
             </div>
             <p style={{ fontVariantNumeric: 'tabular-nums' }} className="text-right text-xs font-semibold text-orange-600 dark:text-orange-400 mt-1">
-                <NumberFlow value={isInView ? percentage : 0} format={{ maximumFractionDigits: 1, minimumFractionDigits: 1 }} />% Progress
+                <NumberFlow value={isInView ? percentage : 0} format={{ maximumFractionDigits: 1, minimumFractionDigits: 1 }} />{t('sponsorshipProgress.progress')}
             </p>
         </div>
     );
@@ -166,6 +169,7 @@ const SponsorshipProgress: FC<{ sponsored: number; total: number }> = ({ sponsor
 
 
 const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
+    const { t } = useTranslation();
     const [isInteracted, setIsInteracted] = useState(false);
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.2 });
@@ -197,10 +201,10 @@ const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
                     >
                         <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold font-serif text-indigo-900 dark:text-white leading-tight">
                             <AuroraText colors={["#be185d", "#fb923c", "#fde047"]}>
-                                Śrī Kṛṣṇa Janmāṣṭamī
+                                {t('inviteHero.title')}
                             </AuroraText>
                         </h1>
-                        <p className="mt-4 text-xl sm:text-2xl md:text-3xl text-orange-600 dark:text-orange-400 font-semibold">A Divine Invitation</p>
+                        <p className="mt-4 text-xl sm:text-2xl md:text-3xl text-orange-600 dark:text-orange-400 font-semibold">{t('inviteHero.subtitle')}</p>
                     </motion.div>
 
                     {/* Video for Mobile/Tablet */}
@@ -242,15 +246,15 @@ const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-center">
                                 <div className="flex items-center justify-center gap-2 p-2.5 bg-black/5 dark:bg-white/5 rounded-lg">
                                     <Calendar className="h-4 w-4 text-orange-500 flex-shrink-0" />
-                                    <span className="font-medium text-xs sm:text-sm">16 AUG 2025</span>
+                                    <span className="font-medium text-xs sm:text-sm">{t('inviteHero.date')}</span>
                                 </div>
                                 <div className="flex items-center justify-center gap-2 p-2.5 bg-black/5 dark:bg-white/5 rounded-lg">
                                     <Clock className="h-4 w-4 text-orange-500 flex-shrink-0" />
-                                    <span className="font-medium text-xs sm:text-sm">3 PM - 12 MIDNIGHT</span>
+                                    <span className="font-medium text-xs sm:text-sm">{t('inviteHero.time')}</span>
                                 </div>
                                 <a href="https://maps.app.goo.gl/k5wX9LMEtFX7UraEA" target="_blank" rel="noopener noreferrer" className="md:col-span-1 flex items-center justify-center gap-2 p-2.5 bg-black/5 dark:bg-white/5 rounded-lg group">
                                     <MapPin className="h-4 w-4 text-orange-500 flex-shrink-0" />
-                                    <span className="font-medium text-xs sm:text-sm group-hover:underline">Jayaram Thirumana Nilayam</span>
+                                    <span className="font-medium text-xs sm:text-sm group-hover:underline">{t('inviteHero.venue')}</span>
                                 </a>
                             </div>
                         </div>
@@ -261,7 +265,7 @@ const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
                                 className="w-full sm:w-auto h-14 px-8 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 text-base"
                             >
                                 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Ticket.png" alt="Ticket" width="24" height="24" />
-                                RESERVE YOUR FREE SPOT
+                                {t('inviteHero.reserveButton')}
                             </Button>
                             <Button
                                 asChild
@@ -270,7 +274,7 @@ const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
                             >
                                 <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" onClick={onSponsorClick} className="flex items-center justify-center gap-2">
                                     <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="25" height="25" />
-                                    Sponsor Bhagavad Gītā Seva
+                                    {t('inviteHero.sponsorButton')}
                                 </a>
                             </Button>
                         </div>
@@ -322,6 +326,7 @@ const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
 };
 
 const DetailsAndRegistrationSection = () => {
+    const { t } = useTranslation();
     const [isFormLoading, setIsFormLoading] = useState(true);
     const handleAddToCalendar = () => {
         const eventDateStr = "Saturday, 16th August 2025";
@@ -361,9 +366,9 @@ WhatsApp: https://wa.me/918056626108`;
     };
 
     const detailItems = [
-        { icon: Calendar, title: "16 AUG 2025", subtitle: "Mark your calendar", buttonText: "Add to Calendar", action: handleAddToCalendar },
-        { icon: Clock, title: "3 PM - 12 MIDNIGHT", subtitle: "Festival hours", buttonText: "Set Reminder", action: handleAddToCalendar },
-        { icon: MapPin, title: "Jayaram Thirumana Nilayam", subtitle: "Sacred venue", buttonText: "View on Maps", action: handleViewLocation }
+        { icon: Calendar, title: t('detailsAndRegistration.calendarTitle'), subtitle: t('detailsAndRegistration.calendarSubtitle'), buttonText: t('detailsAndRegistration.calendarButton'), action: handleAddToCalendar },
+        { icon: Clock, title: t('detailsAndRegistration.clockTitle'), subtitle: t('detailsAndRegistration.clockSubtitle'), buttonText: t('detailsAndRegistration.clockButton'), action: handleAddToCalendar },
+        { icon: MapPin, title: t('detailsAndRegistration.mapTitle'), subtitle: t('detailsAndRegistration.mapSubtitle'), buttonText: t('detailsAndRegistration.mapButton'), action: handleViewLocation }
     ];
 
     return (
@@ -375,7 +380,7 @@ WhatsApp: https://wa.me/918056626108`;
                         <CardContent className="p-2 bg-white relative">
                             {isFormLoading && (
                                 <div className="absolute inset-0 flex items-center justify-center bg-white dark:bg-gray-900 z-10 p-4">
-                                    <ShimmerText className="text-lg sm:text-xl md:text-2xl leading-loose" text="Hare Kṛṣṇa, Hare Kṛṣṇa, Kṛṣṇa Kṛṣṇa, Hare Hare, Hare Rāma, Hare Rāma, Rāma Rāma, Hare Hare" />
+                                    <ShimmerText className="text-lg sm:text-xl md:text-2xl leading-loose" text={t('detailsAndRegistration.shimmerText')} />
                                 </div>
                             )}
                             <iframe
@@ -386,7 +391,7 @@ WhatsApp: https://wa.me/918056626108`;
                                 frameBorder="0"
                                 marginHeight={0}
                                 marginWidth={0}
-                                title="Join Us for Śrī Kṛṣṇa Janmāṣṭamī !"
+                                title={t('detailsAndRegistration.formTitle')}
                                 className={cn("rounded-lg transition-opacity duration-500", isFormLoading ? 'opacity-0' : 'opacity-100')}
                                 onLoad={() => setIsFormLoading(false)}
                             />
@@ -462,6 +467,7 @@ WhatsApp: https://wa.me/918056626108`;
 
 
 const QuoteSection: FC<{ quote: { text: string; source: string }, index: number }> = ({ quote, index }) => {
+    const { t } = useTranslation();
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
@@ -513,11 +519,11 @@ const QuoteSection: FC<{ quote: { text: string; source: string }, index: number 
                         <div className="flex justify-center gap-4 mt-6">
                             <Button variant="outline" onClick={handleCopy}>
                                 {copied ? <Check className="h-4 w-4 mr-2 text-green-500" /> : <Copy className="h-4 w-4 mr-2" />}
-                                {copied ? 'Copied!' : 'Copy'}
+                                {copied ? t('quote.copied') : t('quote.copy')}
                             </Button>
                             <Button variant="outline" onClick={handleShare}>
                                 <Share2 className="h-4 w-4 mr-2" />
-                                Share
+                                {t('quote.share')}
                             </Button>
                         </div>
                     </CardContent>
@@ -528,6 +534,7 @@ const QuoteSection: FC<{ quote: { text: string; source: string }, index: number 
 };
 
 const SocialShare = () => {
+    const { t } = useTranslation();
     const shareText = `🙌 Hare Kṛṣṇa! You are joyfully invited to the Grand Janmāṣṭamī Festival! 🙏\n\nJoin us to celebrate the divine appearance of Lord Krishna with ecstatic kirtan, enlightening discourses, and delicious prasadam.\n\n📅 Date: 16 AUG 2025\n⏰ Time: 3 PM - 12 MIDNIGHT\n📍 Venue: Jayaram Thirumana Nilayam, Puducherry\n\n"One who knows the transcendental nature of My appearance and activities...attains My eternal abode." - Gita 4.9`;
     const eventUrl = "https://pudhuvai.vrindavanam.org.in/fests/invite";
     const shareActions = [
@@ -539,7 +546,7 @@ const SocialShare = () => {
 
     return (
         <div className="text-center">
-            <p className="text-lg font-semibold text-indigo-900 dark:text-indigo-200 mb-4">Share the Divine Invitation!</p>
+            <p className="text-lg font-semibold text-indigo-900 dark:text-indigo-200 mb-4">{t('socialShare.title')}</p>
             <div className="flex justify-center items-center gap-3">
                 {shareActions.map(action => (
                     <motion.button
@@ -559,6 +566,7 @@ const SocialShare = () => {
 };
 
 const Janmashtami2024Highlights = () => {
+    const { t } = useTranslation();
     const [isInteracted, setIsInteracted] = useState(false);
     const [copied, setCopied] = useState(false);
     const ref = useRef(null);
@@ -607,87 +615,89 @@ const Janmashtami2024Highlights = () => {
     };
 
     return (
-        <ScrollSection id="janmashtami-2024-highlights" className="bg-stone-100/70 dark:bg-gray-800/20">
-            <div className="grid md:grid-cols-3 gap-12 items-center">
-                <div className="md:col-span-2">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.5 }}
-                        transition={{ duration: 0.6 }}
-                        className="text-center md:text-left mb-8"
-                    >
-                        <h2 className="text-4xl md:text-5xl font-serif font-bold text-indigo-900 dark:text-indigo-200">
-                            Sri Krishna Janmashtami Celebration Highlights
-                        </h2>
-                    </motion.div>
-                    <motion.div
-                        ref={ref}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true, amount: 0.3 }}
-                        transition={{ duration: 0.7 }}
-                    >
-                        <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border-8 border-white dark:border-gray-800 ring-4 ring-amber-300 dark:ring-amber-500 relative group" onClick={handleInteraction}>
-                            {isInView && (
-                                <iframe
-                                    key={isInteracted ? 'interactive' : 'silent'}
-                                    src={isInteracted ? interactiveUrl : silentUrl}
-                                    title="Sri Krishna Janmashtami Celebration Highlights"
-                                    className="w-full h-full"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-                                    allowFullScreen
-                                />
-                            )}
-                            {!isInteracted && (
-                                <div className="absolute inset-0 flex items-center justify-center cursor-pointer bg-black/10 group-hover:bg-black/30 transition-colors duration-300">
-                                    <Play className="h-16 w-16 text-white/70 drop-shadow-lg transition-transform duration-300 group-hover:scale-110" />
-                                </div>
-                            )}
-                        </div>
-                    </motion.div>
-                </div>
-                <div className="md:col-span-1">
-                    <motion.div
-                        initial={{ opacity: 0, x: 50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true, amount: 0.3 }}
-                        transition={{ duration: 0.7, delay: 0.2 }}
-                    >
-                        <Card className="shadow-lg bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm">
-                            <CardContent className="p-6">
-                                <div className="space-y-6">
-                                    {verses.map((quote, index) => (
-                                        <Fragment key={index}>
-                                            <blockquote className="text-center">
-                                                <p className="text-md font-serif text-stone-700 dark:text-stone-300 leading-relaxed italic">
-                                                    “{quote.text}”
-                                                </p>
-                                                <footer className="mt-2 text-sm font-semibold text-amber-700 dark:text-amber-500">
-                                                    — {quote.source}
-                                                </footer>
-                                            </blockquote>
-                                            {index < verses.length - 1 && (
-                                                <div className="flex items-center justify-center">
-                                                    <Feather className="h-5 w-5 text-amber-700/50 dark:text-amber-500/50" />
-                                                </div>
-                                            )}
-                                        </Fragment>
-                                    ))}
-                                </div>
-                                <div className="flex justify-center gap-4 mt-6 pt-6 border-t border-stone-200 dark:border-gray-700">
-                                    <Button variant="outline" size="sm" onClick={handleCopy}>
-                                        {copied ? <Check className="h-4 w-4 mr-2 text-green-500" /> : <Copy className="h-4 w-4 mr-2" />}
-                                        {copied ? 'Copied!' : 'Copy'}
-                                    </Button>
-                                    <Button variant="outline" size="sm" onClick={handleShare}>
-                                        <Share2 className="h-4 w-4 mr-2" />
-                                        Share
-                                    </Button>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </motion.div>
+        <section id="janmashtami-2024-highlights" className="bg-stone-100/70 dark:bg-gray-800/20 py-12 md:py-16">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6">
+                <div className="grid md:grid-cols-3 gap-12 items-center">
+                    <div className="md:col-span-2">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.5 }}
+                            transition={{ duration: 0.6 }}
+                            className="text-center md:text-left mb-8"
+                        >
+                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-indigo-900 dark:text-indigo-200">
+                                {t('highlights.title')}
+                            </h2>
+                        </motion.div>
+                        <motion.div
+                            ref={ref}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true, amount: 0.3 }}
+                            transition={{ duration: 0.7 }}
+                        >
+                            <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border-8 border-white dark:border-gray-800 ring-4 ring-amber-300 dark:ring-amber-500 relative group" onClick={handleInteraction}>
+                                {isInView && (
+                                    <iframe
+                                        key={isInteracted ? 'interactive' : 'silent'}
+                                        src={isInteracted ? interactiveUrl : silentUrl}
+                                        title="Sri Krishna Janmashtami Celebration Highlights"
+                                        className="w-full h-full"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                                        allowFullScreen
+                                    />
+                                )}
+                                {!isInteracted && (
+                                    <div className="absolute inset-0 flex items-center justify-center cursor-pointer bg-black/10 group-hover:bg-black/30 transition-colors duration-300">
+                                        <Play className="h-16 w-16 text-white/70 drop-shadow-lg transition-transform duration-300 group-hover:scale-110" />
+                                    </div>
+                                )}
+                            </div>
+                        </motion.div>
+                    </div>
+                    <div className="md:col-span-1">
+                        <motion.div
+                            initial={{ opacity: 0, x: 50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, amount: 0.3 }}
+                            transition={{ duration: 0.7, delay: 0.2 }}
+                        >
+                            <Card className="shadow-lg bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm">
+                                <CardContent className="p-6">
+                                    <div className="space-y-6">
+                                        {verses.map((quote, index) => (
+                                            <Fragment key={index}>
+                                                <blockquote className="text-center">
+                                                    <p className="text-md font-serif text-stone-700 dark:text-stone-300 leading-relaxed italic">
+                                                        “{quote.text}”
+                                                    </p>
+                                                    <footer className="mt-2 text-sm font-semibold text-amber-700 dark:text-amber-500">
+                                                        — {quote.source}
+                                                    </footer>
+                                                </blockquote>
+                                                {index < verses.length - 1 && (
+                                                    <div className="flex items-center justify-center">
+                                                        <Feather className="h-5 w-5 text-amber-700/50 dark:text-amber-500/50" />
+                                                    </div>
+                                                )}
+                                            </Fragment>
+                                        ))}
+                                    </div>
+                                    <div className="flex justify-center gap-4 mt-6 pt-6 border-t border-stone-200 dark:border-gray-700">
+                                        <Button variant="outline" size="sm" onClick={handleCopy}>
+                                            {copied ? <Check className="h-4 w-4 mr-2 text-green-500" /> : <Copy className="h-4 w-4 mr-2" />}
+                                            {copied ? t('quote.copied') : t('quote.copy')}
+                                        </Button>
+                                        <Button variant="outline" size="sm" onClick={handleShare}>
+                                            <Share2 className="h-4 w-4 mr-2" />
+                                            {t('quote.share')}
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </motion.div>
+                    </div>
                 </div>
             </div>
             <motion.div 
@@ -699,19 +709,20 @@ const Janmashtami2024Highlights = () => {
             >
                 <GalleryMarquee images={festImages} from_bg="from-stone-100/70 dark:from-gray-800/20" />
             </motion.div>
-        </ScrollSection>
+        </section>
     );
 };
 
 const VideoHighlightsSection = () => {
+    const { t } = useTranslation();
     const videos = [
-        { icon: Play, title: "Sri Krishna Janmashtami Celebration Highlights", subtitle: "Divine lecture on Sri Krishna's appearance", videoId: "rQNBQ3NXZ90?t=1988" },
-        { icon: BookOpen, title: "Bhagavad-gita Distribution Seva", subtitle: "5,108 Gitas in a single day!", videoId: "8RePAEXjiDg" }
+        { icon: Play, title: t('videoHighlights.video1Title'), subtitle: t('videoHighlights.video1Subtitle'), videoId: "rQNBQ3NXZ90?t=1988" },
+        { icon: BookOpen, title: t('videoHighlights.video2Title'), subtitle: t('videoHighlights.video2Subtitle'), videoId: "8RePAEXjiDg" }
     ];
 
     return (
         <ScrollSection id="inspiration">
-            <ScrollSectionTitle title="Divine Inspiration" subtitle="Watch and immerse yourself in the glories of Lord Krishna and His devotees." />
+            <ScrollSectionTitle title={t('videoHighlights.title')} subtitle={t('videoHighlights.subtitle')} />
             <div className="grid md:grid-cols-2 gap-8 items-start">
                 {videos.map((video, index) => (
                     <motion.div
@@ -745,81 +756,8 @@ const VideoHighlightsSection = () => {
 const MainAltarWorshipIcon = ({ className }: { className?: string }) => <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Folded%20Hands.png" alt="Folded Hands" className={className} />;
 const PrasadamIcon = ({ className }: { className?: string }) => <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Cook.png" alt="Cook" className={className} />;
 const BooksAndStallsIcon = ({ className }: { className?: string }) => <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/People/Woman%20Teacher.png" alt="Woman Teacher" className={className} />;
-const LogisticsIcon = ({ className }: { className?: string }) => <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Ambulance.png" alt="Ambulance" className={className} />;
 const CommunityOutreachIcon = ({ className }: { className?: string }) => <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Revolving%20Hearts.png" alt="Revolving Hearts" className={className} />;
 const CulturalIcon = ({ className }: { className?: string }) => <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Smiling%20Face%20with%20Halo.png" alt="Smiling Face with Halo" className={className} />;
-
-const eventActivities = [
-    {
-        category: "Main Altar & Worship",
-        icon: MainAltarWorshipIcon,
-        isCustom: true,
-        description: "Experience the heart of the festival with sacred rituals and worship.",
-        activities: [
-            { title: "Abhishekam", description: "Elaborate ritualistic bathing of Śrī Śrī Rādhā-Kṛṣṇa with milk, yogurt, ghee, honey, fruit juices, and sacred waters, amidst Vedic mantras." },
-            { title: "Arati Sessions", description: "Multiple arati ceremonies throughout the day, from Mangal Arati to Shayana Arati." },
-            { title: "Pūjā Offerings", description: "An opportunity for devotees to make special offerings to the Deities." },
-            { title: "Continuous Darshan", description: "Behold the beautifully adorned Deities throughout the event." },
-        ],
-    },
-    {
-        category: "Cultural & Spiritual Programs",
-        icon: CulturalIcon,
-        isCustom: true,
-        description: "Nourish your soul with enchanting performances and deep spiritual wisdom.",
-        activities: [
-            { title: "Cultural Performances & Drama", description: "Dramas depicting Kṛṣṇa's pastimes, classical Indian dances, and devotional songs." },
-            { title: "Soulful Harināma Kīrtan", description: "Continuous congregational chanting of the Hare Kṛṣṇa Mahamantra." },
-            { title: "Spiritual Discourses", description: "Lectures on the significance of Janmāṣṭamī and the philosophy of the Bhagavad Gita." },
-            { title: "Children's Fancy Dress", description: "A delightful competition for children dressed as characters from Kṛṣṇa's pastimes." },
-        ],
-    },
-    {
-        category: "Prasādam & Food Services",
-        icon: PrasadamIcon,
-        isCustom: true,
-        description: "Savor sanctified vegetarian food, a feast for the body and soul.",
-        activities: [
-            { title: "Mahaprasadam Feast", description: "Grand distribution of a variety of sanctified traditional Indian vegetarian dishes." },
-            { title: "Vegetarian Bakery Stall", description: "Offering delicious eggless baked goods and special Janmāṣṭamī treats." },
-            { title: "Pani Puri Stall", description: "Enjoy the popular and savory Indian street food, prepared freshly for you." },
-        ],
-    },
-    {
-        category: "Book & Souvenir Stalls",
-        icon: BooksAndStallsIcon,
-        isCustom: true,
-        description: "Explore spiritual literature and find devotional items to take home.",
-        activities: [
-            { title: "Spiritual Books", description: "A wide range of spiritual books, including Bhagavad Gita, Srimad Bhagavatam, and other Vedic literatures." },
-            { title: "Bhagavad Gita Sponsorship", description: "A dedicated stall to learn about and participate in the Gita distribution program." },
-            { title: "Devotional Souvenirs", description: "Find murtis, photos, clothing, and other devotional items." },
-            { title: "Reception & Info Stall", description: "Welcome desk for information, lost and found, and first aid." },
-        ],
-    },
-    {
-        category: "Community & Outreach",
-        icon: CommunityOutreachIcon,
-        isCustom: true,
-        description: "Learn about our community projects and how you can get involved.",
-        activities: [
-            { title: "Temple Project Showcase", description: "See the progress and plans for our new temple and learn how you can contribute." },
-            { title: "Bhakta Prahlad Vedic School", description: "Information about the Vedic school's curriculum, admissions, and activities." },
-            { title: "Gaushala (Cow Protection)", description: "Learn about our cow protection initiatives and how to support them." },
-        ],
-    },
-    {
-        category: "Logistics & Decoration",
-        icon: LogisticsIcon,
-        isCustom: true,
-        description: "The dedicated teams working behind the scenes to create a beautiful experience.",
-        activities: [
-            { title: "Festival Decoration", description: "Transforming the venue with extensive floral arrangements, lighting, and thematic displays." },
-            { title: "Logistics & Crowd Management", description: "Ensuring a smooth, safe, and organized experience for all visitors." },
-            { title: "Media & Live Streaming", description: "Capturing and broadcasting the event's divine moments for a global audience." },
-        ],
-    },
-];
 
 const festImages = [
     'f1.jpeg', 'f4.jpeg', 'f6.jpeg', 'f8.jpeg', 'f9.jpeg',
@@ -881,14 +819,55 @@ const GalleryMarquee = ({ images, from_bg }: { images: string[], from_bg: string
     );
 };
 
-const EventActivitiesSection = () => (
+import { Trans } from 'react-i18next';
+
+const EventActivitiesSection = () => {
+    const { t } = useTranslation();
+    const eventActivities = [
+        {
+            category: t('eventActivities.mainAltar.category'),
+            icon: MainAltarWorshipIcon,
+            isCustom: true,
+            description: t('eventActivities.mainAltar.description'),
+            activities: Object.values(t('eventActivities.mainAltar.activities', { returnObjects: true }) as Record<string, { title: string, description: string }>)
+        },
+        {
+            category: t('eventActivities.cultural.category'),
+            icon: CulturalIcon,
+            isCustom: true,
+            description: t('eventActivities.cultural.description'),
+            activities: Object.values(t('eventActivities.cultural.activities', { returnObjects: true }) as Record<string, { title: string, description: string }>)
+        },
+        {
+            category: t('eventActivities.prasadam.category'),
+            icon: PrasadamIcon,
+            isCustom: true,
+            description: t('eventActivities.prasadam.description'),
+            activities: Object.values(t('eventActivities.prasadam.activities', { returnObjects: true }) as Record<string, { title: string, description: string }>)
+        },
+        {
+            category: t('eventActivities.stalls.category'),
+            icon: BooksAndStallsIcon,
+            isCustom: true,
+            description: t('eventActivities.stalls.description'),
+            activities: Object.values(t('eventActivities.stalls.activities', { returnObjects: true }) as Record<string, { title: string, description: string }>)
+        },
+        {
+            category: t('eventActivities.outreach.category'),
+            icon: CommunityOutreachIcon,
+            isCustom: true,
+            description: t('eventActivities.outreach.description'),
+            activities: Object.values(t('eventActivities.outreach.activities', { returnObjects: true }) as Record<string, { title: string, description: string }>)
+        },
+    ];
+    return (
     <ScrollSection id="activities" className="bg-stone-100/70 dark:bg-gray-800/20">
         <ScrollSectionTitle 
-            title="Claim Your Free Pass to a Divine Celebration" 
+            title={t('activities.title')}
             subtitle={
-                <span>
+                <Trans i18nKey="activities.subtitle">
                     Immerse yourself in a variety of spiritual and cultural activities. Here’s a glimpse of what awaits you at <HighlightText text="Śrī Kṛṣṇa Janmāṣṭamī 2025" className="bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-500/30 dark:to-orange-500/30 text-orange-800 dark:text-orange-200" />.
-                </span>
+                </Trans>
             }
         />
         {/* Responsive Grid: 3 columns on mobile, auto-fit on desktop */}
@@ -900,7 +879,12 @@ const EventActivitiesSection = () => (
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="aspect-square md:aspect-auto"
+                    className={cn(
+                        "md:aspect-auto",
+                        eventActivities.length % 3 === 2 && index === eventActivities.length - 1
+                            ? "col-span-2 aspect-[2/1]"
+                            : "aspect-square"
+                    )}
                 >
                     <MorphingDialog
                         transition={{
@@ -923,11 +907,22 @@ const EventActivitiesSection = () => (
                                                 <category.icon className="h-6 w-6 md:h-12 md:w-12 text-orange-600 dark:text-orange-400" />
                                             </div>
                                         )}
-                                        <MorphingDialogTitle className="text-[10px] leading-tight mt-1 md:text-lg font-semibold text-indigo-900 dark:text-indigo-200">{category.category}</MorphingDialogTitle>
+                                        <div className="flex flex-col">
+                                            <MorphingDialogTitle className="text-[10px] leading-tight mt-1 md:text-lg font-semibold text-indigo-900 dark:text-indigo-200">{category.category}</MorphingDialogTitle>
+                                            {category.category === "Community & Outreach" && (
+                                                <div className="hidden md:flex items-center gap-2 mt-2">
+                                                    <span className="inline-flex items-center gap-1.5 py-1 px-2 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">Temple Vision & Project</span>
+                                                    <span className="inline-flex items-center gap-1.5 py-1 px-2 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300">Vedic School</span>
+                                                    <span className="inline-flex items-center gap-1.5 py-1 px-2 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300">Go Seva</span>
+                                                    <span className="inline-flex items-center gap-1.5 py-1 px-2 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300">Anna-dāna Catering</span>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                    {/* Plus Icon */}
-                                    <div className='absolute bottom-1 right-1 md:relative md:bottom-auto md:right-auto flex h-5 w-5 md:h-8 md:w-8 shrink-0 scale-100 select-none appearance-none items-center justify-center rounded-full bg-orange-500 text-white transition-all duration-300 group-hover:bg-orange-600 group-hover:scale-110 active:scale-[0.98]'>
-                                        <PlusIcon size={16} />
+                                    {/* Plus Icon & Text */}
+                                     <div className='absolute top-1 right-1 md:relative md:top-auto md:right-auto flex items-center justify-center gap-1 md:gap-1.5 rounded-full bg-orange-500 text-white transition-all duration-300 group-hover:bg-orange-600 group-hover:scale-110 active:scale-[0.98] p-1 md:px-3 md:py-2'>
+                                        <span className="hidden md:inline text-xs font-semibold">{t('eventActivities.discover')}</span>
+                                        <PlusIcon className="h-3 w-3 md:h-4 md:w-4" />
                                     </div>
                                 </CardHeader>
                             </Card>
@@ -970,7 +965,8 @@ const EventActivitiesSection = () => (
             ))}
         </div>
     </ScrollSection>
-);
+    )
+};
 
 export const Route = createFileRoute('/fests/invite')({
   component: JanmashtamiPage,
@@ -1067,6 +1063,7 @@ function JanmashtamiContent() {
 }
 
 function JanmashtamiDialog() {
+    const { t } = useTranslation();
     const { setIsOpen } = useMorphingDialog();
 
     const handleSponsorClick = () => {
@@ -1081,11 +1078,11 @@ function JanmashtamiDialog() {
             <MorphingDialogContent className="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-2xl max-w-md w-full">
                 <MorphingDialogTitle>
                     <h2 className="text-2xl font-bold text-center text-indigo-900 dark:text-indigo-200">
-                        Thank you for registering!
+                        {t('dialog.title')}
                     </h2>
                 </MorphingDialogTitle>
                 <p className="text-center text-stone-600 dark:text-stone-400 mt-2">
-                    Your presence is a gift. You can now share the joy or consider sponsoring this divine event.
+                    {t('dialog.subtitle')}
                 </p>
                 <div className="mt-6 flex flex-col gap-4">
                     <Button
@@ -1094,7 +1091,7 @@ function JanmashtamiDialog() {
                         className="w-full h-14 px-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:from-green-500 hover:to-emerald-600 text-base flex items-center justify-center gap-2"
                     >
                         <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="25" height="25" />
-                        Sponsor Seva
+                        {t('dialog.sponsorButton')}
                     </Button>
                     <SocialShare />
                 </div>

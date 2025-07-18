@@ -1,0 +1,227 @@
+{
+  "inviteHero": {
+    "title": "Śrī Kṛṣṇa Janmāṣṭamī",
+    "subtitle": "A Divine Invitation",
+    "reserveButton": "RESERVE YOUR FREE SPOT",
+    "sponsorButton": "Sponsor Bhagavad Gītā Seva",
+    "date": "16 AUG 2025",
+    "time": "3 PM - 12 MIDNIGHT",
+    "venue": "Jayaram Thirumana Nilayam"
+  },
+  "countdown": {
+    "days": "days",
+    "hours": "hours",
+    "minutes": "minutes",
+    "seconds": "seconds",
+    "expired": "The auspicious day has arrived!"
+  },
+  "sponsorshipProgress": {
+    "sponsored": "{{sponsored}} books have already been sponsored out of {{total}}.",
+    "progress": "% Progress"
+  },
+  "detailsAndRegistration": {
+    "calendarTitle": "16 AUG 2025",
+    "calendarSubtitle": "Mark your calendar",
+    "calendarButton": "Add to Calendar",
+    "clockTitle": "3 PM - 12 MIDNIGHT",
+    "clockSubtitle": "Festival hours",
+    "clockButton": "Set Reminder",
+    "mapTitle": "Jayaram Thirumana Nilayam",
+    "mapSubtitle": "Sacred venue",
+    "mapButton": "View on Maps",
+    "formTitle": "Join Us for Śrī Kṛṣṇa Janmāṣṭamī !",
+    "shimmerText": "Hare Kṛṣṇa, Hare Kṛṣṇa, Kṛṣṇa Kṛṣṇa, Hare Hare, Hare Rāma, Hare Rāma, Rāma Rāma, Hare Hare"
+  },
+  "quote": {
+    "copy": "Copy",
+    "copied": "Copied!",
+    "share": "Share"
+  },
+  "socialShare": {
+    "title": "Share the Divine Invitation!"
+  },
+  "highlights": {
+    "title": "Sri Krishna Janmashtami Celebration Highlights"
+  },
+  "videoHighlights": {
+    "title": "Divine Inspiration",
+    "subtitle": "Watch and immerse yourself in the glories of Lord Krishna and His devotees.",
+    "video1Title": "Sri Krishna Janmashtami Celebration Highlights",
+    "video1Subtitle": "Divine lecture on Sri Krishna's appearance",
+    "video2Title": "Bhagavad-gita Distribution Seva",
+    "video2Subtitle": "5,108 Gitas in a single day!"
+  },
+  "activities": {
+    "title": "Claim Your Free Pass to a Divine Celebration",
+    "subtitle": "Immerse yourself in a variety of spiritual and cultural activities. Here’s a glimpse of what awaits you at <1>Śrī Kṛṣṇa Janmāṣṭamī 2025</1>."
+  },
+  "dialog": {
+    "title": "Thank you for registering!",
+    "subtitle": "Your presence is a gift. You can now share the joy or consider sponsoring this divine event.",
+    "sponsorButton": "Sponsor Seva"
+  },
+  "sponsorship": {
+    "title": "Sponsorship Opportunities",
+    "subtitle": "Seize this golden opportunity to render direct service to Lord Krishna on His divine appearance day and receive unlimited blessings.",
+    "cantAttendTitle": "Can't Attend? You Can Still Receive Blessings!",
+    "cantAttendBody": "We'll miss you at the divine festival and the delicious free prasadam buffet! Though you can't be here in person, your devotion can still reach Lord Krishna through a heartfelt seva sponsorship.",
+    "cantAttendQuote": "It is not the quantity of the offering that matters, but the quality of devotion. A small flower offered with love is more valuable to Kṛṣṇa than a mountain of gold offered with pride.",
+    "cantAttendQuoteAuthor": "— Teachings of Śrīla Prabhupāda, based on Bhagavad-gītā 9.26",
+    "sincereHeart": "Even the smallest contribution made with a sincere heart is a great service.",
+    "services": {
+      "kalasa": {
+        "title": "Kalasa Abhisekam Seva",
+        "description": "Participate in the sacred bathing ceremony of the Lord. Your contribution helps procure auspicious items for the abhishekam, bringing immense spiritual benefit.",
+        "quote": "One who performs the bathing ceremony of the Lord is glorified in Vaikuntha.",
+        "quoteAuthor": "Śrīla Prabhupāda"
+      },
+      "gita": {
+        "title": "Bhagavad Gītā seva",
+        "description": "Sponsor the distribution of Bhagavad-gita, the essence of all Vedic knowledge. This is the highest form of charity, giving spiritual enlightenment to others.",
+        "quote": "For one who explains this supreme secret to the devotees, pure devotional service is guaranteed, and in the end he will come back to Me.",
+        "quoteAuthor": "Lord Krishna, Bhagavad-gita 18.68"
+      },
+      "milk": {
+        "title": "Milk Abhishekam Seva",
+        "description": "Offer a loving milk bath to the deities. This seva is a beautiful expression of devotion and helps in the grand worship of the Lord on His appearance day.",
+        "quote": "By bathing the Lord with milk, one gets relief from all kinds of tribulations.",
+        "quoteAuthor": "Śrīla Prabhupāda"
+      },
+      "archana": {
+        "title": "Archana seva",
+        "description": "Contribute towards the articles of worship, such as flowers, incense, lamps, and other paraphernalia required for the daily archana (worship) of the deities.",
+        "quote": "If one offers Me with love and devotion a leaf, a flower, a fruit or water, I will accept it.",
+        "quoteAuthor": "Lord Krishna, Bhagavad-gita 9.26"
+      },
+      "annadanam": {
+        "title": "Annadanam seva",
+        "description": "Sponsor the distribution of delicious Krishna prasadam to all the devotees and visitors. There is no greater service than feeding the Lord's devotees.",
+        "quote": "By feeding the devotees, one gets the results of feeding the Supreme Lord Himself.",
+        "quoteAuthor": "Śrīla Prabhupāda"
+      }
+    }
+  },
+  "eventActivities": {
+    "discover": "Discover",
+    "mainAltar": {
+      "category": "Main Altar & Worship",
+      "description": "Experience the heart of the festival with sacred rituals and worship.",
+      "activities": {
+        "abhishekam": {
+          "title": "Abhishekam",
+          "description": "Elaborate ritualistic bathing of Śrī Śrī Rādhā-Kṛṣṇa with milk, yogurt, ghee, honey, fruit juices, and sacred waters, amidst Vedic mantras."
+        },
+        "arati": {
+          "title": "Arati Sessions",
+          "description": "Multiple arati ceremonies throughout the day, from Mangal Arati to Shayana Arati."
+        },
+        "puja": {
+          "title": "Pūjā Offerings",
+          "description": "An opportunity for devotees to make special offerings to the Deities."
+        },
+        "darshan": {
+          "title": "Special Darshan",
+          "description": "Behold the beautifully adorned Deities throughout the event."
+        }
+      }
+    },
+    "cultural": {
+      "category": "Cultural & Spiritual Programs",
+      "description": "Nourish your soul with enchanting performances and deep spiritual wisdom.",
+      "activities": {
+        "performances": {
+          "title": "Cultural Performances & Drama",
+          "description": "Dramas depicting Kṛṣṇa's pastimes, classical Indian dances, and devotional songs."
+        },
+        "kirtan": {
+          "title": "Soulful Harināma Kīrtan",
+          "description": "Continuous congregational chanting of the Hare Kṛṣṇa Mahamantra."
+        },
+        "discourses": {
+          "title": "Spiritual Discourses",
+          "description": "Lectures on the significance of Janmāṣṭamī and the philosophy of the Bhagavad Gita."
+        },
+        "fancyDress": {
+          "title": "Children's Fancy Dress",
+          "description": "A delightful competition for children dressed as characters from Kṛṣṇa's pastimes."
+        }
+      }
+    },
+    "prasadam": {
+      "category": "Prasādam & Food Services",
+      "description": "Savor sanctified vegetarian food, a feast for the body and soul.",
+      "activities": {
+        "mahaprasadam": {
+          "title": "Mahaprasadam & Bakery Stall",
+          "description": "Grand distribution of sanctified traditional Indian vegetarian dishes, alongside delicious eggless baked goods and special Janmāṣṭamī treats."
+        },
+        "paniPuri": {
+          "title": "Pani Puri Stall",
+          "description": "Enjoy the popular and savory Indian street food, prepared freshly for you."
+        }
+      }
+    },
+    "stalls": {
+      "category": "Book & Souvenir Stalls",
+      "description": "Explore spiritual literature and find devotional items to take home.",
+      "activities": {
+        "books": {
+          "title": "Spiritual Books",
+          "description": "A wide range of spiritual books, including Bhagavad Gita, Srimad Bhagavatam, and other Vedic literatures."
+        },
+        "sponsorship": {
+          "title": "Bhagavad Gita Sponsorship",
+          "description": "A dedicated stall to learn about and participate in the Gita distribution program."
+        },
+        "souvenirs": {
+          "title": "Devotional Souvenirs",
+          "description": "Find murtis, photos, clothing, and other devotional items."
+        },
+        "info": {
+          "title": "Reception & Info Stall",
+          "description": "Welcome desk for information, lost and found, and first aid."
+        }
+      }
+    },
+    "outreach": {
+      "category": "Community & Outreach",
+      "description": "Learn about our community projects and how you can get involved.",
+      "activities": {
+        "temple": {
+          "title": "Temple Project Showcase",
+          "description": "See the progress and plans for our new temple and learn how you can contribute."
+        },
+        "school": {
+          "title": "Bhakta Prahlad Vedic School",
+          "description": "Information about the Vedic school's curriculum, admissions, and activities."
+        },
+        "gaushala": {
+          "title": "Gaushala (Cow Protection)",
+          "description": "Learn about our cow protection initiatives and how to support them."
+        },
+        "foodForLife": {
+          "title": "Food for Life",
+          "description": "Participate in our program to distribute free, sanctified vegetarian meals to those in need throughout the community."
+        }
+      }
+    }
+  },
+  "navbar": {
+    "templeName1": "Pudhuvai",
+    "templeName2": "Vrindavanam",
+    "templeSubtitle": "Radha Krishna Temple",
+    "home": "Home",
+    "services": "Services",
+    "annadanam": "Annadamn (Food Distribution)",
+    "goshala": "Goshala (Cow Protection)",
+    "youth": "Youth Preaching",
+    "construction": "Temple Construction",
+    "contribute": "Contribute",
+    "blog": "Blog",
+    "shop": "Shop",
+    "about": "About",
+    "centers": "Centers",
+    "donate": "Donate",
+    "signIn": "Sign In / Sign Up"
+  }
+}

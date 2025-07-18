@@ -1398,13 +1398,10 @@ function NavbarContent() {
     <MotionConfig transition={{ layout: { duration: 0.35, type: 'spring', bounce: 0.1 } }}>
       <motion.nav 
         className="fixed bottom-0 left-0 w-full pb-safe pointer-events-none transform-gpu flex flex-col-reverse" // Added flex flex-col-reverse
-        initial={{ y: 0 }}
         // Adjust z-index based on visibility to ensure it's below footer when hidden
         animate={{
-          y: (isClipsPanelActive || isEventsPanelActive) ? 0 : (isDockVisible && !isFooterVisible ? 0 : 160),
           zIndex: (isClipsPanelActive || isEventsPanelActive) ? 50 : (isDockVisible && !isFooterVisible ? 40 : 10)
         }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
       >
         <AnimatePresence>
           {isMobile && !isDockOpen && !isClipsPanelActive && !timeLeft.isExpired && (
@@ -1456,9 +1453,72 @@ function NavbarContent() {
             </motion.div>
           )}
         </AnimatePresence>
+        
+        {/* Desktop Festival Bar - now outside the dock animation wrapper */}
+        <AnimatePresence>
+          {!isMobile && !timeLeft.isExpired && (
+            <motion.div
+              layout
+              className="relative mx-auto flex justify-center container px-2 sm:px-4 pointer-events-auto group mb-2"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 30, delay: 0.2 } }}
+              exit={{ height: 0, opacity: 0, transition: { duration: 0.4, ease: 'easeInOut' } }}
+            >
+              <div className={cn(
+                "flex items-center justify-between w-full sm:max-w-fit max-w-md bg-gradient-to-r from-orange-400 to-amber-500 text-white shadow-md transition-all duration-200 gap-2",
+                "p-1.5 rounded-xl"
+              )}>
+                <button
+                  onClick={() => {
+                    const festivalItem = DOCK_ITEMS.find(item => item.id === 10);
+                    if (festivalItem) handleDockItemClick(festivalItem);
+                  }}
+                  className="font-bold text-sm pl-1 text-left flex-grow overflow-hidden"
+                >
+                  🎉 Upcoming Festival: Śrī Kṛṣṇa Janmāṣṭamī
+                </button>
+                
+                <div className="flex-shrink-0 flex items-center gap-1.5">
+                  <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" className="flex-shrink-0 relative group">
+                    <span className={cn(
+                      "relative rounded-full font-bold shadow-lg select-none bg-green-500 text-white transition-all duration-200 ring-2 ring-transparent group-hover:ring-green-400 flex items-center gap-1",
+                      "px-4 py-2 text-sm"
+                    )}>
+                      <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width={16} height={16} />
+                      Sponsor
+                    </span>
+                  </a>
+                  <motion.div
+                    className="flex-shrink-0 relative group"
+                    animate={{ scale: [1, 1.05, 1] }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <Link to="/fests/invite" hash="register" onClick={handleGetPassClick}>
+                      <span className={cn(
+                        "relative rounded-full font-bold shadow-lg select-none bg-gradient-to-r from-blue-500 to-indigo-600 text-white transition-all duration-200 ring-2 ring-transparent group-hover:ring-blue-400 flex items-center gap-1",
+                        "px-4 py-2 text-sm"
+                      )}>
+                          <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Diya%20Lamp.png" alt="Diya Lamp" width={18} height={18} />
+                          Secure your Free Spot
+                      </span>
+                    </Link>
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <motion.div
           layout
-          transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+          animate={{
+            y: (isClipsPanelActive || isEventsPanelActive) ? 0 : (isDockVisible && !isFooterVisible ? 0 : 160),
+          }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
           className={cn(
             "relative mx-auto flex justify-center",
             isClipsPanelActive ? "w-full h-full p-0" : "container px-2 sm:px-4"
@@ -1478,62 +1538,7 @@ function NavbarContent() {
             onMouseLeave={() => setHoveredLabelItemId(null)} >
             <MotionConfig transition={dockSpringTransition}>
               <div className={cn('h-full w-full', isClipsPanelActive ? 'p-0' : 'p-2')}>
-                <AnimatePresence>
-                  {!isMobile && !timeLeft.isExpired && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className={'pb-1.5 px-1.5'}
-                    >
-                      <div className={cn(
-                        "flex items-center justify-between w-full bg-gradient-to-r from-orange-400 to-amber-500 text-white shadow-md transition-all duration-200 gap-2",
-                        "p-1.5 rounded-xl"
-                      )}>
-                        <button
-                          onClick={() => {
-                            const festivalItem = DOCK_ITEMS.find(item => item.id === 10);
-                            if (festivalItem) handleDockItemClick(festivalItem);
-                          }}
-                          className="font-bold text-sm pl-1 text-left flex-grow overflow-hidden"
-                        >
-                          🎉 Upcoming Festival: Śrī Kṛṣṇa Janmāṣṭamī
-                        </button>
-                        
-                        <div className="flex-shrink-0 flex items-center gap-1.5">
-                          <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" className="flex-shrink-0 relative group">
-                            <span className={cn(
-                              "relative rounded-full font-bold shadow-lg select-none bg-green-500 text-white transition-all duration-200 ring-2 ring-transparent group-hover:ring-green-400 flex items-center gap-1",
-                              "px-4 py-2 text-sm"
-                            )}>
-                              <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width={16} height={16} />
-                              Sponsor
-                            </span>
-                          </a>
-                          <motion.div
-                            className="flex-shrink-0 relative group"
-                            animate={{ scale: [1, 1.05, 1] }}
-                            transition={{
-                              duration: 1.5,
-                              repeat: Infinity,
-                              ease: "easeInOut",
-                            }}
-                          >
-                            <Link to="/fests/invite" hash="register" onClick={handleGetPassClick}>
-                              <span className={cn(
-                                "relative rounded-full font-bold shadow-lg select-none bg-gradient-to-r from-blue-500 to-indigo-600 text-white transition-all duration-200 ring-2 ring-transparent group-hover:ring-blue-400 flex items-center gap-1",
-                                "px-4 py-2 text-sm"
-                              )}>
-                                  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Diya%20Lamp.png" alt="Diya Lamp" width={18} height={18} />
-                                  Secure your Free Spot
-                              </span>
-                            </Link>
-                          </motion.div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                
                 <div className={cn(isClipsPanelActive ? 'rounded-none h-full w-full' : 'overflow-hidden rounded-t-2xl')}> {/* Ensure full height/width for clips panel content area */}
                   <AnimatePresence initial={false} mode='sync'>
                     {isDockOpen && activeItem?.isExpandable && (
