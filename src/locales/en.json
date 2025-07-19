@@ -13,15 +13,15 @@
     "hours": "hours",
     "minutes": "minutes",
     "seconds": "seconds",
-    "expired": "The auspicious day has arrived!"
+    "expired": "The Supreme Person has Born. Join the Celebrations at Jayaram Marriage Hall."
   },
   "sponsorshipProgress": {
-    "sponsored": "{{sponsored}} books have already been sponsored out of {{total}}.",
+    "sponsored": "{{sponsored}} Bhagavad-gita have already been sponsored out of {{total}}.",
     "progress": "% Progress"
   },
   "detailsAndRegistration": {
     "calendarTitle": "16 AUG 2025",
-    "calendarSubtitle": "Mark your calendar",
+    "calendarSubtitle": "Mark the Day",
     "calendarButton": "Add to Calendar",
     "clockTitle": "3 PM - 12 MIDNIGHT",
     "clockSubtitle": "Festival hours",
@@ -45,11 +45,11 @@
   },
   "videoHighlights": {
     "title": "Divine Inspiration",
-    "subtitle": "Watch and immerse yourself in the glories of Lord Krishna and His devotees.",
+    "subtitle": "Watch and immerse yourself in the glories of Lord Krishna",
     "video1Title": "Sri Krishna Janmashtami Celebration Highlights",
     "video1Subtitle": "Divine lecture on Sri Krishna's appearance",
     "video2Title": "Bhagavad-gita Distribution Seva",
-    "video2Subtitle": "5,108 Gitas in a single day!"
+    "video2Subtitle": "5,108 Bhagavad-gita in a single day!"
   },
   "activities": {
     "title": "Claim Your Free Pass to a Divine Celebration",
@@ -121,7 +121,7 @@
         },
         "darshan": {
           "title": "Special Darshan",
-          "description": "Behold the beautifully adorned Deities throughout the event."
+          "description": "Witness the divine beauty of Radha Krishna in a special dress on Their special day."
         }
       }
     },
@@ -142,22 +142,22 @@
           "description": "Lectures on the significance of Janmāṣṭamī and the philosophy of the Bhagavad Gita."
         },
         "fancyDress": {
-          "title": "Children's Fancy Dress",
+          "title": "Divine Fancy Dress show",
           "description": "A delightful competition for children dressed as characters from Kṛṣṇa's pastimes."
         }
       }
     },
     "prasadam": {
-      "category": "Prasādam & Food Services",
-      "description": "Savor sanctified vegetarian food, a feast for the body and soul.",
+      "category": "Prasādam Stalls for your body and soul",
+      "description": "Try to our different Prasadam stalls that nourishes your body and soul.",
       "activities": {
         "mahaprasadam": {
           "title": "Mahaprasadam & Bakery Stall",
-          "description": "Grand distribution of sanctified traditional Indian vegetarian dishes, alongside delicious eggless baked goods and special Janmāṣṭamī treats."
+          "description": "Enjoy delicious, pure Prasadam varieties, cakes, and biscuits prepared in the temple."
         },
         "paniPuri": {
           "title": "Pani Puri Stall",
-          "description": "Enjoy the popular and savory Indian street food, prepared freshly for you."
+          "description": "Enjoy the popular and savory Indian street Prasadam, prepared freshly for you."
         }
       }
     },
@@ -175,11 +175,11 @@
         },
         "souvenirs": {
           "title": "Devotional Souvenirs",
-          "description": "Find murtis, photos, clothing, and other devotional items."
+          "description": "Find deities, photos and other devotional items."
         },
         "info": {
-          "title": "Reception & Info Stall",
-          "description": "Welcome desk for information, lost and found, and first aid."
+          "title": "Reception & Info Desk",
+          "description": "Reception and information stall at your service"
         }
       }
     },
@@ -188,20 +188,20 @@
       "description": "Learn about our community projects and how you can get involved.",
       "activities": {
         "temple": {
-          "title": "Temple Project Showcase",
-          "description": "See the progress and plans for our new temple and learn how you can contribute."
+          "title": "Temple Building Project Showcase",
+          "description": "Explore the Puducherry's tallest temple's project and progress. You can be part of it too."
         },
         "school": {
           "title": "Bhakta Prahlad Vedic School",
           "description": "Information about the Vedic school's curriculum, admissions, and activities."
         },
         "gaushala": {
-          "title": "Gaushala (Cow Protection)",
+          "title": "Gokulam Gaushala (Cow Protection)",
           "description": "Learn about our cow protection initiatives and how to support them."
         },
         "foodForLife": {
           "title": "Food for Life",
-          "description": "Participate in our program to distribute free, sanctified vegetarian meals to those in need throughout the community."
+          "description": "Participate in our daily Prasadam distribution program to distribute free, sanctified vegetarian meals to the needy and poor."
         }
       }
     }
@@ -212,7 +212,7 @@
     "templeSubtitle": "Radha Krishna Temple",
     "home": "Home",
     "services": "Services",
-    "annadanam": "Annadamn (Food Distribution)",
+    "annadanam": "Annadanam (Food Distribution)",
     "goshala": "Goshala (Cow Protection)",
     "youth": "Youth Preaching",
     "construction": "Temple Construction",
