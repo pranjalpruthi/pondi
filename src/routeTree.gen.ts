@@ -30,7 +30,6 @@ import { Route as DemoTanstackQueryRouteImport } from './routes/demo.tanstack-qu
 import { Route as DashboardUsersRouteImport } from './routes/dashboard/users'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
 import { Route as DashboardCentersRouteImport } from './routes/dashboard/Centers'
-import { Route as ApiTallyWebhookRouteImport } from './routes/api/tally-webhook'
 
 const EventsRoute = EventsRouteImport.update({
   id: '/events',
@@ -138,17 +137,11 @@ const DashboardCentersRoute = DashboardCentersRouteImport.update({
   path: '/Centers',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
-const ApiTallyWebhookRoute = ApiTallyWebhookRouteImport.update({
-  id: '/api/tally-webhook',
-  path: '/api/tally-webhook',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/events': typeof EventsRoute
-  '/api/tally-webhook': typeof ApiTallyWebhookRoute
   '/dashboard/Centers': typeof DashboardCentersRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/users': typeof DashboardUsersRoute
@@ -171,7 +164,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/events': typeof EventsRoute
-  '/api/tally-webhook': typeof ApiTallyWebhookRoute
   '/dashboard/Centers': typeof DashboardCentersRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/users': typeof DashboardUsersRoute
@@ -196,7 +188,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/events': typeof EventsRoute
-  '/api/tally-webhook': typeof ApiTallyWebhookRoute
   '/dashboard/Centers': typeof DashboardCentersRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/users': typeof DashboardUsersRoute
@@ -222,7 +213,6 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/events'
-    | '/api/tally-webhook'
     | '/dashboard/Centers'
     | '/dashboard/settings'
     | '/dashboard/users'
@@ -245,7 +235,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/events'
-    | '/api/tally-webhook'
     | '/dashboard/Centers'
     | '/dashboard/settings'
     | '/dashboard/users'
@@ -269,7 +258,6 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/events'
-    | '/api/tally-webhook'
     | '/dashboard/Centers'
     | '/dashboard/settings'
     | '/dashboard/users'
@@ -294,7 +282,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   EventsRoute: typeof EventsRoute
-  ApiTallyWebhookRoute: typeof ApiTallyWebhookRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   FestsInviteRoute: typeof FestsInviteRoute
   SignInSplatRoute: typeof SignInSplatRoute
@@ -460,13 +447,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCentersRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
-    '/api/tally-webhook': {
-      id: '/api/tally-webhook'
-      path: '/api/tally-webhook'
-      fullPath: '/api/tally-webhook'
-      preLoaderRoute: typeof ApiTallyWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -492,7 +472,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
   EventsRoute: EventsRoute,
-  ApiTallyWebhookRoute: ApiTallyWebhookRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   FestsInviteRoute: FestsInviteRoute,
   SignInSplatRoute: SignInSplatRoute,

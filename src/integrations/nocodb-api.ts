@@ -264,38 +264,3 @@ export async function addLead(leadData: LeadData) {
     throw error;
   }
 }
-
-/**
- * Interface for registration data submission.
- */
-export interface RegistrationData {
-  Name?: string;
-  Email?: string;
-  Phone?: string;
-  IPAddress?: string;
-  City?: string;
-  Region?: string;
-  Country?: string;
-  Timestamp?: string; // ISO string
-}
-
-/**
- * Submits a new registration to the Registrations table in NocoDB.
- * @param registrationData - The registration data to submit.
- * @returns The response data from the API.
- */
-export async function addRegistration(registrationData: RegistrationData) {
-  try {
-    const tableId = await getTableId('Registrations', CONFIG.PROJECTS.ISKMP.BASE_ID);
-    
-    const response = await apiClient.post(`/tables/${tableId}/records`, {
-        ...registrationData,
-        Timestamp: new Date().toISOString(),
-    });
-    
-    return response.data;
-  } catch (error: any) {
-    console.error('Error submitting registration:', error.response?.data || error.message);
-    throw error;
-  }
-}
