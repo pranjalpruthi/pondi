@@ -87,10 +87,6 @@ export const SponsorshipSection = () => {
                             {t('sponsorship.cantAttendBody')}
                             <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Smiling%20Face%20with%20Tear.png" alt="Smiling Face with Tear" width="25" height="25" className="inline-block mx-1" />
                         </p>
-                        <blockquote className="text-sm md:text-base border-l-4 border-amber-400 pl-4 italic text-stone-300 dark:text-stone-600">
-                            <p>"{t('sponsorship.cantAttendQuote')}"</p>
-                            <footer className="text-xs md:text-sm mt-2 not-italic">{t('sponsorship.cantAttendQuoteAuthor')}</footer>
-                        </blockquote>
                         <p className="mt-4 font-semibold text-sm md:text-base">
                             <HighlightText 
                                 text={t('sponsorship.sincereHeart')}
