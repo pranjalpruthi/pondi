@@ -262,10 +262,12 @@ const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
                             <Button
                                 onClick={() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' })}
                                 size="lg"
-                                className="w-full sm:w-auto h-12 px-6 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 text-sm"
+                                className="w-full sm:w-auto h-auto min-h-[3rem] py-2 px-6 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 text-sm"
                             >
-                                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Ticket.png" alt="Ticket" width="22" height="22" />
-                                {t('inviteHero.reserveButton')}
+                                <div className="flex items-center justify-center gap-2">
+                                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Ticket.png" alt="Ticket" width="22" height="22" className="flex-shrink-0" />
+                                    <span className="whitespace-normal text-center">{t('inviteHero.reserveButton')}</span>
+                                </div>
                             </Button>
                             <Button
                                 asChild

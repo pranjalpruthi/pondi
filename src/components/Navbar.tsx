@@ -138,7 +138,7 @@ function NavBarComponent({ className }: NavBarProps) {
             }}
             transition={springTransition} // Use spring transition here
         >
-            <div className="w-full px-1 xs:px-2 sm:px-4">
+            <div className="w-full px-2 sm:px-4">
                 <div className="flex justify-between items-center h-16"> {/* Reverted h-14 to h-16 */}
                     {/* Left side with ModeToggle and Temple Name */}
                     {/* Left side with ModeToggle and Temple Name */}
@@ -236,7 +236,7 @@ function NavBarComponent({ className }: NavBarProps) {
                     </div>
 
                     {/* Right side items (Mobile Menu Trigger, Mobile Donate, Temple Status Bell, Sign In) */}
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1 sm:space-x-2">
                         {/* Temple Status Indicator removed, functionality merged into Notification Bell */}
 
                         <Link to="/donate" className="sm:hidden" onClick={safePlayClick} onMouseEnter={safePlayHover}>
