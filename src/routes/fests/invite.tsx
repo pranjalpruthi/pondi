@@ -58,12 +58,12 @@ const ScrollSectionTitle: FC<{ title: string; subtitle: ReactNode }> = ({ title,
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 0.6 }}
-        className="text-center mb-10"
+        className="text-center mb-8"
     >
-        <h2 className="text-4xl md:text-5xl font-serif font-bold text-indigo-900 dark:text-indigo-200 mb-4">
+        <h2 className="text-2xl md:text-4xl font-serif font-bold text-indigo-900 dark:text-indigo-200 mb-2">
             {title}
         </h2>
-        <div className="text-lg md:text-xl text-stone-600 dark:text-stone-400 max-w-3xl mx-auto">{subtitle}</div>
+        <div className="text-xs md:text-base text-stone-600 dark:text-stone-400 max-w-3xl mx-auto">{subtitle}</div>
     </motion.div>
 );
 
@@ -120,12 +120,12 @@ const CountdownTimer = () => {
                     {timeUnits.map(([unit, value], index) => (
                         <Fragment key={unit}>
                             <div className="flex flex-col items-center">
-                                <p style={{ fontVariantNumeric: 'tabular-nums' }} className="text-xl sm:text-2xl font-bold text-indigo-900 dark:text-white">
+                                <p style={{ fontVariantNumeric: 'tabular-nums' }} className="text-lg sm:text-2xl font-bold text-indigo-900 dark:text-white">
                                     <NumberFlow value={value} format={{ minimumIntegerDigits: 2 }} />
                                 </p>
                                 <p className="text-[0.5rem] sm:text-[0.6rem] text-stone-600 dark:text-stone-400 uppercase tracking-wider">{t(`countdown.${unit}`)}</p>
                             </div>
-                            {index < timeUnits.length - 1 && <p className="text-xl sm:text-2xl font-bold text-indigo-900/50 dark:text-white/50">:</p>}
+                            {index < timeUnits.length - 1 && <p className="text-lg sm:text-2xl font-bold text-indigo-900/50 dark:text-white/50">:</p>}
                         </Fragment>
                     ))}
                 </NumberFlowGroup>
@@ -199,12 +199,12 @@ const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className="w-full"
                     >
-                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold font-serif text-indigo-900 dark:text-white leading-tight">
+                        <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold font-serif text-indigo-900 dark:text-white leading-tight">
                             <AuroraText colors={["#be185d", "#fb923c", "#fde047"]}>
                                 {t('inviteHero.title')}
                             </AuroraText>
                         </h1>
-                        <p className="mt-4 text-xl sm:text-2xl md:text-3xl text-orange-600 dark:text-orange-400 font-semibold">{t('inviteHero.subtitle')}</p>
+                        <p className="mt-3 text-lg sm:text-2xl md:text-3xl text-orange-600 dark:text-orange-400 font-semibold">{t('inviteHero.subtitle')}</p>
                     </motion.div>
 
                     {/* Video for Mobile/Tablet */}
@@ -246,15 +246,15 @@ const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-center">
                                 <div className="flex items-center justify-center gap-2 p-2.5 bg-black/5 dark:bg-white/5 rounded-lg">
                                     <Calendar className="h-4 w-4 text-orange-500 flex-shrink-0" />
-                                    <span className="font-medium text-xs sm:text-sm">{t('inviteHero.date')}</span>
+                                    <span className="font-medium text-[10px] sm:text-sm">{t('inviteHero.date')}</span>
                                 </div>
                                 <div className="flex items-center justify-center gap-2 p-2.5 bg-black/5 dark:bg-white/5 rounded-lg">
                                     <Clock className="h-4 w-4 text-orange-500 flex-shrink-0" />
-                                    <span className="font-medium text-xs sm:text-sm">{t('inviteHero.time')}</span>
+                                    <span className="font-medium text-[10px] sm:text-sm">{t('inviteHero.time')}</span>
                                 </div>
                                 <a href="https://maps.app.goo.gl/k5wX9LMEtFX7UraEA" target="_blank" rel="noopener noreferrer" className="md:col-span-1 flex items-center justify-center gap-2 p-2.5 bg-black/5 dark:bg-white/5 rounded-lg group">
                                     <MapPin className="h-4 w-4 text-orange-500 flex-shrink-0" />
-                                    <span className="font-medium text-xs sm:text-sm group-hover:underline">{t('inviteHero.venue')}</span>
+                                    <span className="font-medium text-[10px] sm:text-sm group-hover:underline">{t('inviteHero.venue')}</span>
                                 </a>
                             </div>
                         </div>
@@ -262,18 +262,18 @@ const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
                             <Button
                                 onClick={() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' })}
                                 size="lg"
-                                className="w-full sm:w-auto h-14 px-8 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 text-base"
+                                className="w-full sm:w-auto h-12 px-6 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 text-sm"
                             >
-                                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Ticket.png" alt="Ticket" width="24" height="24" />
+                                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Ticket.png" alt="Ticket" width="22" height="22" />
                                 {t('inviteHero.reserveButton')}
                             </Button>
                             <Button
                                 asChild
                                 size="lg"
-                                className="w-full sm:w-auto h-14 px-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:from-green-500 hover:to-emerald-600 text-base"
+                                className="w-full sm:w-auto h-12 px-6 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:from-green-500 hover:to-emerald-600 text-sm"
                             >
                                 <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" onClick={onSponsorClick} className="flex items-center justify-center gap-2">
-                                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="25" height="25" />
+                                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="23" height="23" />
                                     {t('inviteHero.sponsorButton')}
                                 </a>
                             </Button>
@@ -413,16 +413,16 @@ WhatsApp: https://wa.me/918056626108`;
                             >
                                 <div>
                                     <div className="p-2 sm:p-3 bg-orange-100 dark:bg-orange-500/10 rounded-full mb-2 sm:mb-3 inline-block">
-                                        <item.icon className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600 dark:text-orange-400" />
+                                        <item.icon className="h-5 w-5 sm:h-8 sm:w-8 text-orange-600 dark:text-orange-400" />
                                     </div>
-                                    <p className="text-base sm:text-lg font-bold text-indigo-900 dark:text-indigo-200 leading-tight">{item.title}</p>
-                                    <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400">{item.subtitle}</p>
+                                    <p className="text-sm sm:text-lg font-bold text-indigo-900 dark:text-indigo-200 leading-tight">{item.title}</p>
+                                    <p className="text-[10px] sm:text-sm text-stone-500 dark:text-stone-400">{item.subtitle}</p>
                                 </div>
                                 {item.action && (
                                     <Button
                                         onClick={item.action}
                                         size="sm"
-                                        className="mt-3 sm:mt-4 w-full rounded-full font-semibold transition-all duration-300 bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/50 dark:text-orange-300 dark:hover:bg-orange-900/80 text-xs sm:text-sm"
+                                        className="mt-3 sm:mt-4 w-full rounded-full font-semibold transition-all duration-300 bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/50 dark:text-orange-300 dark:hover:bg-orange-900/80 text-[10px] sm:text-sm"
                                     >
                                         {item.buttonText}
                                     </Button>
@@ -443,15 +443,15 @@ WhatsApp: https://wa.me/918056626108`;
                             >
                                 <div>
                                     <div className="p-3 sm:p-4 bg-orange-100 dark:bg-orange-500/10 rounded-full mb-3 sm:mb-4 inline-block">
-                                        <item.icon className="h-8 w-8 sm:h-10 sm:w-10 text-orange-600 dark:text-orange-400" />
+                                        <item.icon className="h-6 w-6 sm:h-10 sm:w-10 text-orange-600 dark:text-orange-400" />
                                     </div>
-                                    <p className="text-lg sm:text-2xl font-bold text-indigo-900 dark:text-indigo-200">{item.title}</p>
-                                    <p className="text-sm sm:text-md text-stone-500 dark:text-stone-400">{item.subtitle}</p>
+                                    <p className="text-base sm:text-2xl font-bold text-indigo-900 dark:text-indigo-200">{item.title}</p>
+                                    <p className="text-xs sm:text-md text-stone-500 dark:text-stone-400">{item.subtitle}</p>
                                 </div>
                                 {item.action && (
                                     <Button
                                         onClick={item.action}
-                                        className="mt-4 sm:mt-6 w-full rounded-full py-2 sm:py-3 px-4 sm:px-6 text-sm sm:text-lg font-semibold transition-all duration-300 bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/50 dark:text-orange-300 dark:hover:bg-orange-900/80 dark:hover:shadow-[0_0_15px_rgba(251,146,60,0.5)]"
+                                        className="mt-4 sm:mt-6 w-full rounded-full py-2 sm:py-3 px-4 sm:px-6 text-xs sm:text-lg font-semibold transition-all duration-300 bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/50 dark:text-orange-300 dark:hover:bg-orange-900/80 dark:hover:shadow-[0_0_15px_rgba(251,146,60,0.5)]"
                                     >
                                         {item.buttonText}
                                     </Button>
@@ -507,12 +507,12 @@ const QuoteSection: FC<{ quote: { text: string; source: string }, index: number 
                 transition={{ duration: 0.7, delay: 0.2 }}
             >
                 <Card className="shadow-lg border-l-4 border-amber-500 bg-white dark:bg-gray-800/30 overflow-hidden">
-                    <CardContent className="p-8">
+                    <CardContent className="p-6 md:p-8">
                         <blockquote className="text-center">
-                            <p className="text-xl md:text-2xl font-serif text-stone-700 dark:text-stone-300 leading-relaxed mb-4 italic">
+                            <p className="text-lg md:text-2xl font-serif text-stone-700 dark:text-stone-300 leading-relaxed mb-4 italic">
                                 “{quote.text}”
                             </p>
-                            <footer className="text-md font-semibold text-amber-700 dark:text-amber-500">
+                            <footer className="text-sm md:text-base font-semibold text-amber-700 dark:text-amber-500">
                                 — {quote.source}
                             </footer>
                         </blockquote>
@@ -626,7 +626,7 @@ const Janmashtami2024Highlights = () => {
                             transition={{ duration: 0.6 }}
                             className="text-center md:text-left mb-8"
                         >
-                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-indigo-900 dark:text-indigo-200">
+                            <h2 className="text-3xl md:text-5xl font-serif font-bold text-indigo-900 dark:text-indigo-200">
                                 {t('highlights.title')}
                             </h2>
                         </motion.div>
@@ -669,10 +669,10 @@ const Janmashtami2024Highlights = () => {
                                         {verses.map((quote, index) => (
                                             <Fragment key={index}>
                                                 <blockquote className="text-center">
-                                                    <p className="text-md font-serif text-stone-700 dark:text-stone-300 leading-relaxed italic">
+                                                    <p className="text-sm md:text-base font-serif text-stone-700 dark:text-stone-300 leading-relaxed italic">
                                                         “{quote.text}”
                                                     </p>
-                                                    <footer className="mt-2 text-sm font-semibold text-amber-700 dark:text-amber-500">
+                                                    <footer className="mt-2 text-xs md:text-sm font-semibold text-amber-700 dark:text-amber-500">
                                                         — {quote.source}
                                                     </footer>
                                                 </blockquote>
@@ -733,10 +733,10 @@ const VideoHighlightsSection = () => {
                         transition={{ duration: 0.6, delay: index * 0.2 }}
                     >
                         <Card className="overflow-hidden shadow-xl h-full flex flex-col bg-white dark:bg-gray-800/50">
-                            <CardHeader className="p-6">
-                                <video.icon className="h-10 w-10 text-orange-600 dark:text-orange-400 mb-2" />
-                                <CardTitle className="text-xl font-bold text-indigo-900 dark:text-indigo-200">{video.title}</CardTitle>
-                                <CardDescription className="text-md text-stone-500 dark:text-stone-400 mt-1">{video.subtitle}</CardDescription>
+                            <CardHeader className="p-4 md:p-6">
+                                <video.icon className="h-8 w-8 md:h-10 md:w-10 text-orange-600 dark:text-orange-400 mb-2" />
+                                <CardTitle className="text-lg md:text-xl font-bold text-indigo-900 dark:text-indigo-200">{video.title}</CardTitle>
+                                <CardDescription className="text-sm md:text-base text-stone-500 dark:text-stone-400 mt-1">{video.subtitle}</CardDescription>
                             </CardHeader>
                             <CardContent className="p-0 flex-grow">
                                 <div className="aspect-video bg-black">
@@ -901,14 +901,14 @@ const EventActivitiesSection = () => {
                                     {/* Icon and Title container */}
                                     <div className="flex flex-col md:flex-row items-center justify-center text-center md:text-left gap-2 md:gap-4 flex-grow md:flex-grow-0">
                                         {category.isCustom ? (
-                                            <category.icon className="h-10 w-10 md:h-16 md:w-16" />
+                                            <category.icon className="h-8 w-8 md:h-16 md:w-16" />
                                         ) : (
                                             <div className="p-2 md:p-3 bg-orange-100 dark:bg-orange-900/50 rounded-full">
-                                                <category.icon className="h-6 w-6 md:h-12 md:w-12 text-orange-600 dark:text-orange-400" />
+                                                <category.icon className="h-5 w-5 md:h-12 md:w-12 text-orange-600 dark:text-orange-400" />
                                             </div>
                                         )}
                                         <div className="flex flex-col">
-                                            <MorphingDialogTitle className="text-[10px] leading-tight mt-1 md:text-lg font-semibold text-indigo-900 dark:text-indigo-200">{category.category}</MorphingDialogTitle>
+                                            <MorphingDialogTitle className="text-[9px] leading-tight mt-1 md:text-lg font-semibold text-indigo-900 dark:text-indigo-200">{category.category}</MorphingDialogTitle>
                                             {category.category === "Community & Outreach" && (
                                                 <div className="hidden md:flex items-center gap-2 mt-2">
                                                     <span className="inline-flex items-center gap-1.5 py-1 px-2 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">Temple Vision & Project</span>
@@ -921,8 +921,8 @@ const EventActivitiesSection = () => {
                                     </div>
                                     {/* Plus Icon & Text */}
                                      <div className='absolute top-1 right-1 md:relative md:top-auto md:right-auto flex items-center justify-center gap-1 md:gap-1.5 rounded-full bg-orange-500 text-white transition-all duration-300 group-hover:bg-orange-600 group-hover:scale-110 active:scale-[0.98] p-1 md:px-3 md:py-2'>
-                                        <span className="hidden md:inline text-xs font-semibold">{t('eventActivities.discover')}</span>
-                                        <PlusIcon className="h-3 w-3 md:h-4 md:w-4" />
+                                        <span className="hidden md:inline text-[10px] font-semibold">{t('eventActivities.discover')}</span>
+                                        <PlusIcon className="h-2 w-2 md:h-4 md:w-4" />
                                     </div>
                                 </CardHeader>
                             </Card>
@@ -933,15 +933,15 @@ const EventActivitiesSection = () => {
                                     <div className="p-8">
                                         <div className="flex items-center gap-4 mb-6">
                                             {category.isCustom ? (
-                                                <category.icon className="h-20 w-20" />
+                                                <category.icon className="h-16 w-16 md:h-20 md:w-20" />
                                             ) : (
                                                 <div className="p-4 bg-orange-100 dark:bg-orange-500/10 rounded-full">
-                                                    <category.icon className="h-16 w-16 text-orange-600 dark:text-orange-400" />
+                                                    <category.icon className="h-12 w-12 md:h-16 md:w-16 text-orange-600 dark:text-orange-400" />
                                                 </div>
                                             )}
                                             <div>
-                                                <MorphingDialogTitle className="text-3xl font-bold text-indigo-900 dark:text-indigo-200">{category.category}</MorphingDialogTitle>
-                                                <MorphingDialogSubtitle className="text-md text-stone-600 dark:text-stone-400">{category.description}</MorphingDialogSubtitle>
+                                                <MorphingDialogTitle className="text-2xl md:text-3xl font-bold text-indigo-900 dark:text-indigo-200">{category.category}</MorphingDialogTitle>
+                                                <MorphingDialogSubtitle className="text-sm md:text-base text-stone-600 dark:text-stone-400">{category.description}</MorphingDialogSubtitle>
                                             </div>
                                         </div>
                                         <ul className="space-y-4">
@@ -949,8 +949,8 @@ const EventActivitiesSection = () => {
                                                 <li key={activity.title} className="flex items-start gap-4 p-3 bg-stone-50 dark:bg-gray-800/50 rounded-lg">
                                                     <Feather className="h-5 w-5 mt-1 text-amber-600 dark:text-amber-400 flex-shrink-0" />
                                                     <div>
-                                                        <p className="font-bold text-lg text-stone-800 dark:text-stone-200">{activity.title}</p>
-                                                        <p className="text-md text-stone-600 dark:text-stone-400">{activity.description}</p>
+                                                        <p className="font-bold text-base md:text-lg text-stone-800 dark:text-stone-200">{activity.title}</p>
+                                                        <p className="text-sm md:text-base text-stone-600 dark:text-stone-400">{activity.description}</p>
                                                     </div>
                                                 </li>
                                             ))}
@@ -1075,20 +1075,20 @@ function JanmashtamiDialog() {
 
     return (
         <MorphingDialogContainer>
-            <MorphingDialogContent className="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-2xl max-w-md w-full">
+            <MorphingDialogContent className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl shadow-2xl max-w-md w-full">
                 <MorphingDialogTitle>
-                    <h2 className="text-2xl font-bold text-center text-indigo-900 dark:text-indigo-200">
+                    <h2 className="text-xl md:text-2xl font-bold text-center text-indigo-900 dark:text-indigo-200">
                         {t('dialog.title')}
                     </h2>
                 </MorphingDialogTitle>
-                <p className="text-center text-stone-600 dark:text-stone-400 mt-2">
+                <p className="text-center text-sm md:text-base text-stone-600 dark:text-stone-400 mt-2">
                     {t('dialog.subtitle')}
                 </p>
                 <div className="mt-6 flex flex-col gap-4">
                     <Button
                         onClick={handleSponsorClick}
                         size="lg"
-                        className="w-full h-14 px-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:from-green-500 hover:to-emerald-600 text-base flex items-center justify-center gap-2"
+                        className="w-full h-12 px-6 md:h-14 md:px-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:from-green-500 hover:to-emerald-600 text-sm md:text-base flex items-center justify-center gap-2"
                     >
                         <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="25" height="25" />
                         {t('dialog.sponsorButton')}

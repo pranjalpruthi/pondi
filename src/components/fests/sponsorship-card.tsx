@@ -17,8 +17,6 @@ import {
       title: string;
       image: string;
       description: string;
-      quote: string;
-      quoteAuthor: string;
       url: string;
     };
   };
@@ -105,11 +103,6 @@ import {
                 <p className='mt-4 text-base text-zinc-600 dark:text-zinc-400'>
                   {service.description}
                 </p>
-                <blockquote className="mt-4 border-l-4 border-amber-500 pl-4 italic text-zinc-600 dark:text-zinc-400">
-                  <p className="text-base">"{service.quote}"</p>
-                  <cite className="mt-2 block not-italic font-semibold text-zinc-700 dark:text-zinc-300">— {service.quoteAuthor}</cite>
-                </blockquote>
-  
                 <Button
                   asChild
                   size="lg"
