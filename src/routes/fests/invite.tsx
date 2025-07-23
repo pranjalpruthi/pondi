@@ -215,6 +215,27 @@ const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
                         transition={{ duration: 0.8, delay: 0.4, type: 'spring', stiffness: 100 }}
                         className="w-full max-w-3xl lg:hidden my-8"
                     >
+                        {/* Animated Register Button - Above Video */}
+                        <motion.div
+                            className="flex justify-center mb-4"
+                            animate={{ scale: [1, 1.05, 1] }}
+                            transition={{
+                                duration: 1.5,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                            }}
+                        >
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' });
+                                }}
+                                className="relative px-6 py-3 text-base rounded-full font-bold shadow-lg select-none bg-gradient-to-r from-blue-500 to-indigo-600 text-white transition-all duration-200 ring-1 ring-transparent hover:ring-blue-400 hover:shadow-xl flex items-center gap-2"
+                            >
+                                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Diya%20Lamp.png" alt="Diya Lamp" width={20} height={20} />
+                                Secure your Free Spot
+                            </button>
+                        </motion.div>
                         <div className="w-full mx-auto rounded-3xl shadow-2xl border-8 border-white dark:border-gray-800 ring-4 ring-amber-300 dark:ring-amber-500 overflow-hidden">
                             <div className="aspect-video bg-black relative group" onClick={handleInteraction}>
                                 <iframe
@@ -291,6 +312,27 @@ const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
                     transition={{ duration: 0.8, delay: 0.4, type: 'spring', stiffness: 100 }}
                     className="w-full lg:col-span-1 order-1 lg:order-2 hidden lg:block"
                 >
+                    {/* Animated Register Button - Above Video */}
+                    <motion.div
+                        className="flex justify-center mb-4"
+                        animate={{ scale: [1, 1.05, 1] }}
+                        transition={{
+                            duration: 1.5,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    >
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                            className="relative px-6 py-3 text-base rounded-full font-bold shadow-lg select-none bg-gradient-to-r from-blue-500 to-indigo-600 text-white transition-all duration-200 ring-1 ring-transparent hover:ring-blue-400 hover:shadow-xl flex items-center gap-2"
+                        >
+                            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Diya%20Lamp.png" alt="Diya Lamp" width={20} height={20} />
+                            Secure your Free Spot
+                        </button>
+                    </motion.div>
                     <div className="w-full mx-auto rounded-3xl shadow-2xl border-8 border-white dark:border-gray-800 ring-4 ring-amber-300 dark:ring-amber-500 overflow-hidden">
                         <div className="aspect-video bg-black relative group" onClick={handleInteraction}>
                             {isInView && (

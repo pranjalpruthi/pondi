@@ -1,11 +1,10 @@
 import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { motion } from 'motion/react';
-import { Sparkles, Calendar, MapPin, CalendarPlus, Newspaper, X } from 'lucide-react';
+import { Sparkles, Calendar, MapPin, CalendarPlus, Newspaper, X, Gift } from 'lucide-react';
 import React, { useState, useEffect, useMemo } from 'react';
 import NumberFlow, { NumberFlowGroup } from '@number-flow/react';
 import { cn } from '@/lib/utils';
-import { FlipButton } from '@/components/animate-ui/buttons/flip';
+import { Badge } from '@/components/ui/badge';
 
 const eventDate = new Date("2025-08-16T15:00:00");
 
@@ -92,29 +91,29 @@ WhatsApp: https://wa.me/918056626108`;
 
   if (timeLeft.isExpired) {
     return (
-        <div className="flex flex-col items-center justify-center min-h-[420px] max-h-[calc(100vh-180px)] bg-gray-50 dark:bg-black p-4">
-            <h3 className="font-bold text-xl text-indigo-900 dark:text-white mb-2">
+        <div className="flex flex-col items-center justify-center min-h-[320px] max-h-[calc(100vh-180px)] bg-gray-50 dark:bg-black p-4">
+            <h3 className="font-bold text-lg text-indigo-900 dark:text-white mb-2 text-center">
                 The Śrī Kṛṣṇa Janmāṣṭamī festival has concluded.
             </h3>
-            <p className="text-muted-foreground">We hope you joined us in the grand celebration. Stay tuned for future events!</p>
-            <Button variant="outline" className="mt-4">View Festival Gallery</Button>
+            <p className="text-muted-foreground text-sm text-center">We hope you joined us. Stay tuned for future events!</p>
+            <Button variant="outline" size="sm" className="mt-4">View Gallery</Button>
         </div>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-[420px] max-h-[calc(100vh-180px)] bg-gray-50 dark:bg-black">
+    <div className="flex flex-col min-h-[320px] max-h-[calc(100vh-180px)] bg-gray-50 dark:bg-black">
       {/* Header */}
-      <div className="p-3 border-b dark:border-zinc-700 border-gray-200 flex-shrink-0">
+      <div className="p-2 border-b dark:border-zinc-700 border-gray-200 flex-shrink-0">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 p-0.5 rounded-full shadow-md">
+          <div className="flex items-center gap-2">
+            <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 p-0.5 rounded-full shadow-sm">
               <div className={cn("rounded-full p-1", "bg-white dark:bg-zinc-800")}>
-                <Sparkles className="h-4 w-4 text-orange-500" />
+                <Sparkles className="h-3.5 w-3.5 text-orange-500" />
               </div>
             </div>
-            <h2 className="text-lg font-semibold text-foreground">
-              Upcoming Grand Festival
+            <h2 className="text-base font-semibold text-foreground">
+              Upcoming Festival
             </h2>
           </div>
           <Button 
@@ -122,58 +121,57 @@ WhatsApp: https://wa.me/918056626108`;
             size="icon" 
             onClick={onClose} 
             aria-label="Close panel"
-            className="w-9 h-9 rounded-full hover:bg-red-100 dark:hover:bg-red-900/50 group"
+            className="w-8 h-8 rounded-full hover:bg-red-100 dark:hover:bg-red-900/50 group"
           >
-            <X className="h-5 w-5 text-muted-foreground group-hover:text-red-500 transition-colors" />
+            <X className="h-4 w-4 text-muted-foreground group-hover:text-red-500 transition-colors" />
           </Button>
         </div>
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 styled-scrollbar">
-        <div className="bg-gradient-to-br from-amber-50 via-white to-rose-50 dark:from-gray-900 dark:via-gray-800 dark:to-black rounded-2xl shadow-lg border border-black/10 dark:border-white/10 p-5 relative overflow-hidden">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Party%20Popper.png" alt="Party Popper" width="80" height="80" className="absolute -top-2 -right-2 transform rotate-12 opacity-50" />
+      <div className="flex-1 overflow-y-auto p-3 space-y-3 styled-scrollbar">
+        <div className="bg-gradient-to-br from-amber-50 via-white to-rose-50 dark:from-gray-900 dark:via-zinc-900 dark:to-black rounded-xl shadow-lg border border-black/10 dark:border-white/10 p-4 relative overflow-hidden">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Party%20Popper.png" alt="Party Popper" width="60" height="60" className="absolute -top-2 -right-2 transform rotate-12 opacity-40" />
             
-            <h3 className="font-bold text-2xl text-indigo-900 dark:text-white mb-3">
+            <h3 className="font-bold text-xl text-indigo-900 dark:text-white mb-2">
                 Śrī Kṛṣṇa Janmāṣṭamī
             </h3>
             
-            <div className="space-y-3 text-sm text-stone-700 dark:text-stone-300 mb-5">
+            <div className="space-y-2 text-xs text-stone-700 dark:text-stone-300 mb-4">
                 <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-orange-500" />
+                    <Calendar className="h-3.5 w-3.5 text-orange-500" />
                     <span>16 AUG 2025</span>
                 </div>
                 <a href="https://maps.app.goo.gl/k5wX9LMEtFX7UraEA" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group" aria-label="View event location on Google Maps">
-                    <MapPin className="h-4 w-4 text-orange-500" />
+                    <MapPin className="h-3.5 w-3.5 text-orange-500" />
                     <span className="group-hover:underline">Jayaram Thirumana Nilayam</span>
                 </a>
             </div>
 
-            <div className="flex flex-col items-center justify-center gap-2 mb-5">
+            <div className="flex flex-col items-center justify-center gap-1 mb-4">
+                <p className="text-xs text-muted-foreground mb-1">Countdown</p>
                 <NumberFlowGroup>
                     <div
                         style={{ fontVariantNumeric: 'tabular-nums' }}
-                        className="flex items-baseline justify-center font-bold text-3xl sm:text-4xl text-gray-800 dark:text-white"
+                        className="flex items-baseline justify-center font-bold text-2xl text-gray-800 dark:text-white"
                     >
                         {timeLeft.days > 0 && (
                             <>
                                 <NumberFlow trend={-1} value={timeLeft.days} />
-                                <span className="text-lg sm:text-xl font-normal mx-1.5 sm:mx-2">d</span>
+                                <span className="text-sm font-normal mx-1">d</span>
                             </>
                         )}
                         <NumberFlow trend={-1} value={timeLeft.hours} format={{ minimumIntegerDigits: 2 }} />
-                        <span className="text-lg sm:text-xl font-normal mx-1 sm:mx-1.5">:</span>
+                        <span className="text-sm font-normal mx-0.5">:</span>
                         <NumberFlow
                             trend={-1}
                             value={timeLeft.minutes}
-                            digits={{ 1: { max: 5 } }}
                             format={{ minimumIntegerDigits: 2 }}
                         />
-                        <span className="text-lg sm:text-xl font-normal mx-1 sm:mx-1.5">:</span>
+                        <span className="text-sm font-normal mx-0.5">:</span>
                         <NumberFlow
                             trend={-1}
                             value={timeLeft.seconds}
-                            digits={{ 1: { max: 5 } }}
                             format={{ minimumIntegerDigits: 2 }}
                         />
                     </div>
@@ -181,62 +179,27 @@ WhatsApp: https://wa.me/918056626108`;
             </div>
 
             <div className="flex flex-col items-center gap-2">
-                <div className="grid grid-cols-2 gap-2 w-full">
-                    <Link to="/fests/invite" onClick={onClose} className="w-full">
-                        <FlipButton
-                          frontContent={
-                            <div className="flex items-center justify-center gap-1.5 text-xs">
-                              <Newspaper className="h-3.5 w-3.5" />
-                              View Invitation
-                            </div>
-                          }
-                          backContent={<span className="font-bold">Open Page</span>}
-                          className="w-full px-4 text-xs h-9 rounded-full font-bold shadow-md select-none"
-                          frontClassName="bg-blue-500 text-white"
-                          backClassName="bg-blue-600 text-white"
-                          from="top"
-                        />
+                <div className="flex flex-wrap justify-center gap-2 w-full">
+                    <Link to="/fests/invite" onClick={onClose}>
+                        <Badge className="cursor-pointer bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900/50 dark:text-blue-200 dark:hover:bg-blue-900/80 border-blue-500/30">
+                          <Newspaper className="h-3 w-3 mr-1" />
+                          Invitation
+                        </Badge>
                     </Link>
-                    <a 
-                      href={googleCalendarUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="w-full"
-                      aria-label="Add this event to your Google Calendar"
-                    >
-                      <motion.div
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
-                        transition={{ duration: 0.2, ease: "easeInOut" }}
-                        className="w-full"
-                      >
-                        <FlipButton
-                          frontContent={
-                            <div className="flex items-center justify-center gap-1.5">
-                              <CalendarPlus className="h-3.5 w-3.5" />
-                              Add to Calendar
-                            </div>
-                          }
-                          backContent={<span className="font-bold">Open Google</span>}
-                          className="w-full px-4 text-xs h-9 rounded-full font-bold shadow-md select-none"
-                          frontClassName="bg-primary text-primary-foreground dark:bg-secondary dark:text-secondary-foreground"
-                          backClassName="bg-primary/90 text-primary-foreground dark:bg-secondary/90 dark:text-secondary-foreground"
-                          from="top"
-                        />
-                      </motion.div>
+                    <a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer">
+                      <Badge className="cursor-pointer bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/50 dark:text-green-200 dark:hover:bg-green-900/80 border-green-500/30">
+                        <CalendarPlus className="h-3 w-3 mr-1" />
+                        Add to Calendar
+                      </Badge>
+                    </a>
+                    <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer">
+                      <Badge className="cursor-pointer bg-pink-100 text-pink-800 hover:bg-pink-200 dark:bg-pink-900/50 dark:text-pink-200 dark:hover:bg-pink-900/80 border-pink-500/30">
+                        <Gift className="h-3 w-3 mr-1" />
+                        Sponsor Seva
+                      </Badge>
                     </a>
                 </div>
-                <Button asChild size="sm" className="relative group w-full h-9 rounded-full text-white font-bold transition-transform duration-300 ease-in-out hover:-translate-y-0.5" aria-label="Sponsor Bhagavad Gita Seva">
-                <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" className="relative flex items-center justify-center">
-                    <span className="animate-ping [animation-duration:1.5s] absolute inline-flex h-full w-full rounded-full bg-white/75 opacity-75"></span>
-                    <span className="absolute inset-0 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 shadow-md transition-all duration-300 ease-in-out group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-lg"></span>
-                    <span className="relative flex items-center">
-                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width="20" height="20" className="mr-1.5" />
-                    Sponsor Bhagavad Gītā Seva
-                    </span>
-                </a>
-                </Button>
-                <p className="text-xs text-center text-stone-600 dark:text-stone-400 mt-3 italic">
+                <p className="text-[0.7rem] text-center text-stone-600 dark:text-stone-400 mt-2 italic">
                     "The holy name... is the incarnation of Lord Kṛṣṇa."
                     <span className="opacity-80 ml-1">— CC, Ādi 17.22</span>
                 </p>
@@ -247,10 +210,10 @@ WhatsApp: https://wa.me/918056626108`;
       {/* Footer */}
       <div className="flex-shrink-0 p-2 border-t border-border/50">
         <Link to="/fests/invite" hash="register" onClick={onClose} className="w-full">
-            <Button className="w-full h-12 rounded-full font-semibold shadow-md select-none bg-yellow-400 text-gray-900 hover:bg-yellow-500 relative text-base group">
+            <Button className="w-full h-10 rounded-full font-semibold shadow-md select-none bg-yellow-400 text-gray-900 hover:bg-yellow-500 relative text-sm group">
                 <span className="animate-ping [animation-duration:1.5s] absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75 group-hover:bg-orange-500"></span>
                 <span className="relative flex items-center justify-center gap-2">
-                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Diya%20Lamp.png" alt="Diya Lamp" width="24" height="24" />
+                    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Diya%20Lamp.png" alt="Diya Lamp" width="20" height="20" />
                     Secure your Free Spot
                 </span>
             </Button>

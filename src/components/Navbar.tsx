@@ -9,12 +9,6 @@ import { ModeToggle } from "./mode-toggle";
 import { cn } from "@/lib/utils";
 import { useWeather } from "@/hooks/useWeather";
 import { User, Menu, X, ChevronDown, Home, Handshake, PenSquare, ShoppingCart, Info, Globe } from 'lucide-react';
-// Import icons from iconify (general ones)
-import GiftIcon from '~icons/lucide/gift';
-
-
-// WeatherIcon component, Popover, Drawer, and related imports moved to TempleWeatherPopover.tsx
-
 import { motion, AnimatePresence, type Transition } from "motion/react";
 import useMeasure from 'react-use-measure';
 import useClickOutside from '@/hooks/useClickOutside';
@@ -416,10 +410,5 @@ const navItems: Record<string, NavItemType> = {
     icon: <IconWithFallback src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/World%20Map.png" alt="Centers" width="22" height="22" fallback={<Globe className="w-4 h-4" />} />,
     title: "navbar.centers",
     to: "/centers"
-  },
-  donate: {
-    icon: <GiftIcon className="w-4 h-4" />,
-    title: "navbar.donate",
-    to: "/donate"
   },
 };

@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useLocation } from '@tanstack/react-router';
 import { motion, MotionConfig, AnimatePresence, type Transition } from 'motion/react'; // Added AnimatePresence
 import * as React from 'react';
 import { cn } from '@/lib/utils';
@@ -9,7 +9,7 @@ import IconTemple from 'virtual:icons/fluent-emoji-flat/hindu-temple'
 import IconCalendar from 'virtual:icons/uim/calender'
 import IconInfo from 'virtual:icons/line-md/alert-circle-twotone-loop';
 import IconRobo from 'virtual:icons/mdi/robot-outline';
-import { Menu, Volume2, VolumeX, Globe as GlobeIcon, ShoppingBag as ShoppingBagIcon, Phone, ArrowLeft, MapPin, Youtube } from "lucide-react"; // Added ShoppingBagIcon, Youtube, PartyPopper
+import { Menu, Volume2, VolumeX, Globe as GlobeIcon, ShoppingBag as ShoppingBagIcon, Phone, ArrowLeft, MapPin, Youtube } from "lucide-react"; 
 import { IconBrandFacebook, IconBrandTelegram, IconBrandInstagram, IconBrandYoutube, IconBrandWhatsapp } from '@tabler/icons-react';
 import { CopyButton } from '@/components/animate-ui/buttons/copy';
 import { useSound } from 'use-sound';
@@ -18,7 +18,7 @@ import { SoundProvider } from '@/components/context/sound-context';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTempleStatus } from '@/hooks/useTempleStatus'; // Added
 import { TempleEvents, TempleEventsPanel } from '@/components/temple-events';
-import { DeityDarshan } from '@/components/deity-darshan';
+import { DeityDarshanPanel } from '@/components/deity-darshan';
 import { SignedIn, SignedOut, UserButton, SignInButton, SignOutButton } from '@clerk/tanstack-react-start';
 import { LayoutDashboard, LogIn, LogOut } from 'lucide-react';
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -26,13 +26,15 @@ import { Suspense } from 'react'; // Added Suspense import
 import { addLead } from '@/integrations/nocodb-api';
 import { UpcomingEventPanel } from '@/components/homepage/UpcomingEventPanel';
 import TallyTracker from '@/components/tally-tracker';
+import { Route } from '@/routes/fests/invite';
 
 import ShimmerText from '@/components/ui/shimmer-text'; // Added
 import { AppleChatInput } from '@/components/ui/apple-chat-input';
 import { ThreeDotSimpleLoader } from '@/components/ui/three-dot-loader';
 import useAutoScroll from '@/hooks/use-auto-scroll';
 import { ClipsPanel } from '@/components/homepage/clips-panel'; // Changed to import ClipsPanel
-import Marquee from '@/components/ui/marquee';
+import { Badge } from '@/components/ui/badge';
+import NumberFlow from '@number-flow/react';
 // --- FestivalToggleButton Component has been removed ---
 
 // Define types for DockItem and its props
@@ -60,7 +62,6 @@ interface DockItemComponentProps {
   dockSpringTransition: object;
   onItemClick: (item: DockItemData) => void;
   onItemMouseEnter: (item: DockItemData) => void;
-  isDeitiesOpen?: boolean;
 }
 
 const DockItemComponent = React.memo<DockItemComponentProps>(({
@@ -74,7 +75,6 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
   dockSpringTransition,
   onItemClick,
   onItemMouseEnter,
-  isDeitiesOpen,
 }) => {
   const isLabelClickedActive = activeLabelItemId === item.id && !item.isExpandable;
   const isLabelHoveredActive = hoveredLabelItemId === item.id && !item.isExpandable;
@@ -83,7 +83,7 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
   const isMainMenuPanelActive = item.isExpandable && activeDockItem === item.id && isDockOpen;
 
   const isDeityButton = item.label === 'Deities';
-  const isPanelOpen = isMainMenuPanelActive || (isDeityButton && isDeitiesOpen);
+  const isPanelOpen = isMainMenuPanelActive;
   const currentSubtitle = isPanelOpen ? 'Close' : item.subtitle;
   const isAiBotButton = item.label === 'AI Bot';
   const isClipsButton = item.label === 'Clips';
@@ -846,13 +846,13 @@ function NavbarContent() {
   // --- State ---
   // const [open, setOpen] = React.useState(false); // Command Dialog state - REMOVED
   const [eventsOpen, setEventsOpen] = React.useState(false); // Events Dialog state
-  const [deitiesOpen, setDeitiesOpen] = React.useState(false); // Deities Dialog state
 
   // --- Hooks ---
   const { isSoundEnabled, toggleSound } = useSoundSettings();
   const queryClient = useQueryClient();
   const isMobile = useIsMobile();
   const templeStatus = useTempleStatus(); // Added
+  const location = useLocation(); // Added for route detection
 
   // Countdown Logic
   const [timeLeft, setTimeLeft] = React.useState({
@@ -904,6 +904,8 @@ function NavbarContent() {
   const lastScrollYRef = React.useRef(0);
   const [isFooterVisible, setIsFooterVisible] = React.useState(false);
   const [clipsPanelCurrentIndex, setClipsPanelCurrentIndex] = React.useState(0); // Added state for clips panel
+  const [isEventCardVisible, setIsEventCardVisible] = React.useState(true);
+
 
   const aiPanelContent = React.useMemo(() => <AIPanel />, []);
   const clipsPanelContent = React.useMemo(() => <ClipsPanel currentIndex={clipsPanelCurrentIndex} setCurrentIndex={setClipsPanelCurrentIndex} />, [clipsPanelCurrentIndex, setClipsPanelCurrentIndex]); // Changed to use ClipsPanel
@@ -913,7 +915,11 @@ function NavbarContent() {
   }, [setActiveDockItem, setIsDockOpen]);
 
   const eventsPanelContent = React.useMemo(() => <TempleEventsPanel onOpenChange={handleClosePanel} />, [handleClosePanel]);
-  const upcomingEventPanelContent = React.useMemo(() => <UpcomingEventPanel onClose={handleClosePanel} />, [handleClosePanel]);
+  const deityDarshanPanelContent = React.useMemo(() => <DeityDarshanPanel onOpenChange={handleClosePanel} />, [handleClosePanel]);
+  const upcomingEventPanelContent = React.useMemo(() => <UpcomingEventPanel onClose={() => {
+    handleClosePanel();
+    setIsEventCardVisible(true);
+  }} />, [handleClosePanel, setIsEventCardVisible]);
 
   // useClickOutside hook (from snippet, adapted path)
   useClickOutside(dockWrapperRef, () => {
@@ -939,11 +945,14 @@ function NavbarContent() {
       // Dock visibility logic
       if (isDockOpen) {
         setIsDockVisible(true);
+        setIsEventCardVisible(false);
       } else {
         if (currentScrollY > lastScrollYRef.current && currentScrollY > 80) {
           setIsDockVisible(false);
+          setIsEventCardVisible(false);
         } else {
           setIsDockVisible(true);
+          setIsEventCardVisible(true);
         }
       }
 
@@ -961,6 +970,7 @@ function NavbarContent() {
           // Hide dock when footer is visible, regardless of scroll direction
           if (entry.isIntersecting && !isDockOpen) {
             setIsDockVisible(false);
+            setIsEventCardVisible(false);
           }
         },
         { threshold: 0.2 } // Adjusted threshold for smoother detection
@@ -976,7 +986,7 @@ function NavbarContent() {
         observer.unobserve(footerElement);
       }
     };
-  }, [isDockOpen, setIsDockVisible, setIsFooterVisible]);
+  }, [isDockOpen, setIsDockVisible, setIsFooterVisible, setIsEventCardVisible]);
 
 
   // Use React Query for sound loading state (existing)
@@ -1063,7 +1073,8 @@ function NavbarContent() {
       label: 'Deities',
       title: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Hindu%20Temple.png" alt="Hindu Temple" width="25" height="25" />,
       subtitle: 'Darshan',
-      action: () => { setDeitiesOpen(true); playTempleBell(); },
+      isExpandable: true,
+      content: deityDarshanPanelContent,
     },
     {
       id: 9, // New ID for Donate
@@ -1259,19 +1270,21 @@ function NavbarContent() {
       isExpandable: true,
       content: clipsPanelContent, // Use the new ClipsPanel
     },
-    {
+    // Conditionally include Festivals button only if not on invite page
+    ...(location.pathname !== '/fests/invite' ? [{
       id: 10,
       label: 'Festivals',
       title: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Party%20Popper.png" alt="Party Popper" width="25" height="25" />,
       subtitle: 'Festival',
       isExpandable: true,
       content: upcomingEventPanelContent,
-    }
-  ], [isMobile, isSoundEnabled, handleNavClick, handleSoundToggle, playTempleBell, safePlayClick, safePlayHover, setDeitiesOpen, navItems, templeStatus, setActiveDockItem, setIsDockOpen, aiPanelContent, clipsPanelContent, clipsPanelCurrentIndex, setClipsPanelCurrentIndex, eventsPanelContent, upcomingEventPanelContent]);
+    }] : [])
+  ], [isMobile, isSoundEnabled, handleNavClick, handleSoundToggle, playTempleBell, safePlayClick, safePlayHover, navItems, templeStatus, setActiveDockItem, setIsDockOpen, aiPanelContent, clipsPanelContent, clipsPanelCurrentIndex, setClipsPanelCurrentIndex, eventsPanelContent, deityDarshanPanelContent, upcomingEventPanelContent, location.pathname, handleClosePanel]);
 
 
+  const navigate = Route.useNavigate();
   const handleDockItemClick = React.useCallback((item: DockItemData) => {
-    if (item.label === 'Deities' && !item.isExpandable) playTempleBell(); else safePlayClick();
+    if (item.label === 'Deities') playTempleBell(); else safePlayClick();
 
     if (item.isExpandable) {
       setActiveLabelItemId(null);
@@ -1282,9 +1295,11 @@ function NavbarContent() {
       if (isDockOpen && isClickedItemActive) {
         setIsDockOpen(false);
         setActiveDockItem(null);
+        if (item.label === 'Festivals') setIsEventCardVisible(true);
       } else {
         setIsDockOpen(true);
         setActiveDockItem(item.id);
+        if (item.label === 'Festivals') setIsEventCardVisible(false);
       }
     } else {
       if (!isMobile) {
@@ -1323,35 +1338,33 @@ function NavbarContent() {
     let darshanHoverBg = "hover:bg-gray-300/80 dark:hover:bg-gray-600/80";
 
     if (statusColorClass.includes('green')) {
-        darshanBg = "bg-green-400/20 dark:bg-green-500/20";
+        darshanBg = "bg-green-100 dark:bg-green-800/50";
         darshanText = "text-green-700 dark:text-green-300";
-        darshanHoverBg = "hover:bg-green-400/30 dark:hover:bg-green-500/30";
+        darshanHoverBg = "hover:bg-green-200 dark:hover:bg-green-700/50";
     } else if (statusColorClass.includes('pink')) {
-        darshanBg = "bg-pink-400/20 dark:bg-pink-500/20";
+        darshanBg = "bg-pink-100 dark:bg-pink-800/50";
         darshanText = "text-pink-700 dark:text-pink-300";
-        darshanHoverBg = "hover:bg-pink-400/30 dark:hover:bg-pink-500/30";
+        darshanHoverBg = "hover:bg-pink-200 dark:hover:bg-pink-700/50";
     } else if (statusColorClass.includes('red')) {
-        darshanBg = "bg-red-400/20 dark:bg-red-500/20";
+        darshanBg = "bg-red-100 dark:bg-red-800/50";
         darshanText = "text-red-700 dark:text-red-300";
-        darshanHoverBg = "hover:bg-red-400/30 dark:hover:bg-red-500/30";
+        darshanHoverBg = "hover:bg-red-200 dark:hover:bg-red-700/50";
     } else if (statusColorClass.includes('gray')) {
-        darshanBg = "bg-gray-400/20 dark:bg-gray-600/20";
+        darshanBg = "bg-gray-200 dark:bg-gray-700/80";
         darshanText = "text-gray-700 dark:text-gray-400";
-        darshanHoverBg = "hover:bg-gray-400/30 dark:hover:bg-gray-600/30";
+        darshanHoverBg = "hover:bg-gray-300 dark:hover:bg-gray-600/80";
     } else if (statusColorClass.includes('yellow')) {
-        darshanBg = "bg-yellow-400/20 dark:bg-yellow-500/20";
+        darshanBg = "bg-yellow-100 dark:bg-yellow-800/50";
         darshanText = "text-yellow-700 dark:text-yellow-300";
-        darshanHoverBg = "hover:bg-yellow-400/30 dark:hover:bg-yellow-500/30";
+        darshanHoverBg = "hover:bg-yellow-200 dark:hover:bg-yellow-700/50";
     } else if (statusColorClass.includes('orange')) {
-        darshanBg = "bg-orange-400/20 dark:bg-orange-500/20";
+        darshanBg = "bg-orange-100 dark:bg-orange-800/50";
         darshanText = "text-orange-700 dark:text-orange-300";
-        darshanHoverBg = "hover:bg-orange-400/30 dark:hover:bg-orange-500/30";
+        darshanHoverBg = "hover:bg-orange-200 dark:hover:bg-orange-700/50";
     }
 
     const handleDarshanClick = () => {
-      if (darshanItem.action) {
-        darshanItem.action();
-      }
+      handleDockItemClick(darshanItem);
     };
 
     const handleEventsClick = () => {
@@ -1404,59 +1417,55 @@ function NavbarContent() {
         }}
       >
         <AnimatePresence>
-          {isMobile && !isDockOpen && !isClipsPanelActive && !timeLeft.isExpired && (
-            <motion.div
-              layout
-              className="w-full container px-2 sm:px-4 pointer-events-auto relative group"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 30, delay: 0.2 } }}
-              exit={{ height: 0, opacity: 0, transition: { duration: 0.4, ease: 'easeInOut' } }}
-            >
-              <div className="relative flex items-center justify-between w-full py-1 px-2 rounded-full bg-gradient-to-r from-orange-400/95 to-amber-500/95 backdrop-blur-sm text-white shadow-lg gap-2 overflow-hidden">
-                <button
-                  onClick={() => {
-                    const festivalItem = DOCK_ITEMS.find(item => item.id === 10);
-                    if (festivalItem) handleDockItemClick(festivalItem);
-                  }}
-                  className="font-bold text-sm pl-1 text-left flex-grow overflow-hidden"
-                >
-                  <Marquee pauseOnHover className="text-xs font-bold" speed={80}>
-                    <span className="mx-4">Upcoming Festival: Śrī Kṛṣṇa Janmāṣṭamī 2025</span>
-                  </Marquee>
-                </button>
-                
-                <div className="flex-shrink-0 flex items-center gap-1.5">
-                  <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" className="flex-shrink-0 group">
-                    <span className="relative px-2 py-0.5 text-[0.65rem] rounded-full font-bold shadow-md select-none bg-green-500 text-white transition-all duration-200 ring-1 ring-transparent group-hover:ring-green-400 flex items-center gap-1">
-                      <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width="12" height="12" />
-                      Sponsor
-                    </span>
-                  </a>
-                  <motion.div
-                    className="relative group"
-                    animate={{ scale: [1, 1.05, 1] }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    <Link to="/fests/invite" hash="register" onClick={handleGetPassClick}>
-                      <span className="relative px-2 py-0.5 text-[0.65rem] rounded-full font-bold shadow-md select-none bg-gradient-to-r from-blue-500 to-indigo-600 text-white transition-all duration-200 ring-1 ring-transparent group-hover:ring-blue-400 flex items-center gap-1">
-                          <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Diya%20Lamp.png" alt="Diya Lamp" width="12" height="12" />
-                          Register Free
-                      </span>
-                    </Link>
-                  </motion.div>
-                </div>
-              </div>
-            </motion.div>
+          {isMobile && !isDockOpen && !isClipsPanelActive && !timeLeft.isExpired && location.pathname !== '/fests/invite' && isEventCardVisible && (
+      <motion.div
+        layoutId="event-card"
+        className="absolute bottom-full right-2 sm:right-4 mb-2 w-48 pointer-events-auto"
+        initial={{ opacity: 0, y: 20, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 300, damping: 30 } }}
+        exit={{ opacity: 0, y: 20, scale: 0.9, transition: { duration: 0.2, ease: 'easeOut' } }}
+        onClick={() => navigate({ to: '/fests/invite', hash: 'register' })}
+      >
+<div className="p-2.5 rounded-2xl bg-gradient-to-br from-pink-200 to-pink-300 text-pink-800 shadow-md cursor-pointer relative overflow-hidden">
+<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Party%20Popper.png" alt="Party Popper" width="40" height="40" className="absolute -top-1 -right-1 transform rotate-12 opacity-30" />
+          <div className="flex items-center gap-2 mb-1.5">
+            <Badge variant="secondary" className="text-blue-600 bg-white/90 text-[0.6rem] px-1.5 py-0.5 font-bold">
+              UPCOMING
+            </Badge>
+          </div>
+          <p className="font-bold text-sm leading-tight mb-2">Śrī Kṛṣṇa Janmāṣṭamī</p>
+          <div className="flex items-baseline justify-center font-bold text-lg" style={{ fontVariantNumeric: 'tabular-nums' }}>
+            {timeLeft.days > 0 && (
+              <>
+                <NumberFlow trend={-1} value={timeLeft.days} />
+                <span className="text-xs font-normal mx-1">d</span>
+              </>
+            )}
+            <NumberFlow trend={-1} value={timeLeft.hours} format={{ minimumIntegerDigits: 2 }} />
+            <span className="text-xs font-normal mx-0.5">:</span>
+            <NumberFlow trend={-1} value={timeLeft.minutes} format={{ minimumIntegerDigits: 2 }} />
+            <span className="text-xs font-normal mx-0.5">:</span>
+            <NumberFlow trend={-1} value={timeLeft.seconds} format={{ minimumIntegerDigits: 2 }} />
+          </div>
+          <motion.div
+            className="mt-2 text-center text-[0.7rem] font-bold text-yellow-900 bg-gradient-to-r from-yellow-400 to-amber-500 py-1 rounded-lg shadow-inner"
+            animate={{ scale: [1, 1.03, 1] }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            Book Your Free Spot
+          </motion.div>
+        </div>
+      </motion.div>
           )}
         </AnimatePresence>
         
         {/* Desktop Festival Bar - now outside the dock animation wrapper */}
         <AnimatePresence>
-          {!isMobile && !timeLeft.isExpired && (
+          {!isMobile && !timeLeft.isExpired && location.pathname !== '/fests/invite' && (
             <motion.div
               layout
               className="relative mx-auto flex justify-center container px-2 sm:px-4 pointer-events-auto group mb-2"
@@ -1547,11 +1556,13 @@ function NavbarContent() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{
                           height: isClipsPanelActive
-                            ? (isMobile ? 'calc(100vh - 56px - env(safe-area-inset-bottom))' : 'calc(100vh - 64px - env(safe-area-inset-bottom))') // Adjusted height calculation
-                            : heightContent || 'auto',
+                            ? (isMobile ? 'calc(100vh - 56px - env(safe-area-inset-bottom))' : 'calc(100vh - 64px - env(safe-area-inset-bottom))')
+                            : activeDockItem === 2 // Conditionally set height for Deities panel
+                              ? 550 // Adjusted height to be less long
+                              : heightContent || 'auto',
                           opacity: 1
                         }}
-                        exit={{ y: "100%", opacity: 0, transition: { duration: 0.3, ease: "easeInOut" } }}
+                        exit={{ height: 0, opacity: 0 }}
                         style={{
                           width: isClipsPanelActive
                             ? '100vw' // Panel content itself can be 100vw
@@ -1597,7 +1608,6 @@ function NavbarContent() {
                               dockSpringTransition={dockSpringTransition}
                               onItemClick={handleDockItemClick}
                               onItemMouseEnter={handleDockItemMouseEnter}
-                              isDeitiesOpen={deitiesOpen}
                             />
                           ))}
                           <SplitButton />
@@ -1617,7 +1627,6 @@ function NavbarContent() {
                               dockSpringTransition={dockSpringTransition}
                               onItemClick={handleDockItemClick}
                               onItemMouseEnter={handleDockItemMouseEnter}
-                              isDeitiesOpen={deitiesOpen}
                             />
                           ))}
                         </div>
@@ -1639,7 +1648,6 @@ function NavbarContent() {
                             dockSpringTransition={dockSpringTransition}
                             onItemClick={handleDockItemClick}
                             onItemMouseEnter={handleDockItemMouseEnter}
-                            isDeitiesOpen={deitiesOpen}
                           />
                         ))}
                         {/* AI Pill Button */}
@@ -1695,7 +1703,6 @@ function NavbarContent() {
                             dockSpringTransition={dockSpringTransition}
                             onItemClick={handleDockItemClick}
                             onItemMouseEnter={handleDockItemMouseEnter}
-                            isDeitiesOpen={deitiesOpen}
                           />
                         ))}
                       </div>
@@ -1715,7 +1722,6 @@ function NavbarContent() {
                               dockSpringTransition={dockSpringTransition}
                               onItemClick={handleDockItemClick}
                               onItemMouseEnter={handleDockItemMouseEnter}
-                              isDeitiesOpen={deitiesOpen}
                             />
                           ))}
                         </>
@@ -1737,11 +1743,6 @@ function NavbarContent() {
         open={eventsOpen} 
         onOpenChange={setEventsOpen}
         _onSoundPlay={safePlayClick}
-      />
-      
-        <DeityDarshan
-        open={deitiesOpen}
-        onOpenChange={setDeitiesOpen}
       />
     </MotionConfig>
   )
