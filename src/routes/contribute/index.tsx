@@ -363,7 +363,8 @@ function ContributePage() {
     <div className="relative px-4 py-16 md:py-16 pb-0 md:pb-0">
       <div className="relative z-10 max-w-7xl mx-auto">
 
-        {/* Sudama Sevaka Membership Section */}
+        {/* Sudama Sevaka Membership Section - TEMPORARILY HIDDEN */}
+        {/* 
         <motion.section
           id="membership"
           className="mb-16 md:mb-20 py-16 md:py-20"
@@ -456,6 +457,7 @@ function ContributePage() {
             </motion.div>
 
             {/* Srila Prabhupada Quote Section */}
+            {/*
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -465,11 +467,13 @@ function ContributePage() {
             >
               <div className="relative overflow-hidden">
                 {/* Background Pattern */}
+                {/*
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 dark:from-orange-950/30 dark:via-yellow-950/20 dark:to-pink-950/30" />
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(251,146,60,0.1),transparent_50%)] dark:bg-[radial-gradient(circle_at_30%_20%,rgba(251,146,60,0.05),transparent_50%)]" />
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(236,72,153,0.1),transparent_50%)] dark:bg-[radial-gradient(circle_at_70%_80%,rgba(236,72,153,0.05),transparent_50%)]" />
 
                 {/* Decorative Elements */}
+                {/*
                 <div className="absolute top-8 left-8 opacity-20 dark:opacity-10">
                   <img
                     src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Om.png"
@@ -598,6 +602,7 @@ function ContributePage() {
             </motion.div>
           </div>
         </motion.section>
+        */}
         <motion.section
           id="construction"
           className="mb-8 md:mb-12 py-16 md:py-20 bg-gradient-to-b from-gray-50 dark:from-gray-900/30 to-transparent rounded-3xl"
