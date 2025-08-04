@@ -4,13 +4,11 @@ import {
   Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import {
-  ChevronRight, Calendar, Building, BadgeCheck
+  ChevronRight, Calendar, Building
 } from "lucide-react"
 import { MorphingPopover, MorphingPopoverTrigger, MorphingPopoverContent } from "@/components/motion-primitives/morphing-popover"
-import NumberFlow from '@number-flow/react'
-import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
 
 
 export const Route = createFileRoute('/contribute/')({
@@ -41,6 +39,8 @@ const constructionData = {
   ]
 };
 
+// TEMPORARILY COMMENTED OUT - Membership tiers data
+/*
 const membershipTiers = [
   {
     id: 'pushpa-seva',
@@ -119,239 +119,14 @@ const membershipTiers = [
     ctaIcon: 'cow-face'
   }
 ];
+*/
 
-const HighlightedBackground = () => (
-  <div className="absolute inset-0">
-    {/* Warm gradient overlay */}
-    <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 dark:from-amber-950/40 dark:via-orange-950/40 dark:to-red-950/40" />
-    {/* Subtle pattern */}
-    <div className="absolute inset-0 bg-[linear-gradient(to_right,#f59e0b1a_1px,transparent_1px),linear-gradient(to_bottom,#f59e0b1a_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] bg-[size:45px_45px] opacity-60 dark:opacity-20" />
-    {/* Warm radial glow */}
-    <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(251,146,60,0.1),transparent_70%)] dark:bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(251,146,60,0.05),transparent_70%)]" />
-  </div>
-);
+// TEMPORARILY COMMENTED OUT - Background components for membership cards
+// const HighlightedBackground = () => (...)
+// const PopularBackground = () => (...)
 
-const PopularBackground = () => (
-  <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(240,119,119,0.1),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(220,119,118,0.3),rgba(255,255,255,0))]" />
-);
-
-const MembershipCard = ({ tier }: { tier: typeof membershipTiers[0] }) => {
-  const IconComponent = typeof tier.icon === 'string' ? null : tier.icon as React.ComponentType<{ className?: string }>;
-  const isHighlighted = tier.highlighted;
-  const isPopular = tier.popular;
-
-  const handleSubscribe = () => {
-    // Open Razorpay subscription link in new tab
-    window.open(tier.subscriptionLink, '_blank');
-  };
-
-  return (
-    <motion.div
-      whileHover={{
-        y: -8,
-        scale: 1.02,
-        transition: { duration: 0.3, ease: "easeOut" }
-      }}
-      whileTap={{ scale: 0.98 }}
-      className={cn(
-        'relative flex flex-col overflow-hidden rounded-2xl border shadow-lg transition-all duration-300 h-full min-h-[480px]',
-        isHighlighted
-          ? 'bg-background text-foreground border-2 border-primary'
-          : 'bg-background text-foreground',
-        isPopular && 'outline outline-2 outline-orange-500',
-        tier.id === 'annadanam-seva' && isHighlighted && 'border-orange-500'
-      )}
-    >
-      {isHighlighted && tier.id !== 'annadanam-seva' && <HighlightedBackground />}
-      {isPopular && <PopularBackground />}
-
-      {/* Background Cow Face for Gau Seva */}
-      {tier.id === 'gau-seva' && (
-        <div className="absolute top-4 right-4 z-0 opacity-30 pointer-events-none">
-          <img
-            src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Cow%20Face.png"
-            alt="Cow Face Background"
-            width="120"
-            height="120"
-            className="transform rotate-12"
-          />
-        </div>
-      )}
-
-      {/* Background Bouquet for Pushpa Seva */}
-      {tier.id === 'pushpa-seva' && (
-        <div className="absolute top-4 right-4 z-0 opacity-30 pointer-events-none">
-          <img
-            src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Animals%20and%20Nature/Bouquet.webp"
-            alt="Bouquet Background"
-            width="120"
-            height="120"
-            className="transform -rotate-12"
-          />
-        </div>
-      )}
-
-      {/* Background Sparkles for Archana Seva */}
-      {tier.id === 'archana-seva' && (
-        <div className="absolute top-4 right-4 z-0 opacity-30 pointer-events-none">
-          <img
-            src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Activity/Sparkles.webp"
-            alt="Sparkles Background"
-            width="120"
-            height="120"
-            className="transform rotate-45"
-          />
-        </div>
-      )}
-
-
-
-      <div className="relative z-10 p-6 flex flex-col h-full">
-        <div className="flex items-center justify-between mb-4">
-          <motion.div
-            className={`p-2 rounded-full bg-gradient-to-r ${tier.color} w-16 h-16 flex items-center justify-center relative`}
-            whileHover={{ rotate: 360 }}
-            transition={{ duration: 0.6 }}
-          >
-            {tier.icon === 'cow-emoji' ? (
-              <img
-                src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Cow.png"
-                alt="Cow"
-                width="120"
-                height="120"
-                className="absolute"
-              />
-            ) : tier.icon === 'cherry-blossom' ? (
-              <img
-                src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Animals%20and%20Nature/Cherry%20Blossom.webp"
-                alt="Cherry Blossom"
-                width="100"
-                height="100"
-                className="absolute"
-              />
-            ) : tier.icon === 'bento-box' ? (
-              <img
-                src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Food%20and%20Drink/Bento%20Box.webp"
-                alt="Bento Box"
-                width="100"
-                height="100"
-                className="absolute"
-              />
-            ) : tier.icon === 'diya-lamp' ? (
-              <img
-                src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Diya%20Lamp.png"
-                alt="Diya Lamp"
-                width="100"
-                height="100"
-                className="absolute"
-              />
-            ) : IconComponent ? (
-              <IconComponent className="h-6 w-6 text-white" />
-            ) : null}
-          </motion.div>
-          {isPopular && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring" }}
-            >
-              <Badge className="bg-orange-500 text-white hover:bg-orange-600 flex items-center gap-1">
-                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png" alt="Fire" width="16" height="16" />
-                Most Popular
-              </Badge>
-            </motion.div>
-          )}
-        </div>
-
-        <h3 className="text-xl font-semibold mb-2">
-          {tier.name}
-        </h3>
-
-        <div className="mb-4">
-          <div className="flex items-baseline gap-1">
-            <span className="text-sm">₹</span>
-            <NumberFlow
-              format={{
-                style: 'decimal',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              }}
-              value={tier.price}
-              className="text-3xl font-bold"
-            />
-            <span className="text-sm text-muted-foreground">/month</span>
-          </div>
-        </div>
-
-        <p className={cn(
-          'text-sm mb-6',
-          isHighlighted ? 'text-muted-foreground' : 'text-muted-foreground'
-        )}>
-          {tier.description}
-        </p>
-
-        <ul className="space-y-3 mb-8 flex-1">
-          {tier.features.map((feature, index) => (
-            <li
-              key={index}
-              className={cn(
-                'flex items-start gap-3 text-sm',
-                'text-foreground'
-              )}
-            >
-              <BadgeCheck
-                className={cn(
-                  'h-4 w-4 mt-0.5 flex-shrink-0',
-                  'text-green-500'
-                )}
-              />
-              {feature}
-            </li>
-          ))}
-        </ul>
-
-        <div className="mt-auto">
-          <Button
-            onClick={handleSubscribe}
-            className={cn(
-              'w-full rounded-lg font-medium transition-all duration-300 hover:shadow-lg',
-              `bg-gradient-to-r ${tier.color} text-white hover:opacity-90 hover:scale-105`
-            )}
-          >
-            <div className="flex items-center justify-center gap-2">
-              {tier.id === 'pushpa-seva' && (
-                <img
-                  src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Animals%20and%20Nature/Bouquet.webp"
-                  alt="Bouquet"
-                  width="20"
-                  height="20"
-                />
-              )}
-              {tier.id === 'archana-seva' && (
-                <img
-                  src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Activity/Sparkles.webp"
-                  alt="Sparkles"
-                  width="20"
-                  height="20"
-                />
-              )}
-              {tier.id === 'gau-seva' && (
-                <img
-                  src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Cow%20Face.png"
-                  alt="Cow Face"
-                  width="20"
-                  height="20"
-                />
-              )}
-
-              {tier.cta}
-            </div>
-          </Button>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
+// TEMPORARILY COMMENTED OUT - MembershipCard component
+// const MembershipCard = ({ tier }) => { ... }
 
 const fadeInUpVariants: Variants = {
   hidden: { opacity: 0, y: 50 },
@@ -457,7 +232,7 @@ function ContributePage() {
             </motion.div>
 
             {/* Srila Prabhupada Quote Section */}
-            {/*
+        {/*
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -467,13 +242,13 @@ function ContributePage() {
             >
               <div className="relative overflow-hidden">
                 {/* Background Pattern */}
-                {/*
+        {/*
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 dark:from-orange-950/30 dark:via-yellow-950/20 dark:to-pink-950/30" />
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(251,146,60,0.1),transparent_50%)] dark:bg-[radial-gradient(circle_at_30%_20%,rgba(251,146,60,0.05),transparent_50%)]" />
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(236,72,153,0.1),transparent_50%)] dark:bg-[radial-gradient(circle_at_70%_80%,rgba(236,72,153,0.05),transparent_50%)]" />
 
                 {/* Decorative Elements */}
-                {/*
+        {/*
                 <div className="absolute top-8 left-8 opacity-20 dark:opacity-10">
                   <img
                     src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Om.png"
