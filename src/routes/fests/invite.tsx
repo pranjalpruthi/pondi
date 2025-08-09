@@ -362,7 +362,7 @@ const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
                     transition={{ duration: 0.8, delay: 0.8 }}
                     className="lg:col-span-2 w-full absolute bottom-4 left-0 right-0 px-4 sm:px-6 lg:px-8 order-3"
                 >
-                    <SponsorshipProgress sponsored={1085} total={5108} />
+                    <SponsorshipProgress sponsored={2458} total={5108} />
                 </motion.div>
             </div>
         </div>
