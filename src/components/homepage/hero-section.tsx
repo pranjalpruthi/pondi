@@ -15,19 +15,19 @@ import Carousel, {
 import { createPortal } from "react-dom";
 
 import {
-    IconBrandInstagram,
-    IconBrandFacebook,
-    IconBrandYoutube,
-    IconBrandX,
-    IconBrandTelegram,
-    IconBrandWhatsapp,
-    IconMapPin,
-    IconClock,
-    IconCar,
-    IconPhone,
-    IconCopy,
-    IconCheck,
-    IconPigMoney,
+  IconBrandInstagram,
+  IconBrandFacebook,
+  IconBrandYoutube,
+  IconBrandX,
+  IconBrandTelegram,
+  IconBrandWhatsapp,
+  IconMapPin,
+  IconClock,
+  IconCar,
+  IconPhone,
+  IconCopy,
+  IconCheck,
+  IconPigMoney,
 
 } from '@tabler/icons-react';
 import { Check, Loader2, X, ChevronUp, ChevronDown, Mail } from 'lucide-react';
@@ -163,7 +163,7 @@ function HeroGalleryModal({
       if (newIndexValue === prevCurrentIndex) {
         setDirection(0);
       } else if (
-        (newIndexValue > prevCurrentIndex && !(prevCurrentIndex === images.length -1 && newIndexValue === 0)) || // normal next
+        (newIndexValue > prevCurrentIndex && !(prevCurrentIndex === images.length - 1 && newIndexValue === 0)) || // normal next
         (newIndexValue === 0 && prevCurrentIndex === images.length - 1) // wrap around next
       ) {
         setDirection(1);
@@ -191,7 +191,7 @@ function HeroGalleryModal({
     // Check for swipe up (next image)
     if (info.offset.y < -swipeThreshold || info.velocity.y < -swipeVelocityThreshold) {
       setCurrentIndex(prev => (prev + 1) % images.length);
-    } 
+    }
     // Check for swipe down (previous image)
     else if (info.offset.y > swipeThreshold || info.velocity.y > swipeVelocityThreshold) {
       setCurrentIndex(prev => (prev - 1 + images.length) % images.length);
@@ -438,10 +438,10 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
                       <img src="/assets/extra/miniqr.png" alt="UPI Icon" className="h-5 w-5 rounded" /> Scan to Pay with UPI
                     </h3>
                     <div className="flex justify-center items-center p-1 bg-gray-50 dark:bg-gray-800/50 rounded-md">
-                      <img 
-                        src="/assets/extra/miniqr.png" 
-                        alt="UPI QR Code" 
-                        className="w-28 h-auto object-contain rounded" 
+                      <img
+                        src="/assets/extra/miniqr.png"
+                        alt="UPI QR Code"
+                        className="w-28 h-auto object-contain rounded"
                       />
                     </div>
                     <div className="text-center">
@@ -541,7 +541,7 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
                       </div>
                       <div className="flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-envelope text-green-600 dark:text-green-400" viewBox="0 0 16 16">
-                          <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+                          <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z" />
                         </svg>
                         <a href="mailto:iskm.pondicherry@gmail.com" className="hover:text-green-600 dark:hover:text-green-400 transition-colors">iskm.pondicherry@gmail.com</a>
                       </div>
@@ -561,83 +561,27 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
               </PopoverContent>
             </Popover>
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: props.isInView ? 1 : 0, y: props.isInView ? 0 : 20 }}
-            transition={{ delay: 0.7 }}
-            className="mt-8"
-          >
-            <div className="w-full max-w-lg mx-auto p-4 md:p-6 bg-white/10 dark:bg-black/10 backdrop-blur-sm border border-white/20 dark:border-black/20 rounded-2xl shadow-lg">
-              <div className="text-center">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Get Weekly Updates</h3>
-                <p className="mt-2 text-sm text-gray-800 dark:text-gray-200">
-                  Join our newsletter for event news and spiritual insights delivered to your inbox.
-                </p>
+
+          {/* Social media icons are now handled separately in mobile layout */}
+          {!props.isMobile && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: props.isInView ? 1 : 0, y: props.isInView ? 0 : 20 }}
+              transition={{ delay: 0.8 }}
+              className="mt-10"
+            >
+              <h4 className="text-center text-sm font-medium text-muted-foreground mb-3">Follow us on social media</h4>
+              <div className="flex justify-center gap-4">
+                {props.socialLinks.map((item, index) => (
+                  <a key={index} href={item.url} target="_blank" rel="noopener noreferrer" className="transition-transform duration-150 ease-in-out hover:scale-110 active:scale-95" aria-label={`Follow us on ${item.label}`} onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
+                    <div className={cn("rounded-full p-3 flex items-center justify-center transition-colors duration-200", item.color)}>
+                      <item.icon className="h-5 w-5" />
+                    </div>
+                  </a>
+                ))}
               </div>
-              <form onSubmit={props.handleNewsletterSubmit} className="mt-4">
-                <div className="relative flex items-center">
-                  <Mail className="absolute left-3 w-5 h-5 text-gray-400 dark:text-gray-500" />
-                  <input
-                    type="email"
-                    placeholder="harekrsna@mail.com 🥺 no spam frfr"
-                    value={props.newsletterEmail}
-                    onChange={(e) => props.setNewsletterEmail(e.target.value)}
-                    disabled={props.isNewsletterPending}
-                    required
-                    className="w-full pl-10 pr-20 py-3 text-base bg-white/50 dark:bg-black/50 border border-gray-300/50 dark:border-gray-700/50 rounded-full focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 placeholder:text-gray-500 dark:placeholder:text-gray-400"
-                  />
-                  <button
-                    type="submit"
-                    disabled={props.isNewsletterPending || props.isNewsletterSuccess}
-                    onClick={props.safePlayClick}
-                    onMouseEnter={props.safePlayHover}
-                    className={cn(
-                      "absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 rounded-full text-white transition-all duration-300 ease-in-out",
-                      props.isNewsletterSuccess
-                        ? "bg-green-500"
-                        : "bg-gradient-to-r from-pink-500 to-rose-500 hover:shadow-lg hover:shadow-rose-500/30",
-                      props.isNewsletterPending ? "cursor-not-allowed" : "",
-                      props.isNewsletterSuccess ? "cursor-default" : "hover:scale-105 active:scale-95"
-                    )}
-                    aria-label="Subscribe to newsletter"
-                  >
-                    <AnimatePresence mode="wait">
-                      {props.isNewsletterSuccess ? (
-                        <motion.span key="success" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}>
-                          <Check className="h-5 w-5" />
-                        </motion.span>
-                      ) : props.isNewsletterPending ? (
-                        <motion.span key="pending" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}>
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                        </motion.span>
-                      ) : (
-                        <motion.span key="idle" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}>
-                           <ChevronUp className="h-5 w-5 transform rotate-90" />
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                  </button>
-                </div>
-              </form>
-            </div>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: props.isInView ? 1 : 0, y: props.isInView ? 0 : 20 }}
-            transition={{ delay: 0.8 }}
-            className="mt-10"
-          >
-            <h4 className="text-center text-sm font-medium text-muted-foreground mb-3">Follow us on social media</h4>
-            <div className="flex justify-center gap-4">
-              {props.socialLinks.map((item, index) => (
-                <a key={index} href={item.url} target="_blank" rel="noopener noreferrer" className="transition-transform duration-150 ease-in-out hover:scale-110 active:scale-95" aria-label={`Follow us on ${item.label}`} onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
-                  <div className={cn("rounded-full p-3 flex items-center justify-center transition-colors duration-200", item.color)}>
-                    <item.icon className="h-5 w-5" />
-                  </div>
-                </a>
-              ))}
-            </div>
-          </motion.div>
+            </motion.div>
+          )}
         </motion.div>
         {/* Remove the right column with <HeroGalleryCarousel /> or any carousel here */}
       </div>
@@ -770,20 +714,38 @@ export function HeroSection() {
       <div className="absolute inset-0 z-0 overflow-hidden bg-white dark:bg-black" />
       <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/50 to-transparent dark:from-black/80 dark:via-black/60" />
       <div className="container mx-auto px-0 xs:px-2 sm:px-4 z-10 relative pt-24 sm:pt-28 lg:pt-32"> {/* Increased top padding */}
-        <div className="grid grid-cols-1 gap-8 md:gap-12 items-center text-center"> {/* Changed to grid-cols-1 and text-center */}
-          {/* Heading */}
+        {/* Mobile Layout - Stack vertically */}
+        <div className="xl:hidden space-y-8">
+          {/* Mobile Heading */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 20 }}
             transition={{ delay: 0.2 }}
-            className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight tracking-tight"
+            className="text-center text-4xl sm:text-5xl font-bold leading-tight tracking-tight"
           >
             <AuroraText>
               Reawakening Kṛṣṇa Consciousness Worldwide
             </AuroraText>
           </motion.div>
 
-          {/* Carousel */}
+          {/* Mobile Badge and Description */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 20 }}
+            transition={{ delay: 0.3 }}
+            className="max-w-4xl mx-auto"
+          >
+            <div className="flex flex-col items-center gap-2">
+              <Badge variant="outline" className="text-sm sm:text-base py-1 px-3 rounded-full border-gray-400/50 dark:border-gray-600/50">
+                <span className="font-semibold text-orange-500 dark:text-orange-400">Pudhuvai Vrindavanam</span> - <span className="font-semibold text-blue-500 dark:text-blue-400">Radha Krishna Temple</span>
+              </Badge>
+              <p className="text-xs text-muted-foreground max-w-2xl text-center">
+                Branch of <span className="font-semibold text-teal-600 dark:text-teal-400">International Sri Krishna Mandir</span> in Pondicherry, India. A spiritual sanctuary dedicated to <span className="font-semibold text-blue-600 dark:text-blue-400">Lord Krishna</span> and <span className="font-semibold text-pink-500 dark:text-pink-400">Radharani</span>.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Mobile Carousel - Moved up */}
           <div className="w-full max-w-4xl mx-auto relative group">
             <Carousel
               options={{ loop: true }}
@@ -801,7 +763,7 @@ export function HeroSection() {
                   return (
                     <Slider
                       key={item.id}
-                      className="xl:h-[400px] sm:h-[350px] h-[300px] w-full"
+                      className="sm:h-[350px] h-[300px] w-full"
                     >
                       <div
                         className="h-full w-full rounded-3xl p-1 relative transition-colors duration-1000 overflow-hidden group"
@@ -830,40 +792,40 @@ export function HeroSection() {
                         ) : (
                           <>
                             <div className="absolute inset-0 h-full w-full">
-                                <img
-                                  src={item.src}
-                                  alt=""
-                                  className="absolute inset-0 h-full w-full object-cover blur-md"
-                                  aria-hidden="true"
-                                />
-                                <motion.img
-                                  src={item.src}
-                                  width={1200}
-                                  height={800}
-                                  alt={item.title}
-                                  className={cn(
-                                    "relative h-full w-full rounded-3xl object-contain",
-                                    item.link ? "cursor-pointer" : item.type === 'image' ? "cursor-zoom-in" : "cursor-pointer",
-                                  )}
-                                  loading={index < 3 ? "eager" : "lazy"}
-                                  decoding="async"
-                                  style={{ aspectRatio: '3/2' }}
-                                  onClick={() => {
-                                    if (item.link) {
-                                      navigate({ to: item.link });
-                                      return;
+                              <img
+                                src={item.src}
+                                alt=""
+                                className="absolute inset-0 h-full w-full object-cover blur-md"
+                                aria-hidden="true"
+                              />
+                              <motion.img
+                                src={item.src}
+                                width={1200}
+                                height={800}
+                                alt={item.title}
+                                className={cn(
+                                  "relative h-full w-full rounded-3xl object-contain",
+                                  item.link ? "cursor-pointer" : item.type === 'image' ? "cursor-zoom-in" : "cursor-pointer",
+                                )}
+                                loading={index < 3 ? "eager" : "lazy"}
+                                decoding="async"
+                                style={{ aspectRatio: '3/2' }}
+                                onClick={() => {
+                                  if (item.link) {
+                                    navigate({ to: item.link });
+                                    return;
+                                  }
+                                  if (item.type === 'image') {
+                                    const imageIndex = heroShowcaseImages.findIndex(imgSrc => imgSrc === item.src);
+                                    if (imageIndex !== -1) {
+                                      setCurrentIndex(imageIndex);
+                                      setIsModalOpen(true);
                                     }
-                                    if (item.type === 'image') {
-                                      const imageIndex = heroShowcaseImages.findIndex(imgSrc => imgSrc === item.src);
-                                      if (imageIndex !== -1) {
-                                        setCurrentIndex(imageIndex);
-                                        setIsModalOpen(true);
-                                      }
-                                    } else if (item.type === 'video') {
-                                      setPlayingVideoId(item.id);
-                                    }
-                                  }}
-                                />
+                                  } else if (item.type === 'video') {
+                                    setPlayingVideoId(item.id);
+                                  }
+                                }}
+                              />
                             </div>
                             {item.type === 'video' && (
                               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -905,26 +867,268 @@ export function HeroSection() {
             </Carousel>
           </div>
 
-          <motion.div
-            className="mt-8 max-w-4xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 20 }}
-            transition={{ delay: 0.3 }}
-          >
-            <div className="flex flex-col items-center gap-2">
-                <Badge variant="outline" className="text-sm sm:text-base py-1 px-3 rounded-full border-gray-400/50 dark:border-gray-600/50">
-                    <span className="font-semibold text-orange-500 dark:text-orange-400">Pudhuvai Vrindavanam</span> - <span className="font-semibold text-blue-500 dark:text-blue-400">Radha Krishna Temple</span>
-                </Badge>
-                <p className="text-xs text-muted-foreground max-w-2xl mx-auto">
-                Branch of <span className="font-semibold text-teal-600 dark:text-teal-400">International Sri Krishna Mandir</span> in Pondicherry, India. A spiritual sanctuary dedicated to <span className="font-semibold text-blue-600 dark:text-blue-400">Lord Krishna</span> and <span className="font-semibold text-pink-500 dark:text-pink-400">Radharani</span>.
-                </p>
-            </div>
-          </motion.div>
-
-          {/* Buttons and other foreground elements */}
+          {/* Mobile Buttons - Below carousel */}
           <div className="mt-8">
             <HeroForeground
               isMobile={isMobile}
+              isInView={isInView}
+              bankDetails={bankDetails}
+              locationDetails={locationDetails}
+              socialLinks={socialLinks}
+              onCopyToClipboard={copyToClipboard}
+              copiedValue={copiedValue}
+              isNewsletterPending={isNewsletterPending}
+              handleNewsletterSubmit={handleNewsletterSubmit}
+              isNewsletterSuccess={isNewsletterSuccess}
+              newsletterEmail={newsletterEmail}
+              setNewsletterEmail={setNewsletterEmail}
+              safePlayHover={safePlayHover}
+              safePlayClick={safePlayClick}
+              safePlayPopOn={safePlayPopOn}
+              safePlayPopOff={safePlayPopOff}
+            />
+          </div>
+
+          {/* Mobile Social Media Icons - Compact version below buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 20 }}
+            transition={{ delay: 0.8 }}
+            className="mt-6"
+          >
+            <h4 className="text-center text-sm font-medium text-muted-foreground mb-3">Follow us</h4>
+            <div className="flex justify-center gap-2">
+              {socialLinks.map((item, index) => (
+                <a key={index} href={item.url} target="_blank" rel="noopener noreferrer" className="transition-transform duration-150 ease-in-out hover:scale-110 active:scale-95" aria-label={`Follow us on ${item.label}`} onClick={safePlayClick} onMouseEnter={safePlayHover}>
+                  <div className={cn("rounded-full p-2 flex items-center justify-center transition-colors duration-200", item.color)}>
+                    <item.icon className="h-4 w-4" />
+                  </div>
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Desktop Layout - Side by side */}
+        <div className="hidden xl:grid xl:grid-cols-2 gap-8 md:gap-12 items-center text-left">
+          {/* Left Column - Heading and Content */}
+          <div className="space-y-8">
+            {/* Heading */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 20 }}
+              transition={{ delay: 0.2 }}
+              className="text-6xl 2xl:text-7xl font-bold leading-tight tracking-tight"
+            >
+              <AuroraText>
+                Reawakening Kṛṣṇa Consciousness Worldwide
+              </AuroraText>
+            </motion.div>
+
+            {/* Badge and Description */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 20 }}
+              transition={{ delay: 0.3 }}
+            >
+              <div className="flex flex-col items-start gap-2">
+                <Badge variant="outline" className="text-base py-1 px-3 rounded-full border-gray-400/50 dark:border-gray-600/50">
+                  <span className="font-semibold text-orange-500 dark:text-orange-400">Pudhuvai Vrindavanam</span> - <span className="font-semibold text-blue-500 dark:text-blue-400">Radha Krishna Temple</span>
+                </Badge>
+                <p className="text-xs text-muted-foreground max-w-2xl text-left">
+                  Branch of <span className="font-semibold text-teal-600 dark:text-teal-400">International Sri Krishna Mandir</span> in Pondicherry, India. A spiritual sanctuary dedicated to <span className="font-semibold text-blue-600 dark:text-blue-400">Lord Krishna</span> and <span className="font-semibold text-pink-500 dark:text-pink-400">Radharani</span>.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Newsletter Signup */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 20 }}
+              transition={{ delay: 0.7 }}
+            >
+              <div className="w-full max-w-lg p-4 md:p-6 bg-white/10 dark:bg-black/10 backdrop-blur-sm border border-white/20 dark:border-black/20 rounded-2xl shadow-lg">
+                <div className="text-left">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Get Weekly Updates</h3>
+                  <p className="mt-2 text-sm text-gray-800 dark:text-gray-200">
+                    Join our newsletter for event news and spiritual insights delivered to your inbox.
+                  </p>
+                </div>
+                <form onSubmit={handleNewsletterSubmit} className="mt-4">
+                  <div className="relative flex items-center">
+                    <Mail className="absolute left-3 w-5 h-5 text-gray-400 dark:text-gray-500" />
+                    <input
+                      type="email"
+                      placeholder="harekrsna@mail.com 🥺 no spam frfr"
+                      value={newsletterEmail}
+                      onChange={(e) => setNewsletterEmail(e.target.value)}
+                      disabled={isNewsletterPending}
+                      required
+                      className="w-full pl-10 pr-20 py-3 text-base bg-white/50 dark:bg-black/50 border border-gray-300/50 dark:border-gray-700/50 rounded-full focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 placeholder:text-gray-500 dark:placeholder:text-gray-400"
+                    />
+                    <button
+                      type="submit"
+                      disabled={isNewsletterPending || isNewsletterSuccess}
+                      onClick={safePlayClick}
+                      onMouseEnter={safePlayHover}
+                      className={cn(
+                        "absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 rounded-full text-white transition-all duration-300 ease-in-out",
+                        isNewsletterSuccess
+                          ? "bg-green-500"
+                          : "bg-gradient-to-r from-pink-500 to-rose-500 hover:shadow-lg hover:shadow-rose-500/30",
+                        isNewsletterPending ? "cursor-not-allowed" : "",
+                        isNewsletterSuccess ? "cursor-default" : "hover:scale-105 active:scale-95"
+                      )}
+                      aria-label="Subscribe to newsletter"
+                    >
+                      <AnimatePresence mode="wait">
+                        {isNewsletterSuccess ? (
+                          <motion.span key="success" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}>
+                            <Check className="h-5 w-5" />
+                          </motion.span>
+                        ) : isNewsletterPending ? (
+                          <motion.span key="pending" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}>
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                          </motion.span>
+                        ) : (
+                          <motion.span key="idle" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}>
+                            <ChevronUp className="h-5 w-5 transform rotate-90" />
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right Column - Carousel */}
+          <div className="w-full relative group">
+            <Carousel
+              options={{ loop: true }}
+              className="relative"
+              isAutoPlay={false}
+              currentIndex={currentIndex}
+              setCurrentIndex={setCurrentIndex}
+              thumbnailSlidesData={heroShowcaseAll.map(item => ({ id: item.id, src: item.src, alt: item.title }))}
+            >
+              <SliderContainer className="gap-2">
+                {heroShowcaseAll.map((item, index) => {
+                  const isPlaying = playingVideoId === item.id;
+                  const videoId = item.type === 'video' && item.videoUrl ? getYouTubeId(item.videoUrl) : null;
+
+                  return (
+                    <Slider
+                      key={item.id}
+                      className="h-[400px] w-full"
+                    >
+                      <div
+                        className="h-full w-full rounded-3xl p-1 relative transition-colors duration-1000 overflow-hidden group"
+                        style={{
+                          background: 'transparent',
+                        }}
+                      >
+                        {isPlaying && videoId ? (
+                          <>
+                            <iframe
+                              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0&modestbranding=1`}
+                              frameBorder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                              className="absolute inset-0 w-full h-full rounded-3xl"
+                              title={item.title}
+                            ></iframe>
+                            <button
+                              onClick={() => setPlayingVideoId(null)}
+                              className="absolute top-3 right-3 z-20 bg-black/60 text-white rounded-full p-1.5 hover:bg-black/80 transition-colors"
+                              aria-label="Close video"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <div className="absolute inset-0 h-full w-full">
+                              <img
+                                src={item.src}
+                                alt=""
+                                className="absolute inset-0 h-full w-full object-cover blur-md"
+                                aria-hidden="true"
+                              />
+                              <motion.img
+                                src={item.src}
+                                width={1200}
+                                height={800}
+                                alt={item.title}
+                                className={cn(
+                                  "relative h-full w-full rounded-3xl object-contain",
+                                  item.link ? "cursor-pointer" : item.type === 'image' ? "cursor-zoom-in" : "cursor-pointer",
+                                )}
+                                loading={index < 3 ? "eager" : "lazy"}
+                                decoding="async"
+                                style={{ aspectRatio: '3/2' }}
+                                onClick={() => {
+                                  if (item.link) {
+                                    navigate({ to: item.link });
+                                    return;
+                                  }
+                                  if (item.type === 'image') {
+                                    const imageIndex = heroShowcaseImages.findIndex(imgSrc => imgSrc === item.src);
+                                    if (imageIndex !== -1) {
+                                      setCurrentIndex(imageIndex);
+                                      setIsModalOpen(true);
+                                    }
+                                  } else if (item.type === 'video') {
+                                    setPlayingVideoId(item.id);
+                                  }
+                                }}
+                              />
+                            </div>
+                            {item.type === 'video' && (
+                              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <IconPlayerPlay className="h-16 w-16 text-white/80 drop-shadow-lg transition-transform duration-300 group-hover:scale-110" />
+                              </div>
+                            )}
+                            {!isPlaying && (
+                              <div className="absolute bottom-0 left-0 right-0 p-4 backdrop-blur-md rounded-b-3xl">
+                                <motion.div
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: 0.2, duration: 0.5 }}
+                                >
+                                  <h3 className="text-white text-lg font-bold truncate">{item.title}</h3>
+                                  <p className="text-white/80 text-sm mt-1 truncate">{item.description}</p>
+                                </motion.div>
+                              </div>
+                            )}
+                          </>
+                        )}
+                        {!rightCarouselPreloaded[index] && !isPlaying && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-3xl">
+                            <motion.p
+                              className="text-lg font-semibold text-gray-800 dark:text-gray-200"
+                              initial={{ opacity: 0.5 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
+                            >
+                              Hare Krishna! Chant and Be Happy!
+                            </motion.p>
+                          </div>
+                        )}
+                      </div>
+                    </Slider>
+                  );
+                })}
+              </SliderContainer>
+              <ThumsSlider />
+            </Carousel>
+          </div>
+
+          {/* Desktop Buttons - Full width below both columns */}
+          <div className="col-span-2 mt-8">
+            <HeroForeground
+              isMobile={false}
               isInView={isInView}
               bankDetails={bankDetails}
               locationDetails={locationDetails}

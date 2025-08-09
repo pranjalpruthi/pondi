@@ -1315,7 +1315,7 @@ function NavbarContent() {
   }, [isMobile, isDockOpen, activeDockItem, playTempleBell, safePlayClick, setActiveDockItem, setActiveLabelItemId, setHoveredLabelItemId, setIsDockOpen]);
 
   const handleDockItemMouseEnter = React.useCallback((item: DockItemData) => {
-    if (!isMobile && !item.isExpandable && item.label !== 'Donate') {
+    if (!isMobile && !item.isExpandable && !['Donate', 'Home', 'Shop'].includes(item.label)) {
       setHoveredLabelItemId(item.id);
       safePlayHover();
     }
@@ -1672,7 +1672,7 @@ function NavbarContent() {
                                 >
                                     <div className="flex items-center gap-1">
                                         {item.title}
-                                        <span className="text-xs font-medium hidden sm:inline">{item.label}</span>
+                                        <span className="text-xs font-medium hidden">{item.label}</span>
                                     </div>
                                 </motion.button>
                             );
