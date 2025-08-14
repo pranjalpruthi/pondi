@@ -130,14 +130,14 @@ const sevaTiers: SevaTier[] = [
 ];
 
 const SevaCard = ({ tier }: { tier: SevaTier }) => {
-  const getEmojiForIcon = (icon: string): string => {
-    const emojiMap: Record<string, string> = {
-      'cherry-blossom': 'https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Cherry%20Blossom.png',
-      'diya-lamp': 'https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Diya%20Lamp.png',
-      'bento-box': 'https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Bento%20Box.png',
-      'cow-emoji': 'https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Cow.png'
+  const getBackgroundImage = (icon: string): string => {
+    const imageMap: Record<string, string> = {
+      'cherry-blossom': '/services/pushpa.webp',
+      'diya-lamp': '/services/archna.webp',
+      'bento-box': '/services/anna.webp',
+      'cow-emoji': '/services/gau.webp'
     };
-    return emojiMap[icon] || emojiMap['diya-lamp'];
+    return imageMap[icon] || imageMap['diya-lamp'];
   };
 
   // Mobile card component for drawer trigger
@@ -156,6 +156,12 @@ const SevaCard = ({ tier }: { tier: SevaTier }) => {
           : "border-zinc-200/50 dark:border-zinc-800/50 bg-white/90 dark:bg-zinc-900/70",
         "hover:shadow-lg hover:-translate-y-1 backdrop-blur-xl active:scale-95"
       )}>
+        {/* Background Image with fade effect */}
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-15 dark:opacity-10 pointer-events-none"
+          style={{ backgroundImage: `url(${getBackgroundImage(tier.icon)})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-white/60 to-white/40 dark:from-zinc-900/80 dark:via-zinc-900/60 dark:to-zinc-900/40 pointer-events-none" />
         {/* Gradient tint overlay */}
         <div className={`absolute inset-0 bg-gradient-to-br ${tier.color} opacity-5 dark:opacity-10 pointer-events-none`} />
 
@@ -167,13 +173,11 @@ const SevaCard = ({ tier }: { tier: SevaTier }) => {
               transition={{ type: 'spring', stiffness: 300, damping: 10 }}
               className="flex justify-center mb-3"
             >
-              <div className={`bg-gradient-to-r ${tier.color} p-2 rounded-full shadow-md`}>
+              <div className="w-24 h-20 rounded-xl overflow-hidden shadow-md border border-white/20">
                 <img
-                  src={getEmojiForIcon(tier.icon)}
+                  src={getBackgroundImage(tier.icon)}
                   alt={tier.name}
-                  width="24"
-                  height="24"
-                  className="drop-shadow-sm"
+                  className="w-full h-full object-cover"
                 />
               </div>
             </motion.div>
@@ -212,6 +216,12 @@ const SevaCard = ({ tier }: { tier: SevaTier }) => {
           : "border-zinc-200/50 dark:border-zinc-800/50 bg-white/95 dark:bg-zinc-900/70",
         "hover:shadow-2xl hover:-translate-y-2 backdrop-blur-xl"
       )}>
+        {/* Background Image with fade effect */}
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-20 dark:opacity-15 pointer-events-none"
+          style={{ backgroundImage: `url(${getBackgroundImage(tier.icon)})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-white/85 via-white/70 to-white/50 dark:from-zinc-900/85 dark:via-zinc-900/70 dark:to-zinc-900/50 pointer-events-none" />
         {/* Gradient tint overlay */}
         <div className={`absolute inset-0 bg-gradient-to-br ${tier.color} opacity-5 dark:opacity-10 pointer-events-none`} />
 
@@ -219,17 +229,15 @@ const SevaCard = ({ tier }: { tier: SevaTier }) => {
         <div className="relative z-10 flex flex-col h-full p-6">
           <CardHeader className="text-center pt-4 pb-3">
             <motion.div
-              whileHover={{ scale: 1.1, rotate: -5 }}
+              whileHover={{ scale: 1.1, rotate: -2 }}
               transition={{ type: 'spring', stiffness: 300, damping: 10 }}
               className="flex justify-center mb-3"
             >
-              <div className={`bg-gradient-to-r ${tier.color} p-2.5 rounded-full shadow-lg`}>
+              <div className="w-40 h-28 rounded-2xl overflow-hidden shadow-lg border border-white/30">
                 <img
-                  src={getEmojiForIcon(tier.icon)}
+                  src={getBackgroundImage(tier.icon)}
                   alt={tier.name}
-                  width="28"
-                  height="28"
-                  className="drop-shadow-lg"
+                  className="w-full h-full object-cover"
                 />
               </div>
             </motion.div>
@@ -309,13 +317,11 @@ const SevaCard = ({ tier }: { tier: SevaTier }) => {
             <div className="mx-auto w-full max-w-sm">
               <DrawerHeader className="text-center pb-4">
                 <div className="flex justify-center mb-4">
-                  <div className={`bg-gradient-to-r ${tier.color} p-3 rounded-full shadow-lg`}>
+                  <div className="w-48 h-36 rounded-2xl overflow-hidden shadow-lg border border-white/30">
                     <img
-                      src={getEmojiForIcon(tier.icon)}
+                      src={getBackgroundImage(tier.icon)}
                       alt={tier.name}
-                      width="32"
-                      height="32"
-                      className="drop-shadow-lg"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                 </div>
