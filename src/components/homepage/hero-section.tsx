@@ -959,7 +959,7 @@ export function HeroSection() {
                     <Mail className="absolute left-3 w-5 h-5 text-gray-400 dark:text-gray-500" />
                     <input
                       type="email"
-                      placeholder="harekrsna@mail.com 🥺 no spam frfr"
+                      placeholder="harekrsna@mail.com"
                       value={newsletterEmail}
                       onChange={(e) => setNewsletterEmail(e.target.value)}
                       disabled={isNewsletterPending}

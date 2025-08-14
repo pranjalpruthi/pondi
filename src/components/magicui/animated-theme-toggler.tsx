@@ -1,28 +1,30 @@
-import * as React from "react"
-import { useTheme } from "@/components/theme-provider"
-import { Button } from "@/components/ui/button"
-import { motion, AnimatePresence } from "motion/react"
+"use client";
+
+import * as React from "react";
+import { useTheme } from "@/components/theme-provider";
+import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "motion/react";
 import { useSound } from 'use-sound';
 import { useSoundSettings } from '@/components/context/sound-context';
 import { flushSync } from "react-dom";
 import { cn } from "@/lib/utils";
 
-interface ModeToggleProps {
+interface AnimatedThemeTogglerProps {
   className?: string;
 }
 
-const ModeToggleComponent = ({ className }: ModeToggleProps) => {
-  const { theme, setTheme } = useTheme()
+const AnimatedThemeTogglerComponent = ({ className }: AnimatedThemeTogglerProps) => {
+  const { theme, setTheme } = useTheme();
   const { isSoundEnabled } = useSoundSettings();
   const [playToggleSoundEffect] = useSound('/extra/miniclip.mp3', {
     volume: 0.75,
     soundEnabled: isSoundEnabled
   });
-  const [mounted, setMounted] = React.useState(false)
-  const [isPressed, setIsPressed] = React.useState(false)
+  const [mounted, setMounted] = React.useState(false);
+  const [isPressed, setIsPressed] = React.useState(false);
   const buttonRef = React.useRef<HTMLButtonElement | null>(null);
 
-  React.useEffect(() => setMounted(true), [])
+  React.useEffect(() => setMounted(true), []);
 
   const playSound = React.useCallback(() => {
     if (isSoundEnabled) {
@@ -30,7 +32,7 @@ const ModeToggleComponent = ({ className }: ModeToggleProps) => {
     }
   }, [isSoundEnabled, playToggleSoundEffect]);
 
-  const toggleTheme = React.useCallback(async () => {
+  const changeTheme = React.useCallback(async () => {
     if (!buttonRef.current) return;
 
     playSound();
@@ -38,7 +40,7 @@ const ModeToggleComponent = ({ className }: ModeToggleProps) => {
     // Use view transition API for smooth animation
     await document.startViewTransition(() => {
       flushSync(() => {
-        setTheme(theme === "dark" ? "light" : "dark")
+        setTheme(theme === "dark" ? "light" : "dark");
       });
     }).ready;
 
@@ -63,13 +65,13 @@ const ModeToggleComponent = ({ className }: ModeToggleProps) => {
         pseudoElement: "::view-transition-new(root)",
       },
     );
-  }, [theme, setTheme, playSound])
+  }, [theme, setTheme, playSound]);
 
-  const handlePointerDown = React.useCallback(() => setIsPressed(true), [])
-  const handlePointerUp = React.useCallback(() => setIsPressed(false), [])
-  const handlePointerLeave = React.useCallback(() => setIsPressed(false), [])
+  const handlePointerDown = React.useCallback(() => setIsPressed(true), []);
+  const handlePointerUp = React.useCallback(() => setIsPressed(false), []);
+  const handlePointerLeave = React.useCallback(() => setIsPressed(false), []);
 
-  if (!mounted) return null
+  if (!mounted) return null;
 
   return (
     <motion.div
@@ -85,8 +87,8 @@ const ModeToggleComponent = ({ className }: ModeToggleProps) => {
           absolute -inset-5 rounded-full blur-lg
           [animation:_pulse_3.5s_ease-in-out_infinite]
           ${theme === "dark"
-            ? "bg-amber-400/20" // Adjusted color/opacity
-            : "bg-yellow-200/30" // Adjusted color/opacity
+            ? "bg-amber-400/20"
+            : "bg-yellow-200/30"
           }
         `} />
         {/* Inner Glow Layer */}
@@ -94,15 +96,15 @@ const ModeToggleComponent = ({ className }: ModeToggleProps) => {
           absolute -inset-3 rounded-full blur-lg
           [animation:_pulse_2.2s_ease-in-out_infinite]
           ${theme === "dark"
-            ? "bg-amber-300/40" // Adjusted color/opacity
-            : "bg-yellow-100/50" // Adjusted color/opacity
+            ? "bg-amber-300/40"
+            : "bg-yellow-100/50"
           }
         `} />
       </div>
       <Button
         ref={buttonRef}
         variant="ghost"
-        onClick={toggleTheme}
+        onClick={changeTheme}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerLeave}
@@ -163,7 +165,7 @@ const ModeToggleComponent = ({ className }: ModeToggleProps) => {
         </span>
       </Button>
     </motion.div>
-  )
-}
+  );
+};
 
-export const ModeToggle = React.memo(ModeToggleComponent)
+export const AnimatedThemeToggler = React.memo(AnimatedThemeTogglerComponent);

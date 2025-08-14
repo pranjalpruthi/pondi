@@ -277,6 +277,11 @@ code {
 }
 
 @layer utilities {
+  /* Netflix-style radial gradient for background overlays */
+  .bg-radial-gradient {
+    background: radial-gradient(ellipse at center, var(--tw-gradient-stops));
+  }
+  
   /* Ping animation for notification dot */
   @keyframes ping {
     75%, 100% {
@@ -474,4 +479,11 @@ code {
 input:focus + .chat-input-glow,
 .chat-input-glow:active {
   opacity: 1;
+}
+
+::view-transition-old(root), ::view-transition-new(root) {
+    animation:
+    none;
+    mix-blend-mode:
+    normal;
 }

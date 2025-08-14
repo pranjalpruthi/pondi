@@ -87,29 +87,29 @@ export function SlokaLearningSection() {
               </motion.p>
             </div>
             <motion.div
-              className="flex flex-col gap-4"
+              className="flex flex-col gap-4 px-4 sm:px-0"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.3, delay: 0.3 }}
             >
               {/* Changed Link to a tag inside RainbowButton, removed asChild */}
-              <RainbowButton className="gap-2 w-full sm:w-2/3 md:w-1/2 lg:w-2/5 mx-auto rounded-full">
-                <a href="https://youtube.com/playlist?list=PLQGHF3mp1o79L2nIKJBTiDreq1JRjBcqc" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-full h-full">
-                ▶︎ Explore 🍯 <PlayCircle className="w-4 h-4 ml-2 inline-block" />
+              <RainbowButton className="gap-2 w-full sm:w-2/3 md:w-1/2 lg:w-2/5 mx-auto rounded-full min-h-[48px] sm:min-h-auto">
+                <a href="https://youtube.com/playlist?list=PLQGHF3mp1o79L2nIKJBTiDreq1JRjBcqc" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-full h-full text-base sm:text-sm">
+                  ▶︎ Explore 🍯 <PlayCircle className="w-5 h-5 sm:w-4 sm:h-4 ml-2 inline-block" />
                 </a>
               </RainbowButton>
-              <div className="flex flex-col sm:flex-row gap-4">
-                 {/* Changed Link to a tag inside Button */}
-                <Button size="lg" className="gap-2 flex-1 text-sm sm:text-base" variant="outline" asChild>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                {/* Changed Link to a tag inside Button */}
+                <Button size="lg" className="gap-2 flex-1 text-base sm:text-sm min-h-[48px] sm:min-h-auto py-3 sm:py-2" variant="outline" asChild>
                   <a href="https://ebooks.iskcondesiretree.com/pdf/00_-_More/Verses_most_Quoted_by_Srila_Prabhupada.pdf" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
-                    <span className="hidden sm:inline">Download</span> Śloka PDF <MoveRight className="w-4 h-4 ml-2" />
+                    <span className="hidden sm:inline">Download</span><span className="sm:hidden">Get</span> Śloka PDF <MoveRight className="w-5 h-5 sm:w-4 sm:h-4 ml-2" />
                   </a>
                 </Button>
-                 {/* Changed Link to a tag inside Button */}
-                <Button size="lg" className="gap-2 flex-1 text-sm sm:text-base" variant="outline" asChild>
+                {/* Changed Link to a tag inside Button */}
+                <Button size="lg" className="gap-2 flex-1 text-base sm:text-sm min-h-[48px] sm:min-h-auto py-3 sm:py-2" variant="outline" asChild>
                   <a href="https://iskm.notion.site/369d53ecff604ef2a008b4b4bca77355" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
-                    Sanskrit <span className="hidden sm:inline">Sloka</span> Tunes <Music className="w-4 h-4 ml-2" />
+                    Sanskrit <span className="hidden sm:inline">Sloka</span> Tunes <Music className="w-5 h-5 sm:w-4 sm:h-4 ml-2" />
                   </a>
                 </Button>
               </div>
