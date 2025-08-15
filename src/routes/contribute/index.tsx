@@ -78,9 +78,9 @@ const sevaTiers: SevaTier[] = [
     subscriptionLink: 'https://rzp.io/rzp/jQCh1ZBv',
     quote: {
       text: "Kṛṣṇa is so grateful. If you give little service to Kṛṣṇa sincerely, Kṛṣṇa will never forget you. And He's so powerful. If Kṛṣṇa becomes your friend and Kṛṣṇa remembers you, then what you want more?",
-      reference: "Srila Prabhupada"
+      reference: "Srila Prabhupada, SB lecture, 2 June 1974, Geneva"
     },
-    cta: 'Sponsor Now'
+    cta: 'Join Now'
   },
   {
     id: 'archana-seva',
@@ -95,7 +95,7 @@ const sevaTiers: SevaTier[] = [
       reference: "Bhagavad-gītā 9.26",
       translation: "If one offers Me with love and devotion a leaf, a flower, a fruit or water, I will accept it."
     },
-    cta: 'Sponsor Now',
+    cta: 'Join Now',
     popular: true
   },
   {
@@ -107,10 +107,10 @@ const sevaTiers: SevaTier[] = [
     description: 'Support our food distribution programme.',
     subscriptionLink: 'https://rzp.io/rzp/I2gYVRg',
     quote: {
-      text: "We have to see that nobody goes hungry within a ten mile radius.",
-      reference: "Śrīla Prabhupāda"
+      text: "We have to see that nobody goes hungry within a 10-mile radius. The temple is the house of God. God is everyone's father, Krishna is everyone's father. So in the presence of the father, the son doesn't go hungry.",
+      reference: "Srila Prabhupada"
     },
-    cta: 'Sponsor Now',
+    cta: 'Join Now',
     highlighted: true
   },
   {
@@ -125,7 +125,7 @@ const sevaTiers: SevaTier[] = [
       text: "As long as human society continues to allow cows to be killed in slaughterhouses, there cannot be any question of peace and prosperity.",
       reference: "SB 8.8.11"
     },
-    cta: 'Sponsor Now'
+    cta: 'Join Now'
   }
 ];
 
