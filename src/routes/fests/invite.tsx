@@ -33,6 +33,7 @@ import BookOpen from '~icons/fluent-emoji/open-book';
 import Feather from '~icons/fluent-emoji/feather';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MorphingDialogSubtitle } from '@/components/motion-primitives/morphing-dialog';
+import { FireworksBackground } from '@/components/animate-ui/backgrounds/fireworks';
 
 // --- Reusable Components for the New Design ---
 
@@ -77,6 +78,7 @@ const CountdownTimer = () => {
         seconds: 0,
     });
     const [isExpired, setIsExpired] = useState(false);
+    const [showFireworks, setShowFireworks] = useState(false);
 
     useEffect(() => {
         const calculateTimeLeft = () => {
@@ -84,7 +86,12 @@ const CountdownTimer = () => {
             const difference = eventDate.getTime() - now.getTime();
 
             if (difference <= 0) {
-                setIsExpired(true);
+                if (!isExpired) {
+                    setIsExpired(true);
+                    setShowFireworks(true);
+                    // Hide fireworks after 10 seconds
+                    setTimeout(() => setShowFireworks(false), 10000);
+                }
                 setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
                 return;
             }
@@ -101,12 +108,37 @@ const CountdownTimer = () => {
         const timer = setInterval(calculateTimeLeft, 1000);
 
         return () => clearInterval(timer);
-    }, []);
+    }, [isExpired]);
 
     if (isExpired) {
         return (
-            <div className="text-center">
-                <p className="text-lg font-bold text-green-500 animate-pulse">{t('countdown.expired')}</p>
+            <div className="relative text-center">
+                {showFireworks && (
+                    <div className="absolute inset-0 -m-8 pointer-events-none z-10">
+                        <FireworksBackground
+                            className="w-full h-full"
+                            population={3}
+                            color={["#ff6b35", "#f7931e", "#ffd700", "#ff1744", "#e91e63"]}
+                            fireworkSize={{ min: 5, max: 10 }}
+                            fireworkSpeed={{ min: 6, max: 10 }}
+                            particleSize={{ min: 3, max: 8 }}
+                            particleSpeed={{ min: 4, max: 8 }}
+                        />
+                    </div>
+                )}
+                <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
+                    className="relative z-20"
+                >
+                    <h3 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent animate-pulse mb-2">
+                        🎉 Happy Śrī Kṛṣṇa Janmāṣṭamī! 🎉
+                    </h3>
+                    <p className="text-lg font-semibold text-green-600 dark:text-green-400">
+                        {t('countdown.expired')}
+                    </p>
+                </motion.div>
             </div>
         );
     }
@@ -171,6 +203,7 @@ const SponsorshipProgress: FC<{ sponsored: number; total: number }> = ({ sponsor
 const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
     const { t } = useTranslation();
     const [isInteracted, setIsInteracted] = useState(false);
+    const [showHeroFireworks, setShowHeroFireworks] = useState(false);
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.2 });
 
@@ -184,8 +217,41 @@ const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
         }
     };
 
+    // Show fireworks periodically for festive atmosphere
+    useEffect(() => {
+        const showFireworksInterval = setInterval(() => {
+            setShowHeroFireworks(true);
+            setTimeout(() => setShowHeroFireworks(false), 5000);
+        }, 30000); // Show fireworks every 30 seconds
+
+        // Show initial fireworks after 3 seconds
+        const initialTimeout = setTimeout(() => {
+            setShowHeroFireworks(true);
+            setTimeout(() => setShowHeroFireworks(false), 5000);
+        }, 3000);
+
+        return () => {
+            clearInterval(showFireworksInterval);
+            clearTimeout(initialTimeout);
+        };
+    }, []);
+
     return (
         <div className="relative min-h-screen flex items-center justify-center text-stone-800 dark:text-stone-200 bg-amber-50/50 dark:bg-gray-900 px-4 overflow-hidden">
+            {/* Festive Fireworks Background */}
+            {showHeroFireworks && (
+                <div className="absolute inset-0 pointer-events-none z-0">
+                    <FireworksBackground
+                        className="w-full h-full opacity-60"
+                        population={2}
+                        color={["#ff6b35", "#f7931e", "#ffd700", "#ff1744", "#e91e63", "#9c27b0"]}
+                        fireworkSize={{ min: 3, max: 7 }}
+                        fireworkSpeed={{ min: 4, max: 8 }}
+                        particleSize={{ min: 2, max: 5 }}
+                        particleSpeed={{ min: 3, max: 6 }}
+                    />
+                </div>
+            )}
             <div className="absolute -top-20 -left-20 w-64 h-64 bg-teal-500/10 rounded-full filter blur-3xl opacity-50 dark:opacity-30" />
             <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-orange-500/10 rounded-full filter blur-3xl opacity-50 dark:opacity-30" />
 

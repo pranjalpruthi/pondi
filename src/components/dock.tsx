@@ -62,6 +62,7 @@ interface DockItemComponentProps {
   dockSpringTransition: object;
   onItemClick: (item: DockItemData) => void;
   onItemMouseEnter: (item: DockItemData) => void;
+  onItemMouseLeave: () => void;
 }
 
 const DockItemComponent = React.memo<DockItemComponentProps>(({
@@ -75,6 +76,7 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
   dockSpringTransition,
   onItemClick,
   onItemMouseEnter,
+  onItemMouseLeave,
 }) => {
   const isLabelClickedActive = activeLabelItemId === item.id && !item.isExpandable;
   const isLabelHoveredActive = hoveredLabelItemId === item.id && !item.isExpandable;
@@ -171,7 +173,7 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
                     ? (isMobile ? 56 : 64)
                     : item.isExpandable
                       ? (isMobile ? 56 : 64)
-                      : (isLabelVisible ? (isMobile ? 56 : 130) : (isMobile ? 56 : 64));
+                      : (isLabelVisible && !isMobile ? 130 : (isMobile ? 56 : 64));
 
   let itemSpecificStyling = "";
 
@@ -219,6 +221,7 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
         animate={{ width: itemWidth }}
         transition={dockSpringTransition}
         onMouseEnter={() => onItemMouseEnter(item)}
+        onMouseLeave={onItemMouseLeave}
       >
         <Link
           to={item.to}
@@ -242,6 +245,7 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
         transition={dockSpringTransition}
         onClick={() => onItemClick(item)}
         onMouseEnter={() => onItemMouseEnter(item)}
+        onMouseLeave={onItemMouseLeave}
       >
         {itemContent}
       </motion.button>
@@ -1302,12 +1306,12 @@ function NavbarContent() {
         if (item.label === 'Festivals') setIsEventCardVisible(false);
       }
     } else {
-      if (!isMobile) {
-        setActiveLabelItemId(prevId => (prevId === item.id ? null : item.id));
-      }
+      // Clear all active states for non-expandable items
+      setActiveLabelItemId(null);
       setHoveredLabelItemId(null);
       setIsDockOpen(false);
       setActiveDockItem(null);
+      
       if (item.action && typeof item.action === 'function') {
         item.action();
       }
@@ -1320,6 +1324,12 @@ function NavbarContent() {
       safePlayHover();
     }
   }, [isMobile, safePlayHover, setHoveredLabelItemId]);
+
+  const handleDockItemMouseLeave = React.useCallback(() => {
+    if (!isMobile) {
+      setHoveredLabelItemId(null);
+    }
+  }, [isMobile, setHoveredLabelItemId]);
 
 
   const activeItem = DOCK_ITEMS.find(item => item.id === activeDockItem);
@@ -1608,6 +1618,7 @@ function NavbarContent() {
                               dockSpringTransition={dockSpringTransition}
                               onItemClick={handleDockItemClick}
                               onItemMouseEnter={handleDockItemMouseEnter}
+                              onItemMouseLeave={handleDockItemMouseLeave}
                             />
                           ))}
                           <SplitButton />
@@ -1627,6 +1638,7 @@ function NavbarContent() {
                               dockSpringTransition={dockSpringTransition}
                               onItemClick={handleDockItemClick}
                               onItemMouseEnter={handleDockItemMouseEnter}
+                              onItemMouseLeave={handleDockItemMouseLeave}
                             />
                           ))}
                         </div>
@@ -1648,6 +1660,7 @@ function NavbarContent() {
                             dockSpringTransition={dockSpringTransition}
                             onItemClick={handleDockItemClick}
                             onItemMouseEnter={handleDockItemMouseEnter}
+                            onItemMouseLeave={handleDockItemMouseLeave}
                           />
                         ))}
                         {/* AI Pill Button */}
@@ -1703,6 +1716,7 @@ function NavbarContent() {
                             dockSpringTransition={dockSpringTransition}
                             onItemClick={handleDockItemClick}
                             onItemMouseEnter={handleDockItemMouseEnter}
+                            onItemMouseLeave={handleDockItemMouseLeave}
                           />
                         ))}
                       </div>
@@ -1722,6 +1736,7 @@ function NavbarContent() {
                               dockSpringTransition={dockSpringTransition}
                               onItemClick={handleDockItemClick}
                               onItemMouseEnter={handleDockItemMouseEnter}
+                              onItemMouseLeave={handleDockItemMouseLeave}
                             />
                           ))}
                         </>
