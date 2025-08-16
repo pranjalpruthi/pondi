@@ -858,23 +858,25 @@ function NavbarContent() {
   const templeStatus = useTempleStatus(); // Added
   const location = useLocation(); // Added for route detection
 
-  // Countdown Logic
+  // Countdown Logic - Always show banner
   const [timeLeft, setTimeLeft] = React.useState({
     days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0,
-    isExpired: true,
+    isExpired: false, // Always show banner
   });
 
   React.useEffect(() => {
-    const eventDate = new Date("2025-08-16T15:00:00");
+    // Krishna Janmashtami 2025 - August 16, 2025 at 3:00 PM IST
+    const eventDate = new Date("2025-08-16T15:00:00+05:30"); // IST timezone
     const calculateTimeLeft = () => {
       const now = new Date();
       const difference = eventDate.getTime() - now.getTime();
 
+      // Always show countdown, even if expired
       if (difference <= 0) {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, isExpired: true });
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, isExpired: false });
         return;
       }
 
@@ -1427,7 +1429,7 @@ function NavbarContent() {
         }}
       >
         <AnimatePresence>
-          {isMobile && !isDockOpen && !isClipsPanelActive && !timeLeft.isExpired && location.pathname !== '/fests/invite' && isEventCardVisible && (
+          {isMobile && !isDockOpen && !isClipsPanelActive && location.pathname !== '/fests/invite' && isEventCardVisible && (
             <motion.div
               layoutId="event-card"
               className="absolute bottom-full right-2 sm:right-4 mb-2 w-48 pointer-events-auto"
@@ -1475,7 +1477,7 @@ function NavbarContent() {
 
         {/* Desktop Festival Bar - now outside the dock animation wrapper */}
         <AnimatePresence>
-          {!isMobile && !timeLeft.isExpired && location.pathname !== '/fests/invite' && (
+          {!isMobile && location.pathname !== '/fests/invite' && (
             <motion.div
               layout
               className="relative mx-auto flex justify-center container px-2 sm:px-4 pointer-events-auto group mb-2"
@@ -1487,15 +1489,9 @@ function NavbarContent() {
                 "flex items-center justify-between w-full sm:max-w-fit max-w-md bg-gradient-to-r from-orange-400 to-amber-500 text-white shadow-md transition-all duration-200 gap-2",
                 "p-1.5 rounded-xl"
               )}>
-                <button
-                  onClick={() => {
-                    const festivalItem = DOCK_ITEMS.find(item => item.id === 10);
-                    if (festivalItem) handleDockItemClick(festivalItem);
-                  }}
-                  className="font-bold text-sm pl-1 text-left flex-grow overflow-hidden"
-                >
-                  🎉 Upcoming Festival: Śrī Kṛṣṇa Janmāṣṭamī
-                </button>
+                <Link to="/fests/invite" onClick={handleGetPassClick} className="font-bold text-sm pl-1 text-left flex-grow overflow-hidden">
+                  🎉 Happy Śrī Kṛṣṇa Janmāṣṭamī
+                </Link>
 
                 <div className="flex-shrink-0 flex items-center gap-1.5">
                   <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" className="flex-shrink-0 relative group">
@@ -1516,13 +1512,13 @@ function NavbarContent() {
                       ease: "easeInOut",
                     }}
                   >
-                    <Link to="/fests/invite" hash="register" onClick={handleGetPassClick}>
+                    <Link to="/fests/invite" onClick={handleGetPassClick}>
                       <span className={cn(
                         "relative rounded-full font-bold shadow-lg select-none bg-gradient-to-r from-blue-500 to-indigo-600 text-white transition-all duration-200 ring-2 ring-transparent group-hover:ring-blue-400 flex items-center gap-1",
                         "px-4 py-2 text-sm"
                       )}>
                         <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Diya%20Lamp.png" alt="Diya Lamp" width={18} height={18} />
-                        Secure your Free Spot
+                        View Invitation
                       </span>
                     </Link>
                   </motion.div>

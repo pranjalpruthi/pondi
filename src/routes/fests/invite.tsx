@@ -217,23 +217,12 @@ const InviteHero: FC<{ onSponsorClick: () => void }> = ({ onSponsorClick }) => {
         }
     };
 
-    // Show fireworks periodically for festive atmosphere
+    // Show fireworks continuously for festive atmosphere
     useEffect(() => {
-        const showFireworksInterval = setInterval(() => {
-            setShowHeroFireworks(true);
-            setTimeout(() => setShowHeroFireworks(false), 5000);
-        }, 30000); // Show fireworks every 30 seconds
-
-        // Show initial fireworks after 3 seconds
-        const initialTimeout = setTimeout(() => {
-            setShowHeroFireworks(true);
-            setTimeout(() => setShowHeroFireworks(false), 5000);
-        }, 3000);
-
-        return () => {
-            clearInterval(showFireworksInterval);
-            clearTimeout(initialTimeout);
-        };
+        // Show fireworks immediately and keep them on
+        setShowHeroFireworks(true);
+        
+        // No cleanup needed since we want them to stay on
     }, []);
 
     return (
