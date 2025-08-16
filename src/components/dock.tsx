@@ -9,7 +9,7 @@ import IconTemple from 'virtual:icons/fluent-emoji-flat/hindu-temple'
 import IconCalendar from 'virtual:icons/uim/calender'
 import IconInfo from 'virtual:icons/line-md/alert-circle-twotone-loop';
 import IconRobo from 'virtual:icons/mdi/robot-outline';
-import { Menu, Volume2, VolumeX, Globe as GlobeIcon, ShoppingBag as ShoppingBagIcon, Phone, ArrowLeft, MapPin, Youtube } from "lucide-react"; 
+import { Menu, Volume2, VolumeX, Globe as GlobeIcon, ShoppingBag as ShoppingBagIcon, Phone, ArrowLeft, MapPin, Youtube } from "lucide-react";
 import { IconBrandFacebook, IconBrandTelegram, IconBrandInstagram, IconBrandYoutube, IconBrandWhatsapp } from '@tabler/icons-react';
 import { CopyButton } from '@/components/animate-ui/buttons/copy';
 import { useSound } from 'use-sound';
@@ -81,7 +81,7 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
   const isLabelClickedActive = activeLabelItemId === item.id && !item.isExpandable;
   const isLabelHoveredActive = hoveredLabelItemId === item.id && !item.isExpandable;
   const isLabelVisible = isLabelClickedActive || isLabelHoveredActive;
-  
+
   const isMainMenuPanelActive = item.isExpandable && activeDockItem === item.id && isDockOpen;
 
   const isDeityButton = item.label === 'Deities';
@@ -94,37 +94,37 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
   const isEventsButton = item.id === 3;
   let deityButtonSpecificStyles = "";
   if (isDeityButton) {
-      const statusColorClass = templeStatus.colorClass;
-      let subtleBg = "bg-gray-400/20 dark:bg-gray-600/20";
-      let subtleText = "text-gray-700 dark:text-gray-300";
-      let subtleHoverBg = "hover:bg-gray-400/30 dark:hover:bg-gray-600/30";
+    const statusColorClass = templeStatus.colorClass;
+    let subtleBg = "bg-gray-400/20 dark:bg-gray-600/20";
+    let subtleText = "text-gray-700 dark:text-gray-300";
+    let subtleHoverBg = "hover:bg-gray-400/30 dark:hover:bg-gray-600/30";
 
-      if (statusColorClass.includes('green')) {
-          subtleBg = "bg-green-400/20 dark:bg-green-500/20";
-          subtleText = "text-green-700 dark:text-green-300";
-          subtleHoverBg = "hover:bg-green-400/30 dark:hover:bg-green-500/30";
-      } else if (statusColorClass.includes('pink')) {
-          subtleBg = "bg-pink-400/20 dark:bg-pink-500/20";
-          subtleText = "text-pink-700 dark:text-pink-300";
-          subtleHoverBg = "hover:bg-pink-400/30 dark:hover:bg-pink-500/30";
-      } else if (statusColorClass.includes('red')) {
-          subtleBg = "bg-red-400/20 dark:bg-red-500/20";
-          subtleText = "text-red-700 dark:text-red-300";
-          subtleHoverBg = "hover:bg-red-400/30 dark:hover:bg-red-500/30";
-      } else if (statusColorClass.includes('gray')) {
-          subtleBg = "bg-gray-400/20 dark:bg-gray-600/20";
-          subtleText = "text-gray-700 dark:text-gray-400";
-          subtleHoverBg = "hover:bg-gray-400/30 dark:hover:bg-gray-600/30";
-      } else if (statusColorClass.includes('yellow')) {
-          subtleBg = "bg-yellow-400/20 dark:bg-yellow-500/20";
-          subtleText = "text-yellow-700 dark:text-yellow-300";
-          subtleHoverBg = "hover:bg-yellow-400/30 dark:hover:bg-yellow-500/30";
-      } else if (statusColorClass.includes('orange')) {
-          subtleBg = "bg-orange-400/20 dark:bg-orange-500/20";
-          subtleText = "text-orange-700 dark:text-orange-300";
-          subtleHoverBg = "hover:bg-orange-400/30 dark:hover:bg-orange-500/30";
-      }
-      deityButtonSpecificStyles = cn(subtleBg, subtleText, subtleHoverBg);
+    if (statusColorClass.includes('green')) {
+      subtleBg = "bg-green-400/20 dark:bg-green-500/20";
+      subtleText = "text-green-700 dark:text-green-300";
+      subtleHoverBg = "hover:bg-green-400/30 dark:hover:bg-green-500/30";
+    } else if (statusColorClass.includes('pink')) {
+      subtleBg = "bg-pink-400/20 dark:bg-pink-500/20";
+      subtleText = "text-pink-700 dark:text-pink-300";
+      subtleHoverBg = "hover:bg-pink-400/30 dark:hover:bg-pink-500/30";
+    } else if (statusColorClass.includes('red')) {
+      subtleBg = "bg-red-400/20 dark:bg-red-500/20";
+      subtleText = "text-red-700 dark:text-red-300";
+      subtleHoverBg = "hover:bg-red-400/30 dark:hover:bg-red-500/30";
+    } else if (statusColorClass.includes('gray')) {
+      subtleBg = "bg-gray-400/20 dark:bg-gray-600/20";
+      subtleText = "text-gray-700 dark:text-gray-400";
+      subtleHoverBg = "hover:bg-gray-400/30 dark:hover:bg-gray-600/30";
+    } else if (statusColorClass.includes('yellow')) {
+      subtleBg = "bg-yellow-400/20 dark:bg-yellow-500/20";
+      subtleText = "text-yellow-700 dark:text-yellow-300";
+      subtleHoverBg = "hover:bg-yellow-400/30 dark:hover:bg-yellow-500/30";
+    } else if (statusColorClass.includes('orange')) {
+      subtleBg = "bg-orange-400/20 dark:bg-orange-500/20";
+      subtleText = "text-orange-700 dark:text-orange-300";
+      subtleHoverBg = "hover:bg-orange-400/30 dark:hover:bg-orange-500/30";
+    }
+    deityButtonSpecificStyles = cn(subtleBg, subtleText, subtleHoverBg);
   }
 
   const itemContent = (
@@ -134,18 +134,18 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
     )}>
       <div className={cn("flex flex-col items-center", isLabelVisible ? "" : "text-center")}>
         {item.title} {/* Icon */}
-        {item.subtitle && ! (isClipsButton && !isMainMenuPanelActive && !isLabelVisible) && ( // Hide subtitle for Clips button if panel not open and not a label interaction
+        {item.subtitle && !(isClipsButton && !isMainMenuPanelActive && !isLabelVisible) && ( // Hide subtitle for Clips button if panel not open and not a label interaction
           <span className={cn(
             "text-[0.65rem] sm:text-[0.7rem] mt-1 font-medium",
             isLabelVisible ? "hidden" : "block", // This handles general label visibility
             (isClipsButton && !isMainMenuPanelActive) ? "hidden" : "block", // Specifically hide for clips button if panel not open
             isDeityButton && templeStatus.colorClass.includes('gray') ? "text-gray-500 dark:text-gray-400" :
-            isDeityButton && templeStatus.colorClass.includes('red') ? "text-red-600 dark:text-red-400" :
-            isDeityButton && templeStatus.colorClass.includes('pink') ? "text-pink-600 dark:text-pink-400" :
-            isDeityButton && templeStatus.colorClass.includes('green') ? "text-green-600 dark:text-green-400" :
-            isDeityButton && templeStatus.colorClass.includes('yellow') ? "text-yellow-600 dark:text-yellow-400" :
-            isDeityButton && templeStatus.colorClass.includes('orange') ? "text-orange-600 dark:text-orange-400" :
-            "text-foreground/70"
+              isDeityButton && templeStatus.colorClass.includes('red') ? "text-red-600 dark:text-red-400" :
+                isDeityButton && templeStatus.colorClass.includes('pink') ? "text-pink-600 dark:text-pink-400" :
+                  isDeityButton && templeStatus.colorClass.includes('green') ? "text-green-600 dark:text-green-400" :
+                    isDeityButton && templeStatus.colorClass.includes('yellow') ? "text-yellow-600 dark:text-yellow-400" :
+                      isDeityButton && templeStatus.colorClass.includes('orange') ? "text-orange-600 dark:text-orange-400" :
+                        "text-foreground/70"
           )}>
             {currentSubtitle}
           </span>
@@ -166,14 +166,14 @@ const DockItemComponent = React.memo<DockItemComponentProps>(({
       </AnimatePresence>
     </div>
   );
-  
+
   const baseItemClasses = "relative flex items-center rounded-xl cursor-pointer overflow-hidden h-14 sm:h-16 text-foreground/80 transition-colors focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]";
-  
+
   const itemWidth = isClipsButton // Clips button is always circular (width = height)
-                    ? (isMobile ? 56 : 64)
-                    : item.isExpandable
-                      ? (isMobile ? 56 : 64)
-                      : (isLabelVisible && !isMobile ? 130 : (isMobile ? 56 : 64));
+    ? (isMobile ? 56 : 64)
+    : item.isExpandable
+      ? (isMobile ? 56 : 64)
+      : (isLabelVisible && !isMobile ? 130 : (isMobile ? 56 : 64));
 
   let itemSpecificStyling = "";
 
@@ -311,30 +311,30 @@ const StarIcon = ({ filled, className }: { filled: boolean; className?: string }
 );
 
 const StarRating = ({ rating, setRating, hoverRating, setHoverRating }: { rating: number; setRating: (r: number) => void; hoverRating: number; setHoverRating: (h: number) => void; }) => (
-    <div className="flex justify-center gap-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-            <motion.div
-                key={star}
-                initial={{ scale: 1 }}
-                whileHover={{ scale: 1.2, rotate: 5 }}
-                whileTap={{ scale: 0.9 }}
-                className="cursor-pointer"
-                onClick={() => setRating(star)}
-                onMouseEnter={() => setHoverRating(star)}
-                onMouseLeave={() => setHoverRating(0)}
-            >
-                <StarIcon
-                    className={cn(
-                        "transition-colors duration-200",
-                        (hoverRating || rating) >= star
-                            ? "text-yellow-400 fill-yellow-400"
-                            : "text-gray-300 dark:text-gray-600"
-                    )}
-                    filled={(hoverRating || rating) >= star}
-                />
-            </motion.div>
-        ))}
-    </div>
+  <div className="flex justify-center gap-1">
+    {[1, 2, 3, 4, 5].map((star) => (
+      <motion.div
+        key={star}
+        initial={{ scale: 1 }}
+        whileHover={{ scale: 1.2, rotate: 5 }}
+        whileTap={{ scale: 0.9 }}
+        className="cursor-pointer"
+        onClick={() => setRating(star)}
+        onMouseEnter={() => setHoverRating(star)}
+        onMouseLeave={() => setHoverRating(0)}
+      >
+        <StarIcon
+          className={cn(
+            "transition-colors duration-200",
+            (hoverRating || rating) >= star
+              ? "text-yellow-400 fill-yellow-400"
+              : "text-gray-300 dark:text-gray-600"
+          )}
+          filled={(hoverRating || rating) >= star}
+        />
+      </motion.div>
+    ))}
+  </div>
 );
 
 const AIPanel = React.memo(() => {
@@ -353,7 +353,7 @@ const AIPanel = React.memo(() => {
   ]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [messageSent, setMessageSent] = React.useState(false);
-const nextMessageId = React.useRef(2); // Start IDs from 2
+  const nextMessageId = React.useRef(2); // Start IDs from 2
 
   const prabhupadaTeachings = [
     "Chant Hare Krishna and your life will be sublime.",
@@ -502,10 +502,10 @@ const nextMessageId = React.useRef(2); // Start IDs from 2
   ];
 
   const quickActionButtons = [
-      { id: 4, text: 'Timings', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Alarm%20Clock.png" alt="Alarm Clock" width="40" height="40" />, color: "bg-blue-100 hover:bg-blue-200 dark:bg-blue-800 dark:hover:bg-blue-700 border-blue-500/70 text-blue-700 dark:text-blue-300" },
-      { id: 5, text: 'Donate', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="40" height="40" />, color: "bg-yellow-100 hover:bg-yellow-200 dark:bg-yellow-800 dark:hover:bg-yellow-700 border-yellow-500/70 text-yellow-700 dark:text-yellow-300" },
-      { id: 7, text: 'Calendar', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Spiral%20Calendar.png" alt="Spiral Calendar" width="40" height="40" />, color: "bg-purple-100 hover:bg-purple-200 dark:bg-purple-800 dark:hover:bg-purple-700 border-purple-500/70 text-purple-700 dark:text-purple-300" },
-      { id: 6, text: 'Contact', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Telephone%20Receiver.png" alt="Telephone Receiver" width="40" height="40" />, color: "bg-green-100 hover:bg-green-200 dark:bg-green-800 dark:hover:bg-green-700 border-green-500/70 text-green-700 dark:text-green-300" },
+    { id: 4, text: 'Timings', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Alarm%20Clock.png" alt="Alarm Clock" width="40" height="40" />, color: "bg-blue-100 hover:bg-blue-200 dark:bg-blue-800 dark:hover:bg-blue-700 border-blue-500/70 text-blue-700 dark:text-blue-300" },
+    { id: 5, text: 'Donate', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="40" height="40" />, color: "bg-yellow-100 hover:bg-yellow-200 dark:bg-yellow-800 dark:hover:bg-yellow-700 border-yellow-500/70 text-yellow-700 dark:text-yellow-300" },
+    { id: 7, text: 'Calendar', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Spiral%20Calendar.png" alt="Spiral Calendar" width="40" height="40" />, color: "bg-purple-100 hover:bg-purple-200 dark:bg-purple-800 dark:hover:bg-purple-700 border-purple-500/70 text-purple-700 dark:text-purple-300" },
+    { id: 6, text: 'Contact', icon: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Telephone%20Receiver.png" alt="Telephone Receiver" width="40" height="40" />, color: "bg-green-100 hover:bg-green-200 dark:bg-green-800 dark:hover:bg-green-700 border-green-500/70 text-green-700 dark:text-green-300" },
   ];
 
   const createBotResponse = React.useCallback((responseContent: React.ReactNode) => (
@@ -545,29 +545,29 @@ const nextMessageId = React.useRef(2); // Start IDs from 2
           case 2:
             botResponseContent = (
               <div className="space-y-2">
-                  <p>The International Society for Krishna Consciousness (ISKCON), as founded by A.C. Bhaktivedanta Swami Prabhupada, is a Gaudiya Vaishnava religious organization.</p>
-                  <p>Our information is based on Retrieval-Augmented Generation (RAG) from official documents like IA77, ensuring adherence to the ritvik system of initiation established by Srila Prabhupada.</p>
-                  <p>For more on this topic, you can watch this video: <a href="#" onClick={(e) => e.preventDefault()} className="text-primary underline">ISKCON vs ISKM (video)</a>.</p>
-                  <p className="text-xs italic">Please note: This AI is trained to be strict on this topic and will not deviate from official sources.</p>
+                <p>The International Society for Krishna Consciousness (ISKCON), as founded by A.C. Bhaktivedanta Swami Prabhupada, is a Gaudiya Vaishnava religious organization.</p>
+                <p>Our information is based on Retrieval-Augmented Generation (RAG) from official documents like IA77, ensuring adherence to the ritvik system of initiation established by Srila Prabhupada.</p>
+                <p>For more on this topic, you can watch this video: <a href="#" onClick={(e) => e.preventDefault()} className="text-primary underline">ISKCON vs ISKM (video)</a>.</p>
+                <p className="text-xs italic">Please note: This AI is trained to be strict on this topic and will not deviate from official sources.</p>
               </div>
             );
             break;
           case 3:
             botResponseContent = (
               <div>
-                  <p>We'd love to hear your feedback on our website!</p>
-                  <FeedbackFormComponent onSubmit={() => {
-                      const thankYouMessage = createBotResponse(
-                          <div>
-                              <p>Thank you for your feedback! We appreciate you taking the time.</p>
-                              <p className="mt-2">We hope you'll visit us soon! Our temple is located at ISKCON, Hare Krishna Land, Sri Sri Radha Madhava Cultural and Educational Complex, ECR, Sri-Sailam, Puducherry, 605008.</p>
-                              <p>Darshan is open daily from 5:00 AM to 8:45 PM.</p>
-                              <p>For more info, see our <Link to="/about" className="text-primary underline">About Page</Link>.</p>
-                          </div>
-                      );
-                      const thankYouMessageId = nextMessageId.current++;
-                      setMessages(prev => [...prev, { id: thankYouMessageId, sender: 'bot', content: thankYouMessage }]);
-                  }} />
+                <p>We'd love to hear your feedback on our website!</p>
+                <FeedbackFormComponent onSubmit={() => {
+                  const thankYouMessage = createBotResponse(
+                    <div>
+                      <p>Thank you for your feedback! We appreciate you taking the time.</p>
+                      <p className="mt-2">We hope you'll visit us soon! Our temple is located at ISKCON, Hare Krishna Land, Sri Sri Radha Madhava Cultural and Educational Complex, ECR, Sri-Sailam, Puducherry, 605008.</p>
+                      <p>Darshan is open daily from 5:00 AM to 8:45 PM.</p>
+                      <p>For more info, see our <Link to="/about" className="text-primary underline">About Page</Link>.</p>
+                    </div>
+                  );
+                  const thankYouMessageId = nextMessageId.current++;
+                  setMessages(prev => [...prev, { id: thankYouMessageId, sender: 'bot', content: thankYouMessage }]);
+                }} />
               </div>
             );
             break;
@@ -593,9 +593,9 @@ const nextMessageId = React.useRef(2); // Start IDs from 2
             botResponseContent = (
               <div className="space-y-4">
                 <div className="pt-0">
-                   <div className="flex justify-between items-center mb-2">
-                      <h4 className="text-sm font-semibold text-[#ffc547]">Bank Transfer Details</h4>
-                      <CopyButton size="sm" variant="ghost" content={formatBankDetailsForCopy()} className="text-[#ffc547]" />
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="text-sm font-semibold text-[#ffc547]">Bank Transfer Details</h4>
+                    <CopyButton size="sm" variant="ghost" content={formatBankDetailsForCopy()} className="text-[#ffc547]" />
                   </div>
                   <div className="space-y-0.5 text-xs text-gray-700 dark:text-gray-300">
                     <p><strong>Account Name:</strong> {bankDetailsData.accountName}</p>
@@ -622,8 +622,8 @@ const nextMessageId = React.useRef(2); // Start IDs from 2
                       <CopyButton size="sm" variant="ghost" content="ISKM.04@idfcbank" className="text-purple-600 dark:text-purple-400" />
                     </div>
                   </div>
-                   <p className="text-xs text-gray-500 dark:text-gray-600 mt-3">
-                      Your contribution supports our mission.
+                  <p className="text-xs text-gray-500 dark:text-gray-600 mt-3">
+                    Your contribution supports our mission.
                   </p>
                 </div>
               </div>
@@ -644,7 +644,7 @@ const nextMessageId = React.useRef(2); // Start IDs from 2
                     </div>
                     <div className="flex items-center gap-2">
                       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-envelope text-green-600 dark:text-green-400" viewBox="0 0 16 16">
-                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z" />
                       </svg>
                       <a href="mailto:iskm.pondicherry@gmail.com" className="text-green-700 dark:text-green-400 hover:text-green-600 dark:hover:text-green-300 transition-colors">iskm.pondicherry@gmail.com</a>
                     </div>
@@ -686,31 +686,31 @@ const nextMessageId = React.useRef(2); // Start IDs from 2
             );
             break;
           case 7: // Calendar
-              botResponseContent = (
-                <div className="space-y-2">
-                  <p>You can view all our events on the main calendar page.</p>
-                  <Link to="/calender" className="block">
-                    <button className="w-full p-2 rounded-lg bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 ease-out active:scale-95 transform-gpu">
-                      Go to Calendar
-                    </button>
-                  </Link>
-                </div>
-              );
-              break;
+            botResponseContent = (
+              <div className="space-y-2">
+                <p>You can view all our events on the main calendar page.</p>
+                <Link to="/calender" className="block">
+                  <button className="w-full p-2 rounded-lg bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 ease-out active:scale-95 transform-gpu">
+                    Go to Calendar
+                  </button>
+                </Link>
+              </div>
+            );
+            break;
           default:
             botResponseContent = <p>Sorry, I don't have an answer for that.</p>;
         }
         const fullResponse = createBotResponse(botResponseContent);
         const botMessageId = nextMessageId.current++;
         setMessages(prev => [...prev, { id: botMessageId, sender: 'bot', content: fullResponse }]);
-        } catch (error) {
-          console.error("Error handling question click:", error);
-          const errorResponse = createBotResponse(<p>Sorry, an error occurred while processing your request.</p>);
-          const errorBotMessageId = nextMessageId.current++;
-          setMessages(prev => [...prev, { id: errorBotMessageId, sender: 'bot', content: errorResponse }]);
-        } finally {
-          setIsLoading(false);
-        }
+      } catch (error) {
+        console.error("Error handling question click:", error);
+        const errorResponse = createBotResponse(<p>Sorry, an error occurred while processing your request.</p>);
+        const errorBotMessageId = nextMessageId.current++;
+        setMessages(prev => [...prev, { id: errorBotMessageId, sender: 'bot', content: errorResponse }]);
+      } finally {
+        setIsLoading(false);
+      }
     }, 1500);
   }, [createBotResponse]);
 
@@ -719,26 +719,26 @@ const nextMessageId = React.useRef(2); // Start IDs from 2
 
     const userMessageId = nextMessageId.current++;
     const userMessage = {
-        id: userMessageId,
-        sender: 'user' as const,
-        content: <p>{message}</p>,
+      id: userMessageId,
+      sender: 'user' as const,
+      content: <p>{message}</p>,
     };
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
 
     setTimeout(() => {
-        const randomIndex = Math.floor(Math.random() * prabhupadaTeachings.length);
-        const randomTeaching = prabhupadaTeachings[randomIndex];
+      const randomIndex = Math.floor(Math.random() * prabhupadaTeachings.length);
+      const randomTeaching = prabhupadaTeachings[randomIndex];
 
-        const botResponse = createBotResponse(
-          <>
-            <p>{randomTeaching}</p>
-            <p className="mt-2 text-xs italic">Our AI is blossoming with the teachings of Śrīla Prabhupāda. Full conversational abilities are coming soon. Hare Kṛṣṇa!</p>
-          </>
-        );
-        const botMessageId = nextMessageId.current++;
-        setMessages(prev => [...prev, { id: botMessageId, sender: 'bot', content: botResponse }]);
-        setIsLoading(false);
+      const botResponse = createBotResponse(
+        <>
+          <p>{randomTeaching}</p>
+          <p className="mt-2 text-xs italic">Our AI is blossoming with the teachings of Śrīla Prabhupāda. Full conversational abilities are coming soon. Hare Kṛṣṇa!</p>
+        </>
+      );
+      const botMessageId = nextMessageId.current++;
+      setMessages(prev => [...prev, { id: botMessageId, sender: 'bot', content: botResponse }]);
+      setIsLoading(false);
     }, 1500);
   };
 
@@ -753,25 +753,25 @@ const nextMessageId = React.useRef(2); // Start IDs from 2
 
   return (
     <div className='flex flex-col p-2 min-h-[420px] max-h-[calc(100vh-180px)] bg-gray-50 dark:bg-black'>
-        <AnimatePresence>
-            {messages.length > 1 && (
-            <motion.div
-                className="flex-shrink-0 pb-2 px-2"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
+      <AnimatePresence>
+        {messages.length > 1 && (
+          <motion.div
+            className="flex-shrink-0 pb-2 px-2"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+          >
+            <button
+              onClick={handleGoBack}
+              className="flex items-center justify-center gap-2 w-full p-2 rounded-xl text-sm font-medium bg-gradient-to-br from-pink-500 to-rose-500 text-white shadow-lg hover:from-pink-600 hover:to-rose-600 transition-all active:scale-95 transform-gpu"
             >
-                <button
-                onClick={handleGoBack}
-                className="flex items-center justify-center gap-2 w-full p-2 rounded-xl text-sm font-medium bg-gradient-to-br from-pink-500 to-rose-500 text-white shadow-lg hover:from-pink-600 hover:to-rose-600 transition-all active:scale-95 transform-gpu"
-                >
-                <ArrowLeft className="size-4" />
-                <span>Start New Chat</span>
-                </button>
-            </motion.div>
-            )}
-        </AnimatePresence>
+              <ArrowLeft className="size-4" />
+              <span>Start New Chat</span>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div ref={scrollRef} className="flex-grow space-y-4 p-2 overflow-y-auto">
         {messages.map((msg, index) => (
           <div key={msg.id} className={cn("flex items-end gap-2", msg.sender === 'user' ? 'justify-end' : 'justify-start')}>
@@ -813,23 +813,23 @@ const nextMessageId = React.useRef(2); // Start IDs from 2
 
       <div className="flex-shrink-0 pt-2">
         {messages.length <= 1 && (
-            <div className="p-2 space-y-3">
-                <div className="grid grid-cols-4 gap-2">
-                    {quickActionButtons.map(q => (
-                        <button key={q.id} onClick={() => handleQuestionClick(q)} className={cn("flex flex-col items-center justify-center gap-1.5 p-2 rounded-xl shadow-lg transition-colors aspect-square", q.color)}>
-                            {q.icon}
-                            <span className="text-xs text-center">{q.text}</span>
-                        </button>
-                    ))}
-                </div>
-                <div className="flex flex-col gap-2">
-                    {suggestedQuestions.map(q => (
-                    <button key={q.id} onClick={() => handleQuestionClick(q)} className="text-left text-sm p-3 rounded-xl bg-gray-100 dark:bg-gray-800/50 hover:bg-gray-200 dark:hover:bg-gray-700/50 transition-colors w-full">
-                        {q.text}
-                    </button>
-                    ))}
-                </div>
+          <div className="p-2 space-y-3">
+            <div className="grid grid-cols-4 gap-2">
+              {quickActionButtons.map(q => (
+                <button key={q.id} onClick={() => handleQuestionClick(q)} className={cn("flex flex-col items-center justify-center gap-1.5 p-2 rounded-xl shadow-lg transition-colors aspect-square", q.color)}>
+                  {q.icon}
+                  <span className="text-xs text-center">{q.text}</span>
+                </button>
+              ))}
             </div>
+            <div className="flex flex-col gap-2">
+              {suggestedQuestions.map(q => (
+                <button key={q.id} onClick={() => handleQuestionClick(q)} className="text-left text-sm p-3 rounded-xl bg-gray-100 dark:bg-gray-800/50 hover:bg-gray-200 dark:hover:bg-gray-700/50 transition-colors w-full">
+                  {q.text}
+                </button>
+              ))}
+            </div>
+          </div>
         )}
         <motion.div
           className="pt-2 border-t border-border/50"
@@ -927,11 +927,11 @@ function NavbarContent() {
 
   // useClickOutside hook (from snippet, adapted path)
   useClickOutside(dockWrapperRef, () => {
-    if (isDockOpen) { 
+    if (isDockOpen) {
       setIsDockOpen(false);
       setActiveDockItem(null);
     }
-    setHoveredLabelItemId(null); 
+    setHoveredLabelItemId(null);
   });
 
   // useEffect for maxWidth (from snippet)
@@ -945,7 +945,7 @@ function NavbarContent() {
   React.useEffect(() => {
     const controlVisibility = () => {
       const currentScrollY = window.scrollY;
-      
+
       // Dock visibility logic
       if (isDockOpen) {
         setIsDockVisible(true);
@@ -1005,7 +1005,7 @@ function NavbarContent() {
         '/sounds/templebell.mp3'
       ];
       await Promise.all(
-        sounds.map(sound => 
+        sounds.map(sound =>
           new Promise((resolve) => {
             const audio = new Audio(sound);
             audio.addEventListener('canplaythrough', resolve, { once: true });
@@ -1031,7 +1031,7 @@ function NavbarContent() {
   const safePlayClick = React.useCallback(() => {
     if (soundsLoaded && isSoundEnabled) playClick();
   }, [soundsLoaded, isSoundEnabled, playClick]);
-  
+
   const handleSoundToggle = React.useCallback(() => {
     if (!isSoundEnabled) playEnableSound(); else playDisableSound();
     toggleSound();
@@ -1085,9 +1085,9 @@ function NavbarContent() {
       label: 'Donate',
       title: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="25" height="25" />,
       subtitle: 'Donate',
-      action: () => handleNavClick('/donate'),
+      action: () => handleNavClick('/contribute'),
       isLink: true,
-      to: '/donate',
+      to: '/contribute',
     },
     {
       id: 3,
@@ -1170,66 +1170,66 @@ function NavbarContent() {
               );
             })()}
 
-          {/* SignedIn Items - Styled as square items */}
-          <SignedIn>
-            <Link
-              to="/dashboard"
-              onClick={() => { handleNavClick("/dashboard"); setIsDockOpen(false); setActiveDockItem(null); }}
-              onMouseEnter={safePlayHover}
-              className="flex flex-col items-center justify-center h-14 w-14 sm:h-16 sm:w-16 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
-              aria-label="Dashboard"
-            >
-              <LayoutDashboard className="size-6 mb-1 text-primary/80" />
-              <span className="text-[0.7rem] sm:text-[0.75rem] text-center">Dashboard</span>
-            </Link>
-            
-            {/* UserButton - Attempt to style its container or provide a styled trigger if possible */}
-            <div 
-              onMouseEnter={safePlayHover}
-              className="flex flex-col items-center justify-center h-14 w-14 sm:h-16 sm:w-16 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 text-foreground/80 transition-colors cursor-pointer"
-              onClick={safePlayClick} // Play click sound, Clerk handles modal
-            >
-              <UserButton afterSignOutUrl="/">
-                {/* Clerk UserButton usually provides its own UI, this structure is for consistent hover/click sounds & basic box */}
-                {/* If UserButton could take a child for custom rendering, that would be ideal here */}
-              </UserButton>
-               {/* <span className="text-xs mt-1 text-center">Profile</span>  UserButton usually has its own trigger text/icon */}
-            </div>
-
-            <SignOutButton>
-              <button
-                onClick={() => { safePlayClick(); setIsDockOpen(false); setActiveDockItem(null); }}
+            {/* SignedIn Items - Styled as square items */}
+            <SignedIn>
+              <Link
+                to="/dashboard"
+                onClick={() => { handleNavClick("/dashboard"); setIsDockOpen(false); setActiveDockItem(null); }}
                 onMouseEnter={safePlayHover}
                 className="flex flex-col items-center justify-center h-14 w-14 sm:h-16 sm:w-16 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
-                aria-label="Sign Out"
+                aria-label="Dashboard"
               >
-                <LogOut className="size-6 mb-1 text-primary/80" />
-                <span className="text-[0.7rem] sm:text-[0.75rem] text-center">Sign Out</span>
-              </button>
-            </SignOutButton>
-          </SignedIn>
+                <LayoutDashboard className="size-6 mb-1 text-primary/80" />
+                <span className="text-[0.7rem] sm:text-[0.75rem] text-center">Dashboard</span>
+              </Link>
 
-          {/* SignedOut Item - Styled as a square item */}
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button
-                onClick={() => { safePlayClick(); setIsDockOpen(false); setActiveDockItem(null); }}
+              {/* UserButton - Attempt to style its container or provide a styled trigger if possible */}
+              <div
                 onMouseEnter={safePlayHover}
-                className="flex flex-col items-center justify-center h-14 w-14 sm:h-16 sm:w-16 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
-                aria-label="Sign In"
+                className="flex flex-col items-center justify-center h-14 w-14 sm:h-16 sm:w-16 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 text-foreground/80 transition-colors cursor-pointer"
+                onClick={safePlayClick} // Play click sound, Clerk handles modal
               >
-                <LogIn className="size-6 mb-1 text-primary/80" />
-                <span className="text-[0.7rem] sm:text-[0.75rem] text-center">Sign In</span>
-              </button>
-            </SignInButton>
-          </SignedOut>
-          {/* Separators are removed as grid layout handles spacing */}
+                <UserButton afterSignOutUrl="/">
+                  {/* Clerk UserButton usually provides its own UI, this structure is for consistent hover/click sounds & basic box */}
+                  {/* If UserButton could take a child for custom rendering, that would be ideal here */}
+                </UserButton>
+                {/* <span className="text-xs mt-1 text-center">Profile</span>  UserButton usually has its own trigger text/icon */}
+              </div>
+
+              <SignOutButton>
+                <button
+                  onClick={() => { safePlayClick(); setIsDockOpen(false); setActiveDockItem(null); }}
+                  onMouseEnter={safePlayHover}
+                  className="flex flex-col items-center justify-center h-14 w-14 sm:h-16 sm:w-16 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
+                  aria-label="Sign Out"
+                >
+                  <LogOut className="size-6 mb-1 text-primary/80" />
+                  <span className="text-[0.7rem] sm:text-[0.75rem] text-center">Sign Out</span>
+                </button>
+              </SignOutButton>
+            </SignedIn>
+
+            {/* SignedOut Item - Styled as a square item */}
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button
+                  onClick={() => { safePlayClick(); setIsDockOpen(false); setActiveDockItem(null); }}
+                  onMouseEnter={safePlayHover}
+                  className="flex flex-col items-center justify-center h-14 w-14 sm:h-16 sm:w-16 p-2 rounded-xl hover:bg-pink-100/50 dark:hover:bg-pink-700/50 hover:text-primary text-foreground/80 transition-colors"
+                  aria-label="Sign In"
+                >
+                  <LogIn className="size-6 mb-1 text-primary/80" />
+                  <span className="text-[0.7rem] sm:text-[0.75rem] text-center">Sign In</span>
+                </button>
+              </SignInButton>
+            </SignedOut>
+            {/* Separators are removed as grid layout handles spacing */}
           </div>
           {/* Mini Buttons for Terms, Privacy, Returns */}
           <div className="col-span-2 sm:col-span-3 mt-2 pt-2 border-t border-border/50 flex justify-between items-center px-4 sm:px-6">
             <div className="flex items-center space-x-3">
-              <Link 
-                to="/terms-and-conditions" 
+              <Link
+                to="/terms-and-conditions"
                 onClick={() => { safePlayClick(); setIsDockOpen(false); setActiveDockItem(null); }}
                 onMouseEnter={safePlayHover}
                 className="text-xs text-muted-foreground hover:text-primary dark:text-white transition-colors"
@@ -1237,8 +1237,8 @@ function NavbarContent() {
                 Terms
               </Link>
               <span className="text-xs text-muted-foreground dark:text-white">|</span>
-              <Link 
-                to="/privacy-policy" 
+              <Link
+                to="/privacy-policy"
                 onClick={() => { safePlayClick(); setIsDockOpen(false); setActiveDockItem(null); }}
                 onMouseEnter={safePlayHover}
                 className="text-xs text-muted-foreground hover:text-primary dark:text-white transition-colors"
@@ -1246,8 +1246,8 @@ function NavbarContent() {
                 Privacy
               </Link>
             </div>
-            <Link 
-              to="/refund-and-cancellation-policy" 
+            <Link
+              to="/refund-and-cancellation-policy"
               onClick={() => { safePlayClick(); setIsDockOpen(false); setActiveDockItem(null); }}
               onMouseEnter={safePlayHover}
               className="text-xs text-muted-foreground hover:text-primary dark:text-white transition-colors"
@@ -1293,7 +1293,7 @@ function NavbarContent() {
     if (item.isExpandable) {
       setActiveLabelItemId(null);
       setHoveredLabelItemId(null);
-      
+
       const isClickedItemActive = activeDockItem === item.id;
 
       if (isDockOpen && isClickedItemActive) {
@@ -1311,7 +1311,7 @@ function NavbarContent() {
       setHoveredLabelItemId(null);
       setIsDockOpen(false);
       setActiveDockItem(null);
-      
+
       if (item.action && typeof item.action === 'function') {
         item.action();
       }
@@ -1348,29 +1348,29 @@ function NavbarContent() {
     let darshanHoverBg = "hover:bg-gray-300/80 dark:hover:bg-gray-600/80";
 
     if (statusColorClass.includes('green')) {
-        darshanBg = "bg-green-100 dark:bg-green-800/50";
-        darshanText = "text-green-700 dark:text-green-300";
-        darshanHoverBg = "hover:bg-green-200 dark:hover:bg-green-700/50";
+      darshanBg = "bg-green-100 dark:bg-green-800/50";
+      darshanText = "text-green-700 dark:text-green-300";
+      darshanHoverBg = "hover:bg-green-200 dark:hover:bg-green-700/50";
     } else if (statusColorClass.includes('pink')) {
-        darshanBg = "bg-pink-100 dark:bg-pink-800/50";
-        darshanText = "text-pink-700 dark:text-pink-300";
-        darshanHoverBg = "hover:bg-pink-200 dark:hover:bg-pink-700/50";
+      darshanBg = "bg-pink-100 dark:bg-pink-800/50";
+      darshanText = "text-pink-700 dark:text-pink-300";
+      darshanHoverBg = "hover:bg-pink-200 dark:hover:bg-pink-700/50";
     } else if (statusColorClass.includes('red')) {
-        darshanBg = "bg-red-100 dark:bg-red-800/50";
-        darshanText = "text-red-700 dark:text-red-300";
-        darshanHoverBg = "hover:bg-red-200 dark:hover:bg-red-700/50";
+      darshanBg = "bg-red-100 dark:bg-red-800/50";
+      darshanText = "text-red-700 dark:text-red-300";
+      darshanHoverBg = "hover:bg-red-200 dark:hover:bg-red-700/50";
     } else if (statusColorClass.includes('gray')) {
-        darshanBg = "bg-gray-200 dark:bg-gray-700/80";
-        darshanText = "text-gray-700 dark:text-gray-400";
-        darshanHoverBg = "hover:bg-gray-300 dark:hover:bg-gray-600/80";
+      darshanBg = "bg-gray-200 dark:bg-gray-700/80";
+      darshanText = "text-gray-700 dark:text-gray-400";
+      darshanHoverBg = "hover:bg-gray-300 dark:hover:bg-gray-600/80";
     } else if (statusColorClass.includes('yellow')) {
-        darshanBg = "bg-yellow-100 dark:bg-yellow-800/50";
-        darshanText = "text-yellow-700 dark:text-yellow-300";
-        darshanHoverBg = "hover:bg-yellow-200 dark:hover:bg-yellow-700/50";
+      darshanBg = "bg-yellow-100 dark:bg-yellow-800/50";
+      darshanText = "text-yellow-700 dark:text-yellow-300";
+      darshanHoverBg = "hover:bg-yellow-200 dark:hover:bg-yellow-700/50";
     } else if (statusColorClass.includes('orange')) {
-        darshanBg = "bg-orange-100 dark:bg-orange-800/50";
-        darshanText = "text-orange-700 dark:text-orange-300";
-        darshanHoverBg = "hover:bg-orange-200 dark:hover:bg-orange-700/50";
+      darshanBg = "bg-orange-100 dark:bg-orange-800/50";
+      darshanText = "text-orange-700 dark:text-orange-300";
+      darshanHoverBg = "hover:bg-orange-200 dark:hover:bg-orange-700/50";
     }
 
     const handleDarshanClick = () => {
@@ -1419,7 +1419,7 @@ function NavbarContent() {
 
   return (
     <MotionConfig transition={{ layout: { duration: 0.35, type: 'spring', bounce: 0.1 } }}>
-      <motion.nav 
+      <motion.nav
         className="fixed bottom-0 left-0 w-full pb-safe pointer-events-none transform-gpu flex flex-col-reverse" // Added flex flex-col-reverse
         // Adjust z-index based on visibility to ensure it's below footer when hidden
         animate={{
@@ -1428,51 +1428,51 @@ function NavbarContent() {
       >
         <AnimatePresence>
           {isMobile && !isDockOpen && !isClipsPanelActive && !timeLeft.isExpired && location.pathname !== '/fests/invite' && isEventCardVisible && (
-      <motion.div
-        layoutId="event-card"
-        className="absolute bottom-full right-2 sm:right-4 mb-2 w-48 pointer-events-auto"
-        initial={{ opacity: 0, y: 20, scale: 0.9 }}
-        animate={{ opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 300, damping: 30 } }}
-        exit={{ opacity: 0, y: 20, scale: 0.9, transition: { duration: 0.2, ease: 'easeOut' } }}
-        onClick={() => navigate({ to: '/fests/invite', hash: 'register' })}
-      >
-<div className="p-2.5 rounded-2xl bg-gradient-to-br from-pink-200 to-pink-300 text-pink-800 shadow-md cursor-pointer relative overflow-hidden">
-<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Party%20Popper.png" alt="Party Popper" width="40" height="40" className="absolute -top-1 -right-1 transform rotate-12 opacity-30" />
-          <div className="flex items-center gap-2 mb-1.5">
-            <Badge variant="secondary" className="text-blue-600 bg-white/90 text-[0.6rem] px-1.5 py-0.5 font-bold">
-              UPCOMING
-            </Badge>
-          </div>
-          <p className="font-bold text-sm leading-tight mb-2">Śrī Kṛṣṇa Janmāṣṭamī</p>
-          <div className="flex items-baseline justify-center font-bold text-lg" style={{ fontVariantNumeric: 'tabular-nums' }}>
-            {timeLeft.days > 0 && (
-              <>
-                <NumberFlow trend={-1} value={timeLeft.days} />
-                <span className="text-xs font-normal mx-1">d</span>
-              </>
-            )}
-            <NumberFlow trend={-1} value={timeLeft.hours} format={{ minimumIntegerDigits: 2 }} />
-            <span className="text-xs font-normal mx-0.5">:</span>
-            <NumberFlow trend={-1} value={timeLeft.minutes} format={{ minimumIntegerDigits: 2 }} />
-            <span className="text-xs font-normal mx-0.5">:</span>
-            <NumberFlow trend={-1} value={timeLeft.seconds} format={{ minimumIntegerDigits: 2 }} />
-          </div>
-          <motion.div
-            className="mt-2 text-center text-[0.7rem] font-bold text-yellow-900 bg-gradient-to-r from-yellow-400 to-amber-500 py-1 rounded-lg shadow-inner"
-            animate={{ scale: [1, 1.03, 1] }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            Book Your Free Spot
-          </motion.div>
-        </div>
-      </motion.div>
+            <motion.div
+              layoutId="event-card"
+              className="absolute bottom-full right-2 sm:right-4 mb-2 w-48 pointer-events-auto"
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 300, damping: 30 } }}
+              exit={{ opacity: 0, y: 20, scale: 0.9, transition: { duration: 0.2, ease: 'easeOut' } }}
+              onClick={() => navigate({ to: '/fests/invite', hash: 'register' })}
+            >
+              <div className="p-2.5 rounded-2xl bg-gradient-to-br from-pink-200 to-pink-300 text-pink-800 shadow-md cursor-pointer relative overflow-hidden">
+                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Party%20Popper.png" alt="Party Popper" width="40" height="40" className="absolute -top-1 -right-1 transform rotate-12 opacity-30" />
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Badge variant="secondary" className="text-blue-600 bg-white/90 text-[0.6rem] px-1.5 py-0.5 font-bold">
+                    UPCOMING
+                  </Badge>
+                </div>
+                <p className="font-bold text-sm leading-tight mb-2">Śrī Kṛṣṇa Janmāṣṭamī</p>
+                <div className="flex items-baseline justify-center font-bold text-lg" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                  {timeLeft.days > 0 && (
+                    <>
+                      <NumberFlow trend={-1} value={timeLeft.days} />
+                      <span className="text-xs font-normal mx-1">d</span>
+                    </>
+                  )}
+                  <NumberFlow trend={-1} value={timeLeft.hours} format={{ minimumIntegerDigits: 2 }} />
+                  <span className="text-xs font-normal mx-0.5">:</span>
+                  <NumberFlow trend={-1} value={timeLeft.minutes} format={{ minimumIntegerDigits: 2 }} />
+                  <span className="text-xs font-normal mx-0.5">:</span>
+                  <NumberFlow trend={-1} value={timeLeft.seconds} format={{ minimumIntegerDigits: 2 }} />
+                </div>
+                <motion.div
+                  className="mt-2 text-center text-[0.7rem] font-bold text-yellow-900 bg-gradient-to-r from-yellow-400 to-amber-500 py-1 rounded-lg shadow-inner"
+                  animate={{ scale: [1, 1.03, 1] }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  Book Your Free Spot
+                </motion.div>
+              </div>
+            </motion.div>
           )}
         </AnimatePresence>
-        
+
         {/* Desktop Festival Bar - now outside the dock animation wrapper */}
         <AnimatePresence>
           {!isMobile && !timeLeft.isExpired && location.pathname !== '/fests/invite' && (
@@ -1496,7 +1496,7 @@ function NavbarContent() {
                 >
                   🎉 Upcoming Festival: Śrī Kṛṣṇa Janmāṣṭamī
                 </button>
-                
+
                 <div className="flex-shrink-0 flex items-center gap-1.5">
                   <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" className="flex-shrink-0 relative group">
                     <span className={cn(
@@ -1521,8 +1521,8 @@ function NavbarContent() {
                         "relative rounded-full font-bold shadow-lg select-none bg-gradient-to-r from-blue-500 to-indigo-600 text-white transition-all duration-200 ring-2 ring-transparent group-hover:ring-blue-400 flex items-center gap-1",
                         "px-4 py-2 text-sm"
                       )}>
-                          <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Diya%20Lamp.png" alt="Diya Lamp" width={18} height={18} />
-                          Secure your Free Spot
+                        <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Diya%20Lamp.png" alt="Diya Lamp" width={18} height={18} />
+                        Secure your Free Spot
                       </span>
                     </Link>
                   </motion.div>
@@ -1557,7 +1557,7 @@ function NavbarContent() {
             onMouseLeave={() => setHoveredLabelItemId(null)} >
             <MotionConfig transition={dockSpringTransition}>
               <div className={cn('h-full w-full', isClipsPanelActive ? 'p-0' : 'p-2')}>
-                
+
                 <div className={cn(isClipsPanelActive ? 'rounded-none h-full w-full' : 'overflow-hidden rounded-t-2xl')}> {/* Ensure full height/width for clips panel content area */}
                   <AnimatePresence initial={false} mode='sync'>
                     {isDockOpen && activeItem?.isExpandable && (
@@ -1593,12 +1593,12 @@ function NavbarContent() {
                   </AnimatePresence>
                 </div>
                 <div className={cn(
-                    'flex items-end', // Use items-end to align with the bottom, allowing the center button to pop up
-                    isClipsPanelActive
-                      ? 'p-0 py-1 fixed bottom-[env(safe-area-inset-bottom)] left-0 right-0 bg-black/80 backdrop-blur-sm h-[56px] sm:h-[64px] justify-center space-x-2 sm:space-x-3'
-                      : 'p-1.5 sm:p-2.5',
-                    isMobile ? 'relative' : 'justify-center space-x-2 sm:space-x-3'
-                  )} ref={menuRef}>
+                  'flex items-end', // Use items-end to align with the bottom, allowing the center button to pop up
+                  isClipsPanelActive
+                    ? 'p-0 py-1 fixed bottom-[env(safe-area-inset-bottom)] left-0 right-0 bg-black/80 backdrop-blur-sm h-[56px] sm:h-[64px] justify-center space-x-2 sm:space-x-3'
+                    : 'p-1.5 sm:p-2.5',
+                  isMobile ? 'relative' : 'justify-center space-x-2 sm:space-x-3'
+                )} ref={menuRef}>
                   {isMobile ? (
                     <>
                       {/* Bottom row of 4 icons */}
@@ -1665,30 +1665,30 @@ function NavbarContent() {
                         ))}
                         {/* AI Pill Button */}
                         {DOCK_ITEMS.filter(item => item.id === 7).map(item => {
-                            const isMainMenuPanelActive = activeDockItem === item.id && isDockOpen;
-                            const aiPillStyling = isMainMenuPanelActive
-                                ? "bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-500 text-white dark:from-amber-500 dark:via-yellow-600 dark:to-orange-600 dark:text-amber-50 shadow-lg ring-2 ring-white/30 dark:ring-amber-400/40 scale-105"
-                                : "bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-400 text-yellow-900 dark:text-amber-200 dark:from-amber-600/80 dark:via-yellow-700/80 dark:to-orange-700/80 hover:from-yellow-400 hover:to-orange-500 dark:hover:from-amber-500 dark:hover:to-orange-600 shadow-md hover:shadow-lg ring-1 ring-amber-500/30 dark:ring-amber-700/50 hover:ring-amber-500/50 dark:hover:ring-amber-500/70 transform hover:scale-105";
+                          const isMainMenuPanelActive = activeDockItem === item.id && isDockOpen;
+                          const aiPillStyling = isMainMenuPanelActive
+                            ? "bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-500 text-white dark:from-amber-500 dark:via-yellow-600 dark:to-orange-600 dark:text-amber-50 shadow-lg ring-2 ring-white/30 dark:ring-amber-400/40 scale-105"
+                            : "bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-400 text-yellow-900 dark:text-amber-200 dark:from-amber-600/80 dark:via-yellow-700/80 dark:to-orange-700/80 hover:from-yellow-400 hover:to-orange-500 dark:hover:from-amber-500 dark:hover:to-orange-600 shadow-md hover:shadow-lg ring-1 ring-amber-500/30 dark:ring-amber-700/50 hover:ring-amber-500/50 dark:hover:ring-amber-500/70 transform hover:scale-105";
 
-                            return (
-                                <motion.button
-                                    key={item.id}
-                                    type="button"
-                                    aria-label={item.label}
-                                    layout
-                                    className={cn(
-                                        "relative flex items-center justify-center rounded-full cursor-pointer h-7 px-3 text-foreground/80 transition-all duration-200 active:scale-[0.98]",
-                                        aiPillStyling
-                                    )}
-                                    onClick={() => handleDockItemClick(item)}
-                                    onMouseEnter={() => handleDockItemMouseEnter(item)}
-                                >
-                                    <div className="flex items-center gap-1">
-                                        {item.title}
-                                        <span className="text-xs font-medium hidden">{item.label}</span>
-                                    </div>
-                                </motion.button>
-                            );
+                          return (
+                            <motion.button
+                              key={item.id}
+                              type="button"
+                              aria-label={item.label}
+                              layout
+                              className={cn(
+                                "relative flex items-center justify-center rounded-full cursor-pointer h-7 px-3 text-foreground/80 transition-all duration-200 active:scale-[0.98]",
+                                aiPillStyling
+                              )}
+                              onClick={() => handleDockItemClick(item)}
+                              onMouseEnter={() => handleDockItemMouseEnter(item)}
+                            >
+                              <div className="flex items-center gap-1">
+                                {item.title}
+                                <span className="text-xs font-medium hidden">{item.label}</span>
+                              </div>
+                            </motion.button>
+                          );
                         })}
                       </div>
                     </>
@@ -1701,7 +1701,7 @@ function NavbarContent() {
                           if (!isMobile) {
                             return ![7, 8, 10].includes(item.id);
                           }
-                           // Mobile: Hide the Festivals button (id: 10) as it's replaced by the banner.
+                          // Mobile: Hide the Festivals button (id: 10) as it's replaced by the banner.
                           return item.id !== 10;
                         }).map((item) => (
                           <DockItemComponent
@@ -1754,8 +1754,8 @@ function NavbarContent() {
         <div className="h-[env(safe-area-inset-bottom)]" />
       </motion.nav>
 
-      <TempleEvents 
-        open={eventsOpen} 
+      <TempleEvents
+        open={eventsOpen}
         onOpenChange={setEventsOpen}
         _onSoundPlay={safePlayClick}
       />
