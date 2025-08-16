@@ -1087,7 +1087,11 @@ function NavbarContent() {
       label: 'Donate',
       title: <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Love%20Letter.png" alt="Love Letter" width="25" height="25" />,
       subtitle: 'Donate',
-      action: () => handleNavClick('/contribute'),
+      action: () => {
+        handleNavClick('/contribute');
+        // Scroll to top when navigating
+        setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+      },
       isLink: true,
       to: '/contribute',
     },
@@ -1436,29 +1440,43 @@ function NavbarContent() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 300, damping: 30 } }}
               exit={{ opacity: 0, y: 20, scale: 0.9, transition: { duration: 0.2, ease: 'easeOut' } }}
-              onClick={() => navigate({ to: '/fests/invite', hash: 'register' })}
+              onClick={() => navigate({ to: '/fests/invite' })}
             >
               <div className="p-2.5 rounded-2xl bg-gradient-to-br from-pink-200 to-pink-300 text-pink-800 shadow-md cursor-pointer relative overflow-hidden">
                 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Party%20Popper.png" alt="Party Popper" width="40" height="40" className="absolute -top-1 -right-1 transform rotate-12 opacity-30" />
                 <div className="flex items-center gap-2 mb-1.5">
                   <Badge variant="secondary" className="text-blue-600 bg-white/90 text-[0.6rem] px-1.5 py-0.5 font-bold">
-                    UPCOMING
+                    HAPPY
                   </Badge>
                 </div>
                 <p className="font-bold text-sm leading-tight mb-2">Śrī Kṛṣṇa Janmāṣṭamī</p>
-                <div className="flex items-baseline justify-center font-bold text-lg" style={{ fontVariantNumeric: 'tabular-nums' }}>
-                  {timeLeft.days > 0 && (
-                    <>
-                      <NumberFlow trend={-1} value={timeLeft.days} />
-                      <span className="text-xs font-normal mx-1">d</span>
-                    </>
-                  )}
-                  <NumberFlow trend={-1} value={timeLeft.hours} format={{ minimumIntegerDigits: 2 }} />
-                  <span className="text-xs font-normal mx-0.5">:</span>
-                  <NumberFlow trend={-1} value={timeLeft.minutes} format={{ minimumIntegerDigits: 2 }} />
-                  <span className="text-xs font-normal mx-0.5">:</span>
-                  <NumberFlow trend={-1} value={timeLeft.seconds} format={{ minimumIntegerDigits: 2 }} />
-                </div>
+                {timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0 ? (
+                  <div className="flex justify-center">
+                    <a
+                      href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-bold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-1.5"
+                    >
+                      <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width={14} height={14} />
+                      Sponsor
+                    </a>
+                  </div>
+                ) : (
+                  <div className="flex items-baseline justify-center font-bold text-lg" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                    {timeLeft.days > 0 && (
+                      <>
+                        <NumberFlow trend={-1} value={timeLeft.days} />
+                        <span className="text-xs font-normal mx-1">d</span>
+                      </>
+                    )}
+                    <NumberFlow trend={-1} value={timeLeft.hours} format={{ minimumIntegerDigits: 2 }} />
+                    <span className="text-xs font-normal mx-0.5">:</span>
+                    <NumberFlow trend={-1} value={timeLeft.minutes} format={{ minimumIntegerDigits: 2 }} />
+                    <span className="text-xs font-normal mx-0.5">:</span>
+                    <NumberFlow trend={-1} value={timeLeft.seconds} format={{ minimumIntegerDigits: 2 }} />
+                  </div>
+                )}
                 <motion.div
                   className="mt-2 text-center text-[0.7rem] font-bold text-yellow-900 bg-gradient-to-r from-yellow-400 to-amber-500 py-1 rounded-lg shadow-inner"
                   animate={{ scale: [1, 1.03, 1] }}
@@ -1468,7 +1486,7 @@ function NavbarContent() {
                     ease: "easeInOut",
                   }}
                 >
-                  Book Your Free Spot
+                  View Invitation
                 </motion.div>
               </div>
             </motion.div>

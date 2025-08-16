@@ -218,7 +218,15 @@ function NavBarComponent({ className }: NavBarProps) {
                                 )
                             )
                         ))}
-                        <Link to="/contribute" onClick={safePlayClick} onMouseEnter={safePlayHover}>
+                        <Link 
+                            to="/contribute" 
+                            onClick={() => {
+                                safePlayClick();
+                                // Scroll to top when navigating
+                                setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+                            }} 
+                            onMouseEnter={safePlayHover}
+                        >
                             <RainbowButton className="flex items-center gap-2 ml-2">
                                 <img 
                                     src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Beating%20Heart.png" 
@@ -233,7 +241,16 @@ function NavBarComponent({ className }: NavBarProps) {
                     <div className="flex items-center space-x-1 sm:space-x-2">
                         {/* Temple Status Indicator removed, functionality merged into Notification Bell */}
 
-                        <Link to="/contribute" className="sm:hidden" onClick={safePlayClick} onMouseEnter={safePlayHover}>
+                        <Link 
+                            to="/contribute" 
+                            className="sm:hidden" 
+                            onClick={() => {
+                                safePlayClick();
+                                // Scroll to top when navigating
+                                setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+                            }} 
+                            onMouseEnter={safePlayHover}
+                        >
                             <Button
                                 variant="default"
                                 className="bg-white text-[#b5387d] rounded-full hover:bg-white/90 w-9 h-9 p-0 flex items-center justify-center" // Adjusted padding and flex for image
