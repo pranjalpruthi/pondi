@@ -26,15 +26,11 @@ import { Suspense } from 'react'; // Added Suspense import
 import { addLead } from '@/integrations/nocodb-api';
 import { UpcomingEventPanel } from '@/components/homepage/UpcomingEventPanel';
 import TallyTracker from '@/components/tally-tracker';
-import { Route } from '@/routes/fests/invite';
-
 import ShimmerText from '@/components/ui/shimmer-text'; // Added
 import { AppleChatInput } from '@/components/ui/apple-chat-input';
 import { ThreeDotSimpleLoader } from '@/components/ui/three-dot-loader';
 import useAutoScroll from '@/hooks/use-auto-scroll';
 import { ClipsPanel } from '@/components/homepage/clips-panel'; // Changed to import ClipsPanel
-import { Badge } from '@/components/ui/badge';
-import NumberFlow from '@number-flow/react';
 // --- FestivalToggleButton Component has been removed ---
 
 // Define types for DockItem and its props
@@ -858,14 +854,6 @@ function NavbarContent() {
   const templeStatus = useTempleStatus(); // Added
   const location = useLocation(); // Added for route detection
 
-  // Countdown Logic - Hide banner since Janmashtami is over
-  const [timeLeft, setTimeLeft] = React.useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-    isExpired: true, // Hide banner since event is over
-  });
 
 
   // State for the new expandable dock (from snippet)
@@ -883,7 +871,6 @@ function NavbarContent() {
   const lastScrollYRef = React.useRef(0);
   const [isFooterVisible, setIsFooterVisible] = React.useState(false);
   const [clipsPanelCurrentIndex, setClipsPanelCurrentIndex] = React.useState(0); // Added state for clips panel
-  const [isEventCardVisible, setIsEventCardVisible] = React.useState(true);
 
 
   const aiPanelContent = React.useMemo(() => <AIPanel />, []);
@@ -897,8 +884,7 @@ function NavbarContent() {
   const deityDarshanPanelContent = React.useMemo(() => <DeityDarshanPanel onOpenChange={handleClosePanel} />, [handleClosePanel]);
   const upcomingEventPanelContent = React.useMemo(() => <UpcomingEventPanel onClose={() => {
     handleClosePanel();
-    setIsEventCardVisible(true);
-  }} />, [handleClosePanel, setIsEventCardVisible]);
+  }} />, [handleClosePanel]);
 
   // useClickOutside hook (from snippet, adapted path)
   useClickOutside(dockWrapperRef, () => {
@@ -924,14 +910,11 @@ function NavbarContent() {
       // Dock visibility logic
       if (isDockOpen) {
         setIsDockVisible(true);
-        setIsEventCardVisible(false);
       } else {
         if (currentScrollY > lastScrollYRef.current && currentScrollY > 80) {
           setIsDockVisible(false);
-          setIsEventCardVisible(false);
         } else {
           setIsDockVisible(true);
-          setIsEventCardVisible(true);
         }
       }
 
@@ -949,7 +932,6 @@ function NavbarContent() {
           // Hide dock when footer is visible, regardless of scroll direction
           if (entry.isIntersecting && !isDockOpen) {
             setIsDockVisible(false);
-            setIsEventCardVisible(false);
           }
         },
         { threshold: 0.2 } // Adjusted threshold for smoother detection
@@ -965,7 +947,7 @@ function NavbarContent() {
         observer.unobserve(footerElement);
       }
     };
-  }, [isDockOpen, setIsDockVisible, setIsFooterVisible, setIsEventCardVisible]);
+  }, [isDockOpen, setIsDockVisible, setIsFooterVisible]);
 
 
   // Use React Query for sound loading state (existing)
@@ -1017,9 +999,6 @@ function NavbarContent() {
     if (to === '/deities' && isSoundEnabled) playTempleBell(); else safePlayClick();
   }, [isSoundEnabled, playTempleBell, safePlayClick]);
 
-  const handleGetPassClick = React.useCallback(() => {
-    handleNavClick('/fests/invite');
-  }, [handleNavClick]);
 
   // useEffect for Cmd+K/Ctrl+K to open CommandDialog - REMOVED
 
@@ -1265,7 +1244,6 @@ function NavbarContent() {
   ], [isMobile, isSoundEnabled, handleNavClick, handleSoundToggle, playTempleBell, safePlayClick, safePlayHover, navItems, templeStatus, setActiveDockItem, setIsDockOpen, aiPanelContent, clipsPanelContent, clipsPanelCurrentIndex, setClipsPanelCurrentIndex, eventsPanelContent, deityDarshanPanelContent, upcomingEventPanelContent, location.pathname, handleClosePanel]);
 
 
-  const navigate = Route.useNavigate();
   const handleDockItemClick = React.useCallback((item: DockItemData) => {
     if (item.label === 'Deities') playTempleBell(); else safePlayClick();
 
@@ -1278,11 +1256,9 @@ function NavbarContent() {
       if (isDockOpen && isClickedItemActive) {
         setIsDockOpen(false);
         setActiveDockItem(null);
-        if (item.label === 'Festivals') setIsEventCardVisible(true);
       } else {
         setIsDockOpen(true);
         setActiveDockItem(item.id);
-        if (item.label === 'Festivals') setIsEventCardVisible(false);
       }
     } else {
       // Clear all active states for non-expandable items
