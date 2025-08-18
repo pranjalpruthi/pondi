@@ -858,41 +858,14 @@ function NavbarContent() {
   const templeStatus = useTempleStatus(); // Added
   const location = useLocation(); // Added for route detection
 
-  // Countdown Logic - Always show banner
+  // Countdown Logic - Hide banner since Janmashtami is over
   const [timeLeft, setTimeLeft] = React.useState({
     days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0,
-    isExpired: false, // Always show banner
+    isExpired: true, // Hide banner since event is over
   });
-
-  React.useEffect(() => {
-    // Krishna Janmashtami 2025 - August 16, 2025 at 3:00 PM IST
-    const eventDate = new Date("2025-08-16T15:00:00+05:30"); // IST timezone
-    const calculateTimeLeft = () => {
-      const now = new Date();
-      const difference = eventDate.getTime() - now.getTime();
-
-      // Always show countdown, even if expired
-      if (difference <= 0) {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, isExpired: false });
-        return;
-      }
-
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-      setTimeLeft({ days, hours, minutes, seconds, isExpired: false });
-    };
-
-    calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
 
 
   // State for the new expandable dock (from snippet)
@@ -1432,119 +1405,9 @@ function NavbarContent() {
           zIndex: (isClipsPanelActive || isEventsPanelActive) ? 50 : (isDockVisible && !isFooterVisible ? 40 : 10)
         }}
       >
-        <AnimatePresence>
-          {isMobile && !isDockOpen && !isClipsPanelActive && location.pathname !== '/fests/invite' && isEventCardVisible && (
-            <motion.div
-              layoutId="event-card"
-              className="absolute bottom-full right-2 sm:right-4 mb-2 w-48 pointer-events-auto"
-              initial={{ opacity: 0, y: 20, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 300, damping: 30 } }}
-              exit={{ opacity: 0, y: 20, scale: 0.9, transition: { duration: 0.2, ease: 'easeOut' } }}
-              onClick={() => navigate({ to: '/fests/invite' })}
-            >
-              <div className="p-2.5 rounded-2xl bg-gradient-to-br from-pink-200 to-pink-300 text-pink-800 shadow-md cursor-pointer relative overflow-hidden">
-                <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Party%20Popper.png" alt="Party Popper" width="40" height="40" className="absolute -top-1 -right-1 transform rotate-12 opacity-30" />
-                <div className="flex items-center gap-2 mb-1.5">
-                  <Badge variant="secondary" className="text-blue-600 bg-white/90 text-[0.6rem] px-1.5 py-0.5 font-bold">
-                    HAPPY
-                  </Badge>
-                </div>
-                <p className="font-bold text-sm leading-tight mb-2">Śrī Kṛṣṇa Janmāṣṭamī</p>
-                {timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0 ? (
-                  <div className="flex justify-center">
-                    <a
-                      href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-3 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-bold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-1.5"
-                    >
-                      <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width={14} height={14} />
-                      Sponsor
-                    </a>
-                  </div>
-                ) : (
-                  <div className="flex items-baseline justify-center font-bold text-lg" style={{ fontVariantNumeric: 'tabular-nums' }}>
-                    {timeLeft.days > 0 && (
-                      <>
-                        <NumberFlow trend={-1} value={timeLeft.days} />
-                        <span className="text-xs font-normal mx-1">d</span>
-                      </>
-                    )}
-                    <NumberFlow trend={-1} value={timeLeft.hours} format={{ minimumIntegerDigits: 2 }} />
-                    <span className="text-xs font-normal mx-0.5">:</span>
-                    <NumberFlow trend={-1} value={timeLeft.minutes} format={{ minimumIntegerDigits: 2 }} />
-                    <span className="text-xs font-normal mx-0.5">:</span>
-                    <NumberFlow trend={-1} value={timeLeft.seconds} format={{ minimumIntegerDigits: 2 }} />
-                  </div>
-                )}
-                <motion.div
-                  className="mt-2 text-center text-[0.7rem] font-bold text-yellow-900 bg-gradient-to-r from-yellow-400 to-amber-500 py-1 rounded-lg shadow-inner"
-                  animate={{ scale: [1, 1.03, 1] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                >
-                  View Invitation
-                </motion.div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Mobile Event Card - Hidden since Janmashtami is over */}
 
-        {/* Desktop Festival Bar - now outside the dock animation wrapper */}
-        <AnimatePresence>
-          {!isMobile && location.pathname !== '/fests/invite' && (
-            <motion.div
-              layout
-              className="relative mx-auto flex justify-center container px-2 sm:px-4 pointer-events-auto group mb-2"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 30, delay: 0.2 } }}
-              exit={{ height: 0, opacity: 0, transition: { duration: 0.4, ease: 'easeInOut' } }}
-            >
-              <div className={cn(
-                "flex items-center justify-between w-full sm:max-w-fit max-w-md bg-gradient-to-r from-orange-400 to-amber-500 text-white shadow-md transition-all duration-200 gap-2",
-                "p-1.5 rounded-xl"
-              )}>
-                <Link to="/fests/invite" onClick={handleGetPassClick} className="font-bold text-sm pl-1 text-left flex-grow overflow-hidden">
-                  🎉 Happy Śrī Kṛṣṇa Janmāṣṭamī
-                </Link>
-
-                <div className="flex-shrink-0 flex items-center gap-1.5">
-                  <a href="https://pages.razorpay.com/pl_QrNlMduF5wojLm/view" target="_blank" rel="noopener noreferrer" className="flex-shrink-0 relative group">
-                    <span className={cn(
-                      "relative rounded-full font-bold shadow-lg select-none bg-green-500 text-white transition-all duration-200 ring-2 ring-transparent group-hover:ring-green-400 flex items-center gap-1",
-                      "px-4 py-2 text-sm"
-                    )}>
-                      <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Activities/Wrapped%20Gift.png" alt="Wrapped Gift" width={16} height={16} />
-                      Sponsor
-                    </span>
-                  </a>
-                  <motion.div
-                    className="flex-shrink-0 relative group"
-                    animate={{ scale: [1, 1.05, 1] }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    <Link to="/fests/invite" onClick={handleGetPassClick}>
-                      <span className={cn(
-                        "relative rounded-full font-bold shadow-lg select-none bg-gradient-to-r from-blue-500 to-indigo-600 text-white transition-all duration-200 ring-2 ring-transparent group-hover:ring-blue-400 flex items-center gap-1",
-                        "px-4 py-2 text-sm"
-                      )}>
-                        <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Diya%20Lamp.png" alt="Diya Lamp" width={18} height={18} />
-                        View Invitation
-                      </span>
-                    </Link>
-                  </motion.div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Desktop Festival Bar - Hidden since Janmashtami is over */}
 
         <motion.div
           layout

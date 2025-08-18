@@ -67,18 +67,18 @@ type UpcomingEvent = {
 
 // --- HELPER FUNCTIONS ---
 const monthColors = [
-    { name: 'January', badge: 'bg-sky-100 text-sky-800 dark:bg-sky-800/70 dark:text-sky-100', card: 'group-hover:bg-sky-100/70 dark:group-hover:bg-sky-900/40', date: 'bg-sky-100/80 text-sky-600 dark:bg-sky-500/20 dark:text-sky-300 group-hover:bg-sky-200/70 dark:group-hover:bg-sky-500/40', text: 'text-sky-800 dark:text-sky-200' },
-    { name: 'February', badge: 'bg-violet-100 text-violet-800 dark:bg-violet-800/70 dark:text-violet-100', card: 'group-hover:bg-violet-100/70 dark:group-hover:bg-violet-900/40', date: 'bg-violet-100/80 text-violet-600 dark:bg-violet-500/20 dark:text-violet-300 group-hover:bg-violet-200/70 dark:group-hover:bg-violet-500/40', text: 'text-violet-800 dark:text-violet-200' },
-    { name: 'March', badge: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-800/70 dark:text-emerald-100', card: 'group-hover:bg-emerald-100/70 dark:group-hover:bg-emerald-900/40', date: 'bg-emerald-100/80 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300 group-hover:bg-emerald-200/70 dark:group-hover:bg-emerald-500/40', text: 'text-emerald-800 dark:text-emerald-200' },
-    { name: 'April', badge: 'bg-amber-100 text-amber-800 dark:bg-amber-800/70 dark:text-amber-100', card: 'group-hover:bg-amber-100/70 dark:group-hover:bg-amber-900/40', date: 'bg-amber-100/80 text-amber-600 dark:bg-amber-500/20 dark:text-amber-300 group-hover:bg-amber-200/70 dark:group-hover:bg-amber-500/40', text: 'text-amber-800 dark:text-amber-200' },
-    { name: 'May', badge: 'bg-rose-100 text-rose-800 dark:bg-rose-800/70 dark:text-rose-100', card: 'group-hover:bg-rose-100/70 dark:group-hover:bg-rose-900/40', date: 'bg-rose-100/80 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300 group-hover:bg-rose-200/70 dark:group-hover:bg-rose-500/40', text: 'text-rose-800 dark:text-rose-200' },
-    { name: 'June', badge: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-800/70 dark:text-indigo-100', card: 'group-hover:bg-indigo-100/70 dark:group-hover:bg-indigo-900/40', date: 'bg-indigo-100/80 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-300 group-hover:bg-indigo-200/70 dark:group-hover:bg-indigo-500/40', text: 'text-indigo-800 dark:text-indigo-200' },
-    { name: 'July', badge: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-800/70 dark:text-cyan-100', card: 'group-hover:bg-cyan-100/70 dark:group-hover:bg-cyan-900/40', date: 'bg-cyan-100/80 text-cyan-600 dark:bg-cyan-500/20 dark:text-cyan-300 group-hover:bg-cyan-200/70 dark:group-hover:bg-cyan-500/40', text: 'text-cyan-800 dark:text-cyan-200' },
-    { name: 'August', badge: 'bg-orange-100 text-orange-800 dark:bg-orange-800/70 dark:text-orange-100', card: 'group-hover:bg-orange-100/70 dark:group-hover:bg-orange-900/40', date: 'bg-orange-100/80 text-orange-600 dark:bg-orange-500/20 dark:text-orange-300 group-hover:bg-orange-200/70 dark:group-hover:bg-orange-500/40', text: 'text-orange-800 dark:text-orange-200' },
-    { name: 'September', badge: 'bg-lime-100 text-lime-800 dark:bg-lime-800/70 dark:text-lime-100', card: 'group-hover:bg-lime-100/70 dark:group-hover:bg-lime-900/40', date: 'bg-lime-100/80 text-lime-600 dark:bg-lime-500/20 dark:text-lime-300 group-hover:bg-lime-200/70 dark:group-hover:bg-lime-500/40', text: 'text-lime-800 dark:text-lime-200' },
-    { name: 'October', badge: 'bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-800/70 dark:text-fuchsia-100', card: 'group-hover:bg-fuchsia-100/70 dark:group-hover:bg-fuchsia-900/40', date: 'bg-fuchsia-100/80 text-fuchsia-600 dark:bg-fuchsia-500/20 dark:text-fuchsia-300 group-hover:bg-fuchsia-200/70 dark:group-hover:bg-fuchsia-500/40', text: 'text-fuchsia-800 dark:text-fuchsia-200' },
-    { name: 'November', badge: 'bg-teal-100 text-teal-800 dark:bg-teal-800/70 dark:text-teal-100', card: 'group-hover:bg-teal-100/70 dark:group-hover:bg-teal-900/40', date: 'bg-teal-100/80 text-teal-600 dark:bg-teal-500/20 dark:text-teal-300 group-hover:bg-teal-200/70 dark:group-hover:bg-teal-500/40', text: 'text-teal-800 dark:text-teal-200' },
-    { name: 'December', badge: 'bg-blue-100 text-blue-800 dark:bg-blue-800/70 dark:text-blue-100', card: 'group-hover:bg-blue-100/70 dark:group-hover:bg-blue-900/40', date: 'bg-blue-100/80 text-blue-600 dark:bg-blue-500/20 dark:text-blue-300 group-hover:bg-blue-200/70 dark:group-hover:bg-blue-500/40', text: 'text-blue-800 dark:text-blue-200' },
+  { name: 'January', badge: 'bg-sky-100 text-sky-800 dark:bg-sky-800/70 dark:text-sky-100', card: 'group-hover:bg-sky-100/70 dark:group-hover:bg-sky-900/40', date: 'bg-sky-100/80 text-sky-600 dark:bg-sky-500/20 dark:text-sky-300 group-hover:bg-sky-200/70 dark:group-hover:bg-sky-500/40', text: 'text-sky-800 dark:text-sky-200' },
+  { name: 'February', badge: 'bg-violet-100 text-violet-800 dark:bg-violet-800/70 dark:text-violet-100', card: 'group-hover:bg-violet-100/70 dark:group-hover:bg-violet-900/40', date: 'bg-violet-100/80 text-violet-600 dark:bg-violet-500/20 dark:text-violet-300 group-hover:bg-violet-200/70 dark:group-hover:bg-violet-500/40', text: 'text-violet-800 dark:text-violet-200' },
+  { name: 'March', badge: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-800/70 dark:text-emerald-100', card: 'group-hover:bg-emerald-100/70 dark:group-hover:bg-emerald-900/40', date: 'bg-emerald-100/80 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300 group-hover:bg-emerald-200/70 dark:group-hover:bg-emerald-500/40', text: 'text-emerald-800 dark:text-emerald-200' },
+  { name: 'April', badge: 'bg-amber-100 text-amber-800 dark:bg-amber-800/70 dark:text-amber-100', card: 'group-hover:bg-amber-100/70 dark:group-hover:bg-amber-900/40', date: 'bg-amber-100/80 text-amber-600 dark:bg-amber-500/20 dark:text-amber-300 group-hover:bg-amber-200/70 dark:group-hover:bg-amber-500/40', text: 'text-amber-800 dark:text-amber-200' },
+  { name: 'May', badge: 'bg-rose-100 text-rose-800 dark:bg-rose-800/70 dark:text-rose-100', card: 'group-hover:bg-rose-100/70 dark:group-hover:bg-rose-900/40', date: 'bg-rose-100/80 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300 group-hover:bg-rose-200/70 dark:group-hover:bg-rose-500/40', text: 'text-rose-800 dark:text-rose-200' },
+  { name: 'June', badge: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-800/70 dark:text-indigo-100', card: 'group-hover:bg-indigo-100/70 dark:group-hover:bg-indigo-900/40', date: 'bg-indigo-100/80 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-300 group-hover:bg-indigo-200/70 dark:group-hover:bg-indigo-500/40', text: 'text-indigo-800 dark:text-indigo-200' },
+  { name: 'July', badge: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-800/70 dark:text-cyan-100', card: 'group-hover:bg-cyan-100/70 dark:group-hover:bg-cyan-900/40', date: 'bg-cyan-100/80 text-cyan-600 dark:bg-cyan-500/20 dark:text-cyan-300 group-hover:bg-cyan-200/70 dark:group-hover:bg-cyan-500/40', text: 'text-cyan-800 dark:text-cyan-200' },
+  { name: 'August', badge: 'bg-orange-100 text-orange-800 dark:bg-orange-800/70 dark:text-orange-100', card: 'group-hover:bg-orange-100/70 dark:group-hover:bg-orange-900/40', date: 'bg-orange-100/80 text-orange-600 dark:bg-orange-500/20 dark:text-orange-300 group-hover:bg-orange-200/70 dark:group-hover:bg-orange-500/40', text: 'text-orange-800 dark:text-orange-200' },
+  { name: 'September', badge: 'bg-lime-100 text-lime-800 dark:bg-lime-800/70 dark:text-lime-100', card: 'group-hover:bg-lime-100/70 dark:group-hover:bg-lime-900/40', date: 'bg-lime-100/80 text-lime-600 dark:bg-lime-500/20 dark:text-lime-300 group-hover:bg-lime-200/70 dark:group-hover:bg-lime-500/40', text: 'text-lime-800 dark:text-lime-200' },
+  { name: 'October', badge: 'bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-800/70 dark:text-fuchsia-100', card: 'group-hover:bg-fuchsia-100/70 dark:group-hover:bg-fuchsia-900/40', date: 'bg-fuchsia-100/80 text-fuchsia-600 dark:bg-fuchsia-500/20 dark:text-fuchsia-300 group-hover:bg-fuchsia-200/70 dark:group-hover:bg-fuchsia-500/40', text: 'text-fuchsia-800 dark:text-fuchsia-200' },
+  { name: 'November', badge: 'bg-teal-100 text-teal-800 dark:bg-teal-800/70 dark:text-teal-100', card: 'group-hover:bg-teal-100/70 dark:group-hover:bg-teal-900/40', date: 'bg-teal-100/80 text-teal-600 dark:bg-teal-500/20 dark:text-teal-300 group-hover:bg-teal-200/70 dark:group-hover:bg-teal-500/40', text: 'text-teal-800 dark:text-teal-200' },
+  { name: 'December', badge: 'bg-blue-100 text-blue-800 dark:bg-blue-800/70 dark:text-blue-100', card: 'group-hover:bg-blue-100/70 dark:group-hover:bg-blue-900/40', date: 'bg-blue-100/80 text-blue-600 dark:bg-blue-500/20 dark:text-blue-300 group-hover:bg-blue-200/70 dark:group-hover:bg-blue-500/40', text: 'text-blue-800 dark:text-blue-200' },
 ];
 const getMonthColor = (month: number) => monthColors[month % 12];
 
@@ -99,7 +99,7 @@ const filterAndSortUpcomingEvents = (data: CalendarDay[]): UpcomingEvent[] => {
       let significantEvents = day.raw_events
         .filter(event => event.prio <= 300)
         .sort((a, b) => a.prio - b.prio);
-      
+
       if (day.fasting_info?.is_fasting_day) {
         const fastingEvent: RawEvent = {
           text: day.fasting_info.description,
@@ -109,15 +109,15 @@ const filterAndSortUpcomingEvents = (data: CalendarDay[]): UpcomingEvent[] => {
           fastsubject: day.fasting_info.subject,
         };
         if (!significantEvents.some(e => e.text === fastingEvent.text)) {
-            significantEvents.unshift(fastingEvent);
+          significantEvents.unshift(fastingEvent);
         }
       }
-      
+
       if (significantEvents.length > 0) {
         const existingEvents = eventMap.get(day.date_str) || [];
         const allEventsForDay = [...existingEvents, ...significantEvents];
         const uniqueEvents = Array.from(new Map(allEventsForDay.map(e => [e.text, e])).values());
-        eventMap.set(day.date_str, uniqueEvents.sort((a,b) => a.prio - b.prio));
+        eventMap.set(day.date_str, uniqueEvents.sort((a, b) => a.prio - b.prio));
       }
     });
 
@@ -261,8 +261,8 @@ const EventCarousel = () => {
       <div className="absolute inset-0 z-10 flex flex-col justify-end pointer-events-none">
         <div className={cn(
           "relative w-full pointer-events-auto text-white",
-          event.media.length > 0 
-            ? "h-1/3 bg-gradient-to-t from-black/60 via-black/20 to-transparent backdrop-blur-sm" 
+          event.media.length > 0
+            ? "h-1/3 bg-gradient-to-t from-black/60 via-black/20 to-transparent backdrop-blur-sm"
             : "h-full bg-black/40"
         )}>
           {event.media.length > 0 ? (
@@ -311,70 +311,70 @@ const EventCarousel = () => {
                 </div>
                 <div className="flex flex-col justify-between items-end md:items-end flex-shrink-0 self-stretch gap-y-4 w-full md:w-auto">
                   <div className="flex items-center justify-center md:justify-end gap-2 w-full md:w-auto">
-                      <Button size="sm" variant="outline" onClick={() => paginateEvent(-1)} className="bg-blue-500/50 border-blue-400/30 hover:bg-blue-600/60 text-white">
-                        <ArrowLeft className="h-4 w-4 mr-2" />
-                        Prev
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={() => paginateEvent(1)} className="bg-blue-500/50 border-blue-400/30 hover:bg-blue-600/60 text-white">
-                        Next
-                        <ArrowRight className="h-4 w-4 ml-2" />
-                      </Button>
+                    <Button size="sm" variant="outline" onClick={() => paginateEvent(-1)} className="bg-blue-500/50 border-blue-400/30 hover:bg-blue-600/60 text-white">
+                      <ArrowLeft className="h-4 w-4 mr-2" />
+                      Prev
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => paginateEvent(1)} className="bg-blue-500/50 border-blue-400/30 hover:bg-blue-600/60 text-white">
+                      Next
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </Button>
                   </div>
                   <div className="flex items-center justify-center md:justify-end gap-2 w-full md:w-auto flex-wrap">
-                      {event.registrationUrl && (
-                        event.registrationUrl.startsWith('/') ? (
-                          <Link to={event.registrationUrl} hash={event.registrationHash}>
-                            <EventCtaButton
-                              icon={<CheckCircle className="h-6 w-6" />}
-                              defaultText="Register Now!"
-                              hoverText="for this event"
-                              emoji="✨"
-                              className="bg-green-500 hover:bg-green-600"
-                              pulseColor="rgba(34, 197, 94, 0.4)"
-                            />
-                          </Link>
-                        ) : (
-                          <a href={event.registrationUrl} target="_blank" rel="noopener noreferrer">
-                            <EventCtaButton
-                              icon={<CheckCircle className="h-6 w-6" />}
-                              defaultText="Register Now!"
-                              hoverText="for this event"
-                              emoji="✨"
-                              className="bg-green-500 hover:bg-green-600"
-                              pulseColor="rgba(34, 197, 94, 0.4)"
-                            />
-                          </a>
-                        )
-                      )}
-                      <Popover>
-                        <PopoverTrigger asChild>
+                    {event.registrationUrl && (
+                      event.registrationUrl.startsWith('/') ? (
+                        <Link to={event.registrationUrl} hash={event.registrationHash}>
                           <EventCtaButton
-                            icon={<MapPin className="h-6 w-6" />}
-                            defaultText="Plan a Visit"
-                            hoverText="Get Directions"
-                            emoji="🗺️"
-                            className="bg-blue-500 hover:bg-blue-600"
-                            pulseColor="rgba(59, 130, 246, 0)"
+                            icon={<CheckCircle className="h-6 w-6" />}
+                            defaultText="Register Now!"
+                            hoverText="for this event"
+                            emoji="✨"
+                            className="bg-green-500 hover:bg-green-600"
+                            pulseColor="rgba(34, 197, 94, 0.4)"
                           />
-                        </PopoverTrigger>
-                        <PopoverContent className="w-72 text-black dark:text-white">
-                          <h3 className="font-semibold mb-2">ISKM Pudhuvai Temple</h3>
-                          <p className="text-sm text-muted-foreground mb-3">{locationDetails.address}</p>
-                          <div className="flex flex-col space-y-2 mb-3">
-                            <Badge variant="secondary" className="flex items-center gap-1 w-fit bg-green-500 hover:bg-green-600 text-white"><IconCar className="h-3 w-3" />Book Temple Tour</Badge>
-                            <a href={`tel:${locationDetails.tourPhone}`} className="w-fit">
-                              <Badge variant="secondary" className="flex items-center gap-1 cursor-pointer bg-purple-500 hover:bg-purple-600 text-white"><IconPhone className="h-3 w-3" />{locationDetails.tourPhone}</Badge>
-                            </a>
-                          </div>
-                          <div>
-                            <h4 className="font-semibold flex items-center text-sm mb-1"><IconClock className="mr-2 h-4 w-4" /> Opening Hours:</h4>
-                            <ul className="text-sm text-muted-foreground space-y-0.5">{locationDetails.hours.map((line, i) => <li key={i}>{line}</li>)}</ul>
-                          </div>
-                          <div className="mt-4">
-                            <Button variant="secondary" size="sm" className="w-full bg-blue-500 hover:bg-blue-600 text-white" onClick={() => { window.open(locationDetails.mapsLink, '_blank'); }}><MapPin className="mr-2 h-4 w-4" />Open in Maps</Button>
-                          </div>
-                        </PopoverContent>
-                      </Popover>
+                        </Link>
+                      ) : (
+                        <a href={event.registrationUrl} target="_blank" rel="noopener noreferrer">
+                          <EventCtaButton
+                            icon={<CheckCircle className="h-6 w-6" />}
+                            defaultText="Register Now!"
+                            hoverText="for this event"
+                            emoji="✨"
+                            className="bg-green-500 hover:bg-green-600"
+                            pulseColor="rgba(34, 197, 94, 0.4)"
+                          />
+                        </a>
+                      )
+                    )}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <EventCtaButton
+                          icon={<MapPin className="h-6 w-6" />}
+                          defaultText="Plan a Visit"
+                          hoverText="Get Directions"
+                          emoji="🗺️"
+                          className="bg-blue-500 hover:bg-blue-600"
+                          pulseColor="rgba(59, 130, 246, 0)"
+                        />
+                      </PopoverTrigger>
+                      <PopoverContent className="w-72 text-black dark:text-white">
+                        <h3 className="font-semibold mb-2">ISKM Pudhuvai Temple</h3>
+                        <p className="text-sm text-muted-foreground mb-3">{locationDetails.address}</p>
+                        <div className="flex flex-col space-y-2 mb-3">
+                          <Badge variant="secondary" className="flex items-center gap-1 w-fit bg-green-500 hover:bg-green-600 text-white"><IconCar className="h-3 w-3" />Book Temple Tour</Badge>
+                          <a href={`tel:${locationDetails.tourPhone}`} className="w-fit">
+                            <Badge variant="secondary" className="flex items-center gap-1 cursor-pointer bg-purple-500 hover:bg-purple-600 text-white"><IconPhone className="h-3 w-3" />{locationDetails.tourPhone}</Badge>
+                          </a>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold flex items-center text-sm mb-1"><IconClock className="mr-2 h-4 w-4" /> Opening Hours:</h4>
+                          <ul className="text-sm text-muted-foreground space-y-0.5">{locationDetails.hours.map((line, i) => <li key={i}>{line}</li>)}</ul>
+                        </div>
+                        <div className="mt-4">
+                          <Button variant="secondary" size="sm" className="w-full bg-blue-500 hover:bg-blue-600 text-white" onClick={() => { window.open(locationDetails.mapsLink, '_blank'); }}><MapPin className="mr-2 h-4 w-4" />Open in Maps</Button>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </div>
               </div>
@@ -470,14 +470,14 @@ const EventCarousel = () => {
       {event.media.length > 1 && (
         <>
           <div className="absolute right-4 top-1/2 -translate-y-1/2 z-20">
-                  <Button size="icon" onClick={() => paginateMedia(1)} variant="secondary" className="rounded-full shadow-lg bg-blue-500/50 hover:bg-blue-600/60">
-                    <ChevronRight />
-                  </Button>
+            <Button size="icon" onClick={() => paginateMedia(1)} variant="secondary" className="rounded-full shadow-lg bg-blue-500/50 hover:bg-blue-600/60">
+              <ChevronRight />
+            </Button>
           </div>
           <div className="absolute left-4 top-1/2 -translate-y-1/2 z-20">
-                  <Button size="icon" onClick={() => paginateMedia(-1)} variant="secondary" className="rounded-full shadow-lg bg-blue-500/50 hover:bg-blue-600/60">
-                    <ArrowLeft />
-                  </Button>
+            <Button size="icon" onClick={() => paginateMedia(-1)} variant="secondary" className="rounded-full shadow-lg bg-blue-500/50 hover:bg-blue-600/60">
+              <ArrowLeft />
+            </Button>
           </div>
         </>
       )}
@@ -500,9 +500,9 @@ const VirtualizedEventList = ({
     count: events.length,
     getScrollElement: () => parentRef.current,
     estimateSize: (index) => {
-        const day = events[index];
-        if (!day) return 132;
-        return 116 + (day.events.length > 1 ? (day.events.length - 1) * 24 : 0);
+      const day = events[index];
+      if (!day) return 132;
+      return 116 + (day.events.length > 1 ? (day.events.length - 1) * 24 : 0);
     },
     overscan: 5,
   });
@@ -510,7 +510,7 @@ const VirtualizedEventList = ({
   useEffect(() => {
     const virtualItems = rowVirtualizer.getVirtualItems();
     if (!virtualItems || virtualItems.length === 0) return;
-    
+
     const firstItem = virtualItems[0];
     if (firstItem) {
       const day = events[firstItem.index];
@@ -533,7 +533,7 @@ const VirtualizedEventList = ({
           const date = new Date(day.date);
           const month = date.getMonth();
           const monthColor = getMonthColor(month);
-          
+
           const isFastingDay = day.events.some(e => e.fasttype > 0 || e.text.toLowerCase().includes('ekadasi'));
           const isBreakFastDay = day.events.some(e => e.dispItem === 17);
 
@@ -556,8 +556,8 @@ const VirtualizedEventList = ({
                   isFastingDay
                     ? "bg-pink-50/50 dark:bg-pink-900/20 group-hover:bg-pink-100/70 dark:group-hover:bg-pink-900/40"
                     : isBreakFastDay
-                    ? "bg-rose-50/50 dark:bg-rose-900/20 group-hover:bg-rose-100/70 dark:group-hover:bg-rose-900/40"
-                    : monthColor.card
+                      ? "bg-rose-50/50 dark:bg-rose-900/20 group-hover:bg-rose-100/70 dark:group-hover:bg-rose-900/40"
+                      : monthColor.card
                 )}
               >
                 <div className={cn(
@@ -565,8 +565,8 @@ const VirtualizedEventList = ({
                   isFastingDay
                     ? "bg-pink-100/80 dark:bg-pink-500/20 text-pink-600 dark:text-pink-300 group-hover:bg-pink-200/70 dark:group-hover:bg-pink-500/40"
                     : isBreakFastDay
-                    ? "bg-rose-100/80 dark:bg-rose-500/20 text-rose-600 dark:text-rose-300 group-hover:bg-rose-200/70 dark:group-hover:bg-rose-500/40"
-                    : monthColor.date
+                      ? "bg-rose-100/80 dark:bg-rose-500/20 text-rose-600 dark:text-rose-300 group-hover:bg-rose-200/70 dark:group-hover:bg-rose-500/40"
+                      : monthColor.date
                 )}>
                   <span className="text-sm font-semibold">{formatDateDisplay(day.date).split(' ')[0]}</span>
                   <span className="text-xl font-bold">{formatDateDisplay(day.date).split(' ')[1]}</span>
@@ -581,8 +581,8 @@ const VirtualizedEventList = ({
                         isFastingEvent
                           ? "text-pink-800 dark:text-pink-200"
                           : isBreakFastEvent
-                          ? "text-rose-800 dark:text-rose-200"
-                          : monthColor.text
+                            ? "text-rose-800 dark:text-rose-200"
+                            : monthColor.text
                       )}>{event.text}</p>
                     )
                   })}
@@ -734,7 +734,7 @@ interface SpecialEventBannerProps {
 }
 
 const SpecialEventBanner = ({ safePlayPopOn: _ }: SpecialEventBannerProps) => {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false); // Hide banner since Janmashtami is over
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
@@ -755,8 +755,8 @@ const SpecialEventBanner = ({ safePlayPopOn: _ }: SpecialEventBannerProps) => {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, height: 0, padding: 0, margin: 0 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          exit={{ opacity: 0, height: 0, padding: 0, margin: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           className="relative bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white p-2 md:p-4 rounded-xl shadow-lg mb-4 md:mb-12 overflow-hidden"
           onClick={handleClick}
           style={{ cursor: isMobile ? 'pointer' : 'default' }}
@@ -841,7 +841,7 @@ export function EventSection() {
           </div>
         </motion.div>
 
-        <SpecialEventBanner 
+        <SpecialEventBanner
           safePlayPopOn={safePlayPopOn}
         />
 
