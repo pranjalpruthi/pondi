@@ -13,8 +13,12 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as editableContent from "../editableContent.js";
-import type * as puck from "../puck.js";
+import type * as http from "../http.js";
+import type * as payments from "../payments.js";
+import type * as razorpay from "../razorpay.js";
+import type * as subscriptions from "../subscriptions.js";
+import type * as webhookMutations from "../webhookMutations.js";
+import type * as webhooks from "../webhooks.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -25,8 +29,12 @@ import type * as puck from "../puck.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  editableContent: typeof editableContent;
-  puck: typeof puck;
+  http: typeof http;
+  payments: typeof payments;
+  razorpay: typeof razorpay;
+  subscriptions: typeof subscriptions;
+  webhookMutations: typeof webhookMutations;
+  webhooks: typeof webhooks;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

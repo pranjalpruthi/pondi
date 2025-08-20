@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { motion, type Variants } from "motion/react"
+import { useEffect, useRef } from 'react'
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter
 } from "@/components/ui/card"
@@ -11,14 +12,13 @@ import { MorphingPopover, MorphingPopoverTrigger, MorphingPopoverContent } from 
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-  DrawerFooter,
-} from "@/components/ui/drawer"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 // Type definitions
 interface SevaTier {
@@ -129,265 +129,132 @@ const sevaTiers: SevaTier[] = [
   }
 ];
 
-const SevaCard = ({ tier }: { tier: SevaTier }) => {
-  const getBackgroundImage = (icon: string): string => {
-    const imageMap: Record<string, string> = {
-      'cherry-blossom': '/services/pushpa.webp',
-      'diya-lamp': '/services/archna.webp',
-      'bento-box': '/services/anna.webp',
-      'cow-emoji': '/services/gau.webp'
-    };
-    return imageMap[icon] || imageMap['diya-lamp'];
+const getBackgroundImage = (icon: string): string => {
+  const imageMap: Record<string, string> = {
+    'cherry-blossom': '/services/pushpa.webp',
+    'diya-lamp': '/services/archna.webp',
+    'bento-box': '/services/anna.webp',
+    'cow-emoji': '/services/gau.webp'
   };
+  return imageMap[icon] || imageMap['diya-lamp'];
+};
 
-  // Mobile card component for drawer trigger
-  const MobileCard = () => (
+const SevaThumbnail = ({ tier }: { tier: SevaTier }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.9 }}
+    whileInView={{ opacity: 1, scale: 1 }}
+    viewport={{ once: true, amount: 0.5 }}
+    transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+    className="h-full w-full"
+  >
+    <Card className={cn(
+      "relative overflow-hidden rounded-2xl border h-full flex flex-col justify-end transition-all duration-300 group cursor-pointer aspect-square",
+      tier.highlighted ? "border-amber-400/50" : "border-zinc-200/50 dark:border-zinc-800/50",
+      "hover:shadow-lg hover:-translate-y-1 backdrop-blur-xl active:scale-95"
+    )}>
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-80 dark:opacity-70 group-hover:scale-110 transition-transform duration-500"
+        style={{ backgroundImage: `url(${getBackgroundImage(tier.icon)})` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+      <div className="relative z-10 p-4">
+        <h3
+          className="text-lg font-bold text-white shadow-black/50 text-shadow-lg"
+          style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
+        >
+          {tier.name}
+        </h3>
+        <p className="text-sm text-white/90 line-clamp-2 text-shadow-sm shadow-black/50 mt-1">{tier.description}</p>
+      </div>
+    </Card>
+  </motion.div>
+);
+
+const SevaCircleThumbnail = ({ tier }: { tier: SevaTier }) => (
+  <div className="flex flex-col items-center gap-2">
     <motion.div
-      initial={{ opacity: 0, y: 50, scale: 0.95 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ type: 'spring', stiffness: 50, damping: 15, duration: 0.8 }}
-      className="h-full w-full"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      className="w-20 h-20 rounded-full overflow-hidden border-2 border-white dark:border-zinc-800 shadow-lg cursor-pointer"
     >
-      <Card className={cn(
-        "relative overflow-hidden rounded-2xl border h-full flex flex-col transition-all duration-300 group cursor-pointer",
-        tier.highlighted
-          ? "border-amber-400/50 bg-white/90 dark:bg-zinc-900/80 shadow-lg shadow-amber-500/20"
-          : "border-zinc-200/50 dark:border-zinc-800/50 bg-white/90 dark:bg-zinc-900/70",
-        "hover:shadow-lg hover:-translate-y-1 backdrop-blur-xl active:scale-95"
-      )}>
-        {/* Background Image with fade effect */}
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-15 dark:opacity-10 pointer-events-none"
-          style={{ backgroundImage: `url(${getBackgroundImage(tier.icon)})` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-white/60 to-white/40 dark:from-zinc-900/80 dark:via-zinc-900/60 dark:to-zinc-900/40 pointer-events-none" />
-        {/* Gradient tint overlay */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${tier.color} opacity-5 dark:opacity-10 pointer-events-none`} />
-
-
-        <div className="relative z-10 flex flex-col h-full p-4">
-          <div className="text-center">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 10 }}
-              className="flex justify-center mb-3"
-            >
-              <div className="w-24 h-20 rounded-xl overflow-hidden shadow-md border border-white/20">
-                <img
-                  src={getBackgroundImage(tier.icon)}
-                  alt={tier.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </motion.div>
-            <h3
-              className="text-lg font-bold mb-2 bg-gradient-to-r from-slate-700 to-slate-900 dark:from-slate-200 dark:to-slate-50 bg-clip-text text-transparent"
-              style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
-            >
-              {tier.name}
-            </h3>
-            <div className="mb-2">
-              <span className="text-2xl font-bold text-foreground">₹{tier.price}</span>
-              <span className="text-sm text-muted-foreground ml-1">/month</span>
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-              {tier.description}
-            </p>
-          </div>
-        </div>
-      </Card>
+      <img src={getBackgroundImage(tier.icon)} alt={tier.name} className="w-full h-full object-cover" />
     </motion.div>
-  );
+    <p className="text-xs font-semibold text-center text-foreground">{tier.name}</p>
+  </div>
+);
 
-  // Desktop card component (existing design)
-  const DesktopCard = () => (
-    <motion.div
-      initial={{ opacity: 0, y: 50, scale: 0.95 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ type: 'spring', stiffness: 50, damping: 15, duration: 0.8 }}
-      className="h-full w-full"
-    >
-      <Card className={cn(
-        "relative overflow-hidden rounded-3xl border h-full flex flex-col transition-all duration-300 group",
-        tier.highlighted
-          ? "border-amber-400/50 bg-white/95 dark:bg-zinc-900/80 shadow-2xl shadow-amber-500/20"
-          : "border-zinc-200/50 dark:border-zinc-800/50 bg-white/95 dark:bg-zinc-900/70",
-        "hover:shadow-2xl hover:-translate-y-2 backdrop-blur-xl"
-      )}>
-        {/* Background Image with fade effect */}
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-20 dark:opacity-15 pointer-events-none"
-          style={{ backgroundImage: `url(${getBackgroundImage(tier.icon)})` }}
+const SevaDialogContent = ({ tier }: { tier: SevaTier }) => (
+  <DialogContent className="max-w-md">
+    <DialogHeader className="text-center items-center">
+      <div className="w-48 h-36 rounded-2xl overflow-hidden shadow-lg border border-white/30 mb-4">
+        <img
+          src={getBackgroundImage(tier.icon)}
+          alt={tier.name}
+          className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-white/85 via-white/70 to-white/50 dark:from-zinc-900/85 dark:via-zinc-900/70 dark:to-zinc-900/50 pointer-events-none" />
-        {/* Gradient tint overlay */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${tier.color} opacity-5 dark:opacity-10 pointer-events-none`} />
+      </div>
+      <DialogTitle
+        className="text-2xl font-bold mb-2 bg-gradient-to-r from-slate-800 to-slate-900 dark:from-slate-200 dark:to-slate-50 bg-clip-text text-transparent"
+        style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
+      >
+        {tier.name}
+      </DialogTitle>
+      <div className="mb-3">
+        <span className="text-3xl font-bold text-slate-900 dark:text-slate-100">₹{tier.price}</span>
+        <span className="text-lg text-slate-600 dark:text-slate-400 ml-1.5">/month</span>
+      </div>
+      <DialogDescription className="text-base text-slate-700 dark:text-slate-300 leading-relaxed">
+        {tier.description}
+      </DialogDescription>
+    </DialogHeader>
+    <div className="px-4 pb-0">
+      <blockquote className="text-center">
+        <p className="text-base font-medium text-slate-800 dark:text-slate-200 italic leading-relaxed mb-3 break-words">
+          "{tier.quote.text}"
+        </p>
+        <cite className="text-sm text-slate-600 dark:text-slate-400 font-medium not-italic">
+          — {tier.quote.reference}
+        </cite>
+      </blockquote>
+      {tier.quote.translation && (
+        <p className="text-sm text-slate-700 dark:text-slate-300 font-normal leading-relaxed text-center mt-3 pt-3 border-t border-slate-200/50 dark:border-slate-700/50">
+          {tier.quote.translation}
+        </p>
+      )}
+    </div>
+  </DialogContent>
+);
 
-
-        <div className="relative z-10 flex flex-col h-full p-6">
-          <CardHeader className="text-center pt-4 pb-3">
-            <motion.div
-              whileHover={{ scale: 1.1, rotate: -2 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 10 }}
-              className="flex justify-center mb-3"
-            >
-              <div className="w-40 h-28 rounded-2xl overflow-hidden shadow-lg border border-white/30">
-                <img
-                  src={getBackgroundImage(tier.icon)}
-                  alt={tier.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </motion.div>
-            <CardTitle
-              className="text-2xl font-bold mb-2 bg-gradient-to-r from-slate-700 to-slate-900 dark:from-slate-200 dark:to-slate-50 bg-clip-text text-transparent"
-              style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
-            >
-              {tier.name}
-            </CardTitle>
-            <div className="mb-2">
-              <span className="text-3xl font-bold text-foreground">₹{tier.price}</span>
-              <span className="text-base text-muted-foreground ml-1">/month</span>
-            </div>
-            <CardDescription className="text-base text-muted-foreground leading-snug px-2">
-              {tier.description}
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent className="flex-grow px-4 pb-3">
-            <div className="space-y-3 w-full">
-              <blockquote className="text-center">
-                <p className="text-sm font-medium text-slate-800 dark:text-slate-200 italic leading-relaxed mb-2 break-words">
-                  "{tier.quote.text}"
-                </p>
-                <cite className="text-xs text-slate-600 dark:text-slate-400 font-medium not-italic">
-                  — {tier.quote.reference}
-                </cite>
-              </blockquote>
-              {tier.quote.translation && (
-                <p className="text-xs text-slate-700 dark:text-slate-300 font-normal leading-relaxed text-center mt-2 pt-2 border-t border-slate-200/50 dark:border-slate-700/50">
-                  {tier.quote.translation}
-                </p>
-              )}
-            </div>
-          </CardContent>
-
-          <CardFooter className="pt-3 mt-auto px-3 pb-4">
-            <a
-              href={tier.subscriptionLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full"
-            >
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-              >
-                <Button
-                  className={cn(
-                    `w-full bg-gradient-to-r ${tier.color} text-white font-bold py-3 rounded-2xl shadow-lg transition-all duration-300 text-base`,
-                    "hover:shadow-xl hover:brightness-110"
-                  )}
-                >
-                  {tier.cta}
-                  <ChevronRight className="h-4 w-4 ml-2" />
-                </Button>
-              </motion.div>
-            </a>
-          </CardFooter>
-        </div>
-      </Card>
-    </motion.div>
-  );
-
+const SevaCard = ({ tier }: { tier: SevaTier }) => {
   return (
-    <>
-      {/* Mobile: Drawer implementation */}
-      <div className="block lg:hidden">
-        <Drawer>
-          <DrawerTrigger asChild>
-            <div>
-              <MobileCard />
-            </div>
-          </DrawerTrigger>
-          <DrawerContent className="max-h-[85vh]">
-            <div className="mx-auto w-full max-w-sm">
-              <DrawerHeader className="text-center pb-4">
-                <div className="flex justify-center mb-4">
-                  <div className="w-48 h-36 rounded-2xl overflow-hidden shadow-lg border border-white/30">
-                    <img
-                      src={getBackgroundImage(tier.icon)}
-                      alt={tier.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-                <DrawerTitle
-                  className="text-2xl font-bold mb-2 bg-gradient-to-r from-slate-800 to-slate-900 dark:from-slate-200 dark:to-slate-50 bg-clip-text text-transparent"
-                  style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
-                >
-                  {tier.name}
-                </DrawerTitle>
-                <div className="mb-3">
-                  <span className="text-3xl font-bold text-slate-900 dark:text-slate-100">₹{tier.price}</span>
-                  <span className="text-lg text-slate-600 dark:text-slate-400 ml-1.5">/month</span>
-                </div>
-                <DrawerDescription className="text-base text-slate-700 dark:text-slate-300 leading-relaxed">
-                  {tier.description}
-                </DrawerDescription>
-
-              </DrawerHeader>
-
-              <div className="px-4 pb-0 overflow-y-auto">
-                <div className="space-y-4 w-full">
-                  <blockquote className="text-center">
-                    <p className="text-base font-medium text-slate-800 dark:text-slate-200 italic leading-relaxed mb-3 break-words">
-                      "{tier.quote.text}"
-                    </p>
-                    <cite className="text-sm text-slate-600 dark:text-slate-400 font-medium not-italic">
-                      — {tier.quote.reference}
-                    </cite>
-                  </blockquote>
-                  {tier.quote.translation && (
-                    <p className="text-sm text-slate-700 dark:text-slate-300 font-normal leading-relaxed text-center mt-3 pt-3 border-t border-slate-200/50 dark:border-slate-700/50">
-                      {tier.quote.translation}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <DrawerFooter className="pt-6">
-                <a
-                  href={tier.subscriptionLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full"
-                >
-                  <Button
-                    className={cn(
-                      `w-full bg-gradient-to-r ${tier.color} text-white font-bold py-4 rounded-2xl shadow-lg transition-all duration-300 text-base`,
-                      "hover:shadow-xl hover:brightness-110"
-                    )}
-                  >
-                    {tier.cta}
-                    <ChevronRight className="h-4 w-4 ml-2" />
-                  </Button>
-                </a>
-              </DrawerFooter>
-            </div>
-          </DrawerContent>
-        </Drawer>
-      </div>
-
-      {/* Desktop: Original card layout */}
-      <div className="hidden lg:block">
-        <DesktopCard />
-      </div>
-    </>
+    <Dialog>
+      <DialogTrigger asChild>
+        <div><SevaThumbnail tier={tier} /></div>
+      </DialogTrigger>
+      <SevaDialogContent tier={tier} />
+    </Dialog>
   );
+};
+
+const RazorpayForm = () => {
+  const formContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (formContainerRef.current && formContainerRef.current.children.length === 0) {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.razorpay.com/static/widget/subscription-button.js';
+      script.async = true;
+      script.setAttribute('data-subscription_button_id', 'pl_R7d81CHI8YiqH4');
+      script.setAttribute('data-button_theme', 'brand-color');
+
+      const form = document.createElement('form');
+      form.appendChild(script);
+
+      formContainerRef.current.appendChild(form);
+    }
+  }, []);
+
+  return <div ref={formContainerRef} />;
 };
 
 const fadeInUpVariants: Variants = {
@@ -637,18 +504,51 @@ function ContributePage() {
               </div>
             </div>
           </motion.div>
-          {/* Mobile: 2x2 grid layout */}
-          <div className="grid grid-cols-2 gap-3 lg:hidden">
-            {sevaTiers.map((tier) => (
-              <SevaCard key={tier.id} tier={tier} />
-            ))}
+          
+          {/* Mobile: Show circular thumbnails and then the form */}
+          <div className="lg:hidden">
+            <div className="flex justify-around items-start mb-8">
+              {sevaTiers.map((tier) => (
+                <Dialog key={tier.id}>
+                  <DialogTrigger asChild>
+                    <div><SevaCircleThumbnail tier={tier} /></div>
+                  </DialogTrigger>
+                  <SevaDialogContent tier={tier} />
+                </Dialog>
+              ))}
+            </div>
+            <div className="text-center mb-4">
+              <h3 className="text-2xl font-bold mb-2">Sponsor a Seva</h3>
+              <p className="text-muted-foreground">
+                You can sponsor any of our sevas using the form below.
+              </p>
+            </div>
+            <RazorpayForm />
           </div>
 
-          {/* Desktop: Original layout */}
-          <div className="hidden lg:grid lg:grid-cols-4 gap-6 md:gap-8">
-            {sevaTiers.map((tier) => (
-              <SevaCard key={tier.id} tier={tier} />
-            ))}
+          {/* Desktop: Two-column layout */}
+          <div className="hidden lg:grid lg:grid-cols-5 gap-8">
+            {/* Left Column: Seva Cards in a 2x2 grid */}
+            <div className="lg:col-span-3">
+              <div className="grid grid-cols-2 gap-6">
+                {sevaTiers.map((tier) => (
+                  <SevaCard key={tier.id} tier={tier} />
+                ))}
+              </div>
+            </div>
+
+            {/* Right Column: Razorpay Form */}
+            <div className="lg:col-span-2">
+              <div className="sticky top-24">
+                <div className="text-center mb-4">
+                  <h3 className="text-2xl font-bold mb-2">Sponsor a Seva</h3>
+                  <p className="text-muted-foreground">
+                    You can sponsor any of our sevas using the form below.
+                  </p>
+                </div>
+                <RazorpayForm />
+              </div>
+            </div>
           </div>
 
           <motion.div

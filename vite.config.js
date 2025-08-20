@@ -78,6 +78,12 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/nocodb/, ''),
         secure: true, // Target is HTTPS
+      },
+      // Proxy requests to Convex backend (HTTP Actions URL)
+      '/api': {
+        target: 'https://ibc2.pranjal.work',
+        changeOrigin: true,
+        secure: true,
       }
     },
   },

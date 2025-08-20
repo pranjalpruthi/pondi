@@ -43,7 +43,7 @@ function DrawerOverlay({
   return (
     <DrawerPrimitive.Overlay
       className={cn(
-        "fixed inset-0 z-50 bg-black/40 backdrop-blur-md",
+        "fixed inset-0 z-50 bg-black/40",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         className
@@ -64,8 +64,8 @@ function DrawerContent({
       <DrawerPrimitive.Content
         className={cn(
           "fixed z-50 flex flex-col antialiased",
-          "bg-background/80 backdrop-blur-xl backdrop-saturate-200",
-          "duration-300 ease-in-out",
+          "bg-background/80 backdrop-saturate-200",
+          "duration-200 ease-in-out",
           
           // Bottom drawer specific
           "data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0",

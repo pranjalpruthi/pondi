@@ -1,4 +1,4 @@
-import { createFileRoute, useLocation } from '@tanstack/react-router';
+import { createFileRoute, useLocation, redirect } from '@tanstack/react-router';
 import { useEffect, useState, useRef, type FC, type ReactNode, Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Confetti, type ConfettiRef } from '@/components/magicui/confetti';
@@ -1068,6 +1068,11 @@ const EventActivitiesSection = () => {
 };
 
 export const Route = createFileRoute('/fests/invite')({
+  beforeLoad: () => {
+    throw redirect({
+      to: '/contribute',
+    })
+  },
   component: JanmashtamiPage,
 });
 

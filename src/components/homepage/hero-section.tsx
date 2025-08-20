@@ -15,6 +15,11 @@ import Carousel, {
 import { createPortal } from "react-dom";
 
 import {
+  Drawer,
+  DrawerContent,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import {
   IconBrandInstagram,
   IconBrandFacebook,
   IconBrandYoutube,
@@ -104,6 +109,8 @@ interface HeroForegroundProps {
   safePlayPopOn: () => void;
   safePlayPopOff: () => void;
   isMobile: boolean;
+  contactIconError: boolean;
+  setContactIconError: (error: boolean) => void;
 }
 
 // --- New HeroGalleryModal (adapted from user's SliderModal example) ---
@@ -378,8 +385,11 @@ function HeroGalleryModal({
 }
 // --- End of New HeroGalleryModal ---
 
-const HeroForeground = React.memo<HeroForegroundProps>((props) => {
-  const [contactIconError, setContactIconError] = useState(false);
+const HeroForeground = React.memo<HeroForegroundProps>(({
+  contactIconError,
+  setContactIconError,
+  ...props
+}) => {
   return (
     <div className="z-10 relative px-4 sm:px-6">
       <div className="grid grid-cols-1 gap-12 items-center">
@@ -396,170 +406,335 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
             transition={{ delay: 0.6 }}
             className="flex flex-wrap gap-2 sm:gap-4 justify-center items-center"
           >
-            <Popover onOpenChange={(open) => { if (open) props.safePlayPopOn(); else props.safePlayPopOff(); }}>
-              <PopoverTrigger asChild>
-                <EventCtaButton
-                  icon={<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Heart%20Hands.png" alt="Heart Hands" width="25" height="25" />}
-                  defaultText={props.isMobile ? "Support" : "Support Us"}
-                  hoverText={props.isMobile ? "Donate" : "with a donation"}
-                  emoji="🫶"
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
-                  onClick={props.safePlayClick}
-                  onMouseEnter={props.safePlayHover}
-                  isExpanded={!props.isMobile}
-                  hasShimmer={false}
-                />
-              </PopoverTrigger>
-              <PopoverContent className="w-80">
-                <div className="space-y-3">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <IconPigMoney className="h-5 w-5 text-primary" /> Bank Transfer Details
-                  </h3>
-                  <div className="text-sm space-y-1 text-muted-foreground">
-                    <p className="font-medium text-foreground">{props.bankDetails.name}</p>
-                    <p>{props.bankDetails.type}</p>
-                    <div className="flex items-center justify-between">
-                      <span>AC NO: {props.bankDetails.accountNo}</span>
-                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { props.onCopyToClipboard(props.bankDetails.accountNo, 'Account No'); props.safePlayPopOn(); }} onMouseEnter={props.safePlayHover} aria-label="Copy Account Number">
-                        {props.copiedValue === 'Account No' ? <IconCheck className="h-4 w-4 text-green-500" /> : <IconCopy className="h-4 w-4" />}
-                      </Button>
+            {props.isMobile ? (
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <EventCtaButton
+                    icon={<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Heart%20Hands.png" alt="Heart Hands" width={20} height={20} />}
+                    defaultText="Support"
+                    hoverText="Donate"
+                    emoji="🫶"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-3 text-xs"
+                    onClick={props.safePlayClick}
+                    onMouseEnter={props.safePlayHover}
+                    isExpanded={true}
+                    hasShimmer={false}
+                  />
+                </DrawerTrigger>
+                <DrawerContent>
+                  <div className="mx-auto w-full max-w-sm p-4">
+                    <div className="space-y-3">
+                      <h3 className="font-semibold flex items-center gap-2">
+                        <IconPigMoney className="h-5 w-5 text-primary" /> Bank Transfer Details
+                      </h3>
+                      <div className="text-sm space-y-1 text-muted-foreground">
+                        <p className="font-medium text-foreground">{props.bankDetails.name}</p>
+                        <p>{props.bankDetails.type}</p>
+                        <div className="flex items-center justify-between">
+                          <span>AC NO: {props.bankDetails.accountNo}</span>
+                          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { props.onCopyToClipboard(props.bankDetails.accountNo, 'Account No'); props.safePlayPopOn(); }} onMouseEnter={props.safePlayHover} aria-label="Copy Account Number">
+                            {props.copiedValue === 'Account No' ? <IconCheck className="h-4 w-4 text-green-500" /> : <IconCopy className="h-4 w-4" />}
+                          </Button>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span>IFSC: {props.bankDetails.ifsc}</span>
+                          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { props.onCopyToClipboard(props.bankDetails.ifsc, 'IFSC Code'); props.safePlayPopOn(); }} onMouseEnter={props.safePlayHover} aria-label="Copy IFSC Code">
+                            {props.copiedValue === 'IFSC Code' ? <IconCheck className="h-4 w-4 text-green-500" /> : <IconCopy className="h-4 w-4" />}
+                          </Button>
+                        </div>
+                        <p>{props.bankDetails.bank}</p>
+                      </div>
+                      {/* UPI QR Code Section */}
+                      <div className="border-t pt-3 mt-3 space-y-2">
+                        <h3 className="font-semibold flex items-center gap-2 text-sm">
+                          <img src="/assets/extra/miniqr.png" alt="UPI Icon" className="h-5 w-5 rounded" /> Scan to Pay with UPI
+                        </h3>
+                        <div className="flex justify-center items-center p-1 bg-gray-50 dark:bg-gray-800/50 rounded-md">
+                          <img
+                            src="/assets/extra/miniqr.png"
+                            alt="UPI QR Code"
+                            className="w-28 h-auto object-contain rounded"
+                          />
+                        </div>
+                        <div className="text-center">
+                          <p className="text-xs text-muted-foreground mb-0.5">Or use UPI ID:</p>
+                          <div className="flex items-center justify-center gap-1 bg-gray-100 dark:bg-gray-700/60 px-2 py-1 rounded-md max-w-xs mx-auto">
+                            <span className="text-xs font-mono text-purple-600 dark:text-purple-400">ISKM.04@idfcbank</span>
+                            <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => { props.onCopyToClipboard("ISKM.04@idfcbank", 'UPI ID'); props.safePlayPopOn(); }} onMouseEnter={props.safePlayHover} aria-label="Copy UPI ID">
+                              {props.copiedValue === 'UPI ID' ? <IconCheck className="h-3 w-3 text-green-500" /> : <IconCopy className="h-3 w-3" />}
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                      <Link to="/donate" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
+                        <Button className="w-full mt-3" size="sm">More Donation Methods</Button>
+                      </Link>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span>IFSC: {props.bankDetails.ifsc}</span>
-                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { props.onCopyToClipboard(props.bankDetails.ifsc, 'IFSC Code'); props.safePlayPopOn(); }} onMouseEnter={props.safePlayHover} aria-label="Copy IFSC Code">
-                        {props.copiedValue === 'IFSC Code' ? <IconCheck className="h-4 w-4 text-green-500" /> : <IconCopy className="h-4 w-4" />}
-                      </Button>
-                    </div>
-                    <p>{props.bankDetails.bank}</p>
                   </div>
-                  {/* UPI QR Code Section */}
-                  <div className="border-t pt-3 mt-3 space-y-2">
-                    <h3 className="font-semibold flex items-center gap-2 text-sm">
-                      <img src="/assets/extra/miniqr.png" alt="UPI Icon" className="h-5 w-5 rounded" /> Scan to Pay with UPI
+                </DrawerContent>
+              </Drawer>
+            ) : (
+              <Popover onOpenChange={(open) => { if (open) props.safePlayPopOn(); else props.safePlayPopOff(); }}>
+                <PopoverTrigger asChild>
+                  <EventCtaButton
+                    icon={<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Heart%20Hands.png" alt="Heart Hands" width={25} height={25} />}
+                    defaultText="Support Us"
+                    hoverText="with a donation"
+                    emoji="🫶"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                    onClick={props.safePlayClick}
+                    onMouseEnter={props.safePlayHover}
+                    isExpanded={false}
+                    hasShimmer={false}
+                  />
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                  <div className="space-y-3">
+                    <h3 className="font-semibold flex items-center gap-2">
+                      <IconPigMoney className="h-5 w-5 text-primary" /> Bank Transfer Details
                     </h3>
-                    <div className="flex justify-center items-center p-1 bg-gray-50 dark:bg-gray-800/50 rounded-md">
-                      <img
-                        src="/assets/extra/miniqr.png"
-                        alt="UPI QR Code"
-                        className="w-28 h-auto object-contain rounded"
-                      />
-                    </div>
-                    <div className="text-center">
-                      <p className="text-xs text-muted-foreground mb-0.5">Or use UPI ID:</p>
-                      <div className="flex items-center justify-center gap-1 bg-gray-100 dark:bg-gray-700/60 px-2 py-1 rounded-md max-w-xs mx-auto">
-                        <span className="text-xs font-mono text-purple-600 dark:text-purple-400">ISKM.04@idfcbank</span>
-                        <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => { props.onCopyToClipboard("ISKM.04@idfcbank", 'UPI ID'); props.safePlayPopOn(); }} onMouseEnter={props.safePlayHover} aria-label="Copy UPI ID">
-                          {props.copiedValue === 'UPI ID' ? <IconCheck className="h-3 w-3 text-green-500" /> : <IconCopy className="h-3 w-3" />}
+                    <div className="text-sm space-y-1 text-muted-foreground">
+                      <p className="font-medium text-foreground">{props.bankDetails.name}</p>
+                      <p>{props.bankDetails.type}</p>
+                      <div className="flex items-center justify-between">
+                        <span>AC NO: {props.bankDetails.accountNo}</span>
+                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { props.onCopyToClipboard(props.bankDetails.accountNo, 'Account No'); props.safePlayPopOn(); }} onMouseEnter={props.safePlayHover} aria-label="Copy Account Number">
+                          {props.copiedValue === 'Account No' ? <IconCheck className="h-4 w-4 text-green-500" /> : <IconCopy className="h-4 w-4" />}
                         </Button>
                       </div>
+                      <div className="flex items-center justify-between">
+                        <span>IFSC: {props.bankDetails.ifsc}</span>
+                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { props.onCopyToClipboard(props.bankDetails.ifsc, 'IFSC Code'); props.safePlayPopOn(); }} onMouseEnter={props.safePlayHover} aria-label="Copy IFSC Code">
+                          {props.copiedValue === 'IFSC Code' ? <IconCheck className="h-4 w-4 text-green-500" /> : <IconCopy className="h-4 w-4" />}
+                        </Button>
+                      </div>
+                      <p>{props.bankDetails.bank}</p>
                     </div>
+                    {/* UPI QR Code Section */}
+                    <div className="border-t pt-3 mt-3 space-y-2">
+                      <h3 className="font-semibold flex items-center gap-2 text-sm">
+                        <img src="/assets/extra/miniqr.png" alt="UPI Icon" className="h-5 w-5 rounded" /> Scan to Pay with UPI
+                      </h3>
+                      <div className="flex justify-center items-center p-1 bg-gray-50 dark:bg-gray-800/50 rounded-md">
+                        <img
+                          src="/assets/extra/miniqr.png"
+                          alt="UPI QR Code"
+                          className="w-28 h-auto object-contain rounded"
+                        />
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-muted-foreground mb-0.5">Or use UPI ID:</p>
+                        <div className="flex items-center justify-center gap-1 bg-gray-100 dark:bg-gray-700/60 px-2 py-1 rounded-md max-w-xs mx-auto">
+                          <span className="text-xs font-mono text-purple-600 dark:text-purple-400">ISKM.04@idfcbank</span>
+                          <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => { props.onCopyToClipboard("ISKM.04@idfcbank", 'UPI ID'); props.safePlayPopOn(); }} onMouseEnter={props.safePlayHover} aria-label="Copy UPI ID">
+                            {props.copiedValue === 'UPI ID' ? <IconCheck className="h-3 w-3 text-green-500" /> : <IconCopy className="h-3 w-3" />}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                    <Link to="/donate" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
+                      <Button className="w-full mt-3" size="sm">More Donation Methods</Button>
+                    </Link>
                   </div>
-                  <Link to="/donate" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
-                    <Button className="w-full mt-3" size="sm">More Donation Methods</Button>
-                  </Link>
-                </div>
-              </PopoverContent>
-            </Popover>
+                </PopoverContent>
+              </Popover>
+            )}
 
             <a href="https://www.youtube.com/@ISKMPondy" target="_blank" rel="noopener noreferrer" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
               <EventCtaButton
-                icon={<IconBrandYoutube className="h-6 w-6" />}
+                icon={<IconBrandYoutube className={cn(props.isMobile ? "h-5 w-5" : "h-6 w-6")} />}
                 defaultText={props.isMobile ? "Live" : "Watch Live"}
                 hoverText={props.isMobile ? "YouTube" : "on YouTube"}
                 emoji="🔴"
-                className="bg-red-600 hover:bg-red-700 text-white"
-                isExpanded={!props.isMobile}
+                className={cn("bg-red-600 hover:bg-red-700 text-white", props.isMobile && "py-2 px-3 text-xs")}
+                isExpanded={props.isMobile}
                 hasPulse={true}
                 hasShimmer={true}
               />
             </a>
 
-            <Popover onOpenChange={(open) => { if (open) props.safePlayPopOn(); else props.safePlayPopOff(); }}>
-              <PopoverTrigger asChild>
-                <EventCtaButton
-                  icon={<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Love%20Hotel.png" alt="Love Hotel" width="25" height="25" />}
-                  defaultText={props.isMobile ? "Visit Us" : "Our Location"}
-                  hoverText="Directions"
-                  emoji="🗺️"
-                  className="bg-blue-500 hover:bg-blue-600 text-white"
-                  onClick={props.safePlayClick}
-                  onMouseEnter={props.safePlayHover}
-                  isExpanded={!props.isMobile}
-                  hasShimmer={false}
-                />
-              </PopoverTrigger>
-              <PopoverContent className="w-72">
-                <h3 className="font-semibold mb-2">ISKM Pudhuvai Temple</h3>
-                <p className="text-sm text-muted-foreground mb-3">{props.locationDetails.address}</p>
-                <div className="flex flex-col space-y-2 mb-3">
-                  <Badge variant="secondary" className="flex items-center gap-1 w-fit bg-green-500 hover:bg-green-600 dark:bg-green-500 dark:hover:bg-green-600 dark:text-white text-white"><IconCar className="h-3 w-3" />Book Temple Tour</Badge>
-                  <a href={`tel:${props.locationDetails.tourPhone}`} className="w-fit" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
-                    <Badge variant="secondary" className="flex items-center gap-1 cursor-pointer bg-purple-500 hover:bg-purple-600 dark:bg-purple-500 dark:hover:bg-purple-600 dark:text-white text-white"><IconPhone className="h-3 w-3" />{props.locationDetails.tourPhone}</Badge>
-                  </a>
-                </div>
-                <div>
-                  <h4 className="font-semibold flex items-center text-sm mb-1"><IconClock className="mr-2 h-4 w-4" /> Opening Hours:</h4>
-                  <ul className="text-sm text-muted-foreground space-y-0.5">{props.locationDetails.hours.map((line, i) => <li key={i}>{line}</li>)}</ul>
-                </div>
-                <div className="mt-4">
-                  <Button size="sm" className="w-full bg-blue-500 hover:bg-blue-600 text-white" onClick={() => { window.open(props.locationDetails.mapsLink, '_blank'); props.safePlayClick(); }} onMouseEnter={props.safePlayHover}><IconMapPin className="mr-2 h-4 w-4" />Open in Maps</Button>
-                </div>
-              </PopoverContent>
-            </Popover>
-            <Popover onOpenChange={(open) => { if (open) props.safePlayPopOn(); else props.safePlayPopOff(); }}>
-              <PopoverTrigger asChild>
-                <Button className="h-20 w-24 p-1.5 rounded-2xl shadow-lg bg-gradient-to-br from-green-200 to-green-400 hover:from-green-300 hover:to-green-500 text-green-800">
-                  <div className="flex flex-col items-center justify-center gap-1">
-                    {contactIconError ? (
-                      <IconPhone className="h-6 w-6" />
-                    ) : (
-                      <img
-                        src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Telephone%20Receiver.png"
-                        alt="Telephone Receiver"
-                        width="25"
-                        height="25"
-                        onError={() => setContactIconError(true)}
-                      />
-                    )}
-                    <span className="text-sm font-semibold">Contact</span>
+            {props.isMobile ? (
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <EventCtaButton
+                    icon={<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Love%20Hotel.png" alt="Love Hotel" width={20} height={20} />}
+                    defaultText="Visit Us"
+                    hoverText="Directions"
+                    emoji="🗺️"
+                    className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 text-xs"
+                    onClick={props.safePlayClick}
+                    onMouseEnter={props.safePlayHover}
+                    isExpanded={true}
+                    hasShimmer={false}
+                  />
+                </DrawerTrigger>
+                <DrawerContent>
+                  <div className="mx-auto w-full max-w-sm p-4">
+                    <h3 className="font-semibold mb-2">ISKM Pudhuvai Temple</h3>
+                    <p className="text-sm text-muted-foreground mb-3">{props.locationDetails.address}</p>
+                    <div className="flex flex-col space-y-2 mb-3">
+                      <Badge variant="secondary" className="flex items-center gap-1 w-fit bg-green-500 hover:bg-green-600 dark:bg-green-500 dark:hover:bg-green-600 dark:text-white text-white"><IconCar className="h-3 w-3" />Book Temple Tour</Badge>
+                      <a href={`tel:${props.locationDetails.tourPhone}`} className="w-fit" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
+                        <Badge variant="secondary" className="flex items-center gap-1 cursor-pointer bg-purple-500 hover:bg-purple-600 dark:bg-purple-500 dark:hover:bg-purple-600 dark:text-white text-white"><IconPhone className="h-3 w-3" />{props.locationDetails.tourPhone}</Badge>
+                      </a>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold flex items-center text-sm mb-1"><IconClock className="mr-2 h-4 w-4" /> Opening Hours:</h4>
+                      <ul className="text-sm text-muted-foreground space-y-0.5">{props.locationDetails.hours.map((line, i) => <li key={i}>{line}</li>)}</ul>
+                    </div>
+                    <div className="mt-4">
+                      <Button size="sm" className="w-full bg-blue-500 hover:bg-blue-600 text-white" onClick={() => { window.open(props.locationDetails.mapsLink, '_blank'); props.safePlayClick(); }} onMouseEnter={props.safePlayHover}><IconMapPin className="mr-2 h-4 w-4" />Open in Maps</Button>
+                    </div>
                   </div>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent side="top" align="center" className="w-full max-w-xs sm:max-w-sm bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-gray-300 dark:border-gray-700 shadow-xl rounded-xl">
-                <div className="space-y-4">
+                </DrawerContent>
+              </Drawer>
+            ) : (
+              <Popover onOpenChange={(open) => { if (open) props.safePlayPopOn(); else props.safePlayPopOff(); }}>
+                <PopoverTrigger asChild>
+                  <EventCtaButton
+                    icon={<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Love%20Hotel.png" alt="Love Hotel" width={25} height={25} />}
+                    defaultText="Our Location"
+                    hoverText="Directions"
+                    emoji="🗺️"
+                    className="bg-blue-500 hover:bg-blue-600 text-white"
+                    onClick={props.safePlayClick}
+                    onMouseEnter={props.safePlayHover}
+                    isExpanded={false}
+                    hasShimmer={false}
+                  />
+                </PopoverTrigger>
+                <PopoverContent className="w-72">
+                  <h3 className="font-semibold mb-2">ISKM Pudhuvai Temple</h3>
+                  <p className="text-sm text-muted-foreground mb-3">{props.locationDetails.address}</p>
+                  <div className="flex flex-col space-y-2 mb-3">
+                    <Badge variant="secondary" className="flex items-center gap-1 w-fit bg-green-500 hover:bg-green-600 dark:bg-green-500 dark:hover:bg-green-600 dark:text-white text-white"><IconCar className="h-3 w-3" />Book Temple Tour</Badge>
+                    <a href={`tel:${props.locationDetails.tourPhone}`} className="w-fit" onClick={props.safePlayClick} onMouseEnter={props.safePlayHover}>
+                      <Badge variant="secondary" className="flex items-center gap-1 cursor-pointer bg-purple-500 hover:bg-purple-600 dark:bg-purple-500 dark:hover:bg-purple-600 dark:text-white text-white"><IconPhone className="h-3 w-3" />{props.locationDetails.tourPhone}</Badge>
+                    </a>
+                  </div>
                   <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <h4 className="text-sm font-semibold text-green-600 dark:text-green-400">Contact Us</h4>
-                      <Button size="sm" variant="ghost" onClick={() => props.onCopyToClipboard('+91 80565 13859\niskm.pondicherry@gmail.com', 'Contact Info')} className="text-green-600 dark:text-green-400">
-                        {props.copiedValue === 'Contact Info' ? <IconCheck className="h-4 w-4" /> : <IconCopy className="h-4 w-4" />}
-                      </Button>
+                    <h4 className="font-semibold flex items-center text-sm mb-1"><IconClock className="mr-2 h-4 w-4" /> Opening Hours:</h4>
+                    <ul className="text-sm text-muted-foreground space-y-0.5">{props.locationDetails.hours.map((line, i) => <li key={i}>{line}</li>)}</ul>
+                  </div>
+                  <div className="mt-4">
+                    <Button size="sm" className="w-full bg-blue-500 hover:bg-blue-600 text-white" onClick={() => { window.open(props.locationDetails.mapsLink, '_blank'); props.safePlayClick(); }} onMouseEnter={props.safePlayHover}><IconMapPin className="mr-2 h-4 w-4" />Open in Maps</Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
+            {props.isMobile ? (
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button className="p-1.5 rounded-2xl shadow-lg bg-gradient-to-br from-green-200 to-green-400 text-green-800 h-16 w-20">
+                    <div className="flex flex-col items-center justify-center gap-1">
+                      {contactIconError ? (
+                        <IconPhone className="h-5 w-5" />
+                      ) : (
+                        <img
+                          src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Telephone%20Receiver.png"
+                          alt="Telephone Receiver"
+                          width={20}
+                          height={20}
+                          onError={() => setContactIconError(true)}
+                        />
+                      )}
+                      <span className="font-semibold text-xs">Contact</span>
                     </div>
-                    <div className="space-y-2 text-xs text-gray-700 dark:text-gray-300">
-                      <div className="flex items-center gap-2">
-                        <IconPhone className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
-                        <a href="tel:+919042642103" className="hover:text-green-600 dark:hover:text-green-400 transition-colors">+91 80565 13859</a>
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent>
+                  <div className="mx-auto w-full max-w-sm p-4">
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <h4 className="text-sm font-semibold text-green-600 dark:text-green-400">Contact Us</h4>
+                          <Button size="sm" variant="ghost" onClick={() => props.onCopyToClipboard('+91 80565 13859\niskm.pondicherry@gmail.com', 'Contact Info')} className="text-green-600 dark:text-green-400">
+                            {props.copiedValue === 'Contact Info' ? <IconCheck className="h-4 w-4" /> : <IconCopy className="h-4 w-4" />}
+                          </Button>
+                        </div>
+                        <div className="space-y-2 text-xs text-gray-700 dark:text-gray-300">
+                          <div className="flex items-center gap-2">
+                            <IconPhone className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
+                            <a href="tel:+919042642103" className="hover:text-green-600 dark:hover:text-green-400 transition-colors">+91 80565 13859</a>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-envelope text-green-600 dark:text-green-400" viewBox="0 0 16 16">
+                              <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z" />
+                            </svg>
+                            <a href="mailto:iskm.pondicherry@gmail.com" className="hover:text-green-600 dark:hover:text-green-400 transition-colors">iskm.pondicherry@gmail.com</a>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-envelope text-green-600 dark:text-green-400" viewBox="0 0 16 16">
-                          <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z" />
-                        </svg>
-                        <a href="mailto:iskm.pondicherry@gmail.com" className="hover:text-green-600 dark:hover:text-green-400 transition-colors">iskm.pondicherry@gmail.com</a>
+                      <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
+                        <div className="grid grid-cols-2 gap-2">
+                          {props.socialLinks.map(link => (
+                            <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                              <link.icon className="h-4 w-4" />
+                              <span className="text-xs">{link.label}</span>
+                            </a>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
-                    <div className="grid grid-cols-2 gap-2">
-                      {props.socialLinks.map(link => (
-                        <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                          <link.icon className="h-4 w-4" />
-                          <span className="text-xs">{link.label}</span>
-                        </a>
-                      ))}
+                </DrawerContent>
+              </Drawer>
+            ) : (
+              <Popover onOpenChange={(open) => { if (open) props.safePlayPopOn(); else props.safePlayPopOff(); }}>
+                <PopoverTrigger asChild>
+                  <Button className="p-1.5 rounded-2xl shadow-lg bg-gradient-to-br from-green-200 to-green-400 text-green-800 h-20 w-24">
+                    <div className="flex flex-col items-center justify-center gap-1">
+                      {contactIconError ? (
+                        <IconPhone className="h-6 w-6" />
+                      ) : (
+                        <img
+                          src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Telephone%20Receiver.png"
+                          alt="Telephone Receiver"
+                          width={25}
+                          height={25}
+                          onError={() => setContactIconError(true)}
+                        />
+                      )}
+                      <span className="font-semibold text-sm">Contact</span>
+                    </div>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent side="top" align="center" className="w-full max-w-xs sm:max-w-sm bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-gray-300 dark:border-gray-700 shadow-xl rounded-xl">
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <h4 className="text-sm font-semibold text-green-600 dark:text-green-400">Contact Us</h4>
+                        <Button size="sm" variant="ghost" onClick={() => props.onCopyToClipboard('+91 80565 13859\niskm.pondicherry@gmail.com', 'Contact Info')} className="text-green-600 dark:text-green-400">
+                          {props.copiedValue === 'Contact Info' ? <IconCheck className="h-4 w-4" /> : <IconCopy className="h-4 w-4" />}
+                        </Button>
+                      </div>
+                      <div className="space-y-2 text-xs text-gray-700 dark:text-gray-300">
+                        <div className="flex items-center gap-2">
+                          <IconPhone className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
+                          <a href="tel:+919042642103" className="hover:text-green-600 dark:hover:text-green-400 transition-colors">+91 80565 13859</a>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" className="bi bi-envelope text-green-600 dark:text-green-400" viewBox="0 0 16 16">
+                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z" />
+                          </svg>
+                          <a href="mailto:iskm.pondicherry@gmail.com" className="hover:text-green-600 dark:hover:text-green-400 transition-colors">iskm.pondicherry@gmail.com</a>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
+                      <div className="grid grid-cols-2 gap-2">
+                        {props.socialLinks.map(link => (
+                          <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                            <link.icon className="h-4 w-4" />
+                            <span className="text-xs">{link.label}</span>
+                          </a>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </PopoverContent>
-            </Popover>
+                </PopoverContent>
+              </Popover>
+            )}
           </motion.div>
 
           {/* Social media icons are now handled separately in mobile layout */}
@@ -588,6 +763,7 @@ const HeroForeground = React.memo<HeroForegroundProps>((props) => {
     </div>
   );
 });
+
 HeroForeground.displayName = "HeroForeground";
 
 function getYouTubeId(url: string): string | null {
@@ -609,6 +785,7 @@ export function HeroSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
   const [rightCarouselPreloaded, setRightCarouselPreloaded] = useState<boolean[]>(Array(heroShowcaseAll.length).fill(false));
+  const [contactIconError, setContactIconError] = useState(false);
 
   const addLeadMutation = useMutation({
     mutationFn: addLead,
@@ -721,7 +898,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 20 }}
             transition={{ delay: 0.2 }}
-            className="text-center text-4xl sm:text-5xl font-bold leading-tight tracking-tight"
+            className="text-center text-4xl sm:text-5xl font-bold leading-tight tracking-tight px-4"
           >
             <AuroraText>
               Reawakening Kṛṣṇa Consciousness Worldwide
@@ -733,7 +910,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 20 }}
             transition={{ delay: 0.3 }}
-            className="max-w-4xl mx-auto"
+            className="max-w-4xl mx-auto px-4"
           >
             <div className="flex flex-col items-center gap-2">
               <Badge variant="outline" className="text-sm sm:text-base py-1 px-3 rounded-full border-gray-400/50 dark:border-gray-600/50">
@@ -886,6 +1063,8 @@ export function HeroSection() {
               safePlayClick={safePlayClick}
               safePlayPopOn={safePlayPopOn}
               safePlayPopOff={safePlayPopOff}
+              contactIconError={contactIconError}
+              setContactIconError={setContactIconError}
             />
           </div>
 
@@ -1144,6 +1323,8 @@ export function HeroSection() {
               safePlayClick={safePlayClick}
               safePlayPopOn={safePlayPopOn}
               safePlayPopOff={safePlayPopOff}
+              contactIconError={contactIconError}
+              setContactIconError={setContactIconError}
             />
           </div>
         </div>

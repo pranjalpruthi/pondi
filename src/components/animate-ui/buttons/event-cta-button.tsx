@@ -49,8 +49,8 @@ const EventCtaButton = React.forwardRef<HTMLButtonElement, EventCtaButtonProps>(
           className={cn(
             "group rounded-2xl flex items-center justify-center shadow-lg text-white font-bold relative overflow-hidden transition-all duration-500",
             isExpanded
-              ? "h-20 w-48 p-2"
-              : "h-20 w-24 p-1 hover:w-48 hover:p-2",
+              ? "h-16 w-20 p-1.5" // Mobile: small, fixed size
+              : "h-20 w-24 p-1 hover:w-48 hover:p-2", // Desktop: expands on hover
             className,
           )}
           type="button"
@@ -72,15 +72,15 @@ const EventCtaButton = React.forwardRef<HTMLButtonElement, EventCtaButtonProps>(
             className={cn(
               "relative z-10 flex justify-center items-center transition-all duration-300",
               isExpanded
-                ? "flex-row gap-2"
-                : "flex-col gap-1 group-hover:flex-row group-hover:gap-2",
+                ? "flex-col gap-1" // Mobile: always column
+                : "flex-col gap-1 group-hover:flex-row group-hover:gap-2", // Desktop: column, becomes row on hover
             )}
           >
             {icon}
             <div
               className={cn(
                 "flex flex-col",
-                isExpanded ? "items-start" : "items-center group-hover:items-start",
+                isExpanded ? "items-center" : "items-center group-hover:items-start", // Mobile: always center, Desktop: center, becomes start on hover
               )}
             >
               <span className="text-sm font-semibold">{defaultText}</span>
@@ -88,16 +88,16 @@ const EventCtaButton = React.forwardRef<HTMLButtonElement, EventCtaButtonProps>(
                 className={cn(
                   "w-fit overflow-hidden transition-all duration-500",
                   isExpanded
-                    ? "max-h-5 max-w-32"
-                    : "max-h-0 max-w-0 group-hover:max-h-5 group-hover:max-w-32",
+                    ? "max-h-0 max-w-0" // Mobile: text hidden
+                    : "max-h-0 max-w-0 group-hover:max-h-5 group-hover:max-w-32", // Desktop: text shows on hover
                 )}
               >
                 <span
                   className={cn(
                     "whitespace-nowrap text-xs transition-opacity duration-500",
                     isExpanded
-                      ? "opacity-100"
-                      : "opacity-0 group-hover:opacity-100",
+                      ? "opacity-0" // Mobile: text transparent
+                      : "opacity-0 group-hover:opacity-100", // Desktop: text becomes visible on hover
                   )}
                 >
                   {hoverText} {emoji}
