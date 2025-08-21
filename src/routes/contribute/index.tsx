@@ -244,7 +244,7 @@ const RazorpayForm = () => {
       const script = document.createElement('script');
       script.src = 'https://cdn.razorpay.com/static/widget/subscription-button.js';
       script.async = true;
-      script.setAttribute('data-subscription_button_id', 'pl_R7d81CHI8YiqH4');
+      script.setAttribute('data-subscription_button_id', 'pl_R81APxwGAnFN2U');
       script.setAttribute('data-button_theme', 'brand-color');
 
       const form = document.createElement('form');
