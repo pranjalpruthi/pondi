@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { HeroSection } from "@/components/homepage/hero-section";
 import SideBySide from "@/components/homepage/side-by-side";
 import { InitialPageLoader } from '@/components/ui/initial-page-loader'; // Updated import
-// Removed ShlokaModal and Shloka type imports
+  // Removed ShlokaModal and Shloka type imports
 
 // Lazy load sections
 // Removed LazyConstructionUpdates
@@ -17,9 +17,6 @@ const LazyYouTubeMarquee = React.lazy(() =>
 );
 const LazyQnASection = React.lazy(() => 
   import('@/components/homepage/qna-section').then(module => ({ default: module.QnASection }))
-);
-const LazySponsorshipSection = React.lazy(() =>
-  import('@/components/homepage/sponsorship-section').then(module => ({ default: module.SponsorshipSection }))
 );
 const LazyEventSection = React.lazy(() =>
   import('@/components/homepage/event-section').then(module => ({ default: module.EventSection }))
@@ -42,7 +39,6 @@ const LazyDiscussionSection = React.lazy(() =>
 const LazyDisciplicSuccessionSection = React.lazy(() =>
   import('@/components/homepage/disciplic-succession-section').then(module => ({ default: module.default }))
 );
-// Removed LazyUpcomingEventBanner import from here
 
 // Component for the section divider
 const SectionDivider = () => (
@@ -101,10 +97,6 @@ function HomePage() {
             </Suspense>
             
 
-            <SectionDivider />
-            <Suspense fallback={<SectionLoader />}>
-              <LazySponsorshipSection />
-            </Suspense>
             <SectionDivider />
             <Suspense fallback={<SectionLoader />}>
               <LazyFeaturedSection />
